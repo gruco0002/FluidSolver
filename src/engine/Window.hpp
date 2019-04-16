@@ -14,6 +14,9 @@
 
 namespace Engine {
 
+    /**
+     * There can only be one window created.
+     */
     class Window {
 
     public:
@@ -23,18 +26,28 @@ namespace Engine {
         EventDelegate<int, int> OnFramebufferSizeChanged;
 
         int GetHeight();
+
         int GetWidth();
+
         void SetSize(int width, int height);
+
         void SetWidth(int width);
+
         void SetHeight(int height);
+
         int GetFramebufferWidth();
+
         int GetFramebufferHeight();
+
+        void MainLoop();
 
     private:
         void init();
 
         bool callbackSet = false;
+
         void setCallbacks();
+
         void unsetCallbacks();
 
         std::string title;
@@ -46,22 +59,28 @@ namespace Engine {
         int framebufferHeight;
 
         GLFWwindow *window;
+
         void setCorrectSizeValues();
 
 
-
         void onWindowSizeChanged(GLFWwindow *window, int width, int height);
-void onFramebufferSizeChanged(GLFWwindow* window, int width, int height);
 
-        static EventDelegate<GLFWwindow*, int, int> onAnyWindowSizeChanged;
+        void onFramebufferSizeChanged(GLFWwindow *window, int width, int height);
+
+        static EventDelegate<GLFWwindow *, int, int> onAnyWindowSizeChanged;
         uint32_t onAnyWindowSizeChangedSubscription;
-        static EventDelegate<GLFWwindow*, int, int> onAnyFramebufferSizeChanged;
+        static EventDelegate<GLFWwindow *, int, int> onAnyFramebufferSizeChanged;
         uint32_t onAnyFramebufferSizeChangedSubscription;
 
 
         // callbacks for glfw
         static void window_size_callback(GLFWwindow *window, int width, int height);
+
         static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+
+
+        // only one window can exist
+        static bool windowCreated;
 
 
     public:

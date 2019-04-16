@@ -14,18 +14,26 @@ namespace Engine {
     EventDelegate<GLFWwindow *, int, int> Window::onAnyWindowSizeChanged;
     EventDelegate<GLFWwindow *, int, int> Window::onAnyFramebufferSizeChanged;
 
+    bool Window::windowCreated = false;
+
     Window::Window(std::string title, int width, int height) : title(title), width(width), height(height) {
         init();
     }
 
     void Window::init() {
+
+        if (windowCreated) {
+            throw EngineException("A window was already created, there can only be one window!");
+        }
+        windowCreated = true;
+
         glfwInit();
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-        window = glfwCreateWindow(width, height, "LearnOpenGL", nullptr, nullptr);
+        window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         if (window == nullptr) {
             glfwTerminate();
             throw EngineException("Failed to create GLFW window");
@@ -127,4 +135,20 @@ namespace Engine {
         glfwGetFramebufferSize(window, &framebufferWidth, &framebufferHeight);
         glfwGetWindowSize(window, &width, &height);
     }
+
+    void Window::MainLoop() {
+
+        while (!glfwWindowShouldClose(window)) {
+
+            // input handling here
+
+            // rendering here
+
+            glfwPollEvents();
+            glfwSwapBuffers(window);
+
+        }
+
+    }
+
 }
