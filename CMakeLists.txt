@@ -74,12 +74,13 @@ endif ()
 # include directories
 
 include_directories(src)
-include_directories(libraries)
+include_directories(dependencies)
+include_directories(dependencies/Glad)
 
 
 set(FLUID_SOLVER_SOURCE_FILES
         src/main.cpp
-        )
+        src/engine/Window.cpp src/engine/Window.hpp src/engine/EventDelegate.hpp src/engine/EngineException.cpp src/engine/EngineException.hpp)
 
 
 add_executable(${PROJECT_NAME} ${FLUID_SOLVER_SOURCE_FILES})
