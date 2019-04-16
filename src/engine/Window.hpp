@@ -41,6 +41,10 @@ namespace Engine {
 
         void MainLoop();
 
+    protected:
+
+        virtual void render() = 0;
+
     private:
         void init();
 
@@ -81,6 +85,8 @@ namespace Engine {
 
         // only one window can exist
         static bool windowCreated;
+
+
 
 
     public:

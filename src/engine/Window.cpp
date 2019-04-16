@@ -143,6 +143,7 @@ namespace Engine {
             // input handling here
 
             // rendering here
+            render();
 
             glfwPollEvents();
             glfwSwapBuffers(window);

@@ -1,10 +1,8 @@
-#include <iostream>
-#include <engine/Window.hpp>
+#include "FluidSolverWindow.hpp"
 
-int main()
-{
-    std::cout << "Hello World!" << std::endl;
-    Engine::Window window("testing");
+int main() {
+
+    FluidSolverWindow window("FluidSolver");
 
     window.MainLoop();
 }
