@@ -8,9 +8,9 @@
 
 #include <string>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include "EventDelegate.hpp"
+
+typedef struct GLFWwindow GLFWwindow;
 
 namespace Engine {
 
@@ -85,8 +85,6 @@ namespace Engine {
 
         // only one window can exist
         static bool windowCreated;
-
-
 
 
     public:
