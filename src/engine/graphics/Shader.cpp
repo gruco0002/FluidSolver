@@ -5,6 +5,8 @@
 #include <engine/EngineException.hpp>
 #include "Shader.hpp"
 #include <libraries/glm/gtc/type_ptr.hpp>
+#include <fstream>
+#include <sstream>
 
 uint32_t  Engine::Graphics::Shader::currentlyBound = 0;
 
@@ -173,5 +175,52 @@ void Engine::Graphics::Shader::InsertDefinesIntoCode() {
         for (std::string &def : defines) {
             part.code.insert(firstNewLine + 1, "#define " + def + "\n");
         }
+    }
+}
+
+Engine::Graphics::Shader::Shader(std::vector<Engine::Graphics::Shader::ProgramPartFile> parts) {
+    LoadShaderFilesAsShaderParts(parts);
+    Generate();
+}
+
+Engine::Graphics::Shader::Shader(std::vector<Engine::Graphics::Shader::ProgramPartFile> parts,
+                                 std::vector<std::string> defines) : defines(defines) {
+    LoadShaderFilesAsShaderParts(parts);
+    Generate();
+}
+
+std::string Engine::Graphics::Shader::LoadCodeFromFile(std::string filepath) {
+    std::string code;
+    std::ifstream codeFile;
+
+    // ensure ifstream objects can throw exceptions:
+    codeFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        // open files
+        codeFile.open(filepath);
+
+        std::stringstream shaderStream;
+        // read file's buffer contents into streams
+        shaderStream << codeFile.rdbuf();
+
+        // close file handlers
+        codeFile.close();
+        // convert stream into string
+        code = shaderStream.str();
+    }
+    catch (std::ifstream::failure &e) {
+        throw EngineException(("Shader Error: Error reading files! " + std::string(e.what())).c_str());
+    }
+    return code;
+}
+
+void Engine::Graphics::Shader::LoadShaderFilesAsShaderParts(
+        std::vector<Engine::Graphics::Shader::ProgramPartFile> fileParts) {
+    for (ProgramPartFile &part : fileParts) {
+        auto code = LoadCodeFromFile(part.filepath);
+        ProgramPart p;
+        p.code = code;
+        p.type = part.type;
+        parts.push_back(p);
     }
 }

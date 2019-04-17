@@ -30,6 +30,14 @@ namespace Engine {
                 ProgramPartType type;
             };
 
+            struct ProgramPartFile {
+                std::string filepath;
+                ProgramPartType type;
+            };
+
+            Shader(std::vector<ProgramPartFile> parts);
+
+            Shader(std::vector<ProgramPartFile> parts, std::vector<std::string> defines);
 
             Shader(std::vector<ProgramPart> parts, std::vector<std::string> defines);
 
@@ -86,6 +94,10 @@ namespace Engine {
             uint32_t CompileShader(ProgramPart &part);
 
             void InsertDefinesIntoCode();
+
+            std::string LoadCodeFromFile(std::string filepath);
+
+            void LoadShaderFilesAsShaderParts(std::vector<ProgramPartFile> fileParts);
 
         };
 
