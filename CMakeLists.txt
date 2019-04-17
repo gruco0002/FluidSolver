@@ -80,7 +80,7 @@ include_directories(dependencies/Glad)
 
 set(FLUID_SOLVER_SOURCE_FILES
         src/main.cpp
-        src/engine/Window.cpp src/engine/Window.hpp src/engine/EventDelegate.hpp src/engine/EngineException.cpp src/engine/EngineException.hpp src/FluidSolverWindow.cpp src/FluidSolverWindow.hpp src/engine/graphics/Texture2D.cpp src/engine/graphics/Texture2D.hpp src/libraries/stb/stb_loader.cpp src/engine/graphics/Framebuffer.cpp src/engine/graphics/Framebuffer.hpp src/engine/graphics/buffer/VertexArray.cpp src/engine/graphics/buffer/VertexArray.hpp src/engine/graphics/buffer/VertexBuffer.cpp src/engine/graphics/buffer/VertexBuffer.hpp src/engine/graphics/buffer/IndexBuffer.cpp src/engine/graphics/buffer/IndexBuffer.hpp src/engine/graphics/buffer/Buffer.cpp src/engine/graphics/buffer/Buffer.hpp)
+        src/engine/Window.cpp src/engine/Window.hpp src/engine/EventDelegate.hpp src/engine/EngineException.cpp src/engine/EngineException.hpp src/FluidSolverWindow.cpp src/FluidSolverWindow.hpp src/engine/graphics/Texture2D.cpp src/engine/graphics/Texture2D.hpp src/libraries/stb/stb_loader.cpp src/engine/graphics/Framebuffer.cpp src/engine/graphics/Framebuffer.hpp src/engine/graphics/buffer/VertexArray.cpp src/engine/graphics/buffer/VertexArray.hpp src/engine/graphics/buffer/VertexBuffer.cpp src/engine/graphics/buffer/VertexBuffer.hpp src/engine/graphics/buffer/IndexBuffer.cpp src/engine/graphics/buffer/IndexBuffer.hpp src/engine/graphics/buffer/Buffer.cpp src/engine/graphics/buffer/Buffer.hpp src/engine/graphics/Shader.cpp src/engine/graphics/Shader.hpp)
 
 
 add_executable(${PROJECT_NAME} ${FLUID_SOLVER_SOURCE_FILES})
