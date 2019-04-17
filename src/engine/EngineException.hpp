@@ -8,13 +8,14 @@
 
 #include <exception>
 
-class EngineException : public std::exception {
+namespace Engine {
+    class EngineException : public std::exception {
 
-public:
-    explicit EngineException(char const *const _Message);
+    public:
+        explicit EngineException(char const *const _Message);
 
-    const char *what() const override;
-};
+        const char *what() const override;
+    };
 
-
+}
 #endif //FLUIDSOLVER_ENGINEEXCEPTION_HPP

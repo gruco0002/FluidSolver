@@ -5,6 +5,8 @@
 #include <string>
 #include "EngineException.hpp"
 
+using namespace Engine;
+
 EngineException::EngineException(char const *const _Message) : exception(_Message) {
 
 }
