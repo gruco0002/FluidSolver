@@ -13,10 +13,10 @@ $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
-#Download GLFW Version 3.3
-$file = "GLFW.zip"
+# Download googletest version 1.8.1
+$file = "release-1.8.1.zip"
 
-Invoke-WebRequest -Uri "https://github.com/glfw/glfw/releases/download/3.3/glfw-3.3.zip" -OutFile $file -TimeoutSec 5
+Invoke-WebRequest -Uri "https://github.com/google/googletest/archive/release-1.8.1.zip" -OutFile $file -TimeoutSec 5
 
 # Unzip the file to specified location
 $location = Get-Location
@@ -24,8 +24,8 @@ $zip_file = (new-object -com shell.application).namespace("$location\$file")
 $destination = (new-object -com shell.application).namespace("$location")
 $items = $zip_file.items()
 $destination.Copyhere($items)
-rename-item "glfw-3.3" "GLFW"
+Move-Item -Path "googletest-release-1.8.1/googletest" -Destination "./"
+Remove-Item -LiteralPath "googletest-release-1.8.1" -Force -Recurse
 
-
-remove-item GLFW.zip
+remove-item "release-1.8.1.zip"
 

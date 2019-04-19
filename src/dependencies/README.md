@@ -5,3 +5,21 @@ the needed dependencies.
 
 ### Notes
 Since GLAD is very small, it is already contained in the repo.
+
+This folder should contain glad in a subdirectory called `Glad` and GLFW-3.3 in a
+subdirectory called `GLFW`.
+The directory structure should be the following:
+```$xslt
+dependencies
+    Glad
+        glad
+        KHR
+        glad.c
+        CMakeLists.txt
+        ...
+    GLFW
+        include
+        src
+        tests
+        ...
+```
