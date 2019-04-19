@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <glad/glad.h>
+#include "Enums.hpp"
 
 namespace Engine {
 
@@ -49,7 +50,7 @@ namespace Engine {
              * @param pixelDataType PixelDataType e.g. GL_UNSIGNED_BYTE or GL_FLOAT
              */
             Texture2D(uint32_t width, uint32_t height, Texture2DSettings *settings,
-                      GLenum pixelFormat, GLenum pixelDataType);
+                      GLenum pixelFormat, ComponentType pixelDataType);
 
             /**
              * Destroys this texture object and its corresponding data on the graphics card.
@@ -72,13 +73,15 @@ namespace Engine {
 
             void SetData(std::vector<uint8_t>& data);
 
+            std::vector<uint8_t> GetData();
 
+            void SaveAsPNG(std::string filepath);
 
         private:
             uint32_t ID;
             int32_t channels;
             GLenum pixelFormat;
-            GLenum pixelDataType;
+            ComponentType pixelDataType;
             Texture2DSettings *settings = nullptr;
         public:
             uint32_t getWidth() const;
@@ -100,7 +103,7 @@ namespace Engine {
             void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings);
 
             void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings,
-                                      GLenum pixelFormat, GLenum pixelDataType);
+                                      GLenum pixelFormat, ComponentType pixelDataType);
 
         };
     }

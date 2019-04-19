@@ -5,6 +5,9 @@
 #include <engine/EngineException.hpp>
 #include "Texture2D.hpp"
 #include "libraries/stb/stb_image.h"
+#include "Framebuffer.hpp"
+
+#include "libraries/stb/stb_image_write.h"
 
 
 void Engine::Graphics::Texture2D::LoadFromFile(std::string filepath, Engine::Graphics::Texture2DSettings *settings) {
@@ -21,7 +24,7 @@ void Engine::Graphics::Texture2D::LoadFromFile(std::string filepath, Engine::Gra
         stbi_set_flip_vertically_on_load(false);
     }
     this->settings = settings;
-    pixelDataType = GL_UNSIGNED_BYTE;
+    pixelDataType = ComponentTypeUnsignedByte;
 
     int width, height;
     unsigned char *data = stbi_load(filepath.c_str(), &width, &height, &channels, 0);
@@ -59,12 +62,12 @@ void Engine::Graphics::Texture2D::LoadFromFile(std::string filepath, Engine::Gra
 
 void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t height,
                                                        Engine::Graphics::Texture2DSettings *settings) {
-    GenerateEmptyTexture(width, height, settings, GL_RGB, GL_UNSIGNED_BYTE);
+    GenerateEmptyTexture(width, height, settings, GL_RGB, ComponentTypeUnsignedByte);
 }
 
 void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t height,
                                                        Engine::Graphics::Texture2DSettings *settings,
-                                                       GLenum pixelFormat, GLenum pixelDataType) {
+                                                       GLenum pixelFormat, ComponentType pixelDataType) {
     this->pixelFormat = pixelFormat;
     this->pixelDataType = pixelDataType;
     this->settings = settings;
@@ -122,7 +125,7 @@ Engine::Graphics::Texture2D::Texture2D(uint32_t width, uint32_t height,
 
 Engine::Graphics::Texture2D::Texture2D(uint32_t width, uint32_t height,
                                        Engine::Graphics::Texture2DSettings *settings, GLenum pixelFormat,
-                                       GLenum pixelDataType) {
+                                       ComponentType pixelDataType) {
     GenerateTexture();
     GenerateEmptyTexture(width, height, settings, pixelFormat, pixelDataType);
 }
@@ -163,4 +166,21 @@ uint32_t Engine::Graphics::Texture2D::getWidth() const {
 
 uint32_t Engine::Graphics::Texture2D::getHeight() const {
     return height;
+}
+
+void Engine::Graphics::Texture2D::SaveAsPNG(std::string filepath) {
+    auto img = GetData();
+    stbi_write_png(filepath.c_str(), width, height, channels, img.data(), channels * width);
+}
+
+std::vector<uint8_t> Engine::Graphics::Texture2D::GetData() {
+    Framebuffer framebuffer(width, height);
+    framebuffer.AddAttachment(GL_COLOR_ATTACHMENT0, this);
+
+    std::vector<uint8_t> ret(width * height * channels * SizeOfComponentType(pixelDataType));
+    framebuffer.Bind();
+    glReadPixels(0, 0, width, height, pixelFormat, pixelDataType, ret.data());
+    framebuffer.Unbind();
+
+    return ret;
 }

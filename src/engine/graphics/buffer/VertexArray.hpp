@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <set>
+#include <engine/graphics/Enums.hpp>
 #include "Buffer.hpp"
 
 namespace Engine {
@@ -15,13 +16,7 @@ namespace Engine {
             class VertexArray {
 
             public:
-                enum ComponentType {
-                    ComponentTypeFloat = GL_FLOAT,
-                    ComponentTypeUInt = GL_UNSIGNED_INT,
-                    ComponentTypeHalfFloat = GL_HALF_FLOAT,
-                    ComponentTypeByte = GL_BYTE,
-                    ComponentTypeShort = GL_SHORT,
-                };
+
 
                 /**
                  * Data for a buffer binding. There can be bindings to multiple buffers and / or multiple bindings to one buffer in one vertex array object.
