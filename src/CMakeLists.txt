@@ -10,6 +10,9 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW EXCLUDE_FROM_ALL)
 
+# add cgui
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui)
+
 
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
@@ -65,4 +68,4 @@ set(FLUID_SOLVER_SOURCE_FILES
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
-target_link_libraries(FluidSolver ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS})
+target_link_libraries(FluidSolver ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui)
