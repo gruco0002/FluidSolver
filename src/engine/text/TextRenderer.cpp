@@ -115,7 +115,8 @@ void main()
     float distance = 1.0 -  texture(fontTexture, TexCoord).a;
     float alpha = 1.0 - smoothstep(distanceFieldWidth, distanceFieldWidth + distanceFieldEdge, distance);
     //alpha = max(alpha, 0.5);
-    FragColor = vec4(1.0, 1.0, 1.0, alpha);
+    FragColor = vec4(1.0, 1.0, textColor.r, alpha);
+
 }
 
 )";
