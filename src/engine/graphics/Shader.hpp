@@ -28,6 +28,10 @@ namespace Engine {
             struct ProgramPart {
                 std::string code;
                 ProgramPartType type;
+
+                ProgramPart();
+                ProgramPart(ProgramPartType type, std::string code);
+
             };
 
             struct ProgramPartFile {

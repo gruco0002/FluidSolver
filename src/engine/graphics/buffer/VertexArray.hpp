@@ -32,9 +32,16 @@ namespace Engine {
                     uint8_t attributeIndex = 0; // aka attribute location
                     uint8_t numberOfComponentsPerAttributeElement = 1; //aka size
                     size_t byteOffsetToFirstAttributeElement = 0; // aka pointer
-                    size_t byteOffsetBetweenAttributeElement = 0; // aka stride
+                    size_t byteOffsetBetweenAttributeElement = 4; // aka stride
                     ComponentType componentType = ComponentTypeFloat; // aka type
 
+                    BufferBinding(Buffer *buffer, uint8_t attributeIndex = 0,
+                                  uint8_t numberOfComponentsPerAttributeElement = 1,
+                                  size_t byteOffsetToFirstAttributeElement = 0,
+                                  size_t byteOffsetBetweenAttributeElement = 4,
+                                  ComponentType componentType = ComponentTypeFloat);
+
+                    BufferBinding();
                 };
 
 
@@ -47,7 +54,9 @@ namespace Engine {
 
                 virtual ~VertexArray();
 
-                Buffer* GetIndexBuffer();
+                Buffer *GetIndexBuffer();
+
+                virtual void Draw(GLenum primitiveType, uint32_t first, uint32_t count);
 
             private:
 
@@ -63,7 +72,7 @@ namespace Engine {
 
                 std::set<uint8_t> boundLocations;
 
-                Buffer* indexBuffer;
+                Buffer *indexBuffer;
 
             };
 

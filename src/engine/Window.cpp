@@ -138,6 +138,7 @@ namespace Engine {
     }
 
     void Window::MainLoop() {
+        load();
 
         while (!glfwWindowShouldClose(window)) {
 

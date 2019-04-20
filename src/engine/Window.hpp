@@ -45,6 +45,8 @@ namespace Engine {
 
         virtual void render() = 0;
 
+        virtual void load() = 0;
+
     private:
         void init();
 

@@ -92,3 +92,27 @@ Engine::Graphics::Buffer::VertexArray::BufferBinding Engine::Graphics::Buffer::V
 Engine::Graphics::Buffer::Buffer *Engine::Graphics::Buffer::VertexArray::GetIndexBuffer() {
     return indexBuffer;
 }
+
+void Engine::Graphics::Buffer::VertexArray::Draw(GLenum primitiveType, uint32_t first, uint32_t count) {
+    Bind();
+	glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, 0);
+}
+
+Engine::Graphics::Buffer::VertexArray::BufferBinding::BufferBinding(Engine::Graphics::Buffer::Buffer *buffer,
+                                                                    uint8_t attributeIndex,
+                                                                    uint8_t numberOfComponentsPerAttributeElement,
+                                                                    size_t byteOffsetToFirstAttributeElement,
+                                                                    size_t byteOffsetBetweenAttributeElement,
+                                                                    Engine::ComponentType componentType) {
+    this->buffer = buffer;
+    this->attributeIndex = attributeIndex;
+    this->numberOfComponentsPerAttributeElement = numberOfComponentsPerAttributeElement;
+    this->byteOffsetBetweenAttributeElement = byteOffsetBetweenAttributeElement;
+    this->byteOffsetToFirstAttributeElement = byteOffsetToFirstAttributeElement;
+    this->componentType = componentType;
+
+}
+
+Engine::Graphics::Buffer::VertexArray::BufferBinding::BufferBinding() {
+
+}

@@ -7,7 +7,7 @@
 
 using namespace Engine;
 
-uint8_t SizeOfComponentType(ComponentType type) {
+uint8_t Engine::SizeOfComponentType(ComponentType type) {
     switch (type) {
         case ComponentTypeFloat:
             return 4;

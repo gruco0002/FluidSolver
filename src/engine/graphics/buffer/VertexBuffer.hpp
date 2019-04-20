@@ -54,9 +54,9 @@ namespace Engine {
 
             template<typename T>
             void VertexBuffer<T>::UpdateData(std::vector<T> &data) {
-                if (this->GetElementCount() != data.size())
-                    throw EngineException("Buffer Exception: Input size is not correct");
-                Buffer::SetData((void *) data.data());
+                if (this->GetElementCount() < data.size())
+                    throw EngineException("Buffer Exception: Input size is too large correct");
+                Buffer::SetData((void *) data.data(), 0, data.size() * GetElementSize());
             }
 
             template<typename T>

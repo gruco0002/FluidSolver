@@ -84,7 +84,6 @@ void Engine::Graphics::Shader::SetValue(const std::string &name, Engine::Graphic
 GLint Engine::Graphics::Shader::GetUniformLoaction(const std::string &name) {
     if (foundNames.find(name) != foundNames.end())
         return uniformLoactions[name];
-
     GLint location = glGetUniformLocation(ID, name.c_str());
     if (location == -1)
         throw EngineException("Shader Error: Cannot retrieve uniform variable with this name!");
@@ -223,4 +222,13 @@ void Engine::Graphics::Shader::LoadShaderFilesAsShaderParts(
         p.type = part.type;
         parts.push_back(p);
     }
+}
+
+Engine::Graphics::Shader::ProgramPart::ProgramPart() {
+
+}
+
+Engine::Graphics::Shader::ProgramPart::ProgramPart(Engine::Graphics::Shader::ProgramPartType type, std::string code) {
+    this->type = type;
+    this->code = code;
 }

@@ -7,6 +7,8 @@
 
 
 #include <engine/Window.hpp>
+#include <engine/text/Font.hpp>
+#include <engine/text/TextRenderer.hpp>
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -15,8 +17,17 @@ public:
 
     static bool even(int input);
 
+private:
+    Engine::Text::Font* font;
+
+    void loadFont();
+
+    Engine::Text::TextRenderer* textRenderer;
+
 protected:
     void render() override;
+
+    void load() override;
 
 };
 
