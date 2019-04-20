@@ -7,10 +7,10 @@
 
 using namespace Engine;
 
-EngineException::EngineException(char const *const _Message) : exception(_Message) {
 
+
+const char *EngineException::what() const noexcept {
+    return ("Engine Exception: " + msg).c_str();
 }
 
-const char *EngineException::what() const {
-    return ("Engine Exception: " + std::string(exception::what())).c_str();
-}
+EngineException::EngineException(std::string msg) : msg(msg) {}

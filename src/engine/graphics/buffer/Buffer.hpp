@@ -8,6 +8,7 @@
 
 #include <glad/glad.h>
 #include <cstdint>
+#include <engine/EngineException.hpp>
 
 namespace Engine {
     namespace Graphics {

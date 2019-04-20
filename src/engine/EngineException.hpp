@@ -7,14 +7,18 @@
 
 
 #include <exception>
+#include <string>
 
 namespace Engine {
     class EngineException : public std::exception {
 
     public:
-        explicit EngineException(char const *const _Message);
 
-        const char *what() const override;
+        EngineException(std::string msg);
+
+        std::string msg;
+
+        const char *what() const noexcept override;
     };
 
 }
