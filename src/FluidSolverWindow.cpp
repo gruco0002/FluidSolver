@@ -8,14 +8,15 @@
 #include <engine/EngineException.hpp>
 #include <engine/text/FontLoader.hpp>
 #include <libraries/glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 void FluidSolverWindow::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0,0, GetWidth(), GetHeight());
+    glViewport(0, 0, GetWidth(), GetHeight());
 
     std::string testing = "Testing";
-    textRenderer->Render(testing, 240.0f, glm::vec2(100, 100), glm::vec4(1.0f));
+    textRenderer->Render(testing, 24.0f, glm::vec2(100, 100), glm::vec4(1.0f));
 }
 
 FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {}
@@ -35,5 +36,6 @@ void FluidSolverWindow::loadFont() {
 
     font = loader.loadToFont();
     textRenderer = new Engine::Text::TextRenderer(font);
-    textRenderer->projectionMatrix = glm::ortho(0, GetWidth(), 		GetHeight(), 0);
+    textRenderer->projectionMatrix = glm::ortho(0.0f, (float) GetWidth(), (float) GetHeight(), 0.0f);
+
 }

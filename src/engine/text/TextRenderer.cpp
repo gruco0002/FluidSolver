@@ -20,14 +20,14 @@ void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2
     textShader->SetValue("textColor", color);
     textShader->SetValue("distanceFieldWidth", distanceFieldWidth);
     textShader->SetValue("distanceFieldEdge", distanceFieldEdge);
-	
-	auto data = font->getTextVertices(text, size);
+    textShader->SetValue("projectionMatrix", projectionMatrix);
+
+    auto data = font->getTextVertices(text, size);
     vertexBuffer->UpdateData(data);
 
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     vertexArray->Draw(GL_TRIANGLES, 0, data.size() * 6 / 4);
 }
@@ -88,13 +88,14 @@ layout (location = 0) in vec2 aPos;
 layout (location = 1) in vec2 aTex;
 
 uniform vec2 aLocation;
-uniform mat4 projection;
+uniform mat4 projectionMatrix;
 
 out vec2 TexCoord;
 
 void main()
 {
-    gl_Position = projection * vec4(aPos + aLocation, 0.0, 1.0);
+    gl_Position = projectionMatrix* vec4(aPos + aLocation, 0.0, 1.0);
+//gl_Position.xy /= 400.0;
     TexCoord = aTex;
 }
 )";
@@ -115,7 +116,7 @@ void main()
     float distance = 1.0 -  texture(fontTexture, TexCoord).a;
     float alpha = 1.0 - smoothstep(distanceFieldWidth, distanceFieldWidth + distanceFieldEdge, distance);
     //alpha = max(alpha, 0.5);
-    FragColor = vec4(1.0, 1.0, textColor.r, alpha);
+    FragColor = vec4(textColor.rgb, alpha * textColor.a);
 
 }
 

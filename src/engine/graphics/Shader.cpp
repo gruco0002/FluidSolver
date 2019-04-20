@@ -78,7 +78,7 @@ void Engine::Graphics::Shader::SetValue(const std::string &name, glm::mat4 value
 void Engine::Graphics::Shader::SetValue(const std::string &name, Engine::Graphics::Texture2D *texture, uint32_t unit) {
     Bind();
     texture->Bind(unit);
-    glUniform1i(GetUniformLoaction(name), unit);
+    glUniform1i(GetUniformLoaction(name), unit - GL_TEXTURE0);
 }
 
 GLint Engine::Graphics::Shader::GetUniformLoaction(const std::string &name) {
