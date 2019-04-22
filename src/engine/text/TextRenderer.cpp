@@ -5,6 +5,7 @@
 #include <engine/EngineException.hpp>
 #include "TextRenderer.hpp"
 #include <libraries/glm/gtc/matrix_transform.hpp>
+#include <algorithm>
 
 Engine::Text::TextRenderer::TextRenderer(Engine::Text::Font *font) {
     this->font = font;
@@ -16,8 +17,13 @@ void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2
 
     if (text.size() > 10922) throw EngineException("Text Renderer Error: Max length of 10922 characters exceeded");
 
+    auto data = font->getTextVertices(text, size);
+    vertexBuffer->UpdateData(data);
+
+    auto offset = GetVertexNegative(data); // needed because text goes into negative
+
     textShader->Bind();
-    textShader->SetValue("aLocation", position);
+    textShader->SetValue("aLocation", position - offset);
     textShader->SetValue("fontTexture", font->fontTexture, GL_TEXTURE0);
     textShader->SetValue("textColor", color);
     textShader->SetValue("distanceFieldWidth", distanceFieldWidth);
@@ -30,8 +36,7 @@ void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2
         textShader->SetValue("clippingRectangle", clipArea);
     }
 
-    auto data = font->getTextVertices(text, size);
-    vertexBuffer->UpdateData(data);
+
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -143,7 +148,7 @@ void main()
     float alpha = 1.0 - smoothstep(distanceFieldWidth, distanceFieldWidth + distanceFieldEdge, distance);
     //alpha = max(alpha, 0.5);
     FragColor = vec4(textColor.rgb, alpha * textColor.a);
-
+    //FragColor = mix(FragColor, vec4(1.0,0.0,0.0,1.0), 0.5);
 }
 
 )";
@@ -161,5 +166,40 @@ void Engine::Text::TextRenderer::GenerateShader() {
 
 void Engine::Text::TextRenderer::CreateProjectionMatrixForScreen(float width, float height) {
     projectionMatrix = glm::ortho(0.0f, (float) width, (float) height, 0.0f);
+}
+
+glm::vec2 Engine::Text::TextRenderer::GetTextDimensions(std::string &text, float size) {
+    if (text == "")return glm::vec2(0.0f);
+    auto vert = font->getTextVertices(text, size);
+    float minX, minY, maxX, maxY;
+    minX = vert[0].position.x;
+    maxX = vert[0].position.x;
+    minY = vert[0].position.y;
+    maxY = vert[0].position.y;
+    for (auto v : vert) {
+        minX = std::min(minX, v.position.x);
+        minY = std::min(minY, v.position.y);
+        maxX = std::max(maxX, v.position.x);
+        maxY = std::max(maxY, v.position.y);
+    }
+    return glm::vec2(maxX - minX, maxY - minY);
+}
+
+glm::vec2 Engine::Text::TextRenderer::GetVertexNegative(std::vector<Engine::Text::TextVertex> &vertices) {
+    if (vertices.size() == 0)
+        return glm::vec2(0.0f);
+    float minX, minY;
+    // float maxX, maxY;
+    minX = vertices[0].position.x;
+    // maxX = vertices[0].position.x;
+    minY = vertices[0].position.y;
+    // maxY = vertices[0].position.y;
+    for (auto v : vertices) {
+        minX = std::min(minX, v.position.x);
+        minY = std::min(minY, v.position.y);
+        //  maxX = std::max(maxX, v.position.x);
+        //  maxY = std::max(maxY, v.position.y);
+    }
+    return glm::vec2(minX, minY);
 }
 

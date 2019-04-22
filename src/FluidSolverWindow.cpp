@@ -44,7 +44,6 @@ void FluidSolverWindow::loadFont() {
 void FluidSolverWindow::loadGUI() {
     guiInterface = new GuiEngineInterface(this, font);
     uiWrapper = new cppgui::DynamicUIWrapper(guiInterface);
-    uiWrapper->renderDimensionsUpdated();
 
     OnFramebufferSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
@@ -57,7 +56,8 @@ void FluidSolverWindow::buildGUI() {
     auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
     uiWrapper->setScaffold(scaff);
 
-    auto btn = new cppgui::Button("Testing", 100, 100, 200, 50);
+    auto btn = new cppgui::Button("testin", 100, 100, 200, 50);
+    btn->setColor(cppgui::ThemeColorPrimary);
     scaff->addChild(btn);
 
 

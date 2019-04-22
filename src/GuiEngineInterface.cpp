@@ -3,7 +3,6 @@
 //
 
 #include <algorithm>
-#include <iostream>
 #include "GuiEngineInterface.hpp"
 
 void GuiEngineInterface::DrawIcon(cppgui::FontSymbol symbol, cppgui::Color color, float positionX, float positionY,
@@ -19,12 +18,11 @@ void GuiEngineInterface::DrawRectangle(float positionX, float positionY, float w
     rectangleRenderer->RenderRectangle(glm::vec2(positionX, positionY), glm::vec2(width, height),
                                        glm::vec4(color.r, color.g, color.b, color.a),
                                        glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
-    std::cout << "testing" << std::endl;
 }
 
 void
 GuiEngineInterface::DrawString(std::string text, float positionX, float positionY, float size, cppgui::Color color,
-                             cppgui::Vector4 cliparea) {
+                               cppgui::Vector4 cliparea) {
     textRenderer->Render(text, size, glm::vec2(positionX, positionY), glm::vec4(color.r, color.g, color.b, color.a),
                          glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
 }
@@ -36,21 +34,8 @@ GuiEngineInterface::DrawTexture(cppgui::GuiInterfaceTexture *texture, float posi
 }
 
 cppgui::Vector2 GuiEngineInterface::GetTextDimension(std::string text, float size) {
-    if (text == "")return cppgui::Vector2(0.0f);
-    auto vert = font->getTextVertices(text, size);
-    float minX, minY, maxX, maxY;
-    minX = vert[0].position.x;
-    maxX = vert[0].position.x;
-    minY = vert[0].position.y;
-    maxY = vert[0].position.y;
-    for (auto v : vert) {
-        minX = std::min(minX, v.position.x);
-        minY = std::min(minY, v.position.y);
-        maxX = std::max(maxX, v.position.x);
-        maxY = std::max(maxY, v.position.y);
-    }
-
-    return cppgui::Vector2(maxX - minX, maxY - minY);
+    glm::vec2 val = textRenderer->GetTextDimensions(text, size);
+    return cppgui::Vector2(val.x, val.y);
 }
 
 float GuiEngineInterface::GetRenderTargetWidth() {

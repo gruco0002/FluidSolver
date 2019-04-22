@@ -36,8 +36,10 @@ namespace Engine {
 
             ~TextRenderer();
 
-            float distanceFieldWidth = 0.46f;
-            float distanceFieldEdge = 0.19f;
+            float distanceFieldWidth = 0.48f;
+            float distanceFieldEdge = 0.07f;
+
+            glm::vec2 GetTextDimensions(std::string &text, float size);
 
         private:
 
@@ -54,6 +56,10 @@ namespace Engine {
             Graphics::Buffer::VertexBuffer<TextVertex> *vertexBuffer;
             Graphics::Buffer::IndexBuffer<uint16_t> *indexBuffer;
             Graphics::Buffer::VertexArray *vertexArray;
+
+
+
+            glm::vec2 GetVertexNegative(std::vector<TextVertex> &vertices);
 
 
         };
