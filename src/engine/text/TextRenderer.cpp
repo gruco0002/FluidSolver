@@ -4,13 +4,15 @@
 
 #include <engine/EngineException.hpp>
 #include "TextRenderer.hpp"
+#include <libraries/glm/gtc/matrix_transform.hpp>
 
 Engine::Text::TextRenderer::TextRenderer(Engine::Text::Font *font) {
     this->font = font;
     Generate();
 }
 
-void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2 position, glm::vec4 color) {
+void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2 position, glm::vec4 color,
+                                        glm::vec4 clipArea) {
 
     if (text.size() > 10922) throw EngineException("Text Renderer Error: Max length of 10922 characters exceeded");
 
@@ -21,6 +23,12 @@ void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2
     textShader->SetValue("distanceFieldWidth", distanceFieldWidth);
     textShader->SetValue("distanceFieldEdge", distanceFieldEdge);
     textShader->SetValue("projectionMatrix", projectionMatrix);
+    if (clipArea == glm::vec4(0.0f)) {
+        textShader->SetValue("clippingEnabled", false);
+    } else {
+        textShader->SetValue("clippingEnabled", true);
+        textShader->SetValue("clippingRectangle", clipArea);
+    }
 
     auto data = font->getTextVertices(text, size);
     vertexBuffer->UpdateData(data);
@@ -91,11 +99,12 @@ uniform vec2 aLocation;
 uniform mat4 projectionMatrix;
 
 out vec2 TexCoord;
+out vec2 PosCoord;
 
 void main()
 {
-    gl_Position = projectionMatrix* vec4(aPos + aLocation, 0.0, 1.0);
-//gl_Position.xy /= 400.0;
+    PosCoord = aPos + aLocation;
+    gl_Position = projectionMatrix* vec4(PosCoord, 0.0, 1.0);
     TexCoord = aTex;
 }
 )";
@@ -104,6 +113,7 @@ const std::string frag = R"(#version 330 core
 out vec4 FragColor;
 
 in vec2 TexCoord;
+in vec2 PosCoord;
 
 uniform sampler2D fontTexture;
 uniform vec4 textColor;
@@ -111,8 +121,24 @@ uniform vec4 textColor;
 uniform float distanceFieldWidth;
 uniform float distanceFieldEdge;
 
+uniform vec4 clippingRectangle;
+uniform bool clippingEnabled;
+
 void main()
 {
+    if(clippingEnabled == true){
+
+        float left = clippingRectangle.x;
+        float top = clippingRectangle.y;
+        float width = clippingRectangle.z;
+        float height = clippingRectangle.w;
+
+        if(PosCoord.x < left || PosCoord.y < top || PosCoord.x > left + width || PosCoord.y > top + height){
+            discard;
+        }
+
+    }
+
     float distance = 1.0 -  texture(fontTexture, TexCoord).a;
     float alpha = 1.0 - smoothstep(distanceFieldWidth, distanceFieldWidth + distanceFieldEdge, distance);
     //alpha = max(alpha, 0.5);
@@ -131,5 +157,9 @@ void Engine::Text::TextRenderer::GenerateShader() {
                                               Graphics::Shader::ProgramPart(Graphics::Shader::ProgramPartTypeFragment,
                                                                             frag),
                                       });
+}
+
+void Engine::Text::TextRenderer::CreateProjectionMatrixForScreen(float width, float height) {
+    projectionMatrix = glm::ortho(0.0f, (float) width, (float) height, 0.0f);
 }
 

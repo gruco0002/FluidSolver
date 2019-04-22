@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <engine/EngineException.hpp>
 #include <engine/text/FontLoader.hpp>
-#include <libraries/glm/gtc/matrix_transform.hpp>
+
 #include <iostream>
 
 void FluidSolverWindow::render() {
@@ -36,6 +36,6 @@ void FluidSolverWindow::loadFont() {
 
     font = loader.loadToFont();
     textRenderer = new Engine::Text::TextRenderer(font);
-    textRenderer->projectionMatrix = glm::ortho(0.0f, (float) GetWidth(), (float) GetHeight(), 0.0f);
+    textRenderer->CreateProjectionMatrixForScreen(GetWidth(), GetHeight());
 
 }

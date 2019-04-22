@@ -19,7 +19,18 @@ namespace Engine {
         public:
             TextRenderer(Font *font);
 
-            void Render(std::string &text, float size, glm::vec2 position, glm::vec4 color);
+            /**
+             * Renders a text to the bound framebuffer. All values are in pixel dimensions. The origin (0,0) is on the top left.
+             * @param text The text that should be rendered.
+             * @param size The font size in pixels.
+             * @param position The position of the text.
+             * @param color Color of the text in rgba. Reaching from 0.0f to 1.0f
+             * @param clipArea Rectangle in which the text will be rendered. Outside of the rectangle it will be clipped. Rectangle format is left, top, width, height.
+             *                 If clipArea is set to 0.0f,0.0f,0.0f,0.0f the clipping is turned off.
+             */
+            void Render(std::string &text, float size, glm::vec2 position, glm::vec4 color, glm::vec4 clipArea = glm::vec4(0.0f));
+
+            void CreateProjectionMatrixForScreen(float width, float height);
 
             glm::mat4 projectionMatrix;
 
