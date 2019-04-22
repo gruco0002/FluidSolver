@@ -9,6 +9,7 @@
 #include <set>
 #include <engine/graphics/Enums.hpp>
 #include "Buffer.hpp"
+#include "IndexBuffer.hpp"
 
 namespace Engine {
     namespace Graphics {
@@ -56,7 +57,12 @@ namespace Engine {
 
                 Buffer *GetIndexBuffer();
 
-                virtual void Draw(GLenum primitiveType, uint32_t first, uint32_t count);
+                /**
+                 * Draws the vao using the index buffer.
+                 * @param primitiveType
+                 * @param count Number of indices that should be used for drawing
+                 */
+                virtual void Draw(GLenum primitiveType, uint32_t count);
 
             private:
 

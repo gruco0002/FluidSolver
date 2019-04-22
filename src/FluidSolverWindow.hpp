@@ -9,6 +9,7 @@
 #include <engine/Window.hpp>
 #include <engine/text/Font.hpp>
 #include <engine/text/TextRenderer.hpp>
+#include <engine/RectangleRenderer.hpp>
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -23,6 +24,7 @@ private:
     void loadFont();
 
     Engine::Text::TextRenderer* textRenderer;
+    Engine::RectangleRenderer* rectangleRenderer;
 
 protected:
     void render() override;

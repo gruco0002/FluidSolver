@@ -87,3 +87,7 @@ size_t Buffer::GetElementCount() const {
 size_t Buffer::GetSizeInBytes() const {
     return sizeInBytes;
 }
+
+IndexBufferDataType Buffer::GetIndexBufferDataType() {
+    throw EngineException("Buffer Exception: Operation not valid for this buffer!");
+}

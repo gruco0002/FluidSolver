@@ -37,7 +37,7 @@ void Engine::Text::TextRenderer::Render(std::string &text, float size, glm::vec2
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    vertexArray->Draw(GL_TRIANGLES, 0, data.size() * 6 / 4);
+    vertexArray->Draw(GL_TRIANGLES, data.size() * 6 / 4); // 6 indices per character, but 4 data-vertex per character
 }
 
 Engine::Text::TextRenderer::~TextRenderer() {

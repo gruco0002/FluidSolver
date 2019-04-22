@@ -14,6 +14,12 @@ namespace Engine {
     namespace Graphics {
         namespace Buffer {
 
+            enum IndexBufferDataType {
+                IndexBufferDataTypeByte = GL_UNSIGNED_BYTE,
+                IndexBufferDataTypeShort = GL_UNSIGNED_SHORT,
+                IndexBufferDataTypeInt = GL_UNSIGNED_INT,
+
+            };
 
             class Buffer {
 
@@ -43,6 +49,8 @@ namespace Engine {
                 void Bind();
 
                 void Unbind();
+
+                virtual IndexBufferDataType GetIndexBufferDataType();
 
             protected:
                 void SetSize(size_t elementCount);

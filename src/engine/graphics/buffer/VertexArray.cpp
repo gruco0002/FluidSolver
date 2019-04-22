@@ -93,9 +93,9 @@ Engine::Graphics::Buffer::Buffer *Engine::Graphics::Buffer::VertexArray::GetInde
     return indexBuffer;
 }
 
-void Engine::Graphics::Buffer::VertexArray::Draw(GLenum primitiveType, uint32_t first, uint32_t count) {
+void Engine::Graphics::Buffer::VertexArray::Draw(GLenum primitiveType, uint32_t count) {
     Bind();
-	glDrawElements(primitiveType, count, GL_UNSIGNED_SHORT, nullptr); // TODO: correct data type must be used
+    glDrawElements(primitiveType, count, indexBuffer->GetIndexBufferDataType(), nullptr);
 }
 
 Engine::Graphics::Buffer::VertexArray::BufferBinding::BufferBinding(Engine::Graphics::Buffer::Buffer *buffer,

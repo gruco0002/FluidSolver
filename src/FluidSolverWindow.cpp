@@ -17,6 +17,7 @@ void FluidSolverWindow::render() {
 
     std::string testing = "Testing";
     textRenderer->Render(testing, 24.0f, glm::vec2(100, 100), glm::vec4(1.0f));
+    rectangleRenderer->RenderRectangle(glm::vec2(100, 100), glm::vec2(100, 100), glm::vec4(1.0f, 1.0f, 0.0f, 0.5f), glm::vec4(100.0f,100.0f, 50, 100));
 }
 
 FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {}
@@ -29,6 +30,8 @@ bool FluidSolverWindow::even(int input) {
 
 void FluidSolverWindow::load() {
     loadFont();
+    rectangleRenderer = new Engine::RectangleRenderer();
+    rectangleRenderer->CreateProjectionMatrixForScreen(GetWidth(), GetHeight());
 }
 
 void FluidSolverWindow::loadFont() {

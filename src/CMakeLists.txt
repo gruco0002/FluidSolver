@@ -65,7 +65,7 @@ include_directories(dependencies/Glad)
 
 set(FLUID_SOLVER_SOURCE_FILES
         engine/Window.cpp engine/Window.hpp engine/EventDelegate.hpp engine/EngineException.cpp engine/EngineException.hpp FluidSolverWindow.cpp FluidSolverWindow.hpp engine/graphics/Texture2D.cpp engine/graphics/Texture2D.hpp libraries/stb/stb_loader.cpp engine/graphics/Framebuffer.cpp engine/graphics/Framebuffer.hpp engine/graphics/buffer/VertexArray.cpp engine/graphics/buffer/VertexArray.hpp engine/graphics/buffer/VertexBuffer.cpp engine/graphics/buffer/VertexBuffer.hpp engine/graphics/buffer/IndexBuffer.cpp engine/graphics/buffer/IndexBuffer.hpp engine/graphics/buffer/Buffer.cpp engine/graphics/buffer/Buffer.hpp engine/graphics/Shader.cpp engine/graphics/Shader.hpp engine/graphics/Enums.hpp engine/graphics/Enums.cpp
-        engine/text/Font.cpp engine/text/Font.hpp engine/text/FontLoader.cpp engine/text/FontLoader.hpp engine/text/TextRenderer.cpp engine/text/TextRenderer.hpp)
+        engine/text/Font.cpp engine/text/Font.hpp engine/text/FontLoader.cpp engine/text/FontLoader.hpp engine/text/TextRenderer.cpp engine/text/TextRenderer.hpp engine/RectangleRenderer.cpp engine/RectangleRenderer.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
