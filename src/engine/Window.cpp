@@ -14,7 +14,11 @@ namespace Engine {
 
     EventDelegate<GLFWwindow *, int, int> Window::onAnyWindowSizeChanged;
     EventDelegate<GLFWwindow *, int, int> Window::onAnyFramebufferSizeChanged;
-    EventDelegate<GLFWwindow*, double, double> Window::onAnyCursorPositionChanged;
+    EventDelegate<GLFWwindow *, double, double> Window::onAnyCursorPositionChanged;
+    EventDelegate<GLFWwindow *, int, int, int> Window::onAnyMouseButtonChanged;
+    EventDelegate<GLFWwindow *, double, double> Window::onAnyScrollChanged;
+    EventDelegate<GLFWwindow *, int, int, int, int> Window::onAnyKeyChanged;
+    EventDelegate<GLFWwindow *, unsigned int> Window::onAnyTextInput;
 
     bool Window::windowCreated = false;
 
@@ -49,6 +53,8 @@ namespace Engine {
 
         setCallbacks();
         setCorrectSizeValues();
+
+        currentTime = glfwGetTime();
     }
 
     Window::~Window() {
@@ -84,6 +90,25 @@ namespace Engine {
                 std::bind(&Window::onCursorPositionChanged, this, std::placeholders::_1, std::placeholders::_2,
                           std::placeholders::_3));
 
+        glfwSetMouseButtonCallback(window, Window::mouse_button_callback);
+        onAnyMouseButtonChangedSubscription = onAnyMouseButtonChanged.Subscribe(
+                std::bind(&Window::onMouseButtonChanged, this, std::placeholders::_1, std::placeholders::_2,
+                          std::placeholders::_3, std::placeholders::_4));
+
+        glfwSetScrollCallback(window, Window::scroll_callback);
+        onAnyScrollChangedSubscription = onAnyScrollChanged.Subscribe(
+                std::bind(&Window::onScrollChanged, this, std::placeholders::_1, std::placeholders::_2,
+                          std::placeholders::_3));
+
+        glfwSetKeyCallback(window, key_callback);
+        onAnyKeyChangedSubscription = onAnyKeyChanged.Subscribe(
+                std::bind(&Window::onKeyChanged, this, std::placeholders::_1, std::placeholders::_2,
+                          std::placeholders::_3, std::placeholders::_4, std::placeholders::_5));
+
+        glfwSetCharCallback(window, character_callback);
+        onAnyTextInputSubscription = onAnyTextInput.Subscribe(
+                std::bind(&Window::onTextInput, this, std::placeholders::_1, std::placeholders::_2));
+
 
         callbackSet = true;
     }
@@ -97,6 +122,11 @@ namespace Engine {
             return;
         onAnyWindowSizeChanged.Unsubscribe(onAnyWindowSizeChangedSubscription);
         onAnyFramebufferSizeChanged.Unsubscribe(onAnyFramebufferSizeChangedSubscription);
+        onAnyCursorPositionChanged.Unsubscribe(onAnyCursorPositionChangedSubscription);
+        onAnyMouseButtonChanged.Unsubscribe(onAnyMouseButtonChangedSubscription);
+        onAnyScrollChanged.Unsubscribe(onAnyScrollChangedSubscription);
+        onAnyKeyChanged.Unsubscribe(onAnyKeyChangedSubscription);
+        onAnyTextInput.Unsubscribe(onAnyTextInputSubscription);
     }
 
     int Window::GetHeight() {
@@ -150,6 +180,11 @@ namespace Engine {
 
         while (!glfwWindowShouldClose(window)) {
 
+            // fps calc
+            double tmp = glfwGetTime();
+            lastFrameTime = tmp - currentTime;
+            currentTime = tmp;
+
             // input handling here
 
             // rendering here
@@ -168,7 +203,101 @@ namespace Engine {
 
     void Window::onCursorPositionChanged(GLFWwindow *window, double xpos, double ypos) {
         if (window != this->window) return;
+        mousePositionX = xpos;
+        mousePositionY = ypos;
         OnCursorPositionChanged.Fire(xpos, ypos);
+    }
+
+    double Window::GetMousePositionX() const {
+        return mousePositionX;
+    }
+
+    double Window::GetMousePositionY() const {
+        return mousePositionY;
+    }
+
+    void Window::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+        onAnyMouseButtonChanged.Fire(window, button, action, mods);
+    }
+
+    void Window::onMouseButtonChanged(GLFWwindow *window, int button, int action, int mods) {
+        if (window != this->window) return;
+
+        if (button == GLFW_MOUSE_BUTTON_LEFT) {
+            if (action == GLFW_PRESS) {
+                OnMouseDown.Fire(MouseButton::LeftButton);
+            } else if (action == GLFW_RELEASE) {
+                OnMouseUp.Fire(MouseButton::LeftButton);
+            }
+        } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+            if (action == GLFW_PRESS) {
+                OnMouseDown.Fire(MouseButton::RightButton);
+            } else if (action == GLFW_RELEASE) {
+                OnMouseUp.Fire(MouseButton::RightButton);
+            }
+        }
+
+    }
+
+    void Window::onScrollChanged(GLFWwindow *window, double xoffset, double yoffset) {
+        if (window != this->window) return;
+        OnScrollChanged.Fire(xoffset, yoffset);
+    }
+
+    void Window::scroll_callback(GLFWwindow *window, double xoffset, double yoffset) {
+        onAnyScrollChanged.Fire(window, xoffset, yoffset);
+    }
+
+    double Window::GetLastFrameTime() const {
+        return lastFrameTime;
+    }
+
+    double Window::GetFPS() const {
+        return 1.0 / lastFrameTime;
+    }
+
+    void Window::onKeyChanged(GLFWwindow *window, int key, int scancode, int action, int mods) {
+        if (window != this->window) return;
+        if (action == GLFW_PRESS) {
+            OnKeyPressed.Fire(key);
+        } else if (action == GLFW_RELEASE) {
+            OnKeyRelease.Fire(key);
+        }
+    }
+
+    std::string UnicodeToUTF8(unsigned int codepoint) {
+        std::string out;
+
+        if (codepoint <= 0x7f)
+            out.append(1, static_cast<char>(codepoint));
+        else if (codepoint <= 0x7ff) {
+            out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
+            out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+        } else if (codepoint <= 0xffff) {
+            out.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
+            out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+            out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+        } else {
+            out.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
+            out.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
+            out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+            out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
+        }
+        return out;
+    }
+
+    void Window::onTextInput(GLFWwindow *window, unsigned int codepoint) {
+        if (window != this->window) return;
+        std::string asUtf8 = UnicodeToUTF8(codepoint);
+        OnTextInput.Fire(asUtf8);
+    }
+
+    void Window::character_callback(GLFWwindow *window, unsigned int codepoint) {
+        onAnyTextInput.Fire(window, codepoint);
+    }
+
+    void Window::key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+        onAnyKeyChanged.Fire(window, key, scancode, action, mods);
     }
 
 }

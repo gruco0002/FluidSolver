@@ -20,11 +20,23 @@ namespace Engine {
     class Window {
 
     public:
+        enum MouseButton {
+            RightButton,
+            LeftButton
+        };
+
+    public:
         Window(std::string title, int width = 800, int height = 600);
 
         EventDelegate<int, int> OnWindowSizeChanged;
         EventDelegate<int, int> OnFramebufferSizeChanged;
         EventDelegate<double, double> OnCursorPositionChanged;
+        EventDelegate<MouseButton> OnMouseDown;
+        EventDelegate<MouseButton> OnMouseUp;
+        EventDelegate<double, double> OnScrollChanged;
+        EventDelegate<int> OnKeyPressed;
+        EventDelegate<int> OnKeyRelease;
+        EventDelegate<std::string> OnTextInput;
 
         int GetHeight();
 
@@ -62,6 +74,22 @@ namespace Engine {
         int width;
         int height;
 
+        double currentTime;
+        double lastFrameTime;
+    public:
+        double GetLastFrameTime() const;
+
+        double GetFPS() const;
+
+    public:
+        double GetMousePositionX() const;
+
+        double GetMousePositionY() const;
+
+    private:
+        double mousePositionX;
+        double mousePositionY;
+
         int framebufferWidth;
         int framebufferHeight;
 
@@ -73,14 +101,32 @@ namespace Engine {
         void onWindowSizeChanged(GLFWwindow *window, int width, int height);
 
         void onFramebufferSizeChanged(GLFWwindow *window, int width, int height);
-        void onCursorPositionChanged(GLFWwindow* window, double xpos, double ypos);
+
+        void onCursorPositionChanged(GLFWwindow *window, double xpos, double ypos);
+
+        void onMouseButtonChanged(GLFWwindow *window, int button, int action, int mods);
+
+        void onScrollChanged(GLFWwindow *window, double xoffset, double yoffset);
+
+        void onKeyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+        void onTextInput(GLFWwindow* window, unsigned int codepoint);
+
 
         static EventDelegate<GLFWwindow *, int, int> onAnyWindowSizeChanged;
         uint32_t onAnyWindowSizeChangedSubscription;
         static EventDelegate<GLFWwindow *, int, int> onAnyFramebufferSizeChanged;
         uint32_t onAnyFramebufferSizeChangedSubscription;
-        static EventDelegate<GLFWwindow*, double, double> onAnyCursorPositionChanged;
-        uint32_t  onAnyCursorPositionChangedSubscription;
+        static EventDelegate<GLFWwindow *, double, double> onAnyCursorPositionChanged;
+        uint32_t onAnyCursorPositionChangedSubscription;
+        static EventDelegate<GLFWwindow *, int, int, int> onAnyMouseButtonChanged;
+        uint32_t onAnyMouseButtonChangedSubscription;
+        static EventDelegate<GLFWwindow *, double, double> onAnyScrollChanged;
+        uint32_t onAnyScrollChangedSubscription;
+        static EventDelegate<GLFWwindow*, int, int, int, int> onAnyKeyChanged;
+        uint32_t onAnyKeyChangedSubscription;
+        static EventDelegate<GLFWwindow*, unsigned  int> onAnyTextInput;
+        uint32_t onAnyTextInputSubscription;
 
 
         // callbacks for glfw
@@ -88,7 +134,15 @@ namespace Engine {
 
         static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
-        static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+        static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos);
+
+        static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
+
+        static void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
+
+        static void character_callback(GLFWwindow* window, unsigned int codepoint);
+
+        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
         // only one window can exist
