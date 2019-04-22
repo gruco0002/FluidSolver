@@ -10,6 +10,8 @@
 #include <engine/text/Font.hpp>
 #include <engine/text/TextRenderer.hpp>
 #include <engine/RectangleRenderer.hpp>
+#include <dependencies/cppgui/src/DynamicUIWrapper.hpp>
+#include "GuiEngineInterface.hpp"
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -23,13 +25,20 @@ private:
 
     void loadFont();
 
+    void loadGUI();
+    void buildGUI();
+
     Engine::Text::TextRenderer* textRenderer;
     Engine::RectangleRenderer* rectangleRenderer;
+
+    cppgui::DynamicUIWrapper* uiWrapper;
+    GuiEngineInterface* guiInterface;
 
 protected:
     void render() override;
 
     void load() override;
+
 
 };
 

@@ -9,15 +9,15 @@
 #include <engine/text/FontLoader.hpp>
 
 #include <iostream>
+#include <dependencies/cppgui/src/Theme.hpp>
+#include <dependencies/cppgui/src/Button.hpp>
 
 void FluidSolverWindow::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0, 0, GetWidth(), GetHeight());
+    glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-    std::string testing = "Testing";
-    textRenderer->Render(testing, 24.0f, glm::vec2(100, 100), glm::vec4(1.0f));
-    rectangleRenderer->RenderRectangle(glm::vec2(100, 100), glm::vec2(100, 100), glm::vec4(1.0f, 1.0f, 0.0f, 0.5f), glm::vec4(100.0f,100.0f, 50, 100));
+    uiWrapper->render();
 }
 
 FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {}
@@ -30,15 +30,35 @@ bool FluidSolverWindow::even(int input) {
 
 void FluidSolverWindow::load() {
     loadFont();
-    rectangleRenderer = new Engine::RectangleRenderer();
-    rectangleRenderer->CreateProjectionMatrixForScreen(GetWidth(), GetHeight());
+    loadGUI();
+
 }
 
 void FluidSolverWindow::loadFont() {
     Engine::Text::FontLoader loader("../resources/arialAscii.fnt");
 
     font = loader.loadToFont();
-    textRenderer = new Engine::Text::TextRenderer(font);
-    textRenderer->CreateProjectionMatrixForScreen(GetWidth(), GetHeight());
+
+}
+
+void FluidSolverWindow::loadGUI() {
+    guiInterface = new GuiEngineInterface(this, font);
+    uiWrapper = new cppgui::DynamicUIWrapper(guiInterface);
+    uiWrapper->renderDimensionsUpdated();
+
+    OnFramebufferSizeChanged.Subscribe([=](int width, int height) {
+        uiWrapper->renderDimensionsUpdated();
+    });
+    buildGUI();
+}
+
+void FluidSolverWindow::buildGUI() {
+    auto theme = cppgui::Theme::getIndigoPink();
+    auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
+    uiWrapper->setScaffold(scaff);
+
+    auto btn = new cppgui::Button("Testing", 100, 100, 200, 50);
+    scaff->addChild(btn);
+
 
 }
