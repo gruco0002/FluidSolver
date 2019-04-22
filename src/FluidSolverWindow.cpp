@@ -48,6 +48,9 @@ void FluidSolverWindow::loadGUI() {
     OnFramebufferSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
     });
+    OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {
+        uiWrapper->MousePositionInput(cppgui::Vector2(xPos, yPos));
+    });
     buildGUI();
 }
 
@@ -56,7 +59,7 @@ void FluidSolverWindow::buildGUI() {
     auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
     uiWrapper->setScaffold(scaff);
 
-    auto btn = new cppgui::Button("testin", 100, 100, 200, 50);
+    auto btn = new cppgui::Button("Testing", 100, 100, 250, 50);
     btn->setColor(cppgui::ThemeColorPrimary);
     scaff->addChild(btn);
 

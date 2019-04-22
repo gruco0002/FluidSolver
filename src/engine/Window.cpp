@@ -14,6 +14,7 @@ namespace Engine {
 
     EventDelegate<GLFWwindow *, int, int> Window::onAnyWindowSizeChanged;
     EventDelegate<GLFWwindow *, int, int> Window::onAnyFramebufferSizeChanged;
+    EventDelegate<GLFWwindow*, double, double> Window::onAnyCursorPositionChanged;
 
     bool Window::windowCreated = false;
 
@@ -72,10 +73,17 @@ namespace Engine {
         onAnyWindowSizeChangedSubscription = onAnyWindowSizeChanged.Subscribe(
                 std::bind(&Window::onWindowSizeChanged, this, std::placeholders::_1, std::placeholders::_2,
                           std::placeholders::_3));
+
         glfwSetFramebufferSizeCallback(window, Window::framebuffer_size_callback);
         onAnyFramebufferSizeChangedSubscription = onAnyFramebufferSizeChanged.Subscribe(
                 std::bind(&Window::onFramebufferSizeChanged, this, std::placeholders::_1, std::placeholders::_2,
                           std::placeholders::_3));
+
+        glfwSetCursorPosCallback(window, Window::cursor_position_callback);
+        onAnyCursorPositionChangedSubscription = onAnyCursorPositionChanged.Subscribe(
+                std::bind(&Window::onCursorPositionChanged, this, std::placeholders::_1, std::placeholders::_2,
+                          std::placeholders::_3));
+
 
         callbackSet = true;
     }
@@ -152,6 +160,15 @@ namespace Engine {
 
         }
 
+    }
+
+    void Window::cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {
+        onAnyCursorPositionChanged.Fire(window, xpos, ypos);
+    }
+
+    void Window::onCursorPositionChanged(GLFWwindow *window, double xpos, double ypos) {
+        if (window != this->window) return;
+        OnCursorPositionChanged.Fire(xpos, ypos);
     }
 
 }

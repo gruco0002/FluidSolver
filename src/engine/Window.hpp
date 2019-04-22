@@ -24,6 +24,7 @@ namespace Engine {
 
         EventDelegate<int, int> OnWindowSizeChanged;
         EventDelegate<int, int> OnFramebufferSizeChanged;
+        EventDelegate<double, double> OnCursorPositionChanged;
 
         int GetHeight();
 
@@ -72,17 +73,22 @@ namespace Engine {
         void onWindowSizeChanged(GLFWwindow *window, int width, int height);
 
         void onFramebufferSizeChanged(GLFWwindow *window, int width, int height);
+        void onCursorPositionChanged(GLFWwindow* window, double xpos, double ypos);
 
         static EventDelegate<GLFWwindow *, int, int> onAnyWindowSizeChanged;
         uint32_t onAnyWindowSizeChangedSubscription;
         static EventDelegate<GLFWwindow *, int, int> onAnyFramebufferSizeChanged;
         uint32_t onAnyFramebufferSizeChangedSubscription;
+        static EventDelegate<GLFWwindow*, double, double> onAnyCursorPositionChanged;
+        uint32_t  onAnyCursorPositionChangedSubscription;
 
 
         // callbacks for glfw
         static void window_size_callback(GLFWwindow *window, int width, int height);
 
         static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+
+        static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
 
         // only one window can exist
