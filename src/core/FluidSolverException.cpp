@@ -5,7 +5,7 @@
 #include <string>
 #include "FluidSolverException.hpp"
 
-const char *FluidSolver::FluidSolverException::what() const {
+const char *FluidSolver::FluidSolverException::what() const noexcept {
     return ("FluidSolver Exception: " + text + "\n" + std::string(exception::what())).c_str();
 }
 

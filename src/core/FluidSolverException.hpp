@@ -16,7 +16,7 @@ public:
 
     explicit FluidSolverException(std::string text);
 
-    const char *what() const override;
+    const char *what() const noexcept override;
 };
 }
 

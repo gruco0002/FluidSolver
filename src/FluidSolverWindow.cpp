@@ -52,7 +52,7 @@ void FluidSolverWindow::loadGUI() {
     guiInterface = new GuiEngineInterface(this, font);
     uiWrapper = new cppgui::DynamicUIWrapper(guiInterface);
 
-    OnFramebufferSizeChanged.Subscribe([=](int width, int height) {
+    OnWindowSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
     });
     OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {

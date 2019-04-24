@@ -41,11 +41,11 @@ cppgui::Vector2 GuiEngineInterface::GetTextDimension(std::string text, float siz
 }
 
 float GuiEngineInterface::GetRenderTargetWidth() {
-    return window->GetFramebufferWidth();
+    return window->GetWidth();
 }
 
 float GuiEngineInterface::GetRenderTargetHeight() {
-    return window->GetFramebufferHeight();
+    return window->GetHeight();
 }
 
 GuiEngineInterface::GuiEngineInterface(Engine::Window *window, Engine::Text::Font *font) {
@@ -53,14 +53,14 @@ GuiEngineInterface::GuiEngineInterface(Engine::Window *window, Engine::Text::Fon
     this->font = font;
 
     textRenderer = new Engine::Text::TextRenderer(font);
-    textRenderer->CreateProjectionMatrixForScreen(window->GetFramebufferWidth(), window->GetFramebufferHeight());
+    textRenderer->CreateProjectionMatrixForScreen(window->GetWidth(), window->GetHeight());
     textRenderer->distanceFieldWidth = 0.49f;
     textRenderer->distanceFieldEdge = 0.04f;
 
     rectangleRenderer = new Engine::RectangleRenderer();
-    rectangleRenderer->CreateProjectionMatrixForScreen(window->GetFramebufferWidth(), window->GetFramebufferHeight());
+    rectangleRenderer->CreateProjectionMatrixForScreen(window->GetWidth(), window->GetHeight());
 
-    window->OnFramebufferSizeChanged.Subscribe([=](int width, int height) {
+    window->OnWindowSizeChanged.Subscribe([=](int width, int height) {
         textRenderer->CreateProjectionMatrixForScreen(width, height);
         rectangleRenderer->CreateProjectionMatrixForScreen(width, height);
     });
