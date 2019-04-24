@@ -4,46 +4,64 @@
 
 #include "SimpleParticleCollection.hpp"
 
-float SimpleParticleCollection::GetMass(uint32_t index) {
-    return particles[index].Mass;
-}
+namespace FluidSolver {
+    float SimpleParticleCollection::GetMass(uint32_t index) {
+        return particles[index].Mass;
+    }
 
-void SimpleParticleCollection::SetMass(uint32_t index, float value) {
-    particles[index].Mass = value;
-}
+    void SimpleParticleCollection::SetMass(uint32_t index, float value) {
+        particles[index].Mass = value;
+    }
 
-float SimpleParticleCollection::GetPressure(uint32_t index) {
-    return particles[index].Pressure;
-}
+    float SimpleParticleCollection::GetPressure(uint32_t index) {
+        return particles[index].Pressure;
+    }
 
-void SimpleParticleCollection::SetPressure(uint32_t index, float value) {
-    particles[index].Pressure = value;
-}
+    void SimpleParticleCollection::SetPressure(uint32_t index, float value) {
+        particles[index].Pressure = value;
+    }
 
-glm::vec3 SimpleParticleCollection::GetPosition(uint32_t index) {
-    return particles[index].Position;
-}
+    glm::vec2 SimpleParticleCollection::GetPosition(uint32_t index) {
+        return particles[index].Position;
+    }
 
-void SimpleParticleCollection::SetPosition(uint32_t index, glm::vec3 value) {
-    particles[index].Position = value;
-}
+    void SimpleParticleCollection::SetPosition(uint32_t index, glm::vec2 value) {
+        particles[index].Position = value;
+    }
 
-glm::vec3 SimpleParticleCollection::GetVelocity(uint32_t index) {
-    return particles[index].Velocity;
-}
+    glm::vec2 SimpleParticleCollection::GetVelocity(uint32_t index) {
+        return particles[index].Velocity;
+    }
 
-void SimpleParticleCollection::SetVelocity(uint32_t index, glm::vec3 value) {
-    particles[index].Velocity = value;
-}
+    void SimpleParticleCollection::SetVelocity(uint32_t index, glm::vec2 value) {
+        particles[index].Velocity = value;
+    }
 
-glm::vec3 SimpleParticleCollection::GetAcceleration(uint32_t index) {
-    return particles[index].Acceleration;
-}
+    glm::vec2 SimpleParticleCollection::GetAcceleration(uint32_t index) {
+        return particles[index].Acceleration;
+    }
 
-void SimpleParticleCollection::SetAcceleration(uint32_t index, glm::vec3 value) {
-    particles[index].Acceleration = value;
-}
+    void SimpleParticleCollection::SetAcceleration(uint32_t index, glm::vec2 value) {
+        particles[index].Acceleration = value;
+    }
 
-SimpleParticleCollection::SimpleParticleCollection(std::vector<SimpleParticleCollection::FluidParticle> &input) {
-    particles = input;
+    SimpleParticleCollection::SimpleParticleCollection(std::vector<SimpleParticleCollection::FluidParticle> &input) {
+        particles = input;
+    }
+
+    uint32_t SimpleParticleCollection::GetSize() {
+        return particles.size();
+    }
+
+    float SimpleParticleCollection::GetDensity(uint32_t index) {
+        return particles[index].Density;
+    }
+
+    void SimpleParticleCollection::SetDensity(uint32_t index, float value) {
+        particles[index].Density = value;
+    }
+
+    std::vector<SimpleParticleCollection::FluidParticle> &SimpleParticleCollection::GetParticles() {
+        return particles;
+    }
 }

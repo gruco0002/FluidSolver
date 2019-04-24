@@ -15,10 +15,13 @@
 #include <dependencies/cppgui/src/TextInput.hpp>
 
 void FluidSolverWindow::render() {
+    particleVertexArray->Update();
+
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
+    particleRenderer->Render();
     uiWrapper->render();
 }
 
@@ -31,9 +34,9 @@ bool FluidSolverWindow::even(int input) {
 }
 
 void FluidSolverWindow::load() {
+    loadParticles();
     loadFont();
     loadGUI();
-
 }
 
 void FluidSolverWindow::loadFont() {
@@ -86,5 +89,30 @@ void FluidSolverWindow::buildGUI() {
 
     auto ti = new cppgui::TextInput(100, 200, 250, 50, "Test");
     scaff->addChild(ti);
+
+}
+
+void FluidSolverWindow::loadParticles() {
+
+    // generate 1 mio particles
+    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles(1000 * 1000);
+    for (int x = 0; x < 1000; x++) {
+        for (int y = 0; y < 1000; y++) {
+            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            p.Position = glm::vec2((float) x, (float) y);
+            p.Velocity = glm::vec2((float) x / 1000.0f, (float) y / 1000.0f);
+            p.Acceleration = glm::vec2((float) (1000.0f - x) / 1000.0f, (float) y / 1000.0f);
+            p.Pressure = 0.5f;
+            p.Density = 10000.0f;
+            p.Mass = -4.0f;
+
+            particles[x * 1000 + y] = p;
+        }
+    }
+
+    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+    particleVertexArray = new ParticleVertexArray(simple);
+
+    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(0, 1000, 0, 1000));
 
 }

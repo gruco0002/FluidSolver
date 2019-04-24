@@ -5,53 +5,63 @@
 #ifndef FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
 #define FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
 
-#include "glm/glm.hpp"
-#include "IParticleCollection.hpp"
+#include "libraries/glm/glm.hpp"
+#include "core/interface/IParticleCollection.hpp"
 #include <vector>
 
-class SimpleParticleCollection : public IParticleCollection {
+namespace FluidSolver {
+    class SimpleParticleCollection : public IParticleCollection {
 
 
-public:
+    public:
 
-    struct FluidParticle {
-        glm::vec3 Position;
-        glm::vec3 Velocity;
-        glm::vec3 Acceleration;
+        struct FluidParticle {
+            glm::vec2 Position;
+            glm::vec2 Velocity;
+            glm::vec2 Acceleration;
 
-        float Mass;
-        float Pressure;
+            float Mass;
+            float Pressure;
+            float Density;
+        };
+
+        SimpleParticleCollection(std::vector<FluidParticle> &input);
+
+
+        float GetMass(uint32_t index) override;
+
+        void SetMass(uint32_t index, float value) override;
+
+        float GetPressure(uint32_t index) override;
+
+        void SetPressure(uint32_t index, float value) override;
+
+        glm::vec2 GetPosition(uint32_t index) override;
+
+        void SetPosition(uint32_t index, glm::vec2 value) override;
+
+        glm::vec2 GetVelocity(uint32_t index) override;
+
+        void SetVelocity(uint32_t index, glm::vec2 value) override;
+
+        glm::vec2 GetAcceleration(uint32_t index) override;
+
+        void SetAcceleration(uint32_t index, glm::vec2 value) override;
+
+        uint32_t GetSize() override;
+
+        float GetDensity(uint32_t index) override;
+
+        void SetDensity(uint32_t index, float value) override;
+
+        std::vector<FluidParticle>&GetParticles();
+
+    private:
+
+
+        std::vector<FluidParticle> particles;
+
     };
 
-    SimpleParticleCollection(std::vector<FluidParticle> &input);
-
-
-    float GetMass(uint32_t index) override;
-
-    void SetMass(uint32_t index, float value) override;
-
-    float GetPressure(uint32_t index) override;
-
-    void SetPressure(uint32_t index, float value) override;
-
-    glm::vec3 GetPosition(uint32_t index) override;
-
-    void SetPosition(uint32_t index, glm::vec3 value) override;
-
-    glm::vec3 GetVelocity(uint32_t index) override;
-
-    void SetVelocity(uint32_t index, glm::vec3 value) override;
-
-    glm::vec3 GetAcceleration(uint32_t index) override;
-
-    void SetAcceleration(uint32_t index, glm::vec3 value) override;
-
-private:
-
-
-    std::vector<FluidParticle> particles;
-
-};
-
-
+}
 #endif //FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP

@@ -12,6 +12,8 @@
 #include <engine/RectangleRenderer.hpp>
 #include <dependencies/cppgui/src/DynamicUIWrapper.hpp>
 #include "GuiEngineInterface.hpp"
+#include "ParticleVertexArray.hpp"
+#include "ParticleRenderer.hpp"
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -21,18 +23,24 @@ public:
     static bool even(int input);
 
 private:
-    Engine::Text::Font* font;
+    Engine::Text::Font *font;
 
     void loadFont();
 
     void loadGUI();
+
     void buildGUI();
 
-    Engine::Text::TextRenderer* textRenderer;
-    Engine::RectangleRenderer* rectangleRenderer;
+    void loadParticles();
 
-    cppgui::DynamicUIWrapper* uiWrapper;
-    GuiEngineInterface* guiInterface;
+    Engine::Text::TextRenderer *textRenderer;
+    Engine::RectangleRenderer *rectangleRenderer;
+
+    cppgui::DynamicUIWrapper *uiWrapper;
+    GuiEngineInterface *guiInterface;
+
+    ParticleVertexArray *particleVertexArray;
+    ParticleRenderer *particleRenderer;
 
 protected:
     void render() override;
