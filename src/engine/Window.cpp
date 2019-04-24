@@ -55,6 +55,9 @@ namespace Engine {
         setCorrectSizeValues();
 
         currentTime = glfwGetTime();
+
+        // unlock framerate
+        glfwSwapInterval(0);
     }
 
     Window::~Window() {
