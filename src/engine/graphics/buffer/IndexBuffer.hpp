@@ -7,6 +7,7 @@
 
 #include "Buffer.hpp"
 #include <vector>
+#include <limits>
 
 
 namespace Engine {

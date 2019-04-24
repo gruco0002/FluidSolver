@@ -7,6 +7,7 @@
 #include <libraries/glm/gtc/type_ptr.hpp>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 uint32_t  Engine::Graphics::Shader::currentlyBound = 0;
 

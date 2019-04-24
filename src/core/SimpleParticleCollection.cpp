@@ -2,44 +2,44 @@
 // Created by gruberc on 24.04.19.
 //
 
-#include "ParticleCollection.hpp"
+#include "SimpleParticleCollection.hpp"
 
-float ParticleCollection::GetMass(uint32_t index) {
+float SimpleParticleCollection::GetMass(uint32_t index) {
     return particles[index].Mass;
 }
 
-void ParticleCollection::SetMass(uint32_t index, float value) {
+void SimpleParticleCollection::SetMass(uint32_t index, float value) {
     particles[index].Mass = value;
 }
 
-float ParticleCollection::GetPressure(uint32_t index) {
+float SimpleParticleCollection::GetPressure(uint32_t index) {
     return particles[index].Pressure;
 }
 
-void ParticleCollection::SetPressure(uint32_t index, float value) {
+void SimpleParticleCollection::SetPressure(uint32_t index, float value) {
     particles[index].Pressure = value;
 }
 
-glm::vec3 ParticleCollection::GetPosition(uint32_t index) {
+glm::vec3 SimpleParticleCollection::GetPosition(uint32_t index) {
     return particles[index].Position;
 }
 
-void ParticleCollection::SetPosition(uint32_t index, glm::vec3 value) {
+void SimpleParticleCollection::SetPosition(uint32_t index, glm::vec3 value) {
     particles[index].Position = value;
 }
 
-glm::vec3 ParticleCollection::GetVelocity(uint32_t index) {
+glm::vec3 SimpleParticleCollection::GetVelocity(uint32_t index) {
     return particles[index].Velocity;
 }
 
-void ParticleCollection::SetVelocity(uint32_t index, glm::vec3 value) {
+void SimpleParticleCollection::SetVelocity(uint32_t index, glm::vec3 value) {
     particles[index].Velocity = value;
 }
 
-glm::vec3 ParticleCollection::GetAcceleration(uint32_t index) {
+glm::vec3 SimpleParticleCollection::GetAcceleration(uint32_t index) {
     return particles[index].Acceleration;
 }
 
-void ParticleCollection::SetAcceleration(uint32_t index, glm::vec3 value) {
+void SimpleParticleCollection::SetAcceleration(uint32_t index, glm::vec3 value) {
     particles[index].Acceleration = value;
 }

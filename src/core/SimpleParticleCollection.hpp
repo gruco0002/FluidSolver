@@ -2,14 +2,14 @@
 // Created by gruberc on 24.04.19.
 //
 
-#ifndef FLUIDSOLVER_PARTICLECOLLECTION_HPP
-#define FLUIDSOLVER_PARTICLECOLLECTION_HPP
+#ifndef FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
+#define FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
 
 #include "glm/glm.hpp"
 #include "IParticleCollection.hpp"
 #include <vector>
 
-class ParticleCollection : public IParticleCollection {
+class SimpleParticleCollection : public IParticleCollection {
 
 
 public:
@@ -52,4 +52,4 @@ private:
 };
 
 
-#endif //FLUIDSOLVER_PARTICLECOLLECTION_HPP
+#endif //FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
