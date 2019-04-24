@@ -23,6 +23,8 @@ public:
         float Pressure;
     };
 
+    SimpleParticleCollection(std::vector<FluidParticle> &input);
+
 
     float GetMass(uint32_t index) override;
 

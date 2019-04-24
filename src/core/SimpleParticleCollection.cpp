@@ -43,3 +43,7 @@ glm::vec3 SimpleParticleCollection::GetAcceleration(uint32_t index) {
 void SimpleParticleCollection::SetAcceleration(uint32_t index, glm::vec3 value) {
     particles[index].Acceleration = value;
 }
+
+SimpleParticleCollection::SimpleParticleCollection(std::vector<SimpleParticleCollection::FluidParticle> &input) {
+    particles = input;
+}
