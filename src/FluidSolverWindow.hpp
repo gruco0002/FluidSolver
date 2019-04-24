@@ -15,6 +15,8 @@
 #include "ParticleVertexArray.hpp"
 #include "ParticleRenderer.hpp"
 
+#include <dependencies/cppgui/src/Label.hpp>
+
 class FluidSolverWindow : public Engine::Window {
 
 public:
@@ -41,6 +43,8 @@ private:
 
     ParticleVertexArray *particleVertexArray;
     ParticleRenderer *particleRenderer;
+
+    cppgui::Label* fpsLabel;
 
 protected:
     void render() override;

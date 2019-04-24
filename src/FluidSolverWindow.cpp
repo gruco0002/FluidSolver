@@ -17,6 +17,7 @@
 
 
 void FluidSolverWindow::render() {
+    fpsLabel->setText("FPS: " + std::to_string(GetFPS()));
     particleVertexArray->Update();
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -90,6 +91,10 @@ void FluidSolverWindow::buildGUI() {
     alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer)));
 
     scaff->addChild(alignTop);
+
+    fpsLabel = new cppgui::Label( 0,55, "FPS: ");
+    scaff->addChild(fpsLabel);
+    fpsLabel->Visible = true;
 
 }
 
