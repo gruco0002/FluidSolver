@@ -11,6 +11,7 @@
 
 class ParticleRenderer {
 
+public:
     enum ColorSelection {
         Velocity = 1,
         Acceleration = 2,
@@ -19,7 +20,6 @@ class ParticleRenderer {
         Density = 5,
     };
 
-public:
 
     ParticleRenderer(ParticleVertexArray* particleVertexArray, glm::mat4 projectionMatrix);
 

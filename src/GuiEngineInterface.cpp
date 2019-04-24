@@ -23,6 +23,7 @@ void GuiEngineInterface::DrawRectangle(float positionX, float positionY, float w
 void
 GuiEngineInterface::DrawString(std::string text, float positionX, float positionY, float size, cppgui::Color color,
                                cppgui::Vector4 cliparea) {
+    size *= 0.5f;
     textRenderer->Render(text, size, glm::vec2(positionX, positionY), glm::vec4(color.r, color.g, color.b, color.a),
                          glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
 }
@@ -34,6 +35,7 @@ GuiEngineInterface::DrawTexture(cppgui::GuiInterfaceTexture *texture, float posi
 }
 
 cppgui::Vector2 GuiEngineInterface::GetTextDimension(std::string text, float size) {
+    size *= 0.5f;
     glm::vec2 val = textRenderer->GetTextDimensions(text, size);
     return cppgui::Vector2(val.x, val.y);
 }
@@ -52,6 +54,8 @@ GuiEngineInterface::GuiEngineInterface(Engine::Window *window, Engine::Text::Fon
 
     textRenderer = new Engine::Text::TextRenderer(font);
     textRenderer->CreateProjectionMatrixForScreen(window->GetFramebufferWidth(), window->GetFramebufferHeight());
+    textRenderer->distanceFieldWidth = 0.49f;
+    textRenderer->distanceFieldEdge = 0.04f;
 
     rectangleRenderer = new Engine::RectangleRenderer();
     rectangleRenderer->CreateProjectionMatrixForScreen(window->GetFramebufferWidth(), window->GetFramebufferHeight());

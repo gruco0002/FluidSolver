@@ -3,6 +3,7 @@
 //
 
 #include "FluidSolverWindow.hpp"
+#include "FluidSolverTopMenu.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -11,8 +12,9 @@
 
 #include <iostream>
 #include <dependencies/cppgui/src/Theme.hpp>
-#include <dependencies/cppgui/src/Button.hpp>
-#include <dependencies/cppgui/src/TextInput.hpp>
+#include <dependencies/cppgui/src/AlignBox.hpp>
+#include <dependencies/cppgui/src/Spread.hpp>
+
 
 void FluidSolverWindow::render() {
     particleVertexArray->Update();
@@ -84,11 +86,10 @@ void FluidSolverWindow::buildGUI() {
     auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
     uiWrapper->setScaffold(scaff);
 
-    auto btn = new cppgui::Button("Testing", 100, 100, 250, 50);
-    scaff->addChild(btn);
+    auto alignTop = new cppgui::AlignBox(cppgui::AlignmentTop, 50.0f);
+    alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer)));
 
-    auto ti = new cppgui::TextInput(100, 200, 250, 50, "Test");
-    scaff->addChild(ti);
+    scaff->addChild(alignTop);
 
 }
 
