@@ -73,6 +73,7 @@ void Engine::Graphics::Framebuffer::GenerateFramebuffer() {
 }
 
 void Engine::Graphics::Framebuffer::DeleteFramebuffer() {
+    Unbind();
     for (auto tex : createdInternal) {
         delete tex;
     }

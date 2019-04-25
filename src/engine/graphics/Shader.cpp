@@ -136,6 +136,7 @@ void Engine::Graphics::Shader::Generate() {
 }
 
 void Engine::Graphics::Shader::Delete() {
+    Unbind();
     glDeleteProgram(ID);
 }
 

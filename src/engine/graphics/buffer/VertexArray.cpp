@@ -67,6 +67,7 @@ void Engine::Graphics::Buffer::VertexArray::Generate() {
 }
 
 void Engine::Graphics::Buffer::VertexArray::Delete() {
+    Unbind();
     glDeleteVertexArrays(1, &ID);
 }
 

@@ -135,6 +135,7 @@ void Engine::Graphics::Texture2D::GenerateTexture() {
 }
 
 void Engine::Graphics::Texture2D::DeleteTexture() {
+    Unbind();
     glDeleteTextures(1, &ID);
 }
 

@@ -30,6 +30,7 @@ Buffer::~Buffer() {
 }
 
 void Buffer::DeleteBuffer() {
+    Unbind();
     glDeleteBuffers(1, &ID);
     ID = 0;
 }
