@@ -163,7 +163,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
-    resetBoundaryTestExampleData();
+    resetSimpleDamExampleData();
 
     // create particle renderer
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
@@ -220,5 +220,69 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
-    resetBoundaryTestExampleData();
+    resetSimpleDamExampleData();
+}
+
+void FluidSolverWindow::resetSimpleDamExampleData() {
+    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
+
+    // generate a simple boundary
+    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    for (int y = -5; y >= -5; y--) {
+        for (int x = -10; x <= 10; x++) {
+            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            p.Position = glm::vec2((float) x, (float) y);
+            p.Velocity = glm::vec2(0.0f);
+            p.Acceleration = glm::vec2(0.0f);
+            p.Pressure = 0.0f;
+            p.Density = sphFluidSolver->RestDensity;
+            p.Mass = mass;
+            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+            particles.push_back(p);
+        }
+    }
+
+    for (int y = 5; y > -5; y--) {
+        for (int x = -10; x <= 10; x += 20) {
+            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            p.Position = glm::vec2((float) x, (float) y);
+            p.Velocity = glm::vec2(0.0f);
+            p.Acceleration = glm::vec2(0.0f);
+            p.Pressure = 0.0f;
+            p.Density = sphFluidSolver->RestDensity;
+            p.Mass = mass;
+            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+            particles.push_back(p);
+        }
+    }
+
+
+    for (int x = -3; x <= 3; x++) {
+        for (int y = 3; y >= 0; y--) {
+
+
+            // normal particle
+            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            p.Position = glm::vec2((float) x * 2.1f, (float) y * 2.1f);
+            p.Velocity = glm::vec2(0.0f);
+            p.Acceleration = glm::vec2(0.0f);
+            p.Pressure = 0.0f;
+            p.Density = sphFluidSolver->RestDensity;
+            p.Mass = mass;
+            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+            particles.push_back(p);
+        }
+    }
+
+    // generate particle collection
+    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+
+    // delete old and create new vertex array
+    delete particleVertexArray;
+    particleVertexArray = new ParticleVertexArray(simple);
+    if (particleRenderer != nullptr)
+        particleRenderer->particleVertexArray = particleVertexArray;
+
+    // set up computation providers
+    sphFluidSolver->particleCollection = simple;
 }

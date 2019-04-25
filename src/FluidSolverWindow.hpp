@@ -47,6 +47,8 @@ private:
 
     void resetBoundaryTestExampleData();
 
+    void resetSimpleDamExampleData();
+
     Engine::Text::TextRenderer *textRenderer;
     Engine::RectangleRenderer *rectangleRenderer;
 
