@@ -14,17 +14,35 @@
 #include <dependencies/cppgui/src/Theme.hpp>
 #include <dependencies/cppgui/src/AlignBox.hpp>
 #include <dependencies/cppgui/src/Spread.hpp>
+#include <core/CubicSplineKernel.hpp>
+#include <core/QuadraticNeighborhoodSearch.hpp>
+#include <core/IntegrationSchemeEulerCromer.hpp>
 
 
 void FluidSolverWindow::render() {
     fpsLabel->setText("FPS: " + std::to_string(GetFPS()));
-    particleVertexArray->Update();
+
+    accumulatedSimulationTime += GetLastFrameTime();
+    if (sphFluidSolver != nullptr) {
+        while (accumulatedSimulationTime >= sphFluidSolver->TimeStep) {
+            accumulatedSimulationTime -= sphFluidSolver->TimeStep;
+            sphFluidSolver->ExecuteSimulationStep();
+        }
+    } else {
+        accumulatedSimulationTime = 0.0f;
+    }
+
+    if (particleVertexArray != nullptr)
+        particleVertexArray->Update();
+
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-    particleRenderer->Render();
+    if (particleRenderer != nullptr)
+        particleRenderer->Render();
+
     uiWrapper->render();
 }
 
@@ -92,14 +110,17 @@ void FluidSolverWindow::buildGUI() {
 
     scaff->addChild(alignTop);
 
-    fpsLabel = new cppgui::Label( 0,55, "FPS: ");
+    fpsLabel = new cppgui::Label(0, 55, "FPS: ");
     scaff->addChild(fpsLabel);
     fpsLabel->Visible = true;
 
 }
 
 void FluidSolverWindow::loadParticles() {
+    loadBoundaryTestExample();
+}
 
+void FluidSolverWindow::loadMillionParticleExample() {
     // generate 1 mio particles
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles(1000 * 1000);
     for (int x = 0; x < 1000; x++) {
@@ -121,4 +142,62 @@ void FluidSolverWindow::loadParticles() {
 
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(0, 1000, 0, 1000));
 
+}
+
+void FluidSolverWindow::loadBoundaryTestExample() {
+
+    // set up basic stuff
+    sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    sphFluidSolver->TimeStep = 0.001f;
+
+    // set up values
+    sphFluidSolver->ParticleSize = 1.0f;
+    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->RestDensity = 1.0f;
+    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
+
+    // generate a simple boundary
+    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    for (int x = -2; x <= 2; x++) {
+        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        p.Position = glm::vec2((float) x, (float) -5.0f);
+        p.Velocity = glm::vec2(0.0f);
+        p.Acceleration = glm::vec2(0.0f);
+        p.Pressure = 0.0f;
+        p.Density = 0.0f;
+        p.Mass = mass;
+        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        particles.push_back(p);
+    }
+
+    // normal particle
+    FluidSolver::SimpleParticleCollection::FluidParticle p;
+    p.Position = glm::vec2(0.0f);
+    p.Velocity = glm::vec2(0.0f);
+    p.Acceleration = glm::vec2(0.0f);
+    p.Pressure = 0.0f;
+    p.Density = 0.0f;
+    p.Mass = mass;
+    p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+    particles.push_back(p);
+
+    // generate particle collection
+    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+    particleVertexArray = new ParticleVertexArray(simple);
+
+    // set up computation providers
+    sphFluidSolver->particleCollection = simple;
+    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+
+
+    // create particle renderer
+    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    particleRenderer->pointSize = 30.0f;
+    particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Velocity;
+
+    // reset simulation time
+    accumulatedSimulationTime = 0.0f;
 }

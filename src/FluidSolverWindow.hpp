@@ -16,6 +16,7 @@
 #include "ParticleRenderer.hpp"
 
 #include <dependencies/cppgui/src/Label.hpp>
+#include <core/SPHFluidSolver.hpp>
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -35,16 +36,24 @@ private:
 
     void loadParticles();
 
+    void loadMillionParticleExample();
+
+    void loadBoundaryTestExample();
+
     Engine::Text::TextRenderer *textRenderer;
     Engine::RectangleRenderer *rectangleRenderer;
 
     cppgui::DynamicUIWrapper *uiWrapper;
     GuiEngineInterface *guiInterface;
 
-    ParticleVertexArray *particleVertexArray;
-    ParticleRenderer *particleRenderer;
+    ParticleVertexArray *particleVertexArray = nullptr;
+    ParticleRenderer *particleRenderer = nullptr;
 
     cppgui::Label* fpsLabel;
+
+    FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
+
+    float accumulatedSimulationTime = 0.0f;
 
 protected:
     void render() override;
