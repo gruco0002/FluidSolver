@@ -96,6 +96,21 @@ void FluidSolverTopMenu::Setup() {
     });
     stack->addChild(new cppgui::Center(k, cppgui::Center::CenterDirectionVertical));
     stack->addChild(new cppgui::DirectionalSpread(kInp, cppgui::SpreadDirectionVertical));
+
+    auto v = new cppgui::Label("v:");
+    auto vInp = new cppgui::TextInput(200, 0, std::to_string(window->sphFluidSolver->Viscosity));
+    vInp->OnTextChanged.Subscribe([=](std::string newText) {
+        try {
+            auto value = std::stof(newText);
+            window->sphFluidSolver->Viscosity = value;
+        } catch (std::exception &e) {
+
+        }
+    });
+    stack->addChild(new cppgui::Center(v, cppgui::Center::CenterDirectionVertical));
+    stack->addChild(new cppgui::DirectionalSpread(vInp, cppgui::SpreadDirectionVertical));
+
+
     auto resetBtn = new cppgui::Button("Reset", 100, 50);
     stack->addChild(new cppgui::DirectionalSpread(resetBtn, cppgui::SpreadDirectionVertical));
     resetBtn->OnClickEvent.Subscribe([=](float x, float y) {

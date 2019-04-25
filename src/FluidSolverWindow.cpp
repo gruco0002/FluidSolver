@@ -156,8 +156,8 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
 
-    sphFluidSolver->Gravity = 0.2f;
     sphFluidSolver->StiffnessK = 100.0f;
+    sphFluidSolver->Viscosity = -1000.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
@@ -181,8 +181,8 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 
     // generate a simple boundary
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-    for (int y = -5; y > -8; y--) {
-        for (int x = -2; x <= 2; x++) {
+    for (int y = -5; y >= -7; y--) {
+        for (int x = -10; x <= 10; x++) {
             FluidSolver::SimpleParticleCollection::FluidParticle p;
             p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
