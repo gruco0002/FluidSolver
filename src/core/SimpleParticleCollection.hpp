@@ -23,6 +23,8 @@ namespace FluidSolver {
             float Mass;
             float Pressure;
             float Density;
+
+            uint8_t Type;
         };
 
         SimpleParticleCollection(std::vector<FluidParticle> &input);
@@ -54,7 +56,11 @@ namespace FluidSolver {
 
         void SetDensity(uint32_t index, float value) override;
 
-        std::vector<FluidParticle>&GetParticles();
+        ParticleType GetParticleType(uint32_t index) override;
+
+        void SetParticleType(uint32_t index, ParticleType value) override;
+
+        std::vector<FluidParticle> &GetParticles();
 
     private:
 

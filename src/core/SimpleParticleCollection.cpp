@@ -64,4 +64,12 @@ namespace FluidSolver {
     std::vector<SimpleParticleCollection::FluidParticle> &SimpleParticleCollection::GetParticles() {
         return particles;
     }
+
+    IParticleCollection::ParticleType SimpleParticleCollection::GetParticleType(uint32_t index) {
+        return (ParticleType) particles[index].Type;
+    }
+
+    void SimpleParticleCollection::SetParticleType(uint32_t index, IParticleCollection::ParticleType value) {
+        particles[index].Type = value;
+    }
 }

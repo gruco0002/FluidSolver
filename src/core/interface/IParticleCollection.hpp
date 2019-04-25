@@ -11,6 +11,12 @@ namespace FluidSolver {
     class IParticleCollection {
 
     public:
+        enum ParticleType {
+            ParticleTypeNormal = 0,
+            ParticleTypeBoundary = 1,
+        };
+
+
         virtual float GetMass(uint32_t index) = 0;
 
         virtual void SetMass(uint32_t index, float value) = 0;
@@ -36,6 +42,10 @@ namespace FluidSolver {
         virtual float GetDensity(uint32_t index) = 0;
 
         virtual void SetDensity(uint32_t index, float value) = 0;
+
+        virtual ParticleType GetParticleType(uint32_t index) = 0;
+
+        virtual void SetParticleType(uint32_t index, ParticleType value) = 0;
 
     };
 
