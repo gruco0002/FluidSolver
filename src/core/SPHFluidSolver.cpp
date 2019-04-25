@@ -15,6 +15,10 @@ namespace FluidSolver {
             neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
         } else {
             for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+                if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+                    continue; // don't calculate unnecessary values for the boundary particles.
+                }
+                
                 neighborhoodSearch->FindNeighbors(i, particleCollection, NeighborhoodRadius);
             }
         }
@@ -22,6 +26,10 @@ namespace FluidSolver {
 
         // calculate density and pressure for all particles
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+                continue; // don't calculate unnecessary values for the boundary particles.
+            }
+
             float density = ComputeDensity(i);
             particleCollection->SetDensity(i, density);
 
@@ -31,6 +39,10 @@ namespace FluidSolver {
 
         // compute non pressure accelerations and pressure accelerations for all particles
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+                continue; // don't calculate unnecessary values for the boundary particles.
+            }
+
             glm::vec2 nonPressureAcc = ComputeNonPressureAcceleration(i);
             glm::vec2 pressureAcc = ComputePressureAcceleration(i);
             glm::vec2 acceleration = pressureAcc + nonPressureAcc;
@@ -39,6 +51,10 @@ namespace FluidSolver {
 
         // update velocity and position of all particles
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+                continue; // don't calculate unnecessary values for the boundary particles.
+            }
+
             integrationScheme->Integrate(i, particleCollection, TimeStep);
         }
 
