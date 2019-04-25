@@ -159,16 +159,18 @@ void FluidSolverWindow::loadBoundaryTestExample() {
 
     // generate a simple boundary
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-    for (int x = -2; x <= 2; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = glm::vec2((float) x, (float) -5.0f);
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = 0.0f;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-        particles.push_back(p);
+    for(int y = -5; y > -8; y--) {
+        for (int x = -2; x <= 2; x++) {
+            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            p.Position = glm::vec2((float) x, (float) y);
+            p.Velocity = glm::vec2(0.0f);
+            p.Acceleration = glm::vec2(0.0f);
+            p.Pressure = 0.0f;
+            p.Density = sphFluidSolver->RestDensity;
+            p.Mass = mass;
+            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+            particles.push_back(p);
+        }
     }
 
     // normal particle
@@ -177,7 +179,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);
     p.Pressure = 0.0f;
-    p.Density = 0.0f;
+    p.Density = sphFluidSolver->RestDensity;
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
     particles.push_back(p);
