@@ -40,8 +40,9 @@ void FluidSolverWindow::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-    if (particleRenderer != nullptr)
+    if (particleRenderer != nullptr) {
         particleRenderer->Render();
+    }
 
     uiWrapper->render();
 }
@@ -73,6 +74,8 @@ void FluidSolverWindow::loadGUI() {
 
     OnWindowSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
+        if (sphFluidSolver != nullptr)
+            CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
     });
     OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {
         uiWrapper->MousePositionInput(cppgui::Vector2(xPos, yPos));
@@ -170,6 +173,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     particleRenderer->pointSize = 30.0f;
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Velocity;
     particleRenderer->topValue = 10.0f;
+    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
@@ -212,8 +216,10 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
     // delete old and create new vertex array
     delete particleVertexArray;
     particleVertexArray = new ParticleVertexArray(simple);
-    if (particleRenderer != nullptr)
+    if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
+    }
+
 
     // set up computation providers
     sphFluidSolver->particleCollection = simple;
@@ -280,9 +286,33 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
     // delete old and create new vertex array
     delete particleVertexArray;
     particleVertexArray = new ParticleVertexArray(simple);
-    if (particleRenderer != nullptr)
+    if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
+    }
 
     // set up computation providers
     sphFluidSolver->particleCollection = simple;
+}
+
+void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize) {
+
+    float width = particlesX * particleSize;
+    float height = particlesY * particleSize;
+
+    float screenWidth = GetWidth();
+    float screenHeight = GetHeight();
+
+    if (width / screenWidth * screenHeight >= height) {
+        height = width / screenWidth * screenHeight;
+    } else {
+        width = height / screenHeight * screenWidth;
+    }
+
+    glm::mat4 generated = ParticleRenderer::GenerateOrtho(-width / 2.0f, width / 2.0f, height / 2.0f, -height / 2.0f);
+
+    if (particleRenderer != nullptr) {
+        particleRenderer->projectionMatrix = generated;
+        particleRenderer->pointSize = screenWidth / particlesX;
+    }
+
 }

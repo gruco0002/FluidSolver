@@ -21,8 +21,8 @@ void ParticleRenderer::Render() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-    if(particleVertexArray != nullptr)
-    particleVertexArray->Draw();
+    if (particleVertexArray != nullptr)
+        particleVertexArray->Draw();
 
     //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }

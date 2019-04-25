@@ -60,6 +60,10 @@ private:
 
     cppgui::Label* fpsLabel;
 
+    void CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize);
+
+    int particleCountX = 20;
+    int particleCountY = 20;
 
 
     float accumulatedSimulationTime = 0.0f;
