@@ -47,9 +47,6 @@ layout (location = 5) in float aDensity;
 #define COLOR_SELECTION_DENSITY 5
 
 
-uniform mat4 projectionMatrix;
-uniform float pointSize;
-
 uniform int colorSelection;
 uniform vec4 bottomColor;
 uniform vec4 topColor;
@@ -57,7 +54,10 @@ uniform float bottomValue;
 uniform float topValue;
 
 
-out vec4 oColor;
+out VS_OUT {
+    vec4 color;
+} vs_out;
+
 
 void main()
 {
@@ -75,21 +75,68 @@ void main()
         val = aDensity;
     }
 
-    val = clamp(val, bottomValue, topValue) / (topValue - bottomValue);
-    oColor = mix(bottomColor, topColor, val);
+    val = clamp(val - bottomValue, 0.0, (topValue - bottomValue)) / (topValue - bottomValue);
+    vs_out.color = mix(bottomColor, topColor, val);
 
-    gl_Position = projectionMatrix * vec4(aPosition, 0.0, 1.0);
-    gl_PointSize = pointSize;
+    gl_Position =  vec4(aPosition, 0.0, 1.0);
+
 }
 )";
 
 const std::string fragCode = R"(#version 330 core
 out vec4 FragColor;
 in vec4 oColor;
+in vec2 oTexcoord;
 void main()
 {
+    const float blurredEdge = 0.025;
+
+    vec2 moved = oTexcoord - vec2(0.5);
+    float len = length(moved);
+    len = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
+
     FragColor = oColor;
+    FragColor.a = mix(1.0, 0.0, len);
+
 }
+)";
+
+const std::string geomCode = R"(#version 330 core
+
+layout (points) in;
+layout (triangle_strip, max_vertices = 4) out;
+
+uniform float pointSize;
+uniform mat4 projectionMatrix;
+
+out vec4 oColor;
+out vec2 oTexcoord;
+
+in VS_OUT {
+    vec4 color;
+} gs_in[];
+
+void main(){
+    oColor = gs_in[0].color;
+    vec4 position = gl_in[0].gl_Position;
+
+    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
+    oTexcoord = vec2(1.0, 1.0);
+    EmitVertex();
+    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
+    oTexcoord = vec2(0.0, 1.0);
+    EmitVertex();
+    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
+    oTexcoord = vec2(1.0, 0.0);
+    EmitVertex();
+    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
+    oTexcoord = vec2(0.0, 0.0);
+    EmitVertex();
+    EndPrimitive();
+
+
+}
+
 )";
 
 void ParticleRenderer::Generate() {
@@ -97,6 +144,9 @@ void ParticleRenderer::Generate() {
                                                           Engine::Graphics::Shader::ProgramPart(
                                                                   Engine::Graphics::Shader::ProgramPartTypeVertex,
                                                                   vertCode),
+                                                          Engine::Graphics::Shader::ProgramPart(
+                                                                  Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                                                                  geomCode),
                                                           Engine::Graphics::Shader::ProgramPart(
                                                                   Engine::Graphics::Shader::ProgramPartTypeFragment,
                                                                   fragCode),

@@ -23,6 +23,7 @@ namespace Engine {
             enum ProgramPartType {
                 ProgramPartTypeVertex = GL_VERTEX_SHADER,
                 ProgramPartTypeFragment = GL_FRAGMENT_SHADER,
+                ProgramPartTypeGeometry = GL_GEOMETRY_SHADER,
             };
 
             struct ProgramPart {

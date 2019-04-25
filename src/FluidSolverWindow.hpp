@@ -49,6 +49,8 @@ private:
 
     void resetSimpleDamExampleData();
 
+    void resetHugeDamExampleData();
+
     Engine::Text::TextRenderer *textRenderer;
     Engine::RectangleRenderer *rectangleRenderer;
 
