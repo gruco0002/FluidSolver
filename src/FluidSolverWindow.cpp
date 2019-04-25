@@ -197,6 +197,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
     particleRenderer->pointSize = 30.0f;
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Velocity;
+    particleRenderer->topValue = 10.0f;
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
