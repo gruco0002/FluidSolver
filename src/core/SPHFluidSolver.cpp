@@ -95,7 +95,7 @@ namespace FluidSolver {
         float pressure = particleCollection->GetPressure(particleIndex);
         float mass = particleCollection->GetMass(particleIndex);
 
-        float pressureDivDensitySquared = pressure / std::pow(density, 2.0f);
+        float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / std::pow(density, 2.0f);
 
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
@@ -114,7 +114,7 @@ namespace FluidSolver {
                 float neighborDensity = particleCollection->GetDensity(neighbor);
                 float neighborPressure = particleCollection->GetPressure(neighbor);
 
-                float neighborPressureDivDensitySquared = neighborPressure / std::pow(neighborDensity, 2.0f);
+                float neighborPressureDivDensitySquared = neighborDensity == 0.0f ? 0.0f :neighborPressure / std::pow(neighborDensity, 2.0f);
 
                 pressureAcceleration +=
                         -neighborMass * (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
@@ -137,6 +137,9 @@ namespace FluidSolver {
             glm::vec2 neighborVelocity = particleCollection->GetVelocity(neighbor);
             float neighborMass = particleCollection->GetMass(neighbor);
             float neighborDensity = particleCollection->GetDensity(neighbor);
+
+            if(neighborDensity == 0.0f)
+                continue;
 
             glm::vec2 vij = neighborVelocity - velocity;
             glm::vec2 xij = neighborPosition - position;
