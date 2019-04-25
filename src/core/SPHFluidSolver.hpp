@@ -17,8 +17,10 @@ namespace FluidSolver {
     public:
 
         float TimeStep = 0.01f;
-        float ParticleSize = 0.5f; // also known as h
+        float ParticleSize = 0.5f;
+        float ParticleSpacing = 1.0f;
         float NeighborhoodRadius = 5.0f;
+        float KernelSupport = 2.0f;
 
         IParticleCollection *particleCollection = nullptr;
         IIntegrationScheme *integrationScheme = nullptr;
