@@ -111,12 +111,12 @@ void FluidSolverWindow::buildGUI() {
     auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
     uiWrapper->setScaffold(scaff);
 
-    auto alignTop = new cppgui::AlignBox(cppgui::AlignmentTop, 50.0f);
+    auto alignTop = new cppgui::AlignBox(cppgui::AlignmentTop, 60.0f);
     alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer, this)));
 
     scaff->addChild(alignTop);
 
-    fpsLabel = new cppgui::Label(0, 55, "FPS: ");
+    fpsLabel = new cppgui::Label(0, 65, "FPS: ");
     scaff->addChild(fpsLabel);
     fpsLabel->Visible = true;
 

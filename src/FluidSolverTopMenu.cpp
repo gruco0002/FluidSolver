@@ -12,6 +12,7 @@
 #include <dependencies/cppgui/src/StyledLabel.hpp>
 #include <dependencies/cppgui/src/ColorPickerExtended.hpp>
 #include <dependencies/cppgui/src/Center.hpp>
+#include <dependencies/cppgui/src/ScrollBox.hpp>
 #include "FluidSolverWindow.hpp"
 
 FluidSolverTopMenu::FluidSolverTopMenu(ParticleRenderer *particleRenderer, FluidSolverWindow *window) : cppgui::Panel(0,
@@ -30,7 +31,7 @@ void FluidSolverTopMenu::Setup() {
     backgroundColor = cppgui::Color(1.0f);
 
 
-    addChild(new cppgui::DirectionalSpread(stack, cppgui::SpreadDirectionVertical));
+    addChild(new cppgui::Spread(new cppgui::ScrollBox(new cppgui::DirectionalSpread(stack, cppgui::SpreadDirectionVertical), cppgui::ScrollHorizontal)));
 
     auto combobox = new cppgui::ComboBox(200, 0);
     stack->addChild(new cppgui::DirectionalSpread(combobox, cppgui::SpreadDirectionVertical));
