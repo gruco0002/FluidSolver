@@ -106,7 +106,7 @@ void FluidSolverWindow::buildGUI() {
     uiWrapper->setScaffold(scaff);
 
     auto alignTop = new cppgui::AlignBox(cppgui::AlignmentTop, 50.0f);
-    alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer)));
+    alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer, this)));
 
     scaff->addChild(alignTop);
 
@@ -155,11 +155,33 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
+
+    sphFluidSolver->Gravity = 0.2f;
+    sphFluidSolver->StiffnessK = 100.0f;
+
+    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+
+    resetBoundaryTestExampleData();
+
+    // create particle renderer
+    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    particleRenderer->pointSize = 30.0f;
+    particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Velocity;
+    particleRenderer->topValue = 10.0f;
+
+    // reset simulation time
+    accumulatedSimulationTime = 0.0f;
+}
+
+void FluidSolverWindow::resetBoundaryTestExampleData() {
+
     float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
 
     // generate a simple boundary
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-    for(int y = -5; y > -8; y--) {
+    for (int y = -5; y > -8; y--) {
         for (int x = -2; x <= 2; x++) {
             FluidSolver::SimpleParticleCollection::FluidParticle p;
             p.Position = glm::vec2((float) x, (float) y);
@@ -186,21 +208,17 @@ void FluidSolverWindow::loadBoundaryTestExample() {
 
     // generate particle collection
     auto simple = new FluidSolver::SimpleParticleCollection(particles);
+
+    // delete old and create new vertex array
+    delete particleVertexArray;
     particleVertexArray = new ParticleVertexArray(simple);
+    if (particleRenderer != nullptr)
+        particleRenderer->particleVertexArray = particleVertexArray;
 
     // set up computation providers
     sphFluidSolver->particleCollection = simple;
-    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
-    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+}
 
-
-    // create particle renderer
-    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
-    particleRenderer->pointSize = 30.0f;
-    particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Velocity;
-    particleRenderer->topValue = 10.0f;
-
-    // reset simulation time
-    accumulatedSimulationTime = 0.0f;
+void FluidSolverWindow::resetData() {
+    resetBoundaryTestExampleData();
 }

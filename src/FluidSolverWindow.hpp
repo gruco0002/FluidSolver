@@ -18,12 +18,17 @@
 #include <dependencies/cppgui/src/Label.hpp>
 #include <core/SPHFluidSolver.hpp>
 
+
 class FluidSolverWindow : public Engine::Window {
 
 public:
     FluidSolverWindow(const std::string &title, int width = 800, int height = 600);
 
     static bool even(int input);
+
+    void resetData();
+
+    FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
 
 private:
     Engine::Text::Font *font;
@@ -40,6 +45,8 @@ private:
 
     void loadBoundaryTestExample();
 
+    void resetBoundaryTestExampleData();
+
     Engine::Text::TextRenderer *textRenderer;
     Engine::RectangleRenderer *rectangleRenderer;
 
@@ -51,7 +58,7 @@ private:
 
     cppgui::Label* fpsLabel;
 
-    FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
+
 
     float accumulatedSimulationTime = 0.0f;
 

@@ -12,9 +12,14 @@
 #include <dependencies/cppgui/src/StyledLabel.hpp>
 #include <dependencies/cppgui/src/ColorPickerExtended.hpp>
 #include <dependencies/cppgui/src/Center.hpp>
+#include "FluidSolverWindow.hpp"
 
-FluidSolverTopMenu::FluidSolverTopMenu(ParticleRenderer *particleRenderer) : cppgui::Panel(0, 0, 0, 0) {
+FluidSolverTopMenu::FluidSolverTopMenu(ParticleRenderer *particleRenderer, FluidSolverWindow *window) : cppgui::Panel(0,
+                                                                                                                      0,
+                                                                                                                      0,
+                                                                                                                      0) {
     this->particleRenderer = particleRenderer;
+    this->window = window;
     Setup();
 }
 
@@ -75,9 +80,25 @@ void FluidSolverTopMenu::Setup() {
         }
     });
 
-
     stack->addChild(new cppgui::Center(colorpickerTop, cppgui::Center::CenterDirectionVertical));
     stack->addChild(new cppgui::Center(top, cppgui::Center::CenterDirectionVertical));
     stack->addChild(new cppgui::DirectionalSpread(topInput, cppgui::SpreadDirectionVertical));
 
+    auto k = new cppgui::Label("k:");
+    auto kInp = new cppgui::TextInput(200, 0, std::to_string(window->sphFluidSolver->StiffnessK));
+    kInp->OnTextChanged.Subscribe([=](std::string newText) {
+        try {
+            auto value = std::stof(newText);
+            window->sphFluidSolver->StiffnessK = value;
+        } catch (std::exception &e) {
+
+        }
+    });
+    stack->addChild(new cppgui::Center(k, cppgui::Center::CenterDirectionVertical));
+    stack->addChild(new cppgui::DirectionalSpread(kInp, cppgui::SpreadDirectionVertical));
+    auto resetBtn = new cppgui::Button("Reset", 100, 50);
+    stack->addChild(new cppgui::DirectionalSpread(resetBtn, cppgui::SpreadDirectionVertical));
+    resetBtn->OnClickEvent.Subscribe([=](float x, float y) {
+        window->resetData();
+    });
 }

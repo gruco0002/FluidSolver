@@ -21,9 +21,9 @@ public:
     };
 
 
-    ParticleRenderer(ParticleVertexArray* particleVertexArray, glm::mat4 projectionMatrix);
+    ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix);
 
-    ParticleVertexArray *particleVertexArray;
+    ParticleVertexArray *particleVertexArray = nullptr;
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
 
@@ -43,7 +43,7 @@ public:
     glm::vec4 topColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     float topValue = 1.0f;
 private:
-    Engine::Graphics::Shader *particleShader;
+    Engine::Graphics::Shader *particleShader = nullptr;
 
     void Generate();
 

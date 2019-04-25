@@ -9,13 +9,17 @@
 #include <dependencies/cppgui/src/Panel.hpp>
 #include "ParticleRenderer.hpp"
 
+class FluidSolverWindow;
+
 class FluidSolverTopMenu : public cppgui::Panel{
 
 public:
-    FluidSolverTopMenu(ParticleRenderer* particleRenderer);
+    FluidSolverTopMenu(ParticleRenderer* particleRenderer, FluidSolverWindow* window);
 
 private:
     ParticleRenderer* particleRenderer;
+
+    FluidSolverWindow* window;
 
     void Setup();
 
