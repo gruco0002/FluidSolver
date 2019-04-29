@@ -6,6 +6,11 @@
 #include <core/QuadraticNeighborhoodSearch.hpp>
 #include "gtest/gtest.h"
 
+
+FluidSolver::INeighborhoodSearch *GenerateNeighborhoodSearch() {
+    return new FluidSolver::QuadraticNeighborhoodSearch();
+}
+
 /**
  * Creates a grid of positions starting from start with step size in both axis directions.
  * @param start Inclusive start position.
@@ -28,7 +33,7 @@ std::vector<glm::vec2> GetSampleGrid(float start, float step, float stop) {
     return pos;
 }
 
-bool Exists(std::vector<uint32_t> &val, uint32_t search){
+bool Exists(std::vector<uint32_t> &val, uint32_t search) {
     return std::find(val.begin(), val.end(), search) != val.end();
 }
 
@@ -45,19 +50,19 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount1) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::QuadraticNeighborhoodSearch neighborhoodSearch;
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
     FluidSolver::SimpleParticleCollection collection(particles);
     for (uint32_t i = 0; i < collection.GetSize(); i++) {
-        neighborhoodSearch.FindNeighbors(i, &collection, radius);
+        neighborhoodSearch->FindNeighbors(i, &collection, radius);
     }
 
 
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(0).size(), 4); // top left
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(20).size(), 4); // bottom left
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(12).size(), 9); // center
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(18).size(), 9); // center bottom right
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(10).size(), 6); // border left center
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(14).size(), 6); // border right center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(0).size(), 4); // top left
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(20).size(), 4); // bottom left
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(12).size(), 9); // center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(18).size(), 9); // center bottom right
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(10).size(), 6); // border left center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(14).size(), 6); // border right center
 
 }
 
@@ -73,19 +78,19 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount2) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::QuadraticNeighborhoodSearch neighborhoodSearch;
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
     FluidSolver::SimpleParticleCollection collection(particles);
     for (uint32_t i = 0; i < collection.GetSize(); i++) {
-        neighborhoodSearch.FindNeighbors(i, &collection, radius);
+        neighborhoodSearch->FindNeighbors(i, &collection, radius);
     }
 
 
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(0).size(), 8); // top left
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(20).size(), 8); // bottom left
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(12).size(), 21); // center
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(18).size(), 15); // center bottom right
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(10).size(), 13); // border left center
-    ASSERT_EQ(neighborhoodSearch.GetParticleNeighbors(14).size(), 13); // border right center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(0).size(), 8); // top left
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(20).size(), 8); // bottom left
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(12).size(), 21); // center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(18).size(), 15); // center bottom right
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(10).size(), 13); // border left center
+    ASSERT_EQ(neighborhoodSearch->GetParticleNeighbors(14).size(), 13); // border right center
 
 
 }
@@ -102,35 +107,34 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect1) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::QuadraticNeighborhoodSearch neighborhoodSearch;
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
     FluidSolver::SimpleParticleCollection collection(particles);
     for (uint32_t i = 0; i < collection.GetSize(); i++) {
-        neighborhoodSearch.FindNeighbors(i, &collection, radius);
+        neighborhoodSearch->FindNeighbors(i, &collection, radius);
     }
 
 
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 0)); // top left
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 1));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 5));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 6));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(0), 2), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(0), 24), false);
 
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 0)); // top left
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 1));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 5));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 6));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(0), 2), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(0), 24), false);
 
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 20)); // bottom left
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 16));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(20), 7), false);
 
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 20)); // bottom left
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 16));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(20), 7), false);
-
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 12)); // center
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 7));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 6));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 13));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 2), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 20), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 22), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 0), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 19), false);
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 12)); // center
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 7));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 6));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 13));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 2), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 20), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 22), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 0), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 19), false);
 
 
 }
@@ -147,43 +151,42 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect2) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::QuadraticNeighborhoodSearch neighborhoodSearch;
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
     FluidSolver::SimpleParticleCollection collection(particles);
     for (uint32_t i = 0; i < collection.GetSize(); i++) {
-        neighborhoodSearch.FindNeighbors(i, &collection, radius);
+        neighborhoodSearch->FindNeighbors(i, &collection, radius);
     }
 
 
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 0)); // top left
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 1));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 5));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 6));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 2));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 11));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(0), 7));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(0), 24), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(0), 12), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(0), 3), false);
 
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 0)); // top left
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 1));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 5));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 6));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 2));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 11));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(0), 7));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(0), 24), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(0), 12), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(0), 3), false);
 
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 20)); // bottom left
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 16));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 17));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(20), 22));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(20), 7), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(20), 23), false);
 
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 20)); // bottom left
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 16));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 17));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(20), 22));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(20), 7), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(20), 23), false);
-
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 12)); // center
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 7));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 6));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 13));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 10));
-    ASSERT_TRUE(Exists(neighborhoodSearch.GetParticleNeighbors(12), 3));
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 0), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 20), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 24), false);
-    ASSERT_EQ(Exists(neighborhoodSearch.GetParticleNeighbors(12), 4), false);
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 12)); // center
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 7));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 6));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 13));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 10));
+    ASSERT_TRUE(Exists(neighborhoodSearch->GetParticleNeighbors(12), 3));
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 0), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 20), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 24), false);
+    ASSERT_EQ(Exists(neighborhoodSearch->GetParticleNeighbors(12), 4), false);
 
 
 }
