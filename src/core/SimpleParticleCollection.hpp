@@ -25,6 +25,12 @@ namespace FluidSolver {
             float Density;
 
             uint8_t Type;
+
+            bool operator==(const FluidParticle &rhs) const;
+
+            bool operator!=(const FluidParticle &rhs) const;
+
+
         };
 
         SimpleParticleCollection(std::vector<FluidParticle> &input);

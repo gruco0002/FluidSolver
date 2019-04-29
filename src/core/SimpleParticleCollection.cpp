@@ -72,4 +72,18 @@ namespace FluidSolver {
     void SimpleParticleCollection::SetParticleType(uint32_t index, IParticleCollection::ParticleType value) {
         particles[index].Type = value;
     }
+
+    bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {
+        return Position == rhs.Position &&
+               Velocity == rhs.Velocity &&
+               Acceleration == rhs.Acceleration &&
+               Mass == rhs.Mass &&
+               Pressure == rhs.Pressure &&
+               Density == rhs.Density &&
+               Type == rhs.Type;
+    }
+
+    bool SimpleParticleCollection::FluidParticle::operator!=(const SimpleParticleCollection::FluidParticle &rhs) const {
+        return !(rhs == *this);
+    }
 }
