@@ -235,7 +235,7 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
-    resetHugeDamExampleData();
+    resetSimpleDamExampleData();
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {
