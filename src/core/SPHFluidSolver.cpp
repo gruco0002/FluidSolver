@@ -3,6 +3,7 @@
 //
 
 #include <cstdint>
+#include <algorithm>
 #include "SPHFluidSolver.hpp"
 
 namespace FluidSolver {
@@ -62,7 +63,8 @@ namespace FluidSolver {
 
     float SPHFluidSolver::ComputePressure(uint32_t particleIndex) {
         float density = particleCollection->GetDensity(particleIndex);
-        return StiffnessK * (density / RestDensity - 1.0f);
+        float pressure = StiffnessK * (density / RestDensity - 1.0f);
+        return std::max(pressure, 0.0f);
     }
 
     float SPHFluidSolver::ComputeDensity(uint32_t particleIndex) {
@@ -114,7 +116,8 @@ namespace FluidSolver {
                 float neighborDensity = particleCollection->GetDensity(neighbor);
                 float neighborPressure = particleCollection->GetPressure(neighbor);
 
-                float neighborPressureDivDensitySquared = neighborDensity == 0.0f ? 0.0f :neighborPressure / std::pow(neighborDensity, 2.0f);
+                float neighborPressureDivDensitySquared =
+                        neighborDensity == 0.0f ? 0.0f : neighborPressure / std::pow(neighborDensity, 2.0f);
 
                 pressureAcceleration +=
                         -neighborMass * (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
@@ -138,7 +141,7 @@ namespace FluidSolver {
             float neighborMass = particleCollection->GetMass(neighbor);
             float neighborDensity = particleCollection->GetDensity(neighbor);
 
-            if(neighborDensity == 0.0f)
+            if (neighborDensity == 0.0f)
                 continue;
 
             glm::vec2 vij = velocity - neighborVelocity;
