@@ -72,7 +72,7 @@ namespace FluidSolver {
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
             float neighborMass = particleCollection->GetMass(neighbor);
-            density += neighborMass * kernel->GetKernelValue(position, neighborPosition, KernelSupport);
+            density += neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
         }
         return density;
     }
@@ -105,7 +105,7 @@ namespace FluidSolver {
                 glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
                 pressureAcceleration +=
                         -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
-                        kernel->GetKernelDerivativeValue(position, neighborPosition, KernelSupport);
+                        kernel->GetKernelDerivativeValue(neighborPosition, position, KernelSupport);
 
             } else {
                 // normal particles
@@ -118,7 +118,7 @@ namespace FluidSolver {
 
                 pressureAcceleration +=
                         -neighborMass * (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
-                        kernel->GetKernelDerivativeValue(position, neighborPosition, KernelSupport);
+                        kernel->GetKernelDerivativeValue(neighborPosition, position, KernelSupport);
             }
 
         }
@@ -146,7 +146,7 @@ namespace FluidSolver {
 
             tmp += (neighborMass / neighborDensity) *
                    (glm::dot(vij, xij) / (glm::dot(xij, xij) + 0.01f * ParticleSize * ParticleSize)) *
-                   kernel->GetKernelDerivativeValue(position, neighborPosition, KernelSupport);
+                   kernel->GetKernelDerivativeValue(neighborPosition, position, KernelSupport);
 
 
         }

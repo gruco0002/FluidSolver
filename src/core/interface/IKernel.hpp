@@ -17,11 +17,11 @@ namespace FluidSolver {
 
         virtual float GetKernelValue(glm::vec2 position, float kernelSupport) = 0;
 
-        virtual float GetKernelValue(glm::vec2 origin, glm::vec2 position, float kernelSupport);
+        virtual float GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position, float kernelSupport);
 
         virtual glm::vec2 GetKernelDerivativeValue(glm::vec2 position, float kernelSupport) = 0;
 
-        virtual glm::vec2 GetKernelDerivativeValue(glm::vec2 origin, glm::vec2 position, float kernelSupport);
+        virtual glm::vec2 GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position, float kernelSupport);
 
 
     };
