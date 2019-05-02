@@ -53,6 +53,16 @@ namespace FluidSolver {
          */
         virtual glm::vec2 GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position, float kernelSupport);
 
+        /**
+        * Helper function calling -1.0 * GetKernelDerivativeValue with the position := neighborPosition - position
+        * @see FluidSolver::IKernel::GetKernelDerivativeValue
+        * @param neighborPosition
+        * @param position
+        * @param kernelSupport
+        * @return
+        */
+        virtual glm::vec2 GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position, float kernelSupport);
+
 
     };
 
