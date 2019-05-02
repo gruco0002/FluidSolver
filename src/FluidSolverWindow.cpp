@@ -241,8 +241,9 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
-    resetBoundaryTestExampleData();
+    //resetBoundaryTestExampleData();
     //resetSimpleDamExampleData();
+    resetHugeDamExampleData();
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {
@@ -356,8 +357,8 @@ void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float
 }
 
 void FluidSolverWindow::resetHugeDamExampleData() {
-    particleCountX = 100;
-    particleCountY = 100;
+    particleCountX = 106;
+    particleCountY = 106;
     CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
 
     float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
@@ -365,41 +366,58 @@ void FluidSolverWindow::resetHugeDamExampleData() {
     // generate a simple boundary
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
 
-    for (int x = -50; x <= 50; x++) {
+    for (int x = -53; x <= 53; x++) {
         FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = glm::vec2((float) x, (float) -50);
+
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
         p.Density = sphFluidSolver->RestDensity;
         p.Mass = mass;
         p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+
+        p.Position = glm::vec2((float) x, (float) -50);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) x, (float) -51);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) x, (float) -52);
         particles.push_back(p);
     }
 
     // left boundary
     for (int y = 20; y > -50; y--) {
         FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = glm::vec2((float) -50, (float) y);
+
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
         p.Density = sphFluidSolver->RestDensity;
         p.Mass = mass;
         p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+
+        p.Position = glm::vec2((float) -50, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) -51, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) -52, (float) y);
         particles.push_back(p);
     }
 
     // right boundary
     for (int y = 20; y > -50; y--) {
         FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = glm::vec2((float) 50, (float) y);
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
         p.Density = sphFluidSolver->RestDensity;
         p.Mass = mass;
         p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+
+        p.Position = glm::vec2((float) 50, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) 51, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) 52, (float) y);
         particles.push_back(p);
 
     }

@@ -16,7 +16,7 @@ namespace FluidSolver {
 
     public:
 
-        float TimeStep = 0.01f;
+        float TimeStep = 0.001f;
         float ParticleSize = 1.0f;
         float NeighborhoodRadius = 5.0f;
         float KernelSupport = 2.0f;
