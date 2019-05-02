@@ -164,7 +164,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
 
 
     sphFluidSolver->StiffnessK = 100.0f;
-    sphFluidSolver->Viscosity = -1.0f;
+    sphFluidSolver->Viscosity = 0.001f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
