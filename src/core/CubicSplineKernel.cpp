@@ -34,7 +34,7 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
 
 
     glm::vec2 ret = glm::vec2(0.0f);
-
+    // this is the reversed implementation
     if (q < 1.0f) {
         ret = pre * (-3.0f * std::pow(2.0f - q, 2.0f) + 12.0f * std::pow(1.0f - q, 2.0f));
     } else if (q < 2.0f) {
@@ -43,6 +43,6 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
         ret = glm::vec2(0.0f);
     }
 
-
-    return alpha * ret;
+    // reverse the reversed implementation, since this function should return a non reversed kernel derivative value
+    return alpha * ret * -1.0f;
 }
