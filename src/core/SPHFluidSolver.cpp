@@ -141,7 +141,7 @@ namespace FluidSolver {
             if(neighborDensity == 0.0f)
                 continue;
 
-            glm::vec2 vij = neighborVelocity - velocity;
+            glm::vec2 vij = neighborVelocity - velocity; // TODO: change direction
             glm::vec2 xij = neighborPosition - position;
 
             tmp += (neighborMass / neighborDensity) *

@@ -162,8 +162,9 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
 
+
     sphFluidSolver->StiffnessK = 100.0f;
-    sphFluidSolver->Viscosity = -1000.0f;
+    sphFluidSolver->Viscosity = -1.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
@@ -235,6 +236,7 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
+    //resetBoundaryTestExampleData();
     resetSimpleDamExampleData();
 }
 
