@@ -22,15 +22,17 @@
 void FluidSolverWindow::render() {
     fpsLabel->setText("FPS: " + std::to_string(GetFPS()));
 
-    accumulatedSimulationTime += GetLastFrameTime();
-    if (sphFluidSolver != nullptr) {
-        while (accumulatedSimulationTime >= sphFluidSolver->TimeStep) {
-            //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
-            accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
-            sphFluidSolver->ExecuteSimulationStep();
+    if (!this->Pause) {
+        accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
+        if (sphFluidSolver != nullptr) {
+            while (accumulatedSimulationTime >= sphFluidSolver->TimeStep) {
+                //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
+                accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
+                sphFluidSolver->ExecuteSimulationStep();
+            }
+        } else {
+            accumulatedSimulationTime = 0.0f;
         }
-    } else {
-        accumulatedSimulationTime = 0.0f;
     }
 
     if (particleVertexArray != nullptr)
@@ -59,6 +61,9 @@ bool FluidSolverWindow::even(int input) {
 }
 
 void FluidSolverWindow::load() {
+
+    OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
+
     loadParticles();
     loadFont();
     loadGUI();
@@ -236,8 +241,8 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
-    //resetBoundaryTestExampleData();
-    resetSimpleDamExampleData();
+    resetBoundaryTestExampleData();
+    //resetSimpleDamExampleData();
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {

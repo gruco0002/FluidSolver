@@ -13,6 +13,7 @@
 #include <dependencies/cppgui/src/ColorPickerExtended.hpp>
 #include <dependencies/cppgui/src/Center.hpp>
 #include <dependencies/cppgui/src/ScrollBox.hpp>
+#include <dependencies/cppgui/src/ExtendedSlider.hpp>
 #include "FluidSolverWindow.hpp"
 
 FluidSolverTopMenu::FluidSolverTopMenu(ParticleRenderer *particleRenderer, FluidSolverWindow *window) : cppgui::Panel(0,
@@ -31,7 +32,9 @@ void FluidSolverTopMenu::Setup() {
     backgroundColor = cppgui::Color(1.0f);
 
 
-    addChild(new cppgui::Spread(new cppgui::ScrollBox(new cppgui::DirectionalSpread(stack, cppgui::SpreadDirectionVertical), cppgui::ScrollHorizontal)));
+    addChild(new cppgui::Spread(
+            new cppgui::ScrollBox(new cppgui::DirectionalSpread(stack, cppgui::SpreadDirectionVertical),
+                                  cppgui::ScrollHorizontal)));
 
     auto combobox = new cppgui::ComboBox(200, 0);
     stack->addChild(new cppgui::DirectionalSpread(combobox, cppgui::SpreadDirectionVertical));
@@ -116,5 +119,12 @@ void FluidSolverTopMenu::Setup() {
     stack->addChild(new cppgui::DirectionalSpread(resetBtn, cppgui::SpreadDirectionVertical));
     resetBtn->OnClickEvent.Subscribe([=](float x, float y) {
         window->resetData();
+    });
+
+    auto extSlider = new cppgui::ExtendedSlider("RealTimeSpeed", this->window->RealTimeSpeed, 2.0f, 0.0f);
+    extSlider->setWidth(250.0f);
+    stack->addChild(new cppgui::DirectionalSpread(extSlider, cppgui::SpreadDirectionVertical));
+    extSlider->OnValueChanged.Subscribe([=](float newValue) {
+        this->window->RealTimeSpeed = newValue;
     });
 }

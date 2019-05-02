@@ -30,6 +30,10 @@ public:
 
     FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
 
+    bool Pause = true;
+
+    float RealTimeSpeed = 1.0f;
+
 private:
     Engine::Text::Font *font;
 
