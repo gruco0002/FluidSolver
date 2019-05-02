@@ -309,7 +309,7 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
 
             // normal particle
             FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x * 2.1f, (float) y * 2.1f);
+            p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);
             p.Pressure = 0.0f;
@@ -427,7 +427,7 @@ void FluidSolverWindow::resetHugeDamExampleData() {
         for (int y = 20; y >= 0; y--) {
             // normal particle
             FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x * 2.1f, (float) y * 2.1f);
+            p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);
             p.Pressure = 0.0f;
