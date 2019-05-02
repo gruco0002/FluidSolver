@@ -241,7 +241,7 @@ void FluidSolverWindow::resetData() {
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {
-    particleCountX = 20;
+    particleCountX = 26;
     particleCountY = 20;
     CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
 
@@ -251,7 +251,7 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
     // generate a simple boundary
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
 
-    for (int x = -10; x <= 10; x++) {
+    for (int x = -12; x <= 12; x++) {
         FluidSolver::SimpleParticleCollection::FluidParticle p;
         p.Position = glm::vec2((float) x, (float) -5);
         p.Velocity = glm::vec2(0.0f);
@@ -261,21 +261,39 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
         p.Mass = mass;
         p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
         particles.push_back(p);
+
+        p.Position = glm::vec2((float) x, -6.0f);
+        particles.push_back(p);
+
+        p.Position = glm::vec2((float) x, -7.0f);
+        particles.push_back(p);
     }
 
-
+    // left + right boundary
     for (int y = 5; y > -5; y--) {
-        for (int x = -10; x <= 10; x += 20) {
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = sphFluidSolver->RestDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-            particles.push_back(p);
-        }
+
+        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        p.Velocity = glm::vec2(0.0f);
+        p.Acceleration = glm::vec2(0.0f);
+        p.Pressure = 0.0f;
+        p.Density = sphFluidSolver->RestDensity;
+        p.Mass = mass;
+        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+
+        p.Position = glm::vec2((float) -10, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) -11, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) -12, (float) y);
+        particles.push_back(p);
+
+        p.Position = glm::vec2((float) 10, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) 11, (float) y);
+        particles.push_back(p);
+        p.Position = glm::vec2((float) 12, (float) y);
+        particles.push_back(p);
+
     }
 
 
