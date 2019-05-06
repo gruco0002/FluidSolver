@@ -17,6 +17,7 @@
 
 #include <dependencies/cppgui/src/Label.hpp>
 #include <core/SPHFluidSolver.hpp>
+#include "FluidSolverParticleInfoGUI.hpp"
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -29,6 +30,8 @@ public:
     void resetData();
 
     FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
+
+    FluidSolver::IParticleCollection* particleCollection = nullptr;
 
     bool Pause = true;
 
@@ -64,7 +67,10 @@ private:
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
 
+
     cppgui::Label* fpsLabel;
+
+    FluidSolverParticleInfoGUI* infoBox;
 
     void CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize);
 

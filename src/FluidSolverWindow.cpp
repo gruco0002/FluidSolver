@@ -19,6 +19,7 @@
 #include <core/IntegrationSchemeEulerCromer.hpp>
 
 
+
 void FluidSolverWindow::render() {
     fpsLabel->setText("FPS: " + std::to_string(GetFPS()));
 
@@ -34,6 +35,9 @@ void FluidSolverWindow::render() {
             accumulatedSimulationTime = 0.0f;
         }
     }
+
+    if(infoBox != nullptr)
+        infoBox->UpdateData();
 
     if (particleVertexArray != nullptr)
         particleVertexArray->Update();
@@ -125,6 +129,13 @@ void FluidSolverWindow::buildGUI() {
     scaff->addChild(fpsLabel);
     fpsLabel->Visible = true;
 
+    infoBox = new FluidSolverParticleInfoGUI(particleCollection->GetSize()-1, particleCollection);
+    infoBox->setLocationX(100);
+    infoBox->setLocationY(100);
+    infoBox->setWidth(300);
+    infoBox->setHeight(300);
+    scaff->addChild(infoBox);
+
 }
 
 void FluidSolverWindow::loadParticles() {
@@ -148,8 +159,8 @@ void FluidSolverWindow::loadMillionParticleExample() {
         }
     }
 
-    auto simple = new FluidSolver::SimpleParticleCollection(particles);
-    particleVertexArray = new ParticleVertexArray(simple);
+    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
+    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
 
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(0, 1000, 0, 1000));
 
@@ -168,8 +179,8 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->RestDensity = 1.0f;
 
 
-    sphFluidSolver->StiffnessK = 100.0f;
-    sphFluidSolver->Viscosity = 0.001f;
+    sphFluidSolver->StiffnessK = 100000.0f;
+    sphFluidSolver->Viscosity = 3.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
@@ -226,24 +237,25 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
     particles.push_back(p);
 
     // generate particle collection
-    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(simple);
+    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
 
     // set up computation providers
-    sphFluidSolver->particleCollection = simple;
+    sphFluidSolver->particleCollection = particleCollection;
+    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
 
 void FluidSolverWindow::resetData() {
-    //resetBoundaryTestExampleData();
+    resetBoundaryTestExampleData();
     //resetSimpleDamExampleData();
-    resetHugeDamExampleData();
+    //resetHugeDamExampleData();
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {
@@ -321,17 +333,18 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
     }
 
     // generate particle collection
-    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(simple);
+    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
     // set up computation providers
-    sphFluidSolver->particleCollection = simple;
+    sphFluidSolver->particleCollection = particleCollection;
+    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
 
 void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize) {
@@ -439,16 +452,17 @@ void FluidSolverWindow::resetHugeDamExampleData() {
     }
 
     // generate particle collection
-    auto simple = new FluidSolver::SimpleParticleCollection(particles);
+    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(simple);
+    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
     // set up computation providers
-    sphFluidSolver->particleCollection = simple;
+    sphFluidSolver->particleCollection = particleCollection;
+    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
 
 }
