@@ -64,9 +64,13 @@ bool FluidSolverWindow::even(int input) {
     return input % 2 == 0;
 }
 
+
 void FluidSolverWindow::load() {
 
     OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
+    OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn){
+        this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
+    });
 
     loadParticles();
     loadFont();
@@ -466,3 +470,38 @@ void FluidSolverWindow::resetHugeDamExampleData() {
     if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
 
 }
+
+    void FluidSolverWindow::onClick(float x, float y){
+
+        if(particleCollection == nullptr) return;
+        if(particleRenderer == nullptr) return;
+        if(infoBox == nullptr) return;
+        
+        auto clip = glm::vec2(x,y) / glm::vec2((float)GetWidth(), (float)-GetHeight()) + glm::vec2(0.0f, 1.0f);
+        clip *= 2.0;
+        clip -= glm::vec2(1.0);
+
+        auto unprojected =  glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0, 1.0);
+
+        // pos is the position in particle space
+        glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
+        
+        // find nearest particle, that you have clicked on
+        uint32_t particleIndex = -1;
+        float dist = particleRenderer->pointSize * 0.5;        
+        for(uint32_t i = 0; i < particleCollection->GetSize(); i++){
+            auto particlePos = particleCollection->GetPosition(i);
+            auto partDist = glm::length(pos - particlePos);
+            if(partDist < dist){
+                particleIndex = i;
+                dist = partDist;
+            }
+        }
+
+        // set particle index in info box
+        if(particleIndex != -1){
+            infoBox->particleIndex = particleIndex;
+        }
+
+    }
+    

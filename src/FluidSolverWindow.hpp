@@ -58,6 +58,8 @@ private:
 
     void resetHugeDamExampleData();
 
+    void onClick(float x, float y);
+
     Engine::Text::TextRenderer *textRenderer;
     Engine::RectangleRenderer *rectangleRenderer;
 
