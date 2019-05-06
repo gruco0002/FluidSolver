@@ -26,6 +26,9 @@ private:
     cppgui::StyledLabel *id;
     cppgui::StyledLabel *position;
     cppgui::StyledLabel *velocity;
+        cppgui::StyledLabel *density;
+            cppgui::StyledLabel *pressure;
+                cppgui::StyledLabel *mass;
 
     void Setup();
 
