@@ -72,7 +72,7 @@ private:
 
     cppgui::Label* fpsLabel;
 
-    FluidSolverParticleInfoGUI* infoBox;
+    FluidSolverParticleInfoGUI* infoBox = nullptr;
 
     void CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize);
 
