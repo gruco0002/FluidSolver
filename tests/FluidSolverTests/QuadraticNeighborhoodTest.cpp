@@ -237,7 +237,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount2) {
     std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
     for (auto pos : positions) {
         FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = pos - glm::vec2(50.856f);;
+        p.Position = pos - glm::vec2(50.856f);
         particles.push_back(p);
     }
     FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
