@@ -15,7 +15,7 @@ namespace FluidSolver {
     public:
         void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;
 
-        std::vector<uint32_t > &GetParticleNeighbors(uint32_t particleIndex) override;
+        Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
 
 
     private:

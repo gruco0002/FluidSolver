@@ -28,7 +28,7 @@ void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIn
 
 }
 
-std::vector<uint32_t> &
+FluidSolver::Neighbors
 FluidSolver::QuadraticNeighborhoodSearch::GetParticleNeighbors(uint32_t particleIndex) {
-    return neighbors[particleIndex];
+    return FluidSolver::Neighbors(&(neighbors[particleIndex][0]), neighbors[particleIndex].size());
 }
