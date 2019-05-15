@@ -195,9 +195,9 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     // create particle renderer
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
     particleRenderer->pointSize = 30.0f;
-    particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Pressure;
-    particleRenderer->topValue = -50.0f;
-    particleRenderer->bottomValue = -55.0f;
+    particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Density;
+    particleRenderer->topValue = 2.0f;
+    particleRenderer->bottomValue = 0.0f;
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(1.0f);
     CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
@@ -257,9 +257,9 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 }
 
 void FluidSolverWindow::resetData() {
-    resetBoundaryTestExampleData();
+    //resetBoundaryTestExampleData();
     //resetSimpleDamExampleData();
-    //resetHugeDamExampleData();
+    resetHugeDamExampleData();
 }
 
 void FluidSolverWindow::resetSimpleDamExampleData() {
