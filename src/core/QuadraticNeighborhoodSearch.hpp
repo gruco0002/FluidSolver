@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <utility>
 #include "core/interface/INeighborhoodSearch.hpp"
 
 namespace FluidSolver {
@@ -19,7 +20,8 @@ namespace FluidSolver {
 
 
     private:
-        std::unordered_map<uint32_t, std::vector<uint32_t >> neighbors;
+        // tuple contains count, vector contains neighbors
+        std::unordered_map<uint32_t, std::pair<uint32_t ,std::vector<uint32_t >>> neighbors;
 
 
     };
