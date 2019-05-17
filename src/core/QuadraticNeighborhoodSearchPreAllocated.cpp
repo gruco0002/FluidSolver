@@ -19,11 +19,13 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
     if (neighborsStart.size() < particleCount) neighborsStart.resize(particleCount);
 
     // calculate neighbor count
+    #pragma omp parallel for
     for (uint32_t i = 0; i < particleCount; i++) {
         uint32_t count = 0;
         glm::vec2 position = particleCollection->GetPosition(i);
 
         // for the particle i, find all neighbors j
+        #pragma omp parallel for
         for (uint32_t j = 0; j < particleCount; j++) {
             glm::vec2 distVec = position - particleCollection->GetPosition(j);
             if (glm::length(distVec) <= radius) {
@@ -37,6 +39,7 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
     }
 
     // calculate neighbor start
+    #pragma omp parallel for
     for (uint32_t i = 0; i < particleCount; i++) {
         uint32_t sum = 0;
         for (uint32_t j = 0; j < i; j++) {
@@ -52,6 +55,7 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
     if (neighbors.size() < totalNeighborCount) neighbors.resize(totalNeighborCount);
 
     // find neighbors and insert them into the neighbor array
+    #pragma omp parallel for
     for (uint32_t i = 0; i < particleCount; i++) {
 
         glm::vec2 position = particleCollection->GetPosition(i);

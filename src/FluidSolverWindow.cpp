@@ -187,8 +187,8 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->Viscosity = 3.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
     resetData();
