@@ -17,7 +17,7 @@
 #include <core/CubicSplineKernel.hpp>
 #include <core/QuadraticNeighborhoodSearch.hpp>
 #include <core/IntegrationSchemeEulerCromer.hpp>
-
+#include <core/QuadraticNeighborhoodSearchPreAllocated.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -187,7 +187,8 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->Viscosity = 3.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
     resetData();
