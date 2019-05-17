@@ -1,5 +1,6 @@
 find_package(OpenGL REQUIRED)
 set(OpenGL_GL_PREFERENCE GLVND)
+find_package(OpenMP REQUIRED)
 
 # Add glad
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Glad EXCLUDE_FROM_ALL)
@@ -71,4 +72,4 @@ set(FLUID_SOLVER_SOURCE_FILES
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
-target_link_libraries(FluidSolver ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui)
+target_link_libraries(FluidSolver PUBLIC OpenMP::OpenMP_CXX ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui )
