@@ -1,6 +1,5 @@
 find_package(OpenGL REQUIRED)
 set(OpenGL_GL_PREFERENCE GLVND)
-find_package(OpenMP REQUIRED)
 
 # Add glad
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/Glad EXCLUDE_FROM_ALL)
@@ -18,11 +17,16 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui)
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
 
+    find_package(OpenMP REQUIRED)
+
     set(FLUIDSOLVER_LIBS glfw GLAD)
-    set(FLUIDSOLVER_SYSTEM_LIBS opengl32 user32 Shlwapi)
+    set(FLUIDSOLVER_SYSTEM_LIBS OpenMP::OpenMP_CXX opengl32 user32 Shlwapi)
 endif ()
 
 if (APPLE)
+
+    include_directories(/usr/local/Cellar/libomp/8.0.0/include)
+    link_directories(/usr/local/Cellar/libomp/8.0.0/lib)
 
     include_directories(/System/Library/Frameworks)
     find_library(COCOA_LIBRARY Cocoa)
@@ -37,6 +41,8 @@ endif ()
 
 if (UNIX AND NOT APPLE)
     # for Linux, BSD, Solaris, Minix
+
+    find_package(OpenMP REQUIRED)
 
     add_definitions(${OPENGL_DEFINITIONS})
     find_package(X11 REQUIRED)
@@ -53,9 +59,12 @@ if (UNIX AND NOT APPLE)
 
     # note that the order is important for setting the libs
     # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
-    set(FLUIDSOLVER_SYSTEM_LIBS X11 Xxf86vm GL dl pthread)
+    set(FLUIDSOLVER_SYSTEM_LIBS X11 Xxf86vm GL dl pthread OpenMP::OpenMP_CXX)
 
 endif ()
+
+
+
 
 # include directories
 
@@ -72,4 +81,4 @@ set(FLUID_SOLVER_SOURCE_FILES
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
-target_link_libraries(FluidSolver PUBLIC OpenMP::OpenMP_CXX ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui )
+target_link_libraries(FluidSolver PUBLIC ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui )
