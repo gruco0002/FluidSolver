@@ -14,6 +14,10 @@ bool FluidSolver::INeighborhoodSearch::SupportsGlobalNeighborhoodFinding() {
     return false;
 }
 
+void FluidSolver::INeighborhoodSearch::SetParticleCount(uint32_t particleCount) {
+    // Do nothing
+}
+
 FluidSolver::Neighbors::iterator FluidSolver::Neighbors::begin() {
     return FluidSolver::Neighbors::iterator(*this, 0);
 }

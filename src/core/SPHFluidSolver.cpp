@@ -12,6 +12,7 @@ namespace FluidSolver {
     void SPHFluidSolver::ExecuteSimulationStep() {
 
         // find neighbors for all particles
+        neighborhoodSearch->SetParticleCount(particleCollection->GetSize());
         if (neighborhoodSearch->SupportsGlobalNeighborhoodFinding()) {
             neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
         } else {

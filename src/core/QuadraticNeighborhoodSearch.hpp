@@ -18,6 +18,8 @@ namespace FluidSolver {
 
         Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
 
+        void SetParticleCount(uint32_t particleCount) override;
+
 
     private:
         // tuple contains count, vector contains neighbors

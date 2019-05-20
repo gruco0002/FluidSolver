@@ -8,13 +8,6 @@ void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIn
                                                              FluidSolver::IParticleCollection *particleCollection,
                                                              float radius) {
 
-    // create bucket if not existing and / or clear it
-    while (bucketsCreatedUntilIndex <= particleIndex) {
-        neighbors[bucketsCreatedUntilIndex] = std::pair<uint32_t, std::vector<uint32_t >>(0, std::vector<uint32_t>());
-        bucketsCreatedUntilIndex++;
-    }
-
-
     uint32_t neighborCount = 0;
     // calculate neighbors
     glm::vec2 position = particleCollection->GetPosition(particleIndex);
@@ -41,4 +34,13 @@ void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIn
 FluidSolver::Neighbors
 FluidSolver::QuadraticNeighborhoodSearch::GetParticleNeighbors(uint32_t particleIndex) {
     return FluidSolver::Neighbors(&(neighbors[particleIndex].second[0]), neighbors[particleIndex].first);
+}
+
+void FluidSolver::QuadraticNeighborhoodSearch::SetParticleCount(uint32_t particleCount) {
+    // create buckets if not existing and / or clear it
+    while (bucketsCreatedUntilIndex < particleCount) {
+        neighbors[bucketsCreatedUntilIndex] = std::pair<uint32_t, std::vector<uint32_t >>(0, std::vector<uint32_t>());
+        bucketsCreatedUntilIndex++;
+    }
+
 }
