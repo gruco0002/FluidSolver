@@ -23,7 +23,7 @@ namespace FluidSolver {
         // tuple contains count, vector contains neighbors
         std::unordered_map<uint32_t, std::pair<uint32_t ,std::vector<uint32_t >>> neighbors;
 
-        uint32_t bucketsCreatedUntilIndex = -1;
+        uint32_t bucketsCreatedUntilIndex = 0;
 
     };
 }

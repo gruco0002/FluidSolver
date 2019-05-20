@@ -9,11 +9,11 @@ void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIn
                                                              float radius) {
 
     // create bucket if not existing and / or clear it
-    while (bucketsCreatedUntilIndex < particleIndex) {
-        bucketsCreatedUntilIndex++;
+    while (bucketsCreatedUntilIndex <= particleIndex) {
         neighbors[bucketsCreatedUntilIndex] = std::pair<uint32_t, std::vector<uint32_t >>(0, std::vector<uint32_t>());
+        bucketsCreatedUntilIndex++;
     }
-    
+
 
     uint32_t neighborCount = 0;
     // calculate neighbors
