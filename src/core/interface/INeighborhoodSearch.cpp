@@ -19,7 +19,7 @@ FluidSolver::Neighbors::iterator FluidSolver::Neighbors::begin() {
 }
 
 FluidSolver::Neighbors::iterator FluidSolver::Neighbors::end() {
-    return FluidSolver::Neighbors::iterator(*this, size);
+    return FluidSolver::Neighbors::iterator(*this, _size);
 }
 
 FluidSolver::NeighborsIterator::NeighborsIterator(FluidSolver::Neighbors &nb, size_t position) : neighbors(nb),
@@ -50,6 +50,10 @@ const FluidSolver::NeighborsIterator FluidSolver::NeighborsIterator::operator++(
     return clone;
 }
 
-FluidSolver::Neighbors::Neighbors(FluidSolver::Neighbors::T *start, size_t size) : start(start), size(size) {
+FluidSolver::Neighbors::Neighbors(FluidSolver::Neighbors::T *start, size_t size) : start(start), _size(size) {
 
+}
+
+size_t FluidSolver::Neighbors::size() {
+    return _size;
 }

@@ -30,10 +30,13 @@ namespace FluidSolver {
 
         iterator end();
 
+        size_t size();
+
+
     private:
         friend class NeighborsIterator;
 
-        size_t size;
+        size_t _size;
         T *start;
 
 
