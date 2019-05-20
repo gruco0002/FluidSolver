@@ -11,19 +11,20 @@
 #include "core/interface/INeighborhoodSearch.hpp"
 
 namespace FluidSolver {
-    class QuadraticNeighborhoodSearch :public INeighborhoodSearch{
+    class QuadraticNeighborhoodSearch : public INeighborhoodSearch {
 
-    public:
+    protected:
         void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;
 
-        Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
-
+    public:
         void SetParticleCount(uint32_t particleCount) override;
+
+        Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
 
 
     private:
         // tuple contains count, vector contains neighbors
-        std::unordered_map<uint32_t, std::pair<uint32_t ,std::vector<uint32_t >>> neighbors;
+        std::unordered_map<uint32_t, std::pair<uint32_t, std::vector<uint32_t >>> neighbors;
 
         uint32_t bucketsCreatedUntilIndex = 0;
 

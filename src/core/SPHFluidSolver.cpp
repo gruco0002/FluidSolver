@@ -13,18 +13,7 @@ namespace FluidSolver {
 
         // find neighbors for all particles
         neighborhoodSearch->SetParticleCount(particleCollection->GetSize());
-        if (neighborhoodSearch->SupportsGlobalNeighborhoodFinding()) {
             neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
-        } else {
-            #pragma omp parallel for
-            for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-                if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
-                    continue; // don't calculate unnecessary values for the boundary particles.
-                }
-
-                neighborhoodSearch->FindNeighbors(i, particleCollection, NeighborhoodRadius);
-            }
-        }
 
 
         // calculate density and pressure for all particles

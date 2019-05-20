@@ -7,12 +7,18 @@
 
 void
 FluidSolver::INeighborhoodSearch::FindNeighbors(FluidSolver::IParticleCollection *particleCollection, float radius) {
-    throw FluidSolverException("Neighborhood Search: Unsupported operation!");
+
+    #pragma omp parallel for
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+            continue; // don't calculate unnecessary values for the boundary particles.
+        }
+
+        this->FindNeighbors(i, particleCollection, radius);
+    }
 }
 
-bool FluidSolver::INeighborhoodSearch::SupportsGlobalNeighborhoodFinding() {
-    return false;
-}
+
 
 void FluidSolver::INeighborhoodSearch::SetParticleCount(uint32_t particleCount) {
     // Do nothing

@@ -5,9 +5,7 @@
 #include "QuadraticNeighborhoodSearchPreAllocated.hpp"
 #include "FluidSolverException.hpp"
 
-bool FluidSolver::QuadraticNeighborhoodSearchPreAllocated::SupportsGlobalNeighborhoodFinding() {
-    return true;
-}
+
 
 void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
         FluidSolver::IParticleCollection *particleCollection, float radius) {

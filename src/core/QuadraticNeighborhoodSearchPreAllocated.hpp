@@ -11,7 +11,6 @@ namespace FluidSolver {
     class QuadraticNeighborhoodSearchPreAllocated : public INeighborhoodSearch {
 
     public:
-        bool SupportsGlobalNeighborhoodFinding() override;
 
         void FindNeighbors(IParticleCollection *particleCollection, float radius) override;
 
