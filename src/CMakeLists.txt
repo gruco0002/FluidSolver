@@ -25,8 +25,23 @@ endif ()
 
 if (APPLE)
 
-    include_directories(/usr/local/Cellar/libomp/8.0.0/include)
-    link_directories(/usr/local/Cellar/libomp/8.0.0/lib)
+    set(CMAKE_PREFIX_PATH /usr/local/opt/llvm)
+
+    find_package(LLVM REQUIRED CONFIG)
+
+    message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+    message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+    # Find the libraries that correspond to the LLVM components
+    # that we wish to use
+    llvm_map_components_to_libnames(llvm_libs support core irreader )
+
+    include_directories( ${LLVM_INCLUDE_DIRS})
+
+    set(CMAKE_C_COMPILER   /usr/local/opt/llvm/bin/clang)
+    set(CMAKE_CXX_COMPILER /usr/local/opt/llvm/bin/clang++)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
     include_directories(/System/Library/Frameworks)
     find_library(COCOA_LIBRARY Cocoa)
@@ -36,7 +51,7 @@ if (APPLE)
     mark_as_advanced(COCOA_LIBRARY OpenGL_LIBRARY)
 
     set(FLUIDSOLVER_LIBS glfw GLAD)
-    set(FLUIDSOLVER_SYSTEM_LIBS ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVideo_LIBRARY})
+    set(FLUIDSOLVER_SYSTEM_LIBS ${llvm_libs} /usr/local/opt/llvm/lib/libomp.dylib ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVideo_LIBRARY})
 endif ()
 
 if (UNIX AND NOT APPLE)
