@@ -3,7 +3,7 @@
 //
 
 #include "QuadraticNeighborhoodSearchPreAllocated.hpp"
-#include "FluidSolverException.hpp"
+#include "core/FluidSolverException.hpp"
 
 
 

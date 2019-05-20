@@ -2,9 +2,9 @@
 // Created by corbi on 24.04.2019.
 //
 
-#include "QuadraticNeighborhoodSearch.hpp"
+#include "QuadraticNeighborhoodSearchGreedyAllocated.hpp"
 
-void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIndex,
+void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::FindNeighbors(uint32_t particleIndex,
                                                              FluidSolver::IParticleCollection *particleCollection,
                                                              float radius) {
 
@@ -32,11 +32,11 @@ void FluidSolver::QuadraticNeighborhoodSearch::FindNeighbors(uint32_t particleIn
 }
 
 FluidSolver::Neighbors
-FluidSolver::QuadraticNeighborhoodSearch::GetParticleNeighbors(uint32_t particleIndex) {
+FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::GetParticleNeighbors(uint32_t particleIndex) {
     return FluidSolver::Neighbors(&(neighbors[particleIndex].second[0]), neighbors[particleIndex].first);
 }
 
-void FluidSolver::QuadraticNeighborhoodSearch::SetParticleCount(uint32_t particleCount) {
+void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::SetParticleCount(uint32_t particleCount) {
     // create buckets if not existing and / or clear it
     while (bucketsCreatedUntilIndex < particleCount) {
         neighbors[bucketsCreatedUntilIndex] = std::pair<uint32_t, std::vector<uint32_t >>(0, std::vector<uint32_t>());

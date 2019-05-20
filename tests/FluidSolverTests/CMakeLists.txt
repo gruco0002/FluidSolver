@@ -2,7 +2,7 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 set(FluidSolverTests_SOURCE_FILES
         basic_check.cpp
-        CubicSplineKernelTest.cpp QuadraticNeighborhoodTest.cpp)
+        CubicSplineKernelTest.cpp QuadraticNeighborhoodGreedyAllocatedTest.cpp QuadraticNeighborhoodDynamicAllocatedTest.cpp HelperFunctions.cpp HelperFunctions.hpp)
 
 add_executable(runFluidSolverTests ${FluidSolverTests_SOURCE_FILES})
 

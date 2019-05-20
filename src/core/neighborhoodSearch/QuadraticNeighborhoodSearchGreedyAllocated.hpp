@@ -11,7 +11,7 @@
 #include "core/interface/INeighborhoodSearch.hpp"
 
 namespace FluidSolver {
-    class QuadraticNeighborhoodSearch : public INeighborhoodSearch {
+    class QuadraticNeighborhoodSearchGreedyAllocated : public INeighborhoodSearch {
 
     protected:
         void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;

@@ -3,55 +3,19 @@
 //
 
 #include <core/SimpleParticleCollection.hpp>
-#include <core/QuadraticNeighborhoodSearch.hpp>
+#include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
 #include <libraries/glm/gtx/matrix_transform_2d.hpp>
 #include <core/interface/Constants.hpp>
 #include "gtest/gtest.h"
+#include "HelperFunctions.hpp"
 
 
-FluidSolver::INeighborhoodSearch *GenerateNeighborhoodSearch() {
-    return new FluidSolver::QuadraticNeighborhoodSearch();
-}
-
-/**
- * Creates a grid of positions starting from start with step size in both axis directions.
- * @param start Inclusive start position.
- * @param step Step size of the positions.
- * @param stop Maximum for the grid value in each axis. Is inclusive if step is exactly stop
- * @return
- * @note Grid is sorted from left to right, then top to bottom.
- */
-std::vector<glm::vec2> GetSampleGrid(float start, float step, float stop) {
-
-    std::vector<glm::vec2> pos;
-
-    for (float y = start; y <= stop; y += step) {
-        for (float x = start; x <= stop; x += step) {
-            pos.push_back(glm::vec2(x, y));
-        }
-    }
-
-
-    return pos;
-}
-
-/**
- * Checks if a value exists inside a vector
- * @param val The vector
- * @param search The value to search
- * @return True iff search exists in val
- */
-bool Exists(FluidSolver::Neighbors val, uint32_t search) {
-    for (uint32_t &i : val) {
-        if (i == search) {
-            return true;
-        }
-    }
-    return false;
+FluidSolver::INeighborhoodSearch *GenerateNeighborhoodSearchGreedyAllocated() {
+    return new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
 }
 
 
-TEST(QuadraticNeighborhoodTest, NeighborhoodCount1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, NeighborhoodCount1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -63,7 +27,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount1) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -78,7 +42,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, NeighborhoodCount2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, NeighborhoodCount2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -90,7 +54,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount2) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -106,7 +70,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCount2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, NeighborhoodCorrect1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -118,7 +82,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect1) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
 
     neighborhoodSearch->SetParticleCount(collection.GetSize());
@@ -150,7 +114,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, NeighborhoodCorrect2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -162,7 +126,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect2) {
         p.Position = pos;
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -202,7 +166,7 @@ TEST(QuadraticNeighborhoodTest, NeighborhoodCorrect2) {
 }
 
 
-TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, ShiftedNeighborhoodCount1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -214,7 +178,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount1) {
         p.Position = pos + glm::vec2(10.333f);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -229,7 +193,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, ShiftedNeighborhoodCount2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -241,7 +205,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount2) {
         p.Position = pos - glm::vec2(50.856f);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -257,7 +221,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCount2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, ShiftedNeighborhoodCorrect1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -269,7 +233,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect1) {
         p.Position = pos + glm::vec2(10.3333f, -46.8453f);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -300,7 +264,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, ShiftedNeighborhoodCorrect2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -312,7 +276,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect2) {
         p.Position = pos + glm::vec2(10000.0f, -1000000.0f);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -351,7 +315,7 @@ TEST(QuadraticNeighborhoodTest, ShiftedNeighborhoodCorrect2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedNeighborhoodCount1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -365,7 +329,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount1) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -380,7 +344,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedNeighborhoodCount2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -395,7 +359,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount2) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -411,7 +375,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCount2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedNeighborhoodCorrect1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -426,7 +390,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect1) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -457,7 +421,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedNeighborhoodCorrect2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -472,7 +436,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect2) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -511,7 +475,7 @@ TEST(QuadraticNeighborhoodTest, RotatedNeighborhoodCorrect2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedShiftedNeighborhoodCount1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -525,7 +489,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount1) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -540,7 +504,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedShiftedNeighborhoodCount2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -555,7 +519,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount2) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -571,7 +535,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCount2) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCorrect1) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedShiftedNeighborhoodCorrect1) {
 
     float radius = 1.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -587,7 +551,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCorrect1) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);
@@ -618,7 +582,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCorrect1) {
 
 }
 
-TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCorrect2) {
+TEST(QuadraticNeighborhoodGreedyAllocatedTest, RotatedShiftedNeighborhoodCorrect2) {
 
     float radius = 2.5f;
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
@@ -633,7 +597,7 @@ TEST(QuadraticNeighborhoodTest, RotatedShiftedNeighborhoodCorrect2) {
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
     }
-    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearch();
+    FluidSolver::INeighborhoodSearch *neighborhoodSearch = GenerateNeighborhoodSearchGreedyAllocated();
     FluidSolver::SimpleParticleCollection collection(particles);
     neighborhoodSearch->SetParticleCount(collection.GetSize());
     neighborhoodSearch->FindNeighbors(&collection, radius);

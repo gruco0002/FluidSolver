@@ -15,9 +15,9 @@
 #include <dependencies/cppgui/src/AlignBox.hpp>
 #include <dependencies/cppgui/src/Spread.hpp>
 #include <core/CubicSplineKernel.hpp>
-#include <core/QuadraticNeighborhoodSearch.hpp>
+#include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
 #include <core/IntegrationSchemeEulerCromer.hpp>
-#include <core/QuadraticNeighborhoodSearchPreAllocated.hpp>
+#include <core/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -187,7 +187,7 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->Viscosity = 3.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearch();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
     //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
