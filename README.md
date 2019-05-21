@@ -15,7 +15,7 @@ For UNIX based systems: `download_dependencies.sh`, for Windows: `download_depen
 Those scripts execute the individual download scripts contained in the repository.
 
 There are currently two dependency folders in the project tree: `src/dependencies` and `tests/dependencies`.
-Each folder dependencies folder contains a `README.md` and a download script that automatically downloads the needed dependencies, extracts them correctly
+Each folder contains a `README.md` and a download script that automatically downloads the needed dependencies, extracts them correctly
 and cleans up afterwards. Those scripts can be called by yourself or will be started by calling the above described script
 in the repository root folder.
 
@@ -28,10 +28,11 @@ On Linux or MacOS make sure, that the scripts are executable (`chmod u+x downloa
 folder should be your current working directory).
 
 #### Requirements for downloading
-Make sure to have `wget` and `unzip` on UNIX based systems.
+Make sure to have `git`, `wget` and `unzip` on UNIX based systems and that those tools are in your `PATH`.
 Especially on Mac-OSX wget is not installed by default. You can obtain wget for OSX with `brew install wget`.
 
-For Windows an updated version of `PowerShell` should be sufficient for downloading the dependencies.
+For Windows an updated version of `PowerShell` and `git` should be sufficient for downloading the dependencies.
+Make sure that `git` is contained within your environment variables / path.
 
 ### Compiling
 Only 64-bit compilation with the C++14 standard is supported. The project may work under other conditions but this is not tested.
