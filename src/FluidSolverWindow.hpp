@@ -58,6 +58,8 @@ private:
 
     void resetHugeDamExampleData();
 
+    void resetSimpleBoxData();
+
     void onClick(float x, float y);
 
     Engine::Text::TextRenderer *textRenderer;
