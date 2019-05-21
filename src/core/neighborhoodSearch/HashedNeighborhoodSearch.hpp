@@ -25,7 +25,7 @@ namespace FluidSolver {
 
         void SetParticleCount(uint32_t particleCount) override;
 
-        HashedNeighborhoodSearch(uint32_t gridCellSize);
+        HashedNeighborhoodSearch(int32_t gridCellSize);
 
     protected:
         void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;
@@ -44,7 +44,7 @@ namespace FluidSolver {
         /**
          * Can be an arbitrary value, but it is recommended to set it to 3 times the particle size.
          */
-        uint32_t gridCellSize;
+        int32_t gridCellSize;
 
         /**
          * Maps the Grid cell to its containing particles

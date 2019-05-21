@@ -58,7 +58,7 @@ void FluidSolver::HashedNeighborhoodSearch::FindNeighbors(uint32_t particleIndex
 
     // determine the grid cells needed to check
     std::vector<GridKey> toCheck;
-    uint32_t radiusInCellsFromTheCenter = ceil(radius / gridCellSize);
+    int32_t radiusInCellsFromTheCenter = ceil(radius / gridCellSize);
 
     for (int32_t x = gridCell.first - radiusInCellsFromTheCenter;
          x <= gridCell.first + radiusInCellsFromTheCenter; x++) {
@@ -100,8 +100,8 @@ FluidSolver::HashedNeighborhoodSearch::GetGridCellByParticleID(uint32_t particle
     glm::vec2 pos = particleCollection->GetPosition(particleIndex);
     int32_t x = static_cast<int32_t>(pos.x);
     int32_t y = static_cast<int32_t>(pos.y);
-    x = x / (int32_t)gridCellSize;
-    y = y / (int32_t)gridCellSize;
+    x = x / gridCellSize;
+    y = y / gridCellSize;
     return {x, y};
 }
 
@@ -113,4 +113,4 @@ FluidSolver::HashedNeighborhoodSearch::CreateGridEntryIfNecessary(FluidSolver::H
     }
 }
 
-FluidSolver::HashedNeighborhoodSearch::HashedNeighborhoodSearch(uint32_t gridCellSize) : gridCellSize(gridCellSize) {}
+FluidSolver::HashedNeighborhoodSearch::HashedNeighborhoodSearch(int32_t gridCellSize) : gridCellSize(gridCellSize) {}
