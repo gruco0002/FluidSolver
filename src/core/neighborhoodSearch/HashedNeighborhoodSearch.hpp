@@ -37,7 +37,7 @@ namespace FluidSolver {
             //static_assert(sizeof(int32_t) * 2 == sizeof(size_t));
 
             size_t operator()(GridKey p) const noexcept {
-                return size_t(p.first) << 32u | ((uint32_t) p.second);
+                return (size_t((uint32_t) p.first) << 32 )| ((uint32_t) p.second);
             }
         };
 

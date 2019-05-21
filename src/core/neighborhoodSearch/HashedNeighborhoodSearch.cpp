@@ -100,8 +100,8 @@ FluidSolver::HashedNeighborhoodSearch::GetGridCellByParticleID(uint32_t particle
     glm::vec2 pos = particleCollection->GetPosition(particleIndex);
     int32_t x = static_cast<int32_t>(pos.x);
     int32_t y = static_cast<int32_t>(pos.y);
-    x = x / gridCellSize;
-    y = y / gridCellSize;
+    x = x / (int32_t)gridCellSize;
+    y = y / (int32_t)gridCellSize;
     return {x, y};
 }
 
