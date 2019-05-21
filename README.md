@@ -36,3 +36,14 @@ Use CMake to compile the project:
 - stb_image_resize (Version 0.95), included in this repository
 - stb_image_write (Version 1.09), included in this repository
 - stb_truetype (Version 1.19), included in this repository
+
+### Using the Code on OSX (Mac)
+Since the project uses OpenMP (libomp) to parallelize the execution and the current
+(21th May 2019) clang compiler that ships with OSX/XCode does not support OpenMP, you
+will need to download a newer compiler version of clang by the llvm project.
+
+The recommended way of downloading it is using brew: `brew install llvm`
+
+After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
+Below `if (APPLE)` are paths that have to be adapted to your llvm location.
+Please be sure that these paths behind the variable names `CMAKE_PREFIX_PATH`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER` and `openmpDylibPath` are set correctly.

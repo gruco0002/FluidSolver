@@ -25,7 +25,11 @@ endif ()
 
 if (APPLE)
 
+    # this paths have to be adapted to work with the llvm clang compiler and libraries
     set(CMAKE_PREFIX_PATH /usr/local/opt/llvm)
+    set(CMAKE_C_COMPILER   /usr/local/opt/llvm/bin/clang)
+    set(CMAKE_CXX_COMPILER /usr/local/opt/llvm/bin/clang++)
+    set(openmpDylibPath /usr/local/opt/llvm/lib/libomp.dylib)
 
     find_package(LLVM REQUIRED CONFIG)
 
@@ -38,8 +42,7 @@ if (APPLE)
 
     include_directories( ${LLVM_INCLUDE_DIRS})
 
-    set(CMAKE_C_COMPILER   /usr/local/opt/llvm/bin/clang)
-    set(CMAKE_CXX_COMPILER /usr/local/opt/llvm/bin/clang++)
+
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 
@@ -51,7 +54,7 @@ if (APPLE)
     mark_as_advanced(COCOA_LIBRARY OpenGL_LIBRARY)
 
     set(FLUIDSOLVER_LIBS glfw GLAD)
-    set(FLUIDSOLVER_SYSTEM_LIBS ${llvm_libs} /usr/local/opt/llvm/lib/libomp.dylib ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVideo_LIBRARY})
+    set(FLUIDSOLVER_SYSTEM_LIBS ${llvm_libs} ${openmpDylibPath} ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVideo_LIBRARY})
 endif ()
 
 if (UNIX AND NOT APPLE)
