@@ -74,6 +74,9 @@ void FluidSolver::HashedNeighborhoodSearch::FindNeighbors(uint32_t particleIndex
 
     // iterate over the grid cells and their particles to check for neighbors
     for (GridKey &key : toCheck) {
+        if(gridToParticles.find(key) == gridToParticles.end())
+            continue;
+
         for (uint32_t particle: gridToParticles[key]) {
             glm::vec2 distVec = position - particleCollection->GetPosition(particle);
             if (glm::length(distVec) <= radius) {
@@ -95,8 +98,8 @@ FluidSolver::HashedNeighborhoodSearch::GetGridCellByParticleID(uint32_t particle
                                                                FluidSolver::IParticleCollection *particleCollection) {
 
     glm::vec2 pos = particleCollection->GetPosition(particleIndex);
-    int32_t x = floor(pos.x);
-    int32_t y = floor(pos.y);
+    int32_t x = static_cast<int32_t>(pos.x);
+    int32_t y = static_cast<int32_t>(pos.y);
     x = x / gridCellSize;
     y = y / gridCellSize;
     return {x, y};
