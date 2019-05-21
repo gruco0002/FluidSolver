@@ -18,6 +18,7 @@
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
 #include <core/IntegrationSchemeEulerCromer.hpp>
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
+#include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -36,7 +37,7 @@ void FluidSolverWindow::render() {
         }
     }
 
-    if(infoBox != nullptr)
+    if (infoBox != nullptr)
         infoBox->UpdateData();
 
     if (particleVertexArray != nullptr)
@@ -68,7 +69,7 @@ bool FluidSolverWindow::even(int input) {
 void FluidSolverWindow::load() {
 
     OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
-    OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn){
+    OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
 
@@ -133,7 +134,7 @@ void FluidSolverWindow::buildGUI() {
     scaff->addChild(fpsLabel);
     fpsLabel->Visible = true;
 
-    infoBox = new FluidSolverParticleInfoGUI(particleCollection->GetSize()-1, particleCollection);
+    infoBox = new FluidSolverParticleInfoGUI(particleCollection->GetSize() - 1, particleCollection);
     infoBox->setLocationX(100);
     infoBox->setLocationY(100);
     infoBox->setWidth(300);
@@ -164,7 +165,8 @@ void FluidSolverWindow::loadMillionParticleExample() {
     }
 
     particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
 
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(0, 1000, 0, 1000));
 
@@ -187,8 +189,9 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->Viscosity = 3.0f;
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
+    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
     //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
     resetData();
@@ -246,7 +249,8 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
@@ -254,7 +258,7 @@ void FluidSolverWindow::resetBoundaryTestExampleData() {
 
     // set up computation providers
     sphFluidSolver->particleCollection = particleCollection;
-    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
+    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
 
 void FluidSolverWindow::resetData() {
@@ -342,14 +346,15 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
     // set up computation providers
     sphFluidSolver->particleCollection = particleCollection;
-    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
+    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
 
 void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize) {
@@ -461,48 +466,49 @@ void FluidSolverWindow::resetHugeDamExampleData() {
 
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(dynamic_cast<FluidSolver::SimpleParticleCollection*>(particleCollection));
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
     if (particleRenderer != nullptr) {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
     // set up computation providers
     sphFluidSolver->particleCollection = particleCollection;
-    if(infoBox != nullptr) infoBox->particleCollection = particleCollection;
+    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
 
 }
 
-    void FluidSolverWindow::onClick(float x, float y){
+void FluidSolverWindow::onClick(float x, float y) {
 
-        if(particleCollection == nullptr) return;
-        if(particleRenderer == nullptr) return;
-        if(infoBox == nullptr) return;
-        
-        auto clip = glm::vec2(x,y) / glm::vec2((float)GetWidth(), (float)-GetHeight()) + glm::vec2(0.0f, 1.0f);
-        clip *= 2.0;
-        clip -= glm::vec2(1.0);
+    if (particleCollection == nullptr) return;
+    if (particleRenderer == nullptr) return;
+    if (infoBox == nullptr) return;
 
-        auto unprojected =  glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0, 1.0);
+    auto clip = glm::vec2(x, y) / glm::vec2((float) GetWidth(), (float) -GetHeight()) + glm::vec2(0.0f, 1.0f);
+    clip *= 2.0;
+    clip -= glm::vec2(1.0);
 
-        // pos is the position in particle space
-        glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
-        
-        // find nearest particle, that you have clicked on
-        uint32_t particleIndex = -1;
-        float dist = particleRenderer->pointSize * 0.5;        
-        for(uint32_t i = 0; i < particleCollection->GetSize(); i++){
-            auto particlePos = particleCollection->GetPosition(i);
-            auto partDist = glm::length(pos - particlePos);
-            if(partDist < dist){
-                particleIndex = i;
-                dist = partDist;
-            }
+    auto unprojected = glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0, 1.0);
+
+    // pos is the position in particle space
+    glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
+
+    // find nearest particle, that you have clicked on
+    uint32_t particleIndex = -1;
+    float dist = particleRenderer->pointSize * 0.5;
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto particlePos = particleCollection->GetPosition(i);
+        auto partDist = glm::length(pos - particlePos);
+        if (partDist < dist) {
+            particleIndex = i;
+            dist = partDist;
         }
-
-        // set particle index in info box
-        if(particleIndex != -1){
-            infoBox->particleIndex = particleIndex;
-        }
-
     }
+
+    // set particle index in info box
+    if (particleIndex != -1) {
+        infoBox->particleIndex = particleIndex;
+    }
+
+}
     
