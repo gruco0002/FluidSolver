@@ -8,9 +8,17 @@ and OSX. The aim of the project is to run out of the box with as little work as 
 Therefore no prebuilt binaries are needed, since cmake will compile each needed library.
 
 ### Downloading dependencies
-There are currently two dependency folders in the project tree: `src/dependencies` and `tests/dependencies`. Each folder
-contains a `README.md` and a download script that automatically downloads the needed dependencies, extracts them correctly
-and cleans up afterwards.
+
+To automatically download the needed dependencies and extract them into your folder execute the correct `download_dependencies` script
+for your operating system in the repository root.
+For UNIX based systems: `download_dependencies.sh`, for Windows: `download_dependencies.ps1`
+Those scripts execute the individual download scripts contained in the repository.
+
+There are currently two dependency folders in the project tree: `src/dependencies` and `tests/dependencies`.
+Each folder dependencies folder contains a `README.md` and a download script that automatically downloads the needed dependencies, extracts them correctly
+and cleans up afterwards. Those scripts can be called by yourself or will be started by calling the above described script
+in the repository root folder.
+
 Before working with this project or compiling it, you should download the dependencies by using the scripts or doing it manually.
 
 #### Launching the scripts
@@ -18,6 +26,12 @@ On windows you can use the powershell scripts. Launch them by right clicking the
 `Run with powershell`.
 On Linux or MacOS make sure, that the scripts are executable (`chmod u+x download_dependencies.sh`) and launch them inside the dependency folder (the dependency
 folder should be your current working directory).
+
+#### Requirements for downloading
+Make sure to have `wget` and `unzip` on UNIX based systems.
+Especially on Mac-OSX wget is not installed by default. You can obtain wget for OSX with `brew install wget`.
+
+For Windows an updated version of `PowerShell` should be sufficient for downloading the dependencies.
 
 ### Compiling
 Only 64-bit compilation with the C++14 standard is supported. The project may work under other conditions but this is not tested.
@@ -36,6 +50,7 @@ Use CMake to compile the project:
 - stb_image_resize (Version 0.95), included in this repository
 - stb_image_write (Version 1.09), included in this repository
 - stb_truetype (Version 1.19), included in this repository
+- OpenMP (Version ?.?)
 
 ### Using the Code on OSX (Mac)
 Since the project uses OpenMP (libomp) to parallelize the execution and the current
@@ -43,6 +58,8 @@ Since the project uses OpenMP (libomp) to parallelize the execution and the curr
 will need to download a newer compiler version of clang by the llvm project.
 
 The recommended way of downloading it is using brew: `brew install llvm`
+Be sure that you have installed the XCode Command Line Tools for OSX before installing llvm.
+To install those tools execute `xcode-select --install`.
 
 After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
 Below `if (APPLE)` are paths that have to be adapted to your llvm location.
