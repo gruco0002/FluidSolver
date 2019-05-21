@@ -1,9 +1,9 @@
-& {
-Set-Location src/dependencies
-. download_dependencies.ps1
-}
+$current = Get-Location
 
-& {
-Set-Location test/dependencies
-. download_dependencies.ps1
-}
+Set-Location src/dependencies
+./download_dependencies.ps1
+
+Set-Location $current
+
+Set-Location tests/dependencies
+./download_dependencies.ps1
