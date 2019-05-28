@@ -18,6 +18,8 @@
 #include <dependencies/cppgui/src/Label.hpp>
 #include <core/SPHFluidSolver.hpp>
 #include "FluidSolverParticleInfoGUI.hpp"
+#include <core/basicScenarios/Scenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenario.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -29,9 +31,9 @@ public:
 
     void resetData();
 
-    FluidSolver::SPHFluidSolver* sphFluidSolver = nullptr;
+    FluidSolver::SPHFluidSolver *sphFluidSolver = nullptr;
 
-    FluidSolver::IParticleCollection* particleCollection = nullptr;
+    FluidSolver::IParticleCollection *particleCollection = nullptr;
 
     bool Pause = true;
 
@@ -48,22 +50,8 @@ private:
 
     void loadParticles();
 
-    void loadMillionParticleExample();
-
-    void loadBoundaryTestExample();
-
-    void resetBoundaryTestExampleData();
-
-    void resetSimpleDamExampleData();
-
-    void resetHugeDamExampleData();
-
-    void resetSimpleBoxData();
-
     void onClick(float x, float y);
 
-    Engine::Text::TextRenderer *textRenderer;
-    Engine::RectangleRenderer *rectangleRenderer;
 
     cppgui::DynamicUIWrapper *uiWrapper;
     GuiEngineInterface *guiInterface;
@@ -72,17 +60,15 @@ private:
     ParticleRenderer *particleRenderer = nullptr;
 
 
-    cppgui::Label* fpsLabel;
+    cppgui::Label *fpsLabel;
 
-    FluidSolverParticleInfoGUI* infoBox = nullptr;
+    FluidSolverParticleInfoGUI *infoBox = nullptr;
 
     void CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize);
 
-    int particleCountX = 20;
-    int particleCountY = 20;
-
-
     float accumulatedSimulationTime = 0.0f;
+
+    FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
 
 protected:
     void render() override;

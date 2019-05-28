@@ -91,8 +91,8 @@ void FluidSolverWindow::loadGUI() {
 
     OnWindowSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
-        if (sphFluidSolver != nullptr)
-            CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
+        if (scenario != nullptr)
+            CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(), scenario->GetParticleSize());
     });
     OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {
         uiWrapper->MousePositionInput(cppgui::Vector2(xPos, yPos));
@@ -141,45 +141,16 @@ void FluidSolverWindow::buildGUI() {
     infoBox->setHeight(300);
     scaff->addChild(infoBox);
 
+    if (particleCollection != nullptr) infoBox->particleCollection = particleCollection;
+
 }
 
 void FluidSolverWindow::loadParticles() {
-    loadBoundaryTestExample();
-}
-
-void FluidSolverWindow::loadMillionParticleExample() {
-    // generate 1 mio particles
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles(1000 * 1000);
-    for (int x = 0; x < 1000; x++) {
-        for (int y = 0; y < 1000; y++) {
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2((float) x / 1000.0f, (float) y / 1000.0f);
-            p.Acceleration = glm::vec2((float) (1000.0f - x) / 1000.0f, (float) y / 1000.0f);
-            p.Pressure = 0.5f;
-            p.Density = 10000.0f;
-            p.Mass = -4.0f;
-
-            particles[x * 1000 + y] = p;
-        }
-    }
-
-    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
-
-    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(0, 1000, 0, 1000));
-
-}
-
-void FluidSolverWindow::loadBoundaryTestExample() {
-
     // set up basic stuff
     sphFluidSolver = new FluidSolver::SPHFluidSolver();
     sphFluidSolver->TimeStep = 0.001f;
 
     // set up values
-    sphFluidSolver->ParticleSize = 1.0f;
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
@@ -194,7 +165,16 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
-    resetData();
+    // set up scenario data
+    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
+    // delete old and create new vertex array
+    delete particleVertexArray;
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
+    sphFluidSolver->particleCollection = particleCollection;
+    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
+
 
     // create particle renderer
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
@@ -204,147 +184,20 @@ void FluidSolverWindow::loadBoundaryTestExample() {
     particleRenderer->bottomValue = 0.0f;
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(1.0f);
-    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
+    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountX(),
+                                     scenario->GetParticleSize());
+    particleRenderer->particleVertexArray = particleVertexArray;
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
 }
 
-void FluidSolverWindow::resetBoundaryTestExampleData() {
-    particleCountX = 20;
-    particleCountY = 20;
-    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
-
-    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
-
-    // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-    for (int y = -5; y >= -7; y--) {
-        for (int x = -10; x <= 10; x++) {
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = sphFluidSolver->RestDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-            particles.push_back(p);
-        }
-    }
-
-    // normal particle
-    FluidSolver::SimpleParticleCollection::FluidParticle p;
-    p.Position = glm::vec2(0.0f);
-    p.Velocity = glm::vec2(0.0f);
-    p.Acceleration = glm::vec2(0.0f);
-    p.Pressure = 0.0f;
-    p.Density = sphFluidSolver->RestDensity;
-    p.Mass = mass;
-    p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
-    particles.push_back(p);
-
-    // generate particle collection
-    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
-    if (particleRenderer != nullptr) {
-        particleRenderer->particleVertexArray = particleVertexArray;
-    }
-
-
-    // set up computation providers
-    sphFluidSolver->particleCollection = particleCollection;
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
-}
 
 void FluidSolverWindow::resetData() {
-    //resetBoundaryTestExampleData();
-    //resetSimpleDamExampleData();
-    //resetHugeDamExampleData();
-    resetSimpleBoxData();
-}
 
-void FluidSolverWindow::resetSimpleDamExampleData() {
-    particleCountX = 26;
-    particleCountY = 20;
-    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
-
-
-    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
-
-    // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-
-    for (int x = -12; x <= 12; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Position = glm::vec2((float) x, (float) -5);
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-        particles.push_back(p);
-
-        p.Position = glm::vec2((float) x, -6.0f);
-        particles.push_back(p);
-
-        p.Position = glm::vec2((float) x, -7.0f);
-        particles.push_back(p);
-    }
-
-    // left + right boundary
-    for (int y = 5; y > -5; y--) {
-
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) -10, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -11, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -12, (float) y);
-        particles.push_back(p);
-
-        p.Position = glm::vec2((float) 10, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 11, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 12, (float) y);
-        particles.push_back(p);
-
-    }
-
-
-    for (int x = -3; x <= 3; x++) {
-        for (int y = 3; y >= 0; y--) {
-
-
-            // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = sphFluidSolver->RestDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
-            particles.push_back(p);
-        }
-    }
-
-    // generate particle collection
-    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-
+    // set up scenario data
+    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    scenario->ResetData(particleCollection, sphFluidSolver->RestDensity);
     // delete old and create new vertex array
     delete particleVertexArray;
     particleVertexArray = new ParticleVertexArray(
@@ -353,131 +206,13 @@ void FluidSolverWindow::resetSimpleDamExampleData() {
         particleRenderer->particleVertexArray = particleVertexArray;
     }
 
-    // set up computation providers
-    sphFluidSolver->particleCollection = particleCollection;
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
-}
 
-void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize) {
+    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountX(),
+                                     scenario->GetParticleSize());
 
-    float width = particlesX * particleSize;
-    float height = particlesY * particleSize;
-
-    float screenWidth = GetWidth();
-    float screenHeight = GetHeight();
-
-    if (width / screenWidth * screenHeight >= height) {
-        height = width / screenWidth * screenHeight;
-    } else {
-        width = height / screenHeight * screenWidth;
-    }
-
-    glm::mat4 generated = ParticleRenderer::GenerateOrtho(-width / 2.0f, width / 2.0f, height / 2.0f, -height / 2.0f);
-
-    if (particleRenderer != nullptr) {
-        particleRenderer->projectionMatrix = generated;
-    }
 
 }
 
-void FluidSolverWindow::resetHugeDamExampleData() {
-    particleCountX = 106;
-    particleCountY = 106;
-    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
-
-    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
-
-    // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
-
-    for (int x = -53; x <= 53; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) x, (float) -50);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) x, (float) -51);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) x, (float) -52);
-        particles.push_back(p);
-    }
-
-    // left boundary
-    for (int y = 20; y > -50; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) -50, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -51, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -52, (float) y);
-        particles.push_back(p);
-    }
-
-    // right boundary
-    for (int y = 20; y > -50; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) 50, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 51, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 52, (float) y);
-        particles.push_back(p);
-
-    }
-
-
-    for (int x = -20; x <= 0; x++) {
-        for (int y = 20; y >= 0; y--) {
-            // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = sphFluidSolver->RestDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
-            particles.push_back(p);
-        }
-    }
-
-    // generate particle collection
-    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
-    if (particleRenderer != nullptr) {
-        particleRenderer->particleVertexArray = particleVertexArray;
-    }
-
-    // set up computation providers
-    sphFluidSolver->particleCollection = particleCollection;
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
-
-}
 
 void FluidSolverWindow::onClick(float x, float y) {
 
@@ -513,101 +248,25 @@ void FluidSolverWindow::onClick(float x, float y) {
 
 }
 
-void FluidSolverWindow::resetSimpleBoxData() {
-    particleCountX = 45;
-    particleCountY = 60;
-    CalculateCorrectProjectionMatrix(particleCountX, particleCountY, sphFluidSolver->ParticleSize);
 
-    float mass = sphFluidSolver->RestDensity * sphFluidSolver->ParticleSize * sphFluidSolver->ParticleSize;
+void FluidSolverWindow::CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize) {
 
-    // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    float width = particlesX * particleSize;
+    float height = particlesY * particleSize;
 
-    for (int x = -23; x <= 12; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+    float screenWidth = GetWidth();
+    float screenHeight = GetHeight();
 
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) x, (float) -14);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) x, (float) -15);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) x, (float) -16);
-        particles.push_back(p);
+    if (width / screenWidth * screenHeight >= height) {
+        height = width / screenWidth * screenHeight;
+    } else {
+        width = height / screenHeight * screenWidth;
     }
 
-    // left boundary
-    for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+    glm::mat4 generated = ParticleRenderer::GenerateOrtho(-width / 2.0f, width / 2.0f, height / 2.0f, -height / 2.0f);
 
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) -21, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -22, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) -23, (float) y);
-        particles.push_back(p);
-    }
-
-    // right boundary
-    for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
-        p.Velocity = glm::vec2(0.0f);
-        p.Acceleration = glm::vec2(0.0f);
-        p.Pressure = 0.0f;
-        p.Density = sphFluidSolver->RestDensity;
-        p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
-
-        p.Position = glm::vec2((float) 10, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 11, (float) y);
-        particles.push_back(p);
-        p.Position = glm::vec2((float) 12, (float) y);
-        particles.push_back(p);
-
-    }
-
-    // particles
-    for (int x = -20; x <= 0; x++) {
-        for (int y = 7; y >= -13; y--) {
-            // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = sphFluidSolver->RestDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
-            particles.push_back(p);
-        }
-    }
-
-    // generate particle collection
-    particleCollection = new FluidSolver::SimpleParticleCollection(particles);
-
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
     if (particleRenderer != nullptr) {
-        particleRenderer->particleVertexArray = particleVertexArray;
+        particleRenderer->projectionMatrix = generated;
     }
 
-    // set up computation providers
-    sphFluidSolver->particleCollection = particleCollection;
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
-    

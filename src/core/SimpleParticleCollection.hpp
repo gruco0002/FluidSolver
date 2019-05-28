@@ -68,6 +68,8 @@ namespace FluidSolver {
 
         std::vector<FluidParticle> &GetParticles();
 
+        void SetParticles(std::vector<FluidParticle> &input);
+
     private:
 
 

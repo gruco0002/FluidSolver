@@ -46,7 +46,7 @@ namespace FluidSolver {
     }
 
     SimpleParticleCollection::SimpleParticleCollection(std::vector<SimpleParticleCollection::FluidParticle> &input) {
-        particles = input;
+        SetParticles(input);
     }
 
     uint32_t SimpleParticleCollection::GetSize() {
@@ -71,6 +71,10 @@ namespace FluidSolver {
 
     void SimpleParticleCollection::SetParticleType(uint32_t index, IParticleCollection::ParticleType value) {
         particles[index].Type = value;
+    }
+
+    void SimpleParticleCollection::SetParticles(std::vector<FluidParticle> &input) {
+        particles = input;
     }
 
     bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {
