@@ -151,7 +151,7 @@ void FluidSolverWindow::buildGUI() {
 void FluidSolverWindow::loadParticles() {
     // set up basic stuff
     sphFluidSolver = new FluidSolver::SPHFluidSolver();
-    sphFluidSolver->TimeStep = 0.00001f;
+    sphFluidSolver->TimeStep = 0.001f;
 
     // set up values
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
