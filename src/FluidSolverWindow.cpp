@@ -184,7 +184,7 @@ void FluidSolverWindow::loadParticles() {
     particleRenderer->bottomValue = 0.0f;
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(1.0f);
-    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountX(),
+    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
                                      scenario->GetParticleSize());
     particleRenderer->particleVertexArray = particleVertexArray;
 
@@ -207,7 +207,7 @@ void FluidSolverWindow::resetData() {
     }
 
 
-    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountX(),
+    CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
                                      scenario->GetParticleSize());
 
 
