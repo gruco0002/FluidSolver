@@ -70,6 +70,20 @@ namespace FluidSolver {
 
         void SetParticles(std::vector<FluidParticle> &input);
 
+        /**
+         * Calculates the average density. Boundary Particles and Particles with Density Below the Rest Density are ignored.
+         * @return
+         */
+        float CalculateAverageDensity(float restDensity);
+
+        /**
+         * Calculates the current Energy of all particles except Boundary Particles.
+         * @param zeroHeight The zero Height used for potential energy calculation.
+         * @param gravity Used for potential energy calculation.
+         * @return
+         */
+        float CalculateEnergy(float zeroHeight, float gravity);
+
     private:
 
 

@@ -77,6 +77,42 @@ namespace FluidSolver {
         particles = input;
     }
 
+    float SimpleParticleCollection::CalculateAverageDensity(float restDensity) {
+
+        double densitySum = 0;
+        uint32_t sumCount = 0;
+
+        for (SimpleParticleCollection::FluidParticle &p : particles) {
+            if (p.Type == ParticleTypeBoundary)
+                continue;
+            if (p.Density < restDensity)
+                continue;
+            densitySum += p.Density;
+            sumCount++;
+        }
+
+        return densitySum / (double) sumCount;
+    }
+
+    float SimpleParticleCollection::CalculateEnergy(float zeroHeight, float gravity) {
+        float energySum = 0.0f;
+        for (SimpleParticleCollection::FluidParticle &p : particles) {
+            if (p.Type == ParticleTypeBoundary)
+                continue;
+
+            float particleVelocity = p.Velocity.length();
+
+            // potential energy
+            energySum += (p.Position.y - zeroHeight) * p.Mass * gravity;
+
+            // kinetic energy
+            energySum += 0.5f * p.Mass * particleVelocity * particleVelocity;
+
+        }
+
+        return energySum;
+    }
+
     bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {
         return Position == rhs.Position &&
                Velocity == rhs.Velocity &&
