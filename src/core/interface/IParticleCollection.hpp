@@ -47,6 +47,27 @@ namespace FluidSolver {
 
         virtual void SetParticleType(uint32_t index, ParticleType value) = 0;
 
+        /**
+         * Calculates the average density. Boundary Particles and Particles with Density Below the Rest Density are ignored.
+         * @return
+         */
+        virtual float CalculateAverageDensity(float restDensity) = 0;
+
+        /**
+         * Calculates the current Energy of all particles except Boundary Particles.
+         * @param zeroHeight The zero Height used for potential energy calculation.
+         * @param gravity Used for potential energy calculation.
+         * @return
+         */
+        virtual float CalculateEnergy(float zeroHeight, float gravity) = 0;
+
+        /**
+         * Calculates the maximal velocity of all particles.
+         * @return
+         */
+        virtual float CalculateMaximumVelocity() = 0;
+
+
     };
 
 }

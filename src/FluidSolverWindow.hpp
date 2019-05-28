@@ -18,6 +18,7 @@
 #include <dependencies/cppgui/src/Label.hpp>
 #include <core/SPHFluidSolver.hpp>
 #include "FluidSolverParticleInfoGUI.hpp"
+#include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
 
@@ -69,6 +70,8 @@ private:
     float accumulatedSimulationTime = 0.0f;
 
     FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
+
+    DataLogger* dataLogger = nullptr;
 
 protected:
     void render() override;

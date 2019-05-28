@@ -31,6 +31,8 @@ void FluidSolverWindow::render() {
                 //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
                 sphFluidSolver->ExecuteSimulationStep();
+                if (dataLogger)
+                    dataLogger->TimeStepPassed();
             }
         } else {
             accumulatedSimulationTime = 0.0f;
@@ -92,7 +94,8 @@ void FluidSolverWindow::loadGUI() {
     OnWindowSizeChanged.Subscribe([=](int width, int height) {
         uiWrapper->renderDimensionsUpdated();
         if (scenario != nullptr)
-            CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(), scenario->GetParticleSize());
+            CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
+                                             scenario->GetParticleSize());
     });
     OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {
         uiWrapper->MousePositionInput(cppgui::Vector2(xPos, yPos));
@@ -148,7 +151,7 @@ void FluidSolverWindow::buildGUI() {
 void FluidSolverWindow::loadParticles() {
     // set up basic stuff
     sphFluidSolver = new FluidSolver::SPHFluidSolver();
-    sphFluidSolver->TimeStep = 0.001f;
+    sphFluidSolver->TimeStep = 0.00001f;
 
     // set up values
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
@@ -190,10 +193,16 @@ void FluidSolverWindow::loadParticles() {
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
+
+    // setup dataLogger
+    dataLogger = new DataLogger(sphFluidSolver, "log.csv");
+    dataLogger->StartLogging();
 }
 
 
 void FluidSolverWindow::resetData() {
+    if (dataLogger)
+        dataLogger->FinishLogging();
 
     // set up scenario data
     sphFluidSolver->ParticleSize = scenario->GetParticleSize();
@@ -210,6 +219,8 @@ void FluidSolverWindow::resetData() {
     CalculateCorrectProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
                                      scenario->GetParticleSize());
 
+    if (dataLogger)
+        dataLogger->StartLogging();
 
 }
 

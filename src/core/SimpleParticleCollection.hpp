@@ -48,6 +48,8 @@ namespace FluidSolver {
 
         void SetPosition(uint32_t index, glm::vec2 value) override;
 
+        float CalculateMaximumVelocity() override;
+
         glm::vec2 GetVelocity(uint32_t index) override;
 
         void SetVelocity(uint32_t index, glm::vec2 value) override;
@@ -74,7 +76,7 @@ namespace FluidSolver {
          * Calculates the average density. Boundary Particles and Particles with Density Below the Rest Density are ignored.
          * @return
          */
-        float CalculateAverageDensity(float restDensity);
+        float CalculateAverageDensity(float restDensity) override ;
 
         /**
          * Calculates the current Energy of all particles except Boundary Particles.
@@ -82,7 +84,7 @@ namespace FluidSolver {
          * @param gravity Used for potential energy calculation.
          * @return
          */
-        float CalculateEnergy(float zeroHeight, float gravity);
+        float CalculateEnergy(float zeroHeight, float gravity) override ;
 
     private:
 

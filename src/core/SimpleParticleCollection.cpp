@@ -2,6 +2,7 @@
 // Created by gruberc on 24.04.19.
 //
 
+#include <algorithm>
 #include "SimpleParticleCollection.hpp"
 
 namespace FluidSolver {
@@ -100,7 +101,7 @@ namespace FluidSolver {
             if (p.Type == ParticleTypeBoundary)
                 continue;
 
-            float particleVelocity = p.Velocity.length();
+            float particleVelocity = glm::length(p.Velocity);
 
             // potential energy
             energySum += (p.Position.y - zeroHeight) * p.Mass * gravity;
@@ -111,6 +112,16 @@ namespace FluidSolver {
         }
 
         return energySum;
+    }
+
+    float SimpleParticleCollection::CalculateMaximumVelocity() {
+        if (GetSize() == 0)return 0;
+        float maximum = glm::length(particles[0].Velocity);
+
+        for (SimpleParticleCollection::FluidParticle &p : particles) {
+            maximum = std::max(maximum, glm::length(p.Velocity));
+        }
+        return maximum;
     }
 
     bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {
