@@ -21,7 +21,7 @@ void FluidSolverConsole::start(cxxopts::ParseResult &parseResult) {
 
     if (verbose)
         std::cout << "Fluid Solver Console Mode" << std::endl;
- 
+
     if (verbose)
         std::cout << "\tStarting Simulation Process..." << std::endl;
     executeSimulation();
