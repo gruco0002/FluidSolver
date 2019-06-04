@@ -31,6 +31,7 @@ private:
     float viscosity;
     float length;
     std::string output;
+    bool verbose;
 
 };
 
