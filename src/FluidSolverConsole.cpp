@@ -3,7 +3,14 @@
 //
 
 #include "FluidSolverConsole.hpp"
+#include "DataLogger.hpp"
 #include <iostream>
+#include <core/basicScenarios/BoundaryTestScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenario.hpp>
+#include <core/SPHFluidSolver.hpp>
+#include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/CubicSplineKernel.hpp>
+#include <core/IntegrationSchemeEulerCromer.hpp>
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
     setupOptions(options);
@@ -11,17 +18,93 @@ FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
 
 void FluidSolverConsole::start(cxxopts::ParseResult &parseResult) {
     std::cout << "Fluid Solver Console Mode" << std::endl;
+    setVariables(parseResult);
+    executeSimulation();
 }
 
 void FluidSolverConsole::setupOptions(cxxopts::Options &options) {
     options.add_options("Simulation")
 
-            ("s,scenario", "Scenario selection", cxxopts::value<std::string>()->default_value("box"))
+            ("s,scenario", "Scenario selection. Valid options: box, boundaryTest",
+             cxxopts::value<std::string>()->default_value("box"))
             ("t,timestep", "Timestep for the simulation in seconds", cxxopts::value<float>()->default_value("0.001"))
             ("k,stiffness", "Stiffness (k) for the simulation", cxxopts::value<float>()->default_value("100000.0"))
             ("v,viscosity", "Viscosity for the simulation", cxxopts::value<float>()->default_value("3.0"))
             ("l,length", "Time length of the simulation in seconds", cxxopts::value<float>()->default_value("60.0"))
-            ("o,output", "Output Logfile for the simulation data", cxxopts::value<std::string>()->default_value("log.csv"));
+            ("o,output", "Output Logfile for the simulation data",
+             cxxopts::value<std::string>()->default_value("log.csv"));
+}
+
+void FluidSolverConsole::setVariables(cxxopts::ParseResult &parseResult) {
+    scenario = parseResult["scenario"].as<std::string>();
+    timestep = parseResult["timestep"].as<float>();
+    viscosity = parseResult["viscosity"].as<float>();
+    length = parseResult["length"].as<float>();
+    output = parseResult["output"].as<std::string>();
+}
+
+void FluidSolverConsole::executeSimulation() {
+    // first get scenario
+    FluidSolver::Scenario *scenario = getScenario();
+    if (!scenario) {
+        std::cout << "No valid scenario was found" << std::endl;
+        return;
+    }
+
+    // set up basic stuff
+    FluidSolver::SPHFluidSolver *sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    sphFluidSolver->TimeStep = timestep;
+
+    // set up values
+    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->RestDensity = 1.0f;
+
+
+    sphFluidSolver->StiffnessK = stiffness;
+    sphFluidSolver->Viscosity = viscosity;
+
+    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
+    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+
+    // set up scenario data
+    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
+
+    sphFluidSolver->particleCollection = particleCollection;
+
+    // setup dataLogger
+    DataLogger *dataLogger = new DataLogger(sphFluidSolver, output);
+    dataLogger->StartLogging();
+
+
+    // simulate
+    float totalTime = 0.0f;
+    while (totalTime <= length) {
+        totalTime += timestep;
+        sphFluidSolver->ExecuteSimulationStep();
+        dataLogger->TimeStepPassed();
+    }
+
+    // save logs
+    dataLogger->FinishLogging();
+
+    // cleanup
+    delete dataLogger;
+    delete sphFluidSolver;
+
+
+}
+
+FluidSolver::Scenario *FluidSolverConsole::getScenario() {
+    if (scenario == "box") {
+        return new FluidSolver::SimpleBoxScenario();
+    } else if (scenario == "boundaryTest") {
+        return new FluidSolver::BoundaryTestScenario();
+    } else {
+        return nullptr;
+    }
 }
 
 
