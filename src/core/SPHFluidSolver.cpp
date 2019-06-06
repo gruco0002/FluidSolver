@@ -13,14 +13,18 @@ namespace FluidSolver {
 
         // find neighbors for all particles
         neighborhoodSearch->SetParticleCount(particleCollection->GetSize());
-            neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
+        neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
 
 
         // calculate density and pressure for all particles
         #pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+            auto type = particleCollection->GetParticleType(i);
+            if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
+            }
+            if (type == IParticleCollection::ParticleTypeDead) {
+                continue; // don*t calculate unnecessary values for dead particles.
             }
 
             float density = ComputeDensity(i);
@@ -33,8 +37,12 @@ namespace FluidSolver {
         // compute non pressure accelerations and pressure accelerations for all particles
         #pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+            auto type = particleCollection->GetParticleType(i);
+            if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
+            }
+            if (type == IParticleCollection::ParticleTypeDead) {
+                continue; // don*t calculate unnecessary values for dead particles.
             }
 
             glm::vec2 nonPressureAcc = ComputeNonPressureAcceleration(i);
@@ -46,8 +54,12 @@ namespace FluidSolver {
         // update velocity and position of all particles
         #pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-            if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+            auto type = particleCollection->GetParticleType(i);
+            if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
+            }
+            if (type == IParticleCollection::ParticleTypeDead) {
+                continue; // don*t calculate unnecessary values for dead particles.
             }
 
             integrationScheme->Integrate(i, particleCollection, TimeStep);
@@ -66,6 +78,10 @@ namespace FluidSolver {
 
         float density = 0.0f;
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+            auto type = particleCollection->GetParticleType(neighbor);
+            if(type == IParticleCollection::ParticleTypeDead){
+                continue; // don*t calculate unnecessary values for dead particles.
+            }
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
             float neighborMass = particleCollection->GetMass(neighbor);
             density += neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
@@ -95,8 +111,12 @@ namespace FluidSolver {
 
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+            auto type = particleCollection->GetParticleType(neighbor);
+            if(type == IParticleCollection::ParticleTypeDead){
+                continue; // don*t calculate unnecessary values for dead particles.
+            }
 
-            if (particleCollection->GetParticleType(neighbor) == IParticleCollection::ParticleTypeBoundary) {
+            if (type == IParticleCollection::ParticleTypeBoundary) {
                 // simple mirroring is used to calculate the pressure acceleration with a boundary particle
                 glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
                 pressureAcceleration +=
@@ -129,6 +149,10 @@ namespace FluidSolver {
 
         glm::vec2 tmp = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+            auto type = particleCollection->GetParticleType(neighbor);
+            if(type == IParticleCollection::ParticleTypeDead){
+                continue; // don*t calculate unnecessary values for dead particles.
+            }
 
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
             glm::vec2 neighborVelocity = particleCollection->GetVelocity(neighbor);
