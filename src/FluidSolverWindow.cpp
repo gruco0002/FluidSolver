@@ -171,13 +171,14 @@ void FluidSolverWindow::loadParticles() {
     // set up scenario data
     sphFluidSolver->ParticleSize = scenario->GetParticleSize();
     particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
+    sphFluidSolver->particleCollection = particleCollection;
+    sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
+
+
     // delete old and create new vertex array
     delete particleVertexArray;
     particleVertexArray = new ParticleVertexArray(
             dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
-    sphFluidSolver->particleCollection = particleCollection;
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
-
 
     // create particle renderer
     particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
@@ -197,6 +198,9 @@ void FluidSolverWindow::loadParticles() {
     // setup dataLogger
     dataLogger = new DataLogger(sphFluidSolver, "log.csv");
     dataLogger->StartLogging();
+
+    // setup info box
+    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
 }
 
 

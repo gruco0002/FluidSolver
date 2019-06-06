@@ -79,8 +79,8 @@ void FluidSolverConsole::executeSimulation() {
     // set up scenario data
     sphFluidSolver->ParticleSize = scenario->GetParticleSize();
     FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
-
     sphFluidSolver->particleCollection = particleCollection;
+    sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
 
     // setup dataLogger
     DataLogger *dataLogger = new DataLogger(sphFluidSolver, output);
