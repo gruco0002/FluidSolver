@@ -21,3 +21,7 @@ float FluidSolver::Scenario::GetParticleSize() {
 bool FluidSolver::Scenario::ParticleCollectionTypeSupported(IParticleCollection *particleCollection) {
     return dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection) != nullptr;
 }
+
+std::vector<FluidSolver::ISimulationModifier *> FluidSolver::Scenario::GetSimulationModifiers() {
+    return std::vector<FluidSolver::ISimulationModifier *>();
+}
