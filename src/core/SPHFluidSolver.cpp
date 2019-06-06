@@ -66,8 +66,11 @@ namespace FluidSolver {
         }
 
         // modify the simulation
+        ISimulationModifier::SimulationInfo info;
+        info.restDensity = RestDensity;
+        info.timeStep = TimeStep;
         for (ISimulationModifier *modifier : simulationModifiers) {
-            modifier->ModifySimulation(particleCollection);
+            modifier->ModifySimulation(particleCollection, info);
         }
 
     }

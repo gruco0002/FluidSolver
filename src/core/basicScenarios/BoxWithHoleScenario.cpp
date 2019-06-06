@@ -3,6 +3,8 @@
 //
 
 #include <core/SimpleParticleCollection.hpp>
+#include <core/simulationModifiers/DeathBox.hpp>
+#include <core/simulationModifiers/SpawnArea.hpp>
 #include "BoxWithHoleScenario.hpp"
 
 void
@@ -104,4 +106,10 @@ int FluidSolver::BoxWithHoleScenario::GetParticleCountX() {
 
 int FluidSolver::BoxWithHoleScenario::GetParticleCountY() {
     return 60;
+}
+
+std::vector<FluidSolver::ISimulationModifier *> FluidSolver::BoxWithHoleScenario::GetSimulationModifiers() {
+    return {new FluidSolver::DeathBox(28, -24, -20, 13),
+            new FluidSolver::SpawnArea(25, -18, 22, -10, 25.0f, glm::vec2(0.0f, -5.0f)),
+    };
 }

@@ -17,11 +17,16 @@ namespace FluidSolver{
 
     public:
 
+        struct SimulationInfo{
+            float timeStep;
+            float restDensity;
+        };
+
         /**
          * This function will be called after advecting all particles.
          * @param collection The particle Collection.
          */
-        virtual void ModifySimulation(IParticleCollection* collection) = 0;
+        virtual void ModifySimulation(IParticleCollection* collection, SimulationInfo &info) = 0;
 
 
     };

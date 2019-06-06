@@ -17,6 +17,8 @@ namespace FluidSolver {
 
         int GetParticleCountY() override;
 
+        std::vector<ISimulationModifier *> GetSimulationModifiers() override;
+
     };
 }
 
