@@ -8,6 +8,7 @@
 #include <core/interface/IIntegrationScheme.hpp>
 #include <core/interface/INeighborhoodSearch.hpp>
 #include <core/interface/IKernel.hpp>
+#include <core/interface/ISimulationModifier.hpp>
 #include "core/interface/IParticleCollection.hpp"
 
 namespace FluidSolver {
@@ -30,6 +31,8 @@ namespace FluidSolver {
         IIntegrationScheme *integrationScheme = nullptr;
         INeighborhoodSearch *neighborhoodSearch = nullptr;
         IKernel *kernel = nullptr;
+
+        std::vector<ISimulationModifier*> simulationModifiers;
 
         void ExecuteSimulationStep();
 

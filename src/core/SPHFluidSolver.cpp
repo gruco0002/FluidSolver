@@ -65,6 +65,11 @@ namespace FluidSolver {
             integrationScheme->Integrate(i, particleCollection, TimeStep);
         }
 
+        // modify the simulation
+        for (ISimulationModifier *modifier : simulationModifiers) {
+            modifier->ModifySimulation(particleCollection);
+        }
+
     }
 
     float SPHFluidSolver::ComputePressure(uint32_t particleIndex) {
@@ -79,7 +84,7 @@ namespace FluidSolver {
         float density = 0.0f;
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if(type == IParticleCollection::ParticleTypeDead){
+            if (type == IParticleCollection::ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
@@ -112,7 +117,7 @@ namespace FluidSolver {
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if(type == IParticleCollection::ParticleTypeDead){
+            if (type == IParticleCollection::ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
@@ -150,7 +155,7 @@ namespace FluidSolver {
         glm::vec2 tmp = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if(type == IParticleCollection::ParticleTypeDead){
+            if (type == IParticleCollection::ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
