@@ -20,7 +20,7 @@
 #include "FluidSolverParticleInfoGUI.hpp"
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenario.hpp>
+#include <core/basicScenarios/BoxWithHoleScenario.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -69,7 +69,7 @@ private:
 
     float accumulatedSimulationTime = 0.0f;
 
-    FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
+    FluidSolver::Scenario *scenario = new FluidSolver::BoxWithHoleScenario();
 
     DataLogger* dataLogger = nullptr;
 
