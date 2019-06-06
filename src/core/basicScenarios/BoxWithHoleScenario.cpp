@@ -110,6 +110,6 @@ int FluidSolver::BoxWithHoleScenario::GetParticleCountY() {
 
 std::vector<FluidSolver::ISimulationModifier *> FluidSolver::BoxWithHoleScenario::GetSimulationModifiers() {
     return {new FluidSolver::DeathBox(28, -24, -20, 13),
-            new FluidSolver::SpawnArea(25, -18, 22, -10, 25.0f, glm::vec2(0.0f, -5.0f)),
+            new FluidSolver::SpawnArea(25, -18, 22, -10, 40.0f, glm::vec2(0.0f, -6.0f)),
     };
 }

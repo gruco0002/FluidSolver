@@ -20,6 +20,7 @@ namespace FluidSolver{
         struct SimulationInfo{
             float timeStep;
             float restDensity;
+            float particleSize;
         };
 
         /**

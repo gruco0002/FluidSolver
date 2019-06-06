@@ -39,6 +39,8 @@ namespace FluidSolver {
 
         glm::vec2 GenerateRandomPosition();
 
+        bool IsColliding(glm::vec2 position,IParticleCollection *collection, SimulationInfo &info);
+
         std::minstd_rand pseudoRandomGenerator;
 
 
