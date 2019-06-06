@@ -22,6 +22,7 @@ class ParticleVertexArray {
  * 3|float|mass
  * 4|float|pressure
  * 5|float|density
+ * 6|uint8|type
  */
 
 

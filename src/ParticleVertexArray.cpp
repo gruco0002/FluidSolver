@@ -90,6 +90,14 @@ void ParticleVertexArray::Generate() {
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    6, 1, offsetof(
+                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            Type),
+                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    Engine::ComponentTypeUnsignedByte
+                                                            ),
 
 
                                                     });

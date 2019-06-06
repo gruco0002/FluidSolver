@@ -14,6 +14,7 @@ namespace FluidSolver {
         enum ParticleType {
             ParticleTypeNormal = 0,
             ParticleTypeBoundary = 1,
+            ParticleTypeDead = 2,
         };
 
 

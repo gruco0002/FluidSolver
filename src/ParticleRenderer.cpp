@@ -38,6 +38,7 @@ layout (location = 2) in vec2 aAcceleration;
 layout (location = 3) in float aMass;
 layout (location = 4) in float aPressure;
 layout (location = 5) in float aDensity;
+layout (location = 6) in uint aType;
 
 
 #define COLOR_SELECTION_VELOCITY 1
@@ -45,6 +46,9 @@ layout (location = 5) in float aDensity;
 #define COLOR_SELECTION_MASS 3
 #define COLOR_SELECTION_PRESSURE 4
 #define COLOR_SELECTION_DENSITY 5
+
+#define PARTICLE_TYPE_BOUNDARY 1u
+#define PARTICLE_TYPE_DEAD 2u
 
 
 uniform int colorSelection;
@@ -56,11 +60,14 @@ uniform float topValue;
 
 out VS_OUT {
     vec4 color;
+    bool discarded;
 } vs_out;
 
 
 void main()
 {
+
+    vs_out.discarded = false;
 
     float val = 0.0;
     if(colorSelection == COLOR_SELECTION_VELOCITY){
@@ -77,6 +84,12 @@ void main()
 
     val = clamp(val - bottomValue, 0.0, (topValue - bottomValue)) / (topValue - bottomValue);
     vs_out.color = mix(bottomColor, topColor, val);
+
+    if(aType == PARTICLE_TYPE_DEAD) {
+        vs_out.discarded = true;
+    } else if(aType == PARTICLE_TYPE_BOUNDARY) {
+        // vs_out.color = vec4(1.0, 0.0, 0.0, 1.0);
+    }
 
     gl_Position =  vec4(aPosition, 0.0, 1.0);
 
@@ -114,9 +127,15 @@ out vec2 oTexcoord;
 
 in VS_OUT {
     vec4 color;
+    bool discarded;
 } gs_in[];
 
 void main(){
+
+    if(gs_in[0].discarded) {
+        return;
+    }
+
     oColor = gs_in[0].color;
     vec4 position = gl_in[0].gl_Position;
 

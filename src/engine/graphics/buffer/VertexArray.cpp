@@ -52,7 +52,7 @@ void Engine::Graphics::Buffer::VertexArray::Generate() {
             glVertexAttribPointer(binding.attributeIndex, binding.numberOfComponentsPerAttributeElement,
                                   binding.componentType, GL_FALSE, binding.byteOffsetBetweenAttributeElement,
                                   (void *) binding.byteOffsetToFirstAttributeElement);
-        } else if (cp == ComponentTypeUInt || cp == ComponentTypeByte || cp == ComponentTypeShort) {
+        } else if (cp == ComponentTypeUInt || cp == ComponentTypeByte || cp == ComponentTypeShort || cp == ComponentTypeUnsignedByte) {
             glVertexAttribIPointer(binding.attributeIndex, binding.numberOfComponentsPerAttributeElement,
                                    binding.componentType, binding.byteOffsetBetweenAttributeElement,
                                    (void *) binding.byteOffsetToFirstAttributeElement);
