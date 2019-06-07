@@ -60,14 +60,14 @@ uniform float topValue;
 
 out VS_OUT {
     vec4 color;
-    bool discarded;
+    int discarded;
 } vs_out;
 
 
 void main()
 {
 
-    vs_out.discarded = false;
+    vs_out.discarded = 0;
 
     float val = 0.0;
     if(colorSelection == COLOR_SELECTION_VELOCITY){
@@ -86,7 +86,7 @@ void main()
     vs_out.color = mix(bottomColor, topColor, val);
 
     if(aType == PARTICLE_TYPE_DEAD) {
-        vs_out.discarded = true;
+        vs_out.discarded = 1;
     } else if(aType == PARTICLE_TYPE_BOUNDARY) {
         // vs_out.color = vec4(1.0, 0.0, 0.0, 1.0);
     }
@@ -127,12 +127,12 @@ out vec2 oTexcoord;
 
 in VS_OUT {
     vec4 color;
-    bool discarded;
+    int discarded;
 } gs_in[];
 
 void main(){
 
-    if(gs_in[0].discarded) {
+    if(gs_in[0].discarded == 1) {
         return;
     }
 
