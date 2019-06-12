@@ -11,7 +11,7 @@ def main(filepaths, showDens, showEner, showKinetic, showPotential, showVeloc, s
     for filepath in filepaths:
 
         timesteps, avgDensity, relEnergy, kineticEnergy, potentialEnergy, maxVelocity, cflNumber, deadParticles = np.loadtxt(
-            filepath, unpack=True, delimiter=";", skiprows=1)
+            filepath, unpack=True, delimiter=";", skiprows=1, converters={7: lambda deadPartString: float(int(deadPartString))})
 
         if showDens:
             plt.plot(timesteps, avgDensity, label="Avg. Density " + filepath)
