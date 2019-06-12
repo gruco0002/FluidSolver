@@ -17,7 +17,7 @@ namespace FluidSolver {
 
 
         // calculate density and pressure for all particles
-        #pragma omp parallel for
+#pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
@@ -35,7 +35,7 @@ namespace FluidSolver {
         }
 
         // compute non pressure accelerations and pressure accelerations for all particles
-        #pragma omp parallel for
+#pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
@@ -52,7 +52,7 @@ namespace FluidSolver {
         }
 
         // update velocity and position of all particles
-        #pragma omp parallel for
+#pragma omp parallel for
         for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
@@ -182,5 +182,9 @@ namespace FluidSolver {
         }
 
         return 2.0f * Viscosity * tmp;
+    }
+
+    SPHFluidSolver::~SPHFluidSolver() {
+        delete statisticCollector;
     }
 }

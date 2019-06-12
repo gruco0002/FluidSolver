@@ -39,7 +39,9 @@ private:
 
     float currentTime;
 
-    void log(float time, float avgDensity, float energy, float MaxVelocity);
+    void log(float time, float avgDensity, float energy, float kineticEnergy, float potentialEnergy, float maxVelocity,  float cflNumber, uint32_t deadParticleCount);
+
+    void calculateAndLogData();
 
 
 };

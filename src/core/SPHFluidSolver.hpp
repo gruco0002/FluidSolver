@@ -10,6 +10,7 @@
 #include <core/interface/IKernel.hpp>
 #include <core/interface/ISimulationModifier.hpp>
 #include "core/interface/IParticleCollection.hpp"
+#include "StatisticCollector.hpp"
 
 namespace FluidSolver {
     class SPHFluidSolver {
@@ -46,7 +47,9 @@ namespace FluidSolver {
 
         virtual glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
 
+        StatisticCollector* statisticCollector = new StatisticCollector(this);
 
+        virtual ~SPHFluidSolver();
     };
 }
 
