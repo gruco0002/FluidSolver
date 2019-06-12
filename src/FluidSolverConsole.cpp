@@ -48,6 +48,7 @@ void FluidSolverConsole::setVariables(cxxopts::ParseResult &parseResult) {
     length = parseResult["length"].as<float>();
     output = parseResult["output"].as<std::string>();
     verbose = parseResult["debug"].as<bool>();
+    stiffness = parseResult["stiffness"].as<float>();
 }
 
 void FluidSolverConsole::executeSimulation() {
