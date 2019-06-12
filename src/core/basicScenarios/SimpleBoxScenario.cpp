@@ -3,6 +3,7 @@
 //
 
 #include <core/SimpleParticleCollection.hpp>
+#include <core/simulationModifiers/DeathBox.hpp>
 #include "SimpleBoxScenario.hpp"
 
 void
@@ -99,4 +100,8 @@ int FluidSolver::SimpleBoxScenario::GetParticleCountX() {
 
 int FluidSolver::SimpleBoxScenario::GetParticleCountY() {
     return 60;
+}
+
+std::vector<FluidSolver::ISimulationModifier *> FluidSolver::SimpleBoxScenario::GetSimulationModifiers() {
+    return {new DeathBox(25, -25, -20, 15)};
 }
