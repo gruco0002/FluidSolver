@@ -5,6 +5,8 @@
 #ifndef FLUIDSOLVER_STATISTICCOLLECTOR_HPP
 #define FLUIDSOLVER_STATISTICCOLLECTOR_HPP
 
+#include <cstdint>
+
 namespace FluidSolver{
 
     class SPHFluidSolver;
