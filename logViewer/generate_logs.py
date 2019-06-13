@@ -38,11 +38,30 @@ class ParameterRange:
             return True
         return False
 
+
 class ParameterRangeExponential(ParameterRange):
 
     def next_step(self):
         self._currentValue *= self.stepSize
-        self._currentValue = min(self._currentValue, self.endValue) 
+        self._currentValue = min(self._currentValue, self.endValue)
+
+
+class ParameterRangeExplicit(ParameterRange):
+
+    def __init__(self, name, description, values):
+        super().__init__(name, description, min(values), max(values), None)
+        self.currentIndex = 0
+        self.values = values
+
+    def next_step(self):
+        self.currentIndex += 1
+        if self.currentIndex >= len(self.values):
+            self.currentIndex = len(self.values) - 1
+        self._currentValue = self.values[self.currentIndex]
+
+    def reset(self):
+        super().reset
+        self.currentIndex = 0
 
 
 def walk_through_matrix(parameterRanges, fnc):
@@ -91,7 +110,8 @@ def generate_parameter_list(params):
 def call_fluid_solver(executable_path, log_name, params):
     call_list = [executable_path, "-c", "-l 30.0" "--output=" + log_name]
     param_list = generate_parameter_list(params)
-    p = subprocess.Popen(call_list + param_list, bufsize=0 , stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    p = subprocess.Popen(call_list + param_list, bufsize=0, stdin=subprocess.DEVNULL,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     p.wait()
 
 
@@ -118,11 +138,11 @@ def run_for_all(params, executable_path, log_description_path, log_prefix):
 
 
 def main(executable_path, log_description_path, log_prefix):
-    params = [ParameterRangeExponential("timestep", "Timestep", 0.0001, 0.1, 10),
-              ParameterRange("stiffness", "Stiffness",
-                             1000.0, 1000000.0, 1000.0),
-              ParameterRange("viscosity", "Viscosity", 0.1, 10.0, 0.1)]
-    
+    params = [ParameterRangeExplicit("stiffness", "Stiffness",
+                                     [1000.0, 10000.0, 100000.0, 1000000.0]),
+              ParameterRange("viscosity", "Viscosity", 0.0, 5.0, 0.5),
+              ParameterRangeExponential("timestep", "Timestep", 0.0001, 0.01, 10)]
+
     run_for_all(params, executable_path, log_description_path, log_prefix)
 
 
