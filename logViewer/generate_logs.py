@@ -28,13 +28,12 @@ class ParameterRange:
 
     def next_step(self):
         self._currentValue += self.stepSize
-        self._currentValue = min(self._currentValue, self.endValue)
 
     def get_current_value(self):
         return ParameterValue(self.name, self.description, self._currentValue)
 
     def is_at_end(self):
-        if self._currentValue == self.endValue:
+        if self._currentValue > self.endValue:
             return True
         return False
 
@@ -43,7 +42,6 @@ class ParameterRangeExponential(ParameterRange):
 
     def next_step(self):
         self._currentValue *= self.stepSize
-        self._currentValue = min(self._currentValue, self.endValue)
 
 
 class ParameterRangeExplicit(ParameterRange):
@@ -56,12 +54,18 @@ class ParameterRangeExplicit(ParameterRange):
     def next_step(self):
         self.currentIndex += 1
         if self.currentIndex >= len(self.values):
-            self.currentIndex = len(self.values) - 1
-        self._currentValue = self.values[self.currentIndex]
+            self._currentValue = self.values[len(self.values)-1]
+        else:
+            self._currentValue = self.values[self.currentIndex]
 
     def reset(self):
         super().reset
         self.currentIndex = 0
+
+    def is_at_end(self):
+        if self.currentIndex >= len(self.values):
+            return True
+        return False
 
 
 def walk_through_matrix(parameterRanges, fnc):
@@ -84,17 +88,21 @@ def walk_through_matrix(parameterRanges, fnc):
     # call the function initally
     fnc(list([x.get_current_value() for x in parameterRanges]))
 
+    wentThrough = False
     # iterate over every possible combination
-    while not parameterRanges[0].is_at_end():
+    while not wentThrough:
 
         # increment the value
-        for p_range in reversed(parameterRanges):
+        for i, p_range in enumerate(reversed(parameterRanges)):
             p_range.next_step()
             # check if we reached the end
             if not p_range.is_at_end():
                 break  # we do not want to increment values any further
             else:
                 p_range.reset()  # reset value, increment next values
+                if i + 1 == len(parameterRanges):
+                    wentThrough = True  # we reset the first element, so we went
+                    # through all combinations
 
         # call the function
         fnc(list([x.get_current_value() for x in parameterRanges]))
@@ -107,15 +115,15 @@ def generate_parameter_list(params):
     return ret
 
 
-def call_fluid_solver(executable_path, log_name, params):
-    call_list = [executable_path, "-c", "-l 30.0", "--output=" + log_name]
+def call_fluid_solver(executable_path, log_name, params, simulation_length):
+    call_list = [executable_path, "-c", "--length=" + str(simulation_length), "--output=" + log_name]
     param_list = generate_parameter_list(params)
     p = subprocess.Popen(call_list + param_list, bufsize=0, stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     p.wait()
 
 
-def run_for_all(params, executable_path, log_description_path, log_prefix):
+def run_for_all(params, executable_path, log_description_path, log_prefix, simulation_length):
 
     with open(log_description_path, "w+", buffering=1) as log_desc:
 
@@ -132,7 +140,7 @@ def run_for_all(params, executable_path, log_description_path, log_prefix):
 
             # call fluid solver
             call_fluid_solver(executable_path, log_prefix +
-                              str(current_number) + ".csv", param_values)
+                              str(current_number) + ".csv", param_values, simulation_length)
 
         walk_through_matrix(params, inside)
 
@@ -142,8 +150,9 @@ def main(executable_path, log_description_path, log_prefix):
                                      [1000.0, 10000.0, 100000.0, 1000000.0]),
               ParameterRange("viscosity", "Viscosity", 0.0, 5.0, 0.5),
               ParameterRangeExponential("timestep", "Timestep", 0.0001, 0.01, 10)]
+    simulation_length = 30.0
 
-    run_for_all(params, executable_path, log_description_path, log_prefix)
+    run_for_all(params, executable_path, log_description_path, log_prefix, simulation_length)
 
 
 if __name__ == "__main__":
