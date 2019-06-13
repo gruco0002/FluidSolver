@@ -38,6 +38,12 @@ class ParameterRange:
             return True
         return False
 
+class ParameterRangeExponential(ParameterRange):
+
+    def next_step(self):
+        self._currentValue *= self.stepSize
+        self._currentValue = min(self._currentValue, self.endValue) 
+
 
 def walk_through_matrix(parameterRanges, fnc):
     """ Walks through the given list of parameters generating every possible
@@ -112,7 +118,7 @@ def run_for_all(params, executable_path, log_description_path, log_prefix):
 
 
 def main(executable_path, log_description_path, log_prefix):
-    params = [ParameterRange("timestep", "Timestep", 0.0001, 0.02, 0.0005),
+    params = [ParameterRangeExponential("timestep", "Timestep", 0.0001, 0.1, 10),
               ParameterRange("stiffness", "Stiffness",
                              1000.0, 1000000.0, 1000.0),
               ParameterRange("viscosity", "Viscosity", 0.1, 10.0, 0.1)]
