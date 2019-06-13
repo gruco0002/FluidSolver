@@ -108,7 +108,7 @@ def generate_parameter_list(params):
 
 
 def call_fluid_solver(executable_path, log_name, params):
-    call_list = [executable_path, "-c", "-l 30.0" "--output=" + log_name]
+    call_list = [executable_path, "-c", "-l 30.0", "--output=" + log_name]
     param_list = generate_parameter_list(params)
     p = subprocess.Popen(call_list + param_list, bufsize=0, stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
