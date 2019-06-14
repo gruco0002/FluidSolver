@@ -47,7 +47,8 @@ class ParameterRangeExponential(ParameterRange):
 class ParameterRangeExplicit(ParameterRange):
 
     def __init__(self, name, description, values):
-        super().__init__(name, description, min(values), max(values), None)
+        super().__init__(name, description,
+                         values[0], values[len(values)-1], None)
         self.currentIndex = 0
         self.values = values
 
@@ -59,7 +60,7 @@ class ParameterRangeExplicit(ParameterRange):
             self._currentValue = self.values[self.currentIndex]
 
     def reset(self):
-        super().reset
+        super().reset()
         self.currentIndex = 0
 
     def is_at_end(self):
@@ -116,7 +117,8 @@ def generate_parameter_list(params):
 
 
 def call_fluid_solver(executable_path, log_name, params, simulation_length):
-    call_list = [executable_path, "-c", "--length=" + str(simulation_length), "--output=" + log_name]
+    call_list = [executable_path, "-c", "--length=" +
+                 str(simulation_length), "--output=" + log_name]
     param_list = generate_parameter_list(params)
     p = subprocess.Popen(call_list + param_list, bufsize=0, stdin=subprocess.DEVNULL,
                          stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -149,10 +151,11 @@ def main(executable_path, log_description_path, log_prefix):
     params = [ParameterRangeExplicit("stiffness", "Stiffness",
                                      [1000.0, 10000.0, 100000.0, 1000000.0]),
               ParameterRange("viscosity", "Viscosity", 0.0, 5.0, 0.5),
-              ParameterRangeExponential("timestep", "Timestep", 0.0001, 0.01, 10)]
+              ParameterRangeExplicit("timestep", "Timestep", [0.05, 0.01, 0.005, 0.001, 0.0005])]
     simulation_length = 30.0
 
-    run_for_all(params, executable_path, log_description_path, log_prefix, simulation_length)
+    run_for_all(params, executable_path, log_description_path,
+                log_prefix, simulation_length)
 
 
 if __name__ == "__main__":
