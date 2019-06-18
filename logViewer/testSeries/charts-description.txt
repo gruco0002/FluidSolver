@@ -1,0 +1,3 @@
+AvgDensityDifferentTimesteps: stiffness=10000.0 viscosity=3.0
+AvgDensityDifferentStiffness: timestep=0.001    viscosity=3.0
+AvgDensityDifferentStiffnessOnlyHighK: timestep=0.001   viscosity=3.0

@@ -51,7 +51,7 @@ Use CMake to compile the project:
 - stb_image_resize (Version 0.95), included in this repository
 - stb_image_write (Version 1.09), included in this repository
 - stb_truetype (Version 1.19), included in this repository
-- OpenMP (Version ?.?)
+- OpenMP (Version 4.5)
 - cxxopts (Version 2.1.2), included in this repository
 
 ### Using the Code on OSX (Mac)

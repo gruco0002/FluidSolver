@@ -4,7 +4,7 @@ from matplotlib import style
 import numpy as np
 
 
-def main(filepaths, showDens, showEner, showKinetic, showPotential, showVeloc, showCFL, showDead):
+def main(filepaths, showLegend, showDens, showEner, showKinetic, showPotential, showVeloc, showCFL, showDead):
 
     style.use('ggplot')
 
@@ -36,7 +36,8 @@ def main(filepaths, showDens, showEner, showKinetic, showPotential, showVeloc, s
             plt.plot(timesteps, deadParticles,
                      label="Dead Particles " + filepath)
 
-    plt.legend()
+    if showLegend:
+        plt.legend()
     plt.show()
 
 
@@ -59,6 +60,8 @@ if __name__ == "__main__":
         "--show-cfl-number", help="shows the cfl number graph", action='store_true', dest="showCFL")
     parser.add_argument(
         "--show-dead-particles", help="shows the dead particles graph", action='store_true', dest="showDead")
+    parser.add_argument(
+        "--hide-legend", help="Hides the graphs legend", action='store_true', dest="hideLegend")
     args = parser.parse_args()
-    main(args.logfiles, args.showDens, args.showEner, args.showKinetic,
+    main(args.logfiles, not args.hideLegend, args.showDens, args.showEner, args.showKinetic,
          args.showPotential, args.showVeloc, args.showCFL, args.showDead)
