@@ -6,29 +6,34 @@
 #include "ParticleRenderer.hpp"
 
 void ParticleRenderer::Render() {
-    particleShader->Bind();
-    particleShader->SetValue("projectionMatrix", projectionMatrix);
-    particleShader->SetValue("pointSize", pointSize);
-    particleShader->SetValue("colorSelection", (int) colorSelection);
-    particleShader->SetValue("bottomColor", bottomColor);
-    particleShader->SetValue("bottomValue", bottomValue);
-    particleShader->SetValue("topColor", topColor);
-    particleShader->SetValue("topValue", topValue);
+	particleShader->Bind();
+	particleShader->SetValue("projectionMatrix", projectionMatrix);
+	particleShader->SetValue("pointSize", pointSize);
+	particleShader->SetValue("colorSelection", (int)colorSelection);
+	particleShader->SetValue("bottomColor", bottomColor);
+	particleShader->SetValue("bottomValue", bottomValue);
+	particleShader->SetValue("topColor", topColor);
+	particleShader->SetValue("topValue", topValue);
+	if (showParticleSelection) {
+		particleShader->SetValue("selectedParticle", selectedParticle);
+	}
+	else {
+		particleShader->SetValue("selectedParticle", -1);
+	}
 
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+	if (particleVertexArray != nullptr)
+		particleVertexArray->Draw();
 
-    if (particleVertexArray != nullptr)
-        particleVertexArray->Draw();
-
-    //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+	//glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
 
 ParticleRenderer::~ParticleRenderer() {
-    Delete();
+	Delete();
 }
 
 const std::string vertCode = R"(#version 330 core
@@ -56,11 +61,13 @@ uniform vec4 bottomColor;
 uniform vec4 topColor;
 uniform float bottomValue;
 uniform float topValue;
+uniform int selectedParticle;
 
 
 out VS_OUT {
     vec4 color;
     int discarded;
+	int selected;
 } vs_out;
 
 
@@ -68,6 +75,11 @@ void main()
 {
 
     vs_out.discarded = 0;
+	vs_out.selected = 0;
+
+	if(gl_VertexID == selectedParticle){
+		vs_out.selected = 1;
+	}
 
     float val = 0.0;
     if(colorSelection == COLOR_SELECTION_VELOCITY){
@@ -100,16 +112,21 @@ const std::string fragCode = R"(#version 330 core
 out vec4 FragColor;
 in vec4 oColor;
 in vec2 oTexcoord;
+flat in int oSelected;
 void main()
 {
     const float blurredEdge = 0.025;
 
     vec2 moved = oTexcoord - vec2(0.5);
     float len = length(moved);
-    len = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
+    float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
 
     FragColor = oColor;
-    FragColor.a = mix(1.0, 0.0, len);
+    FragColor.a = mix(1.0, 0.0, edgeMix);
+
+	if(oSelected == 1){
+		FragColor.r = 1.0;		
+	}
 
 }
 )";
@@ -124,10 +141,12 @@ uniform mat4 projectionMatrix;
 
 out vec4 oColor;
 out vec2 oTexcoord;
+flat out int oSelected;
 
 in VS_OUT {
     vec4 color;
     int discarded;
+	int selected;
 } gs_in[];
 
 void main(){
@@ -137,6 +156,7 @@ void main(){
     }
 
     oColor = gs_in[0].color;
+	oSelected = gs_in[0].selected;
     vec4 position = gl_in[0].gl_Position;
 
     gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
@@ -159,30 +179,30 @@ void main(){
 )";
 
 void ParticleRenderer::Generate() {
-    particleShader = new Engine::Graphics::Shader({
-                                                          Engine::Graphics::Shader::ProgramPart(
-                                                                  Engine::Graphics::Shader::ProgramPartTypeVertex,
-                                                                  vertCode),
-                                                          Engine::Graphics::Shader::ProgramPart(
-                                                                  Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                                                                  geomCode),
-                                                          Engine::Graphics::Shader::ProgramPart(
-                                                                  Engine::Graphics::Shader::ProgramPartTypeFragment,
-                                                                  fragCode),
+	particleShader = new Engine::Graphics::Shader({
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeVertex,
+																  vertCode),
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeGeometry,
+																  geomCode),
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeFragment,
+																  fragCode),
 
-                                                  });
+		});
 }
 
 void ParticleRenderer::Delete() {
-    delete particleShader;
+	delete particleShader;
 }
 
-ParticleRenderer::ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix) {
-    this->particleVertexArray = particleVertexArray;
-    this->projectionMatrix = projectionMatrix;
-    Generate();
+ParticleRenderer::ParticleRenderer(ParticleVertexArray * particleVertexArray, glm::mat4 projectionMatrix) {
+	this->particleVertexArray = particleVertexArray;
+	this->projectionMatrix = projectionMatrix;
+	Generate();
 }
 
 glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, float bottom) {
-    return glm::ortho((float) left, (float) right, (float) bottom, (float) top);
+	return glm::ortho((float)left, (float)right, (float)bottom, (float)top);
 }

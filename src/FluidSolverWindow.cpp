@@ -154,7 +154,7 @@ void FluidSolverWindow::buildGUI() {
 	scaff->addChild(fpsLabel);
 	fpsLabel->Visible = true;
 
-	infoBox = new FluidSolverParticleInfoGUI(particleCollection->GetSize() - 1, particleCollection);
+	infoBox = new FluidSolverParticleInfoGUI(0, particleCollection);
 	infoBox->setLocationX(100);
 	infoBox->setLocationY(100);
 	infoBox->setWidth(300);
@@ -281,6 +281,7 @@ void FluidSolverWindow::onClick(float x, float y) {
 	// set particle index in info box
 	if (particleIndex != -1) {
 		infoBox->particleIndex = particleIndex;
+		particleRenderer->selectedParticle = particleIndex;
 	}
 
 }

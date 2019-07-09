@@ -42,6 +42,10 @@ public:
 
     glm::vec4 topColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     float topValue = 1.0f;
+	
+	int selectedParticle = 0;
+	bool showParticleSelection = false;
+
 private:
     Engine::Graphics::Shader *particleShader = nullptr;
 
