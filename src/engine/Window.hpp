@@ -76,10 +76,17 @@ namespace Engine {
 
         double currentTime;
         double lastFrameTime;
+
+		const static unsigned int lastFrameTimesLength = 50;
+		unsigned int lastFrameTimesIndex = 0;
+		double lastFrameTimes[lastFrameTimesLength] = { 0 };
+
     public:
         double GetLastFrameTime() const;
 
         double GetFPS() const;
+
+		double GetAvgFPS() const;
 
     public:
         double GetMousePositionX() const;

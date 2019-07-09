@@ -24,7 +24,7 @@
 
 
 void FluidSolverWindow::render() {
-	fpsLabel->setText("FPS: " + std::to_string(GetFPS()));
+	fpsLabel->setText("FPS: " + std::to_string(GetAvgFPS()));
 
 	// particle simulation
 	if (!this->Pause) {
@@ -153,6 +153,7 @@ void FluidSolverWindow::buildGUI() {
 	fpsLabel = new cppgui::Label(0, 65, "FPS: ");
 	scaff->addChild(fpsLabel);
 	fpsLabel->Visible = true;
+	fpsLabel->setFontColor(cppgui::Color(1.0f, 1.0f, 1.0f));
 
 	infoBox = new FluidSolverParticleInfoGUI(0, particleCollection);
 	infoBox->setLocationX(100);

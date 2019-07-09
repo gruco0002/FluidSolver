@@ -1,3 +1,4 @@
+#include "Window.hpp"
 //
 // Created by corbi on 16.04.2019.
 //
@@ -188,6 +189,9 @@ namespace Engine {
             lastFrameTime = tmp - currentTime;
             currentTime = tmp;
 
+			lastFrameTimesIndex = (lastFrameTimesIndex + 1) % lastFrameTimesLength;
+			lastFrameTimes[lastFrameTimesIndex] = lastFrameTime;
+
             // input handling here
 
             // rendering here
@@ -258,6 +262,16 @@ namespace Engine {
     double Window::GetFPS() const {
         return 1.0 / lastFrameTime;
     }
+
+	double Window::GetAvgFPS() const
+	{
+		double acc = 0.0f;
+		for (size_t i = 0; i < lastFrameTimesLength; i++) {
+			acc += lastFrameTimes[i];
+		}
+		acc /= (double)lastFrameTimesLength;
+		return 1.0 / acc;
+	}
 
     void Window::onKeyChanged(GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (window != this->window) return;
