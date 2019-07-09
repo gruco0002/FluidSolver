@@ -21,6 +21,7 @@
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>
+#include <engine/graphics/Framebuffer.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -60,18 +61,33 @@ private:
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
 
-
     cppgui::Label *fpsLabel;
 
     FluidSolverParticleInfoGUI *infoBox = nullptr;
 
-    void CalculateCorrectProjectionMatrix(float particlesX, float particlesY, float particleSize);
+	void UpdateProjectionMatrices();
+
+	void UpdateRectangleRendererProjectionMatrix();
+
+	void UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize);
+
+
 
     float accumulatedSimulationTime = 0.0f;
 
     FluidSolver::Scenario *scenario = new FluidSolver::BoxWithHoleScenario();
 
-    DataLogger* dataLogger = nullptr;
+    DataLogger *dataLogger = nullptr;
+
+    // rendering
+    Engine::Graphics::Framebuffer *framebuffer = nullptr;
+    uint32_t framebufferWidth = 1920;
+    uint32_t framebufferHeight = 1080;
+    Engine::Graphics::Texture2D* fboDepthTex = nullptr;
+    Engine::Graphics::Texture2D* fboColorTex = nullptr;
+	Engine::RectangleRenderer* rectangleRenderer = nullptr;
+
+    void setupFBO();
 
 protected:
     void render() override;

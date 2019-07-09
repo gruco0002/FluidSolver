@@ -62,12 +62,13 @@ void Engine::Graphics::Texture2D::LoadFromFile(std::string filepath, Engine::Gra
 
 void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t height,
                                                        Engine::Graphics::Texture2DSettings *settings) {
-    GenerateEmptyTexture(width, height, settings, GL_RGB, ComponentTypeUnsignedByte);
+    GenerateEmptyTexture(width, height, settings, GL_RGB, GL_RGB, ComponentTypeUnsignedByte);
 }
 
 void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t height,
                                                        Engine::Graphics::Texture2DSettings *settings,
-                                                       GLenum pixelFormat, ComponentType pixelDataType) {
+                                                       GLenum pixelFormat, GLenum internalPixelFormat,
+                                                       ComponentType pixelDataType) {
     this->pixelFormat = pixelFormat;
     this->pixelDataType = pixelDataType;
     this->settings = settings;
@@ -79,6 +80,7 @@ void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t 
         case GL_GREEN:
         case GL_BLUE:
         case GL_ALPHA:
+		case GL_DEPTH_COMPONENT:
             channels = 1;
             break;
         case GL_RG:
@@ -104,7 +106,7 @@ void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, settings->TextureMinifyingFiltering);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, settings->TextureMagnifyingFiltering);
     }
-    glTexImage2D(GL_TEXTURE_2D, 0, pixelFormat, width, height, 0, pixelFormat, pixelDataType, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, internalPixelFormat, width, height, 0, pixelFormat, pixelDataType, nullptr);
 }
 
 Engine::Graphics::Texture2D::~Texture2D() {
@@ -127,7 +129,15 @@ Engine::Graphics::Texture2D::Texture2D(uint32_t width, uint32_t height,
                                        Engine::Graphics::Texture2DSettings *settings, GLenum pixelFormat,
                                        ComponentType pixelDataType) {
     GenerateTexture();
-    GenerateEmptyTexture(width, height, settings, pixelFormat, pixelDataType);
+    GenerateEmptyTexture(width, height, settings, pixelFormat, pixelFormat, pixelDataType);
+}
+
+Engine::Graphics::Texture2D::Texture2D(uint32_t width, uint32_t height,
+                                       Engine::Graphics::Texture2DSettings *settings, GLenum pixelFormat,
+                                       GLenum internalPixelFormat,
+                                       ComponentType pixelDataType) {
+    GenerateTexture();
+    GenerateEmptyTexture(width, height, settings, pixelFormat, internalPixelFormat, pixelDataType);
 }
 
 void Engine::Graphics::Texture2D::GenerateTexture() {

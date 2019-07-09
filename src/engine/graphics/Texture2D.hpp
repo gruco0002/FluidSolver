@@ -53,6 +53,18 @@ namespace Engine {
                       GLenum pixelFormat, ComponentType pixelDataType);
 
             /**
+             * Creates an empty texture with the specified settings.
+             * @param width Width of the texture.
+             * @param height Height of the texture.
+             * @param settings Texture settings.
+             * @param pixelFormat PixelFormat e.g. GL_RGB or GL_RED
+             * @param internalPixelFormat Sized Pixel Format: eg GL_R8, GL_R16
+             * @param pixelDataType PixelDataType e.g. GL_UNSIGNED_BYTE or GL_FLOAT
+             */
+            Texture2D(uint32_t width, uint32_t height, Texture2DSettings *settings,
+                      GLenum pixelFormat, GLenum internalPixelFormat, ComponentType pixelDataType);
+
+            /**
              * Destroys this texture object and its corresponding data on the graphics card.
              */
             virtual ~Texture2D();
@@ -71,7 +83,7 @@ namespace Engine {
 
             unsigned int GetID();
 
-            void SetData(std::vector<uint8_t>& data);
+            void SetData(std::vector<uint8_t> &data);
 
             std::vector<uint8_t> GetData();
 
@@ -103,7 +115,7 @@ namespace Engine {
             void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings);
 
             void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings,
-                                      GLenum pixelFormat, ComponentType pixelDataType);
+                                      GLenum pixelFormat, GLenum internalPixelFormat, ComponentType pixelDataType);
 
         };
     }
