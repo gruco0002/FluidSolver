@@ -21,6 +21,7 @@
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>
+#include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 
 
@@ -75,7 +76,7 @@ private:
 
     float accumulatedSimulationTime = 0.0f;
 
-    FluidSolver::Scenario *scenario = new FluidSolver::BoxWithHoleScenario();
+    FluidSolver::Scenario *scenario = new FluidSolver::MultipleHoleScenario();
 
     DataLogger *dataLogger = nullptr;
 
