@@ -46,6 +46,9 @@ public:
 	int selectedParticle = 0;
 	bool showParticleSelection = false;
 
+	glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+
+
 private:
     Engine::Graphics::Shader *particleShader = nullptr;
 

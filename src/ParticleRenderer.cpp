@@ -14,6 +14,7 @@ void ParticleRenderer::Render() {
 	particleShader->SetValue("bottomValue", bottomValue);
 	particleShader->SetValue("topColor", topColor);
 	particleShader->SetValue("topValue", topValue);
+	particleShader->SetValue("boundaryColor", boundaryParticleColor);
 	if (showParticleSelection) {
 		particleShader->SetValue("selectedParticle", selectedParticle);
 	}
@@ -62,6 +63,7 @@ uniform vec4 topColor;
 uniform float bottomValue;
 uniform float topValue;
 uniform int selectedParticle;
+uniform vec4 boundaryColor;
 
 
 out VS_OUT {
@@ -100,7 +102,7 @@ void main()
     if(aType == PARTICLE_TYPE_DEAD) {
         vs_out.discarded = 1;
     } else if(aType == PARTICLE_TYPE_BOUNDARY) {
-        // vs_out.color = vec4(1.0, 0.0, 0.0, 1.0);
+        vs_out.color = boundaryColor;
     }
 
     gl_Position =  vec4(aPosition, 0.0, 1.0);
