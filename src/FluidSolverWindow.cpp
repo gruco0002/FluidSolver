@@ -26,17 +26,23 @@
 void FluidSolverWindow::render() {
     fpsLabel->setText("FPS: " + std::to_string(GetAvgFPS()));
 
+
     // particle simulation
-    if (!this->Pause) {
-        accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
-        if (sphFluidSolver != nullptr) {
+    bool simulationStepHappened = false;
+    if (sphFluidSolver != nullptr) {
+        if (!this->Pause) {
+            accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
+
             while (accumulatedSimulationTime >= sphFluidSolver->TimeStep) {
                 //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
                 sphFluidSolver->ExecuteSimulationStep();
+                simulationStepHappened = true;
                 if (dataLogger)
                     dataLogger->TimeStepPassed();
             }
+
+
         } else {
             accumulatedSimulationTime = 0.0f;
         }
@@ -60,6 +66,11 @@ void FluidSolverWindow::render() {
     }
 
     framebuffer->Unbind();
+    glFlush();
+
+    // save as image
+    if (simulationStepHappened)
+        saveAsImage();
 
     // render to screen
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -71,6 +82,8 @@ void FluidSolverWindow::render() {
 
     // render ui
     uiWrapper->render();
+
+
 }
 
 FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {}
@@ -240,7 +253,7 @@ void FluidSolverWindow::onClick(float x, float y) {
     if (particleCollection == nullptr) return;
     if (particleRenderer == nullptr) return;
     if (rectangleRenderer == nullptr) return;
-    if ( simulationSettings == nullptr) return;
+    if (simulationSettings == nullptr) return;
 
     auto rel = glm::vec2(x, y) / glm::vec2((float) GetWidth(), -(float) GetHeight());
     rel *= 2.0f;
@@ -362,4 +375,11 @@ void FluidSolverWindow::setupFBO() {
                                                   Engine::ComponentType::ComponentTypeUnsignedByte);
     framebuffer->AddAttachment(GL_COLOR_ATTACHMENT0, fboColorTex);
 
+}
+
+void FluidSolverWindow::saveAsImage() {
+    if (!saveFrames)
+        return;
+    imageCounter++;
+    fboColorTex->SaveAsPNG("image_" + std::to_string(imageCounter) + ".png");
 }

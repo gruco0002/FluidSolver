@@ -68,14 +68,13 @@ private:
 
     cppgui::Label *fpsLabel = nullptr;
 
-    FluidSolver::Gui::SimulationSettings* simulationSettings = nullptr;
+    FluidSolver::Gui::SimulationSettings *simulationSettings = nullptr;
 
-	void UpdateProjectionMatrices();
+    void UpdateProjectionMatrices();
 
-	void UpdateRectangleRendererProjectionMatrix();
+    void UpdateRectangleRendererProjectionMatrix();
 
-	void UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize);
-
+    void UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize);
 
 
     float accumulatedSimulationTime = 0.0f;
@@ -88,11 +87,17 @@ private:
     Engine::Graphics::Framebuffer *framebuffer = nullptr;
     uint32_t framebufferWidth = 1920;
     uint32_t framebufferHeight = 1080;
-    Engine::Graphics::Texture2D* fboDepthTex = nullptr;
-    Engine::Graphics::Texture2D* fboColorTex = nullptr;
-	Engine::RectangleRenderer* rectangleRenderer = nullptr;
+    Engine::Graphics::Texture2D *fboDepthTex = nullptr;
+    Engine::Graphics::Texture2D *fboColorTex = nullptr;
+    Engine::RectangleRenderer *rectangleRenderer = nullptr;
 
     void setupFBO();
+
+
+    bool saveFrames = false;
+    unsigned int imageCounter = 0;
+
+    void saveAsImage();
 
 protected:
     void render() override;
