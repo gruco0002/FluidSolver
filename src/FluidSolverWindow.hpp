@@ -17,13 +17,17 @@
 
 #include <dependencies/cppgui/src/Label.hpp>
 #include <core/SPHFluidSolver.hpp>
-#include "FluidSolverParticleInfoGUI.hpp"
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>
 #include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 
+namespace FluidSolver {
+    namespace Gui {
+        class SimulationSettings;
+    }
+}
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -56,15 +60,15 @@ private:
     void onClick(float x, float y);
 
 
-    cppgui::DynamicUIWrapper *uiWrapper;
-    GuiEngineInterface *guiInterface;
+    cppgui::DynamicUIWrapper *uiWrapper = nullptr;
+    GuiEngineInterface *guiInterface = nullptr;
 
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
 
-    cppgui::Label *fpsLabel;
+    cppgui::Label *fpsLabel = nullptr;
 
-    FluidSolverParticleInfoGUI *infoBox = nullptr;
+    FluidSolver::Gui::SimulationSettings* simulationSettings = nullptr;
 
 	void UpdateProjectionMatrices();
 

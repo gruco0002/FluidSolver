@@ -17,9 +17,11 @@
 
 
 FluidSolver::Gui::SimulationSettings::SimulationSettings(ParticleRenderer *particleRenderer,
-                                                         FluidSolverWindow *window) {
+                                                         FluidSolverWindow *window,
+                                                         FluidSolver::IParticleCollection *particleCollection) {
     this->particleRenderer = particleRenderer;
     this->window = window;
+    this->particleCollection = particleCollection;
     setup();
 }
 
@@ -61,6 +63,13 @@ void FluidSolver::Gui::SimulationSettings::setup() {
     auto scenarioExpanderStack = new cppgui::Stack();
     scenarionExpander->addChild(new cppgui::DirectionalSpread(scenarioExpanderStack));
     setupScenarioExpanderStack(scenarioExpanderStack);
+
+    auto infoExpander = new cppgui::Expander("Information");
+    stack->addChild(new cppgui::DirectionalSpread(infoExpander));
+    auto infoExpanderStack = new cppgui::Stack();
+    infoExpander->addChild(new cppgui::DirectionalSpread(infoExpanderStack));
+    setupInformationExpanderStack(infoExpanderStack);
+
 
 }
 
@@ -158,4 +167,45 @@ void FluidSolver::Gui::SimulationSettings::setupScenarioExpanderStack(cppgui::St
     resetBtn->OnClickEvent.Subscribe([=](float x, float y) {
         window->resetData();
     });
+}
+
+cppgui::Stack *FluidSolver::Gui::SimulationSettings::generateInfoStack(std::string text, cppgui::StyledLabel *other) {
+    auto infoStack = new cppgui::Stack(cppgui::StackHorizontal);
+    infoStack->setHeight(30);
+    infoStack->setGrowWithContent(false);
+    auto desc = new cppgui::StyledLabel(text, cppgui::LabelStyle::LabelStyleDescription, 80, 30);
+    infoStack->addChild(desc);
+    infoStack->addChild(other);
+    return infoStack;
+}
+
+void FluidSolver::Gui::SimulationSettings::setupInformationExpanderStack(cppgui::Stack *informationExpanderStack) {
+
+    id = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    position = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    velocity = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    density = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    pressure = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    mass = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("ID:", id)));
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Position:", position)));
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Velocity:", velocity)));
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Density:", density)));
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Pressure:", pressure)));
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Mass:", mass)));
+}
+
+void FluidSolver::Gui::SimulationSettings::UpdateData() {
+    if (particleCollection == nullptr)
+        return;
+    if (particleCollection->GetSize() <= selectedParticle)
+        return;
+    id->setText(std::to_string(selectedParticle));
+    auto particlePosition = particleCollection->GetPosition(selectedParticle);
+    position->setText(std::to_string(particlePosition.x) + ", " + std::to_string(particlePosition.y));
+    auto particleVelocity = particleCollection->GetVelocity(selectedParticle);
+    velocity->setText(std::to_string(particleVelocity.x) + ", " + std::to_string(particleVelocity.y));
+    density->setText(std::to_string(particleCollection->GetDensity(selectedParticle)));
+    pressure->setText(std::to_string(particleCollection->GetPressure(selectedParticle)));
+    mass->setText(std::to_string(particleCollection->GetMass(selectedParticle)));
 }

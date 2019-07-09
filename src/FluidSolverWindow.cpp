@@ -5,7 +5,6 @@
 //
 
 #include "FluidSolverWindow.hpp"
-#include "FluidSolverTopMenu.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -43,8 +42,8 @@ void FluidSolverWindow::render() {
         }
     }
 
-    if (infoBox != nullptr)
-        infoBox->UpdateData();
+    if (simulationSettings != nullptr)
+        simulationSettings->UpdateData();
 
     if (particleVertexArray != nullptr)
         particleVertexArray->Update();
@@ -145,27 +144,15 @@ void FluidSolverWindow::buildGUI() {
     auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
     uiWrapper->setScaffold(scaff);
 
-    auto alignTop = new cppgui::AlignBox(cppgui::AlignmentTop, 60.0f);
-    alignTop->addChild(new cppgui::Spread(new FluidSolverTopMenu(particleRenderer, this)));
-
-    scaff->addChild(alignTop);
-
-    fpsLabel = new cppgui::Label(0, 65, "FPS: ");
+    fpsLabel = new cppgui::Label(0, 0, "FPS: ");
     scaff->addChild(fpsLabel);
     fpsLabel->Visible = true;
     fpsLabel->setFontColor(cppgui::Color(1.0f, 1.0f, 1.0f));
 
-    infoBox = new FluidSolverParticleInfoGUI(0, particleCollection);
-    infoBox->setLocationX(100);
-    infoBox->setLocationY(100);
-    infoBox->setWidth(300);
-    infoBox->setHeight(300);
-    scaff->addChild(infoBox);
+    simulationSettings = new FluidSolver::Gui::SimulationSettings(particleRenderer, this, particleCollection);
 
-    if (particleCollection != nullptr) infoBox->particleCollection = particleCollection;
-
-    scaff->addChild(new cppgui::AlignBox(cppgui::AlignmentRight, 300.0f, new cppgui::Spread(
-            new FluidSolver::Gui::SimulationSettings(particleRenderer, this))));
+    if (particleCollection != nullptr) simulationSettings->particleCollection = particleCollection;
+    scaff->addChild(new cppgui::AlignBox(cppgui::AlignmentRight, 300.0f, new cppgui::Spread(simulationSettings)));
 
 }
 
@@ -220,7 +207,7 @@ void FluidSolverWindow::loadParticles() {
     dataLogger->StartLogging();
 
     // setup info box
-    if (infoBox != nullptr) infoBox->particleCollection = particleCollection;
+    if (simulationSettings != nullptr) simulationSettings->particleCollection = particleCollection;
 }
 
 
@@ -253,7 +240,7 @@ void FluidSolverWindow::onClick(float x, float y) {
     if (particleCollection == nullptr) return;
     if (particleRenderer == nullptr) return;
     if (rectangleRenderer == nullptr) return;
-    if (infoBox == nullptr) return;
+    if ( simulationSettings == nullptr) return;
 
     auto rel = glm::vec2(x, y) / glm::vec2((float) GetWidth(), -(float) GetHeight());
     rel *= 2.0f;
@@ -284,7 +271,7 @@ void FluidSolverWindow::onClick(float x, float y) {
 
     // set particle index in info box
     if (particleIndex != -1) {
-        infoBox->particleIndex = particleIndex;
+        simulationSettings->selectedParticle = particleIndex;
         particleRenderer->selectedParticle = particleIndex;
     }
 
