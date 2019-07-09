@@ -248,13 +248,20 @@ void FluidSolverWindow::onClick(float x, float y) {
 
 	if (particleCollection == nullptr) return;
 	if (particleRenderer == nullptr) return;
+	if (rectangleRenderer == nullptr) return;
 	if (infoBox == nullptr) return;
 
-	auto clip = glm::vec2(x, y) / glm::vec2((float)GetWidth(), (float)-GetHeight()) + glm::vec2(0.0f, 1.0f);
-	clip *= 2.0;
-	clip -= glm::vec2(1.0);
+	auto rel = glm::vec2(x, y) / glm::vec2((float)GetWidth(), -(float)GetHeight());
+	rel *= 2.0f;
+	rel += glm::vec2(-1.0f, 1.0f);
+	auto unprojectedTMP = glm::inverse(rectangleRenderer->projectionMatrix) * glm::vec4(rel.x, rel.y, 0.0f, 1.0f);
 
-	auto unprojected = glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0, 1.0);
+	auto clip = glm::vec2(unprojectedTMP.x, -unprojectedTMP.y);
+	clip *= 2.0;
+	clip += glm::vec2(-1.0f, 1.0f);
+
+	
+	auto unprojected = glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0f, 1.0f);
 
 	// pos is the position in particle space
 	glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
