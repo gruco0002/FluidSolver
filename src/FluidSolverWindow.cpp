@@ -336,8 +336,8 @@ void FluidSolverWindow::UpdateRectangleRendererProjectionMatrix() {
 void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize) {
 
 
-    float width = particlesX * particleSize;
-    float height = particlesY * particleSize;
+    float width = particlesX ; // particle size is not taken into account
+    float height = particlesY ;
 
     float fboWidth = framebufferWidth;
     float fboHeight = framebufferHeight;
