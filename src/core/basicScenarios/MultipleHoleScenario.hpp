@@ -20,7 +20,9 @@ namespace FluidSolver {
 
         std::vector<ISimulationModifier *> GetSimulationModifiers() override;
 
-	private:
+        float GetParticleSize() override;
+
+    private:
 
 
 		void add(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> *particles, float restDensity, float x, float y);

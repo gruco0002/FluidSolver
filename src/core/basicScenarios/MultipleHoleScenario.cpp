@@ -165,14 +165,21 @@ void FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::SimpleParti
 	float mass = restDensity * GetParticleSize() * GetParticleSize();
 
 	FluidSolver::SimpleParticleCollection::FluidParticle p;
-	p.Position = glm::vec2((float)x, -(float)y);
 	p.Velocity = glm::vec2(0.0f);
 	p.Acceleration = glm::vec2(0.0f);
 	p.Pressure = 0.0f;
 	p.Density = restDensity;
 	p.Mass = mass;
 	p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
-	particles->push_back(p);
+
+    p.Position = glm::vec2(((float)x) -0.25f, (-(float)y) - 0.25f);
+    particles->push_back(p);
+    p.Position = glm::vec2(((float)x) -0.25f, (-(float)y) + 0.25f);
+    particles->push_back(p);
+    p.Position = glm::vec2(((float)x) +0.25f, (-(float)y) - 0.25f);
+    particles->push_back(p);
+    p.Position = glm::vec2(((float)x) +0.25f, (-(float)y) + 0.25f);
+    particles->push_back(p);
 }
 
 void FluidSolver::MultipleHoleScenario::addBoundary(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> * particles, float restDensity, float x, float y)
@@ -180,14 +187,21 @@ void FluidSolver::MultipleHoleScenario::addBoundary(std::vector<FluidSolver::Sim
 	float mass = restDensity * GetParticleSize() * GetParticleSize();
 
 	FluidSolver::SimpleParticleCollection::FluidParticle p;
-	p.Position = glm::vec2((float)x, -(float)y);
 	p.Velocity = glm::vec2(0.0f);
 	p.Acceleration = glm::vec2(0.0f);
 	p.Pressure = 0.0f;
 	p.Density = restDensity;
 	p.Mass = mass;
 	p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+
+    p.Position = glm::vec2(((float)x) -0.25f, (-(float)y) - 0.25f);
 	particles->push_back(p);
+    p.Position = glm::vec2(((float)x) -0.25f, (-(float)y) + 0.25f);
+    particles->push_back(p);
+    p.Position = glm::vec2(((float)x) +0.25f, (-(float)y) - 0.25f);
+    particles->push_back(p);
+    p.Position = glm::vec2(((float)x) +0.25f, (-(float)y) + 0.25f);
+    particles->push_back(p);
 }
 
 void FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> * particles, float restDensity)
@@ -203,4 +217,11 @@ void FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimpleP
 	p.Mass = mass;
 	p.Type = FluidSolver::IParticleCollection::ParticleTypeDead;
 	particles->push_back(p);
+	particles->push_back(p);
+	particles->push_back(p);
+	particles->push_back(p);
+}
+
+float FluidSolver::MultipleHoleScenario::GetParticleSize() {
+    return 0.5f;
 }
