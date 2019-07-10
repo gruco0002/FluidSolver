@@ -159,6 +159,21 @@ void FluidSolver::Gui::SimulationSettings::setupParameterExpanderStack(cppgui::S
         this->window->RealTimeSpeed = newValue;
     });
 
+    auto t = new cppgui::Label("Timestep:");
+    auto tinp = new cppgui::TextInput(200, 50, std::to_string(window->sphFluidSolver->TimeStep));
+    tinp->OnTextChanged.Subscribe([=](std::string newText) {
+        try {
+            auto value = std::stof(newText);
+            if(value <= 0.0f)
+                return;
+            window->sphFluidSolver->TimeStep = value;
+        } catch (std::exception &e) {
+
+        }
+    });
+    parameterExpanderStack->addChild(new cppgui::DirectionalSpread(t));
+    parameterExpanderStack->addChild(new cppgui::DirectionalSpread(tinp));
+
 }
 
 void FluidSolver::Gui::SimulationSettings::setupScenarioExpanderStack(cppgui::Stack *scenarioExpanderStack) {
