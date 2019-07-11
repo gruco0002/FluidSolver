@@ -138,3 +138,13 @@ float StatisticCollector::GetCFLNumber(float maximumVelocity) {
     float cfl = maximumVelocity * sphFluidSolver->TimeStep / sphFluidSolver->ParticleSize;
     return cfl;
 }
+
+uint32_t StatisticCollector::GetNormalParticleCount() {
+    uint32_t counter = 0;
+    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
+        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+        if (type == IParticleCollection::ParticleTypeNormal)
+            counter++;
+    }
+    return counter;
+}

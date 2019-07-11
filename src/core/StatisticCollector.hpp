@@ -61,6 +61,8 @@ public:
 
      uint32_t GetBoundaryParticleCount();
 
+    uint32_t GetNormalParticleCount();
+
      float GetCFLNumber();
 
      float GetCFLNumber(float maximumVelocity);
