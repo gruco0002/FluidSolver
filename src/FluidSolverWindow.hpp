@@ -70,6 +70,8 @@ private:
 
     FluidSolver::Gui::SimulationSettings *simulationSettings = nullptr;
 
+    void resetFluidSolverComponents();
+
     void UpdateProjectionMatrices();
 
     void UpdateRectangleRendererProjectionMatrix();

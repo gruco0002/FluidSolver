@@ -172,25 +172,22 @@ void FluidSolverWindow::buildGUI() {
 void FluidSolverWindow::loadParticles() {
     // set up basic stuff
     sphFluidSolver = new FluidSolver::SPHFluidSolver();
+
+    // set particle size and timestep
     sphFluidSolver->TimeStep = 0.001f;
+    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
 
     // set up values
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
-
-
     sphFluidSolver->StiffnessK = 100000.0f;
     sphFluidSolver->Viscosity = 3.0f;
 
-    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
-    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
-    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+    resetFluidSolverComponents();
+
 
     // set up scenario data
-    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
     particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
     sphFluidSolver->particleCollection = particleCollection;
     sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
@@ -223,13 +220,34 @@ void FluidSolverWindow::loadParticles() {
     if (simulationSettings != nullptr) simulationSettings->particleCollection = particleCollection;
 }
 
+void FluidSolverWindow::resetFluidSolverComponents() {
+    delete sphFluidSolver->kernel;
+    delete sphFluidSolver->neighborhoodSearch;
+    delete sphFluidSolver->integrationScheme;
+
+    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
+    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
+    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+}
+
 
 void FluidSolverWindow::resetData() {
     if (dataLogger)
         dataLogger->FinishLogging();
 
-    // set up scenario data
+    // set particle size
     sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+
+    resetFluidSolverComponents();
+
+    // set up values
+    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
+    sphFluidSolver->RestDensity = 1.0f;
+
+    // set up scenario data
     scenario->ResetData(particleCollection, sphFluidSolver->RestDensity);
     // delete old and create new vertex array
     delete particleVertexArray;
@@ -383,3 +401,4 @@ void FluidSolverWindow::saveAsImage() {
     imageCounter++;
     fboColorTex->SaveAsPNG("image_" + std::to_string(imageCounter) + ".png");
 }
+

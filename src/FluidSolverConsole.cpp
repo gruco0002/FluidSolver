@@ -62,7 +62,10 @@ void FluidSolverConsole::executeSimulation() {
 
     // set up basic stuff
     FluidSolver::SPHFluidSolver *sphFluidSolver = new FluidSolver::SPHFluidSolver();
+
+    // set timestep and particle size
     sphFluidSolver->TimeStep = timestep;
+    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
 
     // set up values
     sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
@@ -78,7 +81,6 @@ void FluidSolverConsole::executeSimulation() {
     sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
 
     // set up scenario data
-    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
     FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
     sphFluidSolver->particleCollection = particleCollection;
     sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
