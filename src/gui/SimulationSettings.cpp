@@ -44,6 +44,7 @@ void FluidSolver::Gui::SimulationSettings::setup() {
 
     auto stack = new cppgui::Stack();
     scroll->addChild(new cppgui::DirectionalSpread(stack));
+    stack->setMarginBetween(10.0f);
 
     auto paramExpander = new cppgui::Expander("Parameters");
     stack->addChild(new cppgui::DirectionalSpread(paramExpander));
@@ -173,6 +174,19 @@ void FluidSolver::Gui::SimulationSettings::setupParameterExpanderStack(cppgui::S
     });
     parameterExpanderStack->addChild(new cppgui::DirectionalSpread(t));
     parameterExpanderStack->addChild(new cppgui::DirectionalSpread(tinp));
+
+    auto g = new cppgui::Label("Gravity:");
+    auto ginp = new cppgui::TextInput(200, 50, std::to_string(window->sphFluidSolver->Gravity));
+    ginp->OnTextChanged.Subscribe([=](std::string newText) {
+        try {
+            auto value = std::stof(newText);
+            window->sphFluidSolver->Gravity = value;
+        } catch (std::exception &e) {
+
+        }
+    });
+    parameterExpanderStack->addChild(new cppgui::DirectionalSpread(g));
+    parameterExpanderStack->addChild(new cppgui::DirectionalSpread(ginp));
 
 }
 
