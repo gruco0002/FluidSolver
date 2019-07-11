@@ -1,6 +1,8 @@
 # Fluid Solver
-A small 2D SPH Fluid Solver implemented in C++ with OpenGL visualization. The fluid solver framework is tested with the
-help of googletest.
+A small 2D SPH Fluid Solver implemented in C++ with OpenGL visualization. The fluid solver framework is tested with the help of googletest.
+Furthermore it can be run as a command line tool to calculate fluid scenarios.
+
+![Screenshot](Screenshot.png)
 
 ## Using the code
 The whole project is cmake based and configured to run on established systems like common Linux distros, Windows machines
