@@ -35,9 +35,11 @@ void FluidSolver::Gui::SimulationSettings::setup() {
     al->addChild(new cppgui::Spread(viewButton));
 
     viewButton->OnClickEvent.Subscribe([=](float x, float y) {
+        shouldUpdate = !shouldUpdate;
         fill->Visible = !fill->Visible;
     });
     fill->Visible = false;
+    shouldUpdate = false;
 
     auto scroll = new cppgui::ScrollBox();
     fill->addChild(new cppgui::Spread(scroll));
@@ -70,6 +72,12 @@ void FluidSolver::Gui::SimulationSettings::setup() {
     auto infoExpanderStack = new cppgui::Stack();
     infoExpander->addChild(new cppgui::DirectionalSpread(infoExpanderStack));
     setupInformationExpanderStack(infoExpanderStack);
+
+    auto statExpander = new cppgui::Expander("Statistics");
+    stack->addChild(new cppgui::DirectionalSpread(statExpander));
+    auto statExpanderStack = new cppgui::Stack();
+    statExpander->addChild(new cppgui::DirectionalSpread(statExpanderStack));
+    setupStatisticsExapanderStack(statExpanderStack);
 
 
 }
@@ -165,7 +173,7 @@ void FluidSolver::Gui::SimulationSettings::setupParameterExpanderStack(cppgui::S
     tinp->OnTextChanged.Subscribe([=](std::string newText) {
         try {
             auto value = std::stof(newText);
-            if(value <= 0.0f)
+            if (value <= 0.0f)
                 return;
             window->sphFluidSolver->TimeStep = value;
         } catch (std::exception &e) {
@@ -225,6 +233,60 @@ void FluidSolver::Gui::SimulationSettings::setupInformationExpanderStack(cppgui:
 }
 
 void FluidSolver::Gui::SimulationSettings::UpdateData() {
+    if (!shouldUpdate)
+        return;
+    UpdateInfoLabels();
+    UpdateStatLabels();
+}
+
+void FluidSolver::Gui::SimulationSettings::setupStatisticsExapanderStack(cppgui::Stack *statisticsExpanderStack) {
+    avgDensity = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    energy = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    maxVelocity = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    deadParticles = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    aliveParticles = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    boundaryParticles = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+    cflNumber = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
+
+
+    statisticsExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Avg. Density:", avgDensity)));
+    statisticsExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("Energy:", energy)));
+    statisticsExpanderStack->addChild(
+            new cppgui::DirectionalSpread(generateInfoStack("Dead Particles:", deadParticles)));
+    statisticsExpanderStack->addChild(
+            new cppgui::DirectionalSpread(generateInfoStack("Alive Particles:", aliveParticles)));
+    statisticsExpanderStack->addChild(
+            new cppgui::DirectionalSpread(generateInfoStack("Boundary Particles:", boundaryParticles)));
+    statisticsExpanderStack->addChild(new cppgui::DirectionalSpread(generateInfoStack("CFL Number:", cflNumber)));
+}
+
+void FluidSolver::Gui::SimulationSettings::UpdateStatLabels() {
+    if (window == nullptr || window->sphFluidSolver == nullptr ||
+        window->sphFluidSolver->statisticCollector == nullptr)
+        return;
+
+    float currentKineticEnergy = window->sphFluidSolver->statisticCollector->CalculateKineticEnergy();
+    float currentPotentialEnergy = window->sphFluidSolver->statisticCollector->CalculatePotentialEnergy();
+    float averageDensity = window->sphFluidSolver->statisticCollector->CalculateAverageDensity();
+    float totalEnergy = window->sphFluidSolver->statisticCollector->CalculateEnergy(currentKineticEnergy,
+                                                                                    currentPotentialEnergy);
+    float currentMaxVelocity = window->sphFluidSolver->statisticCollector->CalculateMaximumVelocity();
+    float currentCflNumber = window->sphFluidSolver->statisticCollector->GetCFLNumber(currentMaxVelocity);
+    uint32_t currentDeadParticles = window->sphFluidSolver->statisticCollector->GetDeadParticleCount();
+    uint32_t currentBoundaryParticles = window->sphFluidSolver->statisticCollector->GetBoundaryParticleCount();
+    uint32_t currentNormalParticles = window->sphFluidSolver->statisticCollector->GetNormalParticleCount();
+
+    avgDensity->setText(std::to_string(averageDensity));
+    energy->setText(std::to_string(totalEnergy));
+    maxVelocity->setText(std::to_string(currentMaxVelocity));
+    deadParticles->setText(std::to_string(currentDeadParticles));
+    aliveParticles->setText(std::to_string(currentNormalParticles));
+    boundaryParticles->setText(std::to_string(currentBoundaryParticles));
+    cflNumber->setText(std::to_string(currentCflNumber));
+
+}
+
+void FluidSolver::Gui::SimulationSettings::UpdateInfoLabels() {
     if (particleCollection == nullptr)
         return;
     if (particleCollection->GetSize() <= selectedParticle)
