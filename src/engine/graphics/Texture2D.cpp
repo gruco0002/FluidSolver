@@ -181,7 +181,9 @@ uint32_t Engine::Graphics::Texture2D::getHeight() const {
 
 void Engine::Graphics::Texture2D::SaveAsPNG(std::string filepath) {
     auto img = GetData();
+    stbi_flip_vertically_on_write(true);
     stbi_write_png(filepath.c_str(), width, height, channels, img.data(), channels * width);
+    stbi_flip_vertically_on_write(false);
 }
 
 std::vector<uint8_t> Engine::Graphics::Texture2D::GetData() {
