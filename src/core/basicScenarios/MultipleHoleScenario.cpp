@@ -128,7 +128,7 @@ FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *p
     }
 
     // dead particles
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < 1000 * factor; i++) {
         addDead(&particles, restDensity);
     }
 
@@ -149,9 +149,9 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::MultipleHoleScenari
     const int xOffset = -96 / 2;
     const int yOffset = 32 / 2;
 
-    const float spawnRateLeft = 100.0f;
-    const float spawnRateMiddle = 200.0f;
-    const float spawnRateRight = 80.0f;
+    const float spawnRateLeft = 50.0f * factor;
+    const float spawnRateMiddle = 100.0f * factor;
+    const float spawnRateRight = 40.0f * factor;
     const glm::vec2 initialSpeed = glm::vec2(0.0f, -6.0f);
 
     return {new FluidSolver::DeathBox(-0 + yOffset, -2 + xOffset, -36 + yOffset, 98 + xOffset),
@@ -177,14 +177,17 @@ FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::SimpleParticleCo
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
 
-    p.Position = glm::vec2(((float) x) - 0.25f, (-(float) y) - 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) - 0.25f, (-(float) y) + 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) + 0.25f, (-(float) y) - 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) + 0.25f, (-(float) y) + 0.25f);
-    particles->push_back(p);
+    for(int i = 0; i < factor; i++){
+        for(int j = 0; j < factor; j++){
+            float calcX = GetParticleSize() * i;
+            float calcY =  GetParticleSize() * j;
+            calcX -= 0.5f;
+            calcY -= 0.5f;
+
+            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) +calcY);
+            particles->push_back(p);
+        }
+    }
 }
 
 void FluidSolver::MultipleHoleScenario::addBoundary(
@@ -200,14 +203,19 @@ void FluidSolver::MultipleHoleScenario::addBoundary(
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
 
-    p.Position = glm::vec2(((float) x) - 0.25f, (-(float) y) - 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) - 0.25f, (-(float) y) + 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) + 0.25f, (-(float) y) - 0.25f);
-    particles->push_back(p);
-    p.Position = glm::vec2(((float) x) + 0.25f, (-(float) y) + 0.25f);
-    particles->push_back(p);
+
+    for(int i = 0; i < factor; i++){
+        for(int j = 0; j < factor; j++){
+            float calcX = GetParticleSize() * i;
+            float calcY =  GetParticleSize() * j;
+            calcX -= 0.5f;
+            calcY -= 0.5f;
+
+            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) +calcY);
+            particles->push_back(p);
+        }
+    }
+
 }
 
 void
@@ -223,12 +231,12 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimplePartic
     p.Density = restDensity;
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeDead;
-    particles->push_back(p);
-    particles->push_back(p);
-    particles->push_back(p);
-    particles->push_back(p);
+
+    for(int i = 0; i < factor * factor; i++){
+        particles->push_back(p);
+    }
 }
 
 float FluidSolver::MultipleHoleScenario::GetParticleSize() {
-    return 0.5f;
+    return 1.0f / (float) factor;
 }
