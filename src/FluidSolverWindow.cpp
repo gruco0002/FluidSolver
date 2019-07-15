@@ -182,7 +182,7 @@ void FluidSolverWindow::loadParticles() {
     sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
     sphFluidSolver->RestDensity = 1.0f;
     sphFluidSolver->StiffnessK = 100000.0f;
-    sphFluidSolver->Viscosity = 3.0f;
+    sphFluidSolver->Viscosity = 5.0f;
 
     resetFluidSolverComponents();
 
@@ -204,8 +204,8 @@ void FluidSolverWindow::loadParticles() {
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Density;
     particleRenderer->topValue = 2.0f;
     particleRenderer->bottomValue = 0.0f;
-    particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-    particleRenderer->bottomColor = glm::vec4(1.0f);
+    particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    particleRenderer->bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
     this->UpdateProjectionMatrices();
     particleRenderer->particleVertexArray = particleVertexArray;
 

@@ -149,9 +149,9 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::MultipleHoleScenari
     const int xOffset = -96 / 2;
     const int yOffset = 32 / 2;
 
-    const float spawnRateLeft = 50.0f * factor;
-    const float spawnRateMiddle = 100.0f * factor;
-    const float spawnRateRight = 40.0f * factor;
+    const float spawnRateLeft = 25.0f * factor * factor;
+    const float spawnRateMiddle = 50.0f * factor * factor;
+    const float spawnRateRight = 20.0f * factor * factor;
     const glm::vec2 initialSpeed = glm::vec2(0.0f, -6.0f);
 
     return {new FluidSolver::DeathBox(-0 + yOffset, -2 + xOffset, -36 + yOffset, 98 + xOffset),
