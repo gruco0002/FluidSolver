@@ -38,6 +38,8 @@ void FluidSolverWindow::render() {
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
                 sphFluidSolver->ExecuteSimulationStep();
                 simulationStepHappened = true;
+                if (saveFrames)
+                currentSaveFrameTime += sphFluidSolver->TimeStep;
                 if (dataLogger)
                     dataLogger->TimeStepPassed();
             }
@@ -398,6 +400,9 @@ void FluidSolverWindow::setupFBO() {
 void FluidSolverWindow::saveAsImage() {
     if (!saveFrames)
         return;
+    if(currentSaveFrameTime < 1.0f / saveFramesPerSecond)
+        return;
+    currentSaveFrameTime -= 1.0f / saveFramesPerSecond;
     imageCounter++;
     fboColorTex->SaveAsPNG("image_" + std::to_string(imageCounter) + ".png");
 }

@@ -96,8 +96,10 @@ private:
     void setupFBO();
 
 
-    bool saveFrames = false;
+    bool saveFrames = true;
     unsigned int imageCounter = 0;
+    const float saveFramesPerSecond = 60.0f;
+    float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
 
     void saveAsImage();
 
