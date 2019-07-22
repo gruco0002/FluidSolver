@@ -100,6 +100,8 @@ private:
     unsigned int imageCounter = 0;
     const float saveFramesPerSecond = 60.0f;
     float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
+    std::string imagePath = "D:/fluid_sim/";
+    unsigned int maxImages = 10 * 60 * 60;
 
     void saveAsImage();
 
