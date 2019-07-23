@@ -89,6 +89,8 @@ namespace Engine {
 
             void SaveAsPNG(std::string filepath);
 
+            void SaveAsBinaryPPM(std::string filepath);
+
         private:
             uint32_t ID;
             int32_t channels;
@@ -116,6 +118,9 @@ namespace Engine {
 
             void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings,
                                       GLenum pixelFormat, GLenum internalPixelFormat, ComponentType pixelDataType);
+
+
+            void FlipYDataOfArray(std::vector<uint8_t>&data);
 
         };
     }

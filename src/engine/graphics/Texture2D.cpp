@@ -3,6 +3,8 @@
 //
 
 #include <engine/EngineException.hpp>
+#include <fstream>
+#include <iostream>
 #include "Texture2D.hpp"
 #include "libraries/stb/stb_image.h"
 #include "Framebuffer.hpp"
@@ -80,7 +82,7 @@ void Engine::Graphics::Texture2D::GenerateEmptyTexture(uint32_t width, uint32_t 
         case GL_GREEN:
         case GL_BLUE:
         case GL_ALPHA:
-		case GL_DEPTH_COMPONENT:
+        case GL_DEPTH_COMPONENT:
             channels = 1;
             break;
         case GL_RG:
@@ -196,4 +198,33 @@ std::vector<uint8_t> Engine::Graphics::Texture2D::GetData() {
     framebuffer.Unbind();
 
     return ret;
+}
+
+
+void Engine::Graphics::Texture2D::SaveAsBinaryPPM(std::string filepath) {
+    auto img = GetData();
+    FlipYDataOfArray(img);
+    std::ofstream file;
+    file.open(filepath, std::ios::out | std::ios::binary | std::ios::trunc);
+    if (!file.is_open())return;
+
+    file << "P6\n" + std::to_string(width) + " " + std::to_string(height) + "\t255" + "\n";
+    file.write((const char *) img.data(), img.size());
+    file.close();
+
+}
+
+void Engine::Graphics::Texture2D::FlipYDataOfArray(std::vector<uint8_t> &data) {
+    for (size_t x = 0; x < width; x++) {
+        for (size_t y = 0; y < height / 2; y++) {
+            for (size_t c = 0; c < channels; c++) {
+                size_t index1 = (y * width + x) * channels + c;
+                size_t index2 = ((height - 1 - y) * width + x) * channels + c;
+                uint8_t val1 = data[index1];
+                uint8_t val2 = data[index2];
+                data[index1] = val2;
+                data[index2] = val1;
+            }
+        }
+    }
 }
