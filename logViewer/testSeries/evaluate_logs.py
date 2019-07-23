@@ -17,6 +17,7 @@ class LogFile:
         self.stiffness = stiffness
         self.viscosity = viscosity
         self.timestep = timestep
+        self._mean_avg_density = None
 
         # init yet unused stuff
         self.timesteps = []
@@ -52,7 +53,10 @@ class LogFile:
         return statistics.mean(self.maxVelocity)
 
     def get_mean_avg_density(self):
-        return statistics.mean(self.avgDensity)
+        if self._mean_avg_density is None:            
+            self._mean_avg_density = statistics.mean(self.avgDensity)
+        return self._mean_avg_density
+
     
     def get_mean_kinetic_energy(self):
         return statistics.mean(self.kineticEnergy)
@@ -169,6 +173,55 @@ def plot_average_cfl_viscosity(good):
     plt.axis([-0.001, 0.011, 0.0, 0.14])
     plt.show()
 
+def plot_timestep_dead_particles(all):
+    filtered = [log for log in all if log.stiffness == 100000 and log.viscosity == 3.5]
+
+    x = list([log.timestep for log in filtered])
+    y = list([log.get_max_dead_particles() for log in filtered])
+    style.use('seaborn-whitegrid')
+    plt.plot(x, y, 'bo')
+    plt.xscale('log')
+          
+
+    #plt.legend()
+    plt.xlabel("Zeitschritt $\\Delta t$")
+    plt.ylabel("Tote Partikel Anzahl")
+    plt.show()
+
+def plot_k_max_timestep(good):
+    filtered1 = list([log for log in good if log.viscosity == 3.5])
+    filtered2 = [log for log in filtered1 if len([log2 for log2 in filtered1 if log2.stiffness == log.stiffness and log2.timestep > log.timestep]) == 0]
+
+    x = list([log.stiffness for log in filtered2])
+    y = list([log.timestep for log in filtered2])
+    
+    style.use('seaborn-whitegrid')
+    plt.plot(x, y, 'bo')
+    plt.xscale('log')
+          
+
+    #plt.legend()
+    plt.xlabel("Steifheitsparameter $k$")
+    plt.ylabel("Max. Zeitschritt $\\Delta t$")
+    plt.show()
+
+def plot_timestep_min_avg_density(good):
+    filtered1 = list([log for log in good if log.viscosity == 5.0])
+    filtered2 = [log for log in filtered1 if len([log2 for log2 in filtered1 if log2.timestep == log.timestep and log2.get_mean_avg_density() < log.get_mean_avg_density()]) == 0]
+
+    x = list([log.timestep for log in filtered2])
+    y = list([log.get_mean_avg_density() for log in filtered2])
+    
+    style.use('seaborn-whitegrid')
+    plt.plot(x, y, 'bo')
+    #plt.xscale('log')
+          
+
+    #plt.legend()
+    plt.xlabel("Zeitschritt $\\Delta t$")
+    plt.ylabel("Minimale Durchschnittliche Dichte")
+    plt.show()
+
 
 def process_logs(logs):
     good = []
@@ -178,7 +231,10 @@ def process_logs(logs):
 
     print("All good data was determined")
 
-    plot_average_cfl_viscosity(good)
+    #plot_average_cfl_viscosity(good)
+    #plot_timestep_dead_particles(logs)
+    #plot_k_max_timestep(good)
+    plot_timestep_min_avg_density(good)
 
 
 def main():
