@@ -206,7 +206,7 @@ def plot_k_max_timestep(good):
     plt.show()
 
 def plot_timestep_min_avg_density(good):
-    filtered1 = list([log for log in good if log.viscosity == 5.0])
+    filtered1 = list([log for log in good if log.viscosity == 3.5])
     filtered2 = [log for log in filtered1 if len([log2 for log2 in filtered1 if log2.timestep == log.timestep and log2.get_mean_avg_density() < log.get_mean_avg_density()]) == 0]
 
     x = list([log.timestep for log in filtered2])
