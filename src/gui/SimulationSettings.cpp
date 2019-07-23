@@ -232,6 +232,12 @@ cppgui::Stack *FluidSolver::Gui::SimulationSettings::generateInfoStack(std::stri
 
 void FluidSolver::Gui::SimulationSettings::setupInformationExpanderStack(cppgui::Stack *informationExpanderStack) {
 
+    auto active = new cppgui::CheckBox("Show Selection", particleRenderer->showParticleSelection);
+    active->OnCheckedChanged.Subscribe([=](bool checked) {
+        particleRenderer->showParticleSelection = checked;
+    });
+    informationExpanderStack->addChild(new cppgui::DirectionalSpread(active));
+
     id = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
     position = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
     velocity = new cppgui::StyledLabel("", cppgui::LabelStyle::LabelStyleDescription, 200, 30);
