@@ -87,8 +87,8 @@ private:
 
     // rendering
     Engine::Graphics::Framebuffer *framebuffer = nullptr;
-    uint32_t framebufferWidth = 1920;
-    uint32_t framebufferHeight = 1080;
+    uint32_t framebufferWidth = 1920 * 2;
+    uint32_t framebufferHeight = 1080 * 2;
     Engine::Graphics::Texture2D *fboDepthTex = nullptr;
     Engine::Graphics::Texture2D *fboColorTex = nullptr;
     Engine::RectangleRenderer *rectangleRenderer = nullptr;
@@ -96,7 +96,7 @@ private:
     void setupFBO();
 
 
-    bool saveFrames = true;
+    bool saveFrames = false;
     unsigned int imageCounter = 0;
     const float saveFramesPerSecond = 60.0f;
     float currentSaveFrameTime = 1.0f / saveFramesPerSecond;

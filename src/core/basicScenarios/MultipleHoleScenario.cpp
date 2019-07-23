@@ -232,7 +232,7 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimplePartic
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeDead;
 
-    for(int i = 0; i < factor * factor; i++){
+    for(int i = 0; i < factor; i++){
         particles->push_back(p);
     }
 }
