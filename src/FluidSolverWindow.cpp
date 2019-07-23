@@ -266,6 +266,7 @@ void FluidSolverWindow::resetData() {
         dataLogger->StartLogging();
 
     this->imageCounter = 0;
+    this->currentSaveFrameTime = 1.0f / this->saveFramesPerSecond;
 
 }
 
@@ -406,8 +407,7 @@ void FluidSolverWindow::saveAsImage() {
         return;
     currentSaveFrameTime -= 1.0f / saveFramesPerSecond;
     imageCounter++;
-    if(imageCounter > maxImages)
-        return;
+
     fboColorTex->SaveAsPNG(imagePath + "image_" + std::to_string(imageCounter) + ".png");
 
 }

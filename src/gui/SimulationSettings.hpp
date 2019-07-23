@@ -44,6 +44,8 @@ namespace FluidSolver {
 
             void setupStatisticsExapanderStack(cppgui::Stack *statisticsExpanderStack);
 
+            void setupRecordingExpanderStack(cppgui::Stack *recordingExpanderStack);
+
             cppgui::Stack *generateInfoStack(std::string text, cppgui::StyledLabel *other);
 
             // single particle information labels

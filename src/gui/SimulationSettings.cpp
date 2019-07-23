@@ -14,6 +14,7 @@
 #include <cppgui/src/TextInput.hpp>
 #include <cppgui/src/ColorPickerExtended.hpp>
 #include <cppgui/src/ExtendedSlider.hpp>
+#include <cppgui/src/CheckBox.hpp>
 
 
 FluidSolver::Gui::SimulationSettings::SimulationSettings(ParticleRenderer *particleRenderer,
@@ -52,12 +53,14 @@ void FluidSolver::Gui::SimulationSettings::setup() {
     stack->addChild(new cppgui::DirectionalSpread(paramExpander));
     auto paramExpanderStack = new cppgui::Stack();
     paramExpander->addChild(new cppgui::DirectionalSpread(paramExpanderStack));
+    paramExpanderStack->setMarginBetween(2.0f);
     setupParameterExpanderStack(paramExpanderStack);
 
     auto colorExpander = new cppgui::Expander("Colors");
     stack->addChild(new cppgui::DirectionalSpread(colorExpander));
     auto colorExpanderStack = new cppgui::Stack();
     colorExpander->addChild(new cppgui::DirectionalSpread(colorExpanderStack));
+    colorExpanderStack->setMarginBetween(2.0f);
     setupColorExpanderStack(colorExpanderStack);
 
 
@@ -65,19 +68,30 @@ void FluidSolver::Gui::SimulationSettings::setup() {
     stack->addChild(new cppgui::DirectionalSpread(scenarionExpander));
     auto scenarioExpanderStack = new cppgui::Stack();
     scenarionExpander->addChild(new cppgui::DirectionalSpread(scenarioExpanderStack));
+    scenarioExpanderStack->setMarginBetween(2.0f);
     setupScenarioExpanderStack(scenarioExpanderStack);
 
     auto infoExpander = new cppgui::Expander("Information");
     stack->addChild(new cppgui::DirectionalSpread(infoExpander));
     auto infoExpanderStack = new cppgui::Stack();
     infoExpander->addChild(new cppgui::DirectionalSpread(infoExpanderStack));
+    infoExpanderStack->setMarginBetween(2.0f);
     setupInformationExpanderStack(infoExpanderStack);
 
     auto statExpander = new cppgui::Expander("Statistics");
     stack->addChild(new cppgui::DirectionalSpread(statExpander));
     auto statExpanderStack = new cppgui::Stack();
     statExpander->addChild(new cppgui::DirectionalSpread(statExpanderStack));
+    statExpanderStack->setMarginBetween(2.0f);
     setupStatisticsExapanderStack(statExpanderStack);
+
+
+    auto recExpander = new cppgui::Expander("Recording");
+    stack->addChild(new cppgui::DirectionalSpread(recExpander));
+    auto recExpanderStack = new cppgui::Stack();
+    recExpander->addChild(new cppgui::DirectionalSpread(recExpanderStack));
+    recExpanderStack->setMarginBetween(2.0f);
+    setupRecordingExpanderStack(recExpanderStack);
 
 
 }
@@ -299,4 +313,43 @@ void FluidSolver::Gui::SimulationSettings::UpdateInfoLabels() {
     density->setText(std::to_string(particleCollection->GetDensity(selectedParticle)));
     pressure->setText(std::to_string(particleCollection->GetPressure(selectedParticle)));
     mass->setText(std::to_string(particleCollection->GetMass(selectedParticle)));
+}
+
+void FluidSolver::Gui::SimulationSettings::setupRecordingExpanderStack(cppgui::Stack *recordingExpanderStack) {
+    auto active = new cppgui::CheckBox("Save Frames", window->saveFrames);
+    active->OnCheckedChanged.Subscribe([=](bool checked) {
+        window->saveFrames = checked;
+    });
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(active));
+
+    auto fps = new cppgui::Label("FPS:");
+    auto fpsInp = new cppgui::TextInput(200, 50, std::to_string(window->saveFramesPerSecond));
+    fpsInp->OnTextChanged.Subscribe([=](std::string newText) {
+        try {
+            auto value = std::stof(newText);
+            if (value > 0.0f) {
+                window->saveFramesPerSecond = value;
+                window->currentSaveFrameTime = 1.0f / window->saveFramesPerSecond;
+            }
+        } catch (std::exception &e) {
+
+        }
+    });
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(fps));
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(fpsInp));
+
+    auto path = new cppgui::Label("Save Directory:");
+    auto pathInp = new cppgui::TextInput(200, 50, window->imagePath);
+    pathInp->OnTextChanged.Subscribe([=](std::string newText) {
+        window->imagePath = newText;
+    });
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(path));
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(pathInp));
+
+    auto resetBtn = new cppgui::Button("Reset Counter", 100, 50);
+    recordingExpanderStack->addChild(new cppgui::DirectionalSpread(resetBtn));
+    resetBtn->OnClickEvent.Subscribe([=](float x, float y) {
+        window->currentSaveFrameTime = 1.0f / window->saveFramesPerSecond;
+        window->imageCounter = 0;
+    });
 }

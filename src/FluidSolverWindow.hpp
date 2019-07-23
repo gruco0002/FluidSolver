@@ -46,6 +46,12 @@ public:
 
     float RealTimeSpeed = 1.0f;
 
+    bool saveFrames = false;
+    float saveFramesPerSecond = 60.0f;
+    float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
+    std::string imagePath = "./images/";
+    unsigned int imageCounter = 0;
+
 private:
     Engine::Text::Font *font;
 
@@ -96,12 +102,7 @@ private:
     void setupFBO();
 
 
-    bool saveFrames = false;
-    unsigned int imageCounter = 0;
-    const float saveFramesPerSecond = 60.0f;
-    float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
-    std::string imagePath = "D:/fluid_sim/";
-    unsigned int maxImages = 10 * 60 * 60;
+
 
     void saveAsImage();
 
