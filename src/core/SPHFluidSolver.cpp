@@ -18,7 +18,7 @@ namespace FluidSolver {
 
         // calculate density and pressure for all particles
 #pragma omp parallel for
-        for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -36,7 +36,7 @@ namespace FluidSolver {
 
         // compute non pressure accelerations and pressure accelerations for all particles
 #pragma omp parallel for
-        for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -53,7 +53,7 @@ namespace FluidSolver {
 
         // update velocity and position of all particles
 #pragma omp parallel for
-        for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
