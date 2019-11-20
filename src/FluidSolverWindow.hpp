@@ -10,12 +10,12 @@
 #include <engine/text/Font.hpp>
 #include <engine/text/TextRenderer.hpp>
 #include <engine/RectangleRenderer.hpp>
-#include <dependencies/cppgui/src/DynamicUIWrapper.hpp>
+
 #include "GuiEngineInterface.hpp"
 #include "ParticleVertexArray.hpp"
 #include "ParticleRenderer.hpp"
 
-#include <dependencies/cppgui/src/Label.hpp>
+
 #include <core/SPHFluidSolver.hpp>
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
@@ -59,20 +59,20 @@ private:
 
     void loadGUI();
 
-    void buildGUI();
+
 
     void loadParticles();
 
     void onClick(float x, float y);
 
 
-    cppgui::DynamicUIWrapper *uiWrapper = nullptr;
+
     GuiEngineInterface *guiInterface = nullptr;
 
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
 
-    cppgui::Label *fpsLabel = nullptr;
+
 
     FluidSolver::Gui::SimulationSettings *simulationSettings = nullptr;
 

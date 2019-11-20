@@ -9,23 +9,19 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <engine/EngineException.hpp>
-#include <engine/text/FontLoader.hpp>
+
 
 #include <iostream>
-#include <dependencies/cppgui/src/Theme.hpp>
-#include <dependencies/cppgui/src/AlignBox.hpp>
-#include <dependencies/cppgui/src/Spread.hpp>
+
 #include <core/CubicSplineKernel.hpp>
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
 #include <core/IntegrationSchemeEulerCromer.hpp>
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
 #include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <gui/SimulationSettings.hpp>
+
 
 
 void FluidSolverWindow::render() {
-    fpsLabel->setText("FPS: " + std::to_string(GetAvgFPS()));
-
 
     // particle simulation
     bool simulationStepHappened = false;
@@ -50,8 +46,6 @@ void FluidSolverWindow::render() {
         }
     }
 
-    if (simulationSettings != nullptr)
-        simulationSettings->UpdateData();
 
     if (particleVertexArray != nullptr)
         particleVertexArray->Update();
@@ -82,9 +76,6 @@ void FluidSolverWindow::render() {
     // render fbo to screen
     rectangleRenderer->RenderTexture(glm::vec2(0.0f), glm::vec2(1.0f), fboColorTex);
 
-    // render ui
-    uiWrapper->render();
-
 
 }
 
@@ -114,62 +105,16 @@ void FluidSolverWindow::load() {
 }
 
 void FluidSolverWindow::loadFont() {
-    Engine::Text::FontLoader loader("../resources/arialAscii.fnt");
-
-    font = loader.loadToFont();
 
 }
 
 void FluidSolverWindow::loadGUI() {
     guiInterface = new GuiEngineInterface(this, font);
-    uiWrapper = new cppgui::DynamicUIWrapper(guiInterface);
 
-    OnWindowSizeChanged.Subscribe([=](int width, int height) {
-        uiWrapper->renderDimensionsUpdated();
-        this->UpdateProjectionMatrices();
-    });
-    OnCursorPositionChanged.Subscribe([=](double xPos, double yPos) {
-        uiWrapper->MousePositionInput(cppgui::Vector2(xPos, yPos));
-    });
-    OnMouseDown.Subscribe([=](MouseButton btn) {
-        uiWrapper->MouseDown(cppgui::Vector2(GetMousePositionX(), GetMousePositionY()));
-    });
-    OnMouseUp.Subscribe([=](MouseButton btn) {
-        uiWrapper->MouseUp(cppgui::Vector2(GetMousePositionX(), GetMousePositionY()));
-    });
-    OnScrollChanged.Subscribe([=](double xOffset, double yOffset) {
-        uiWrapper->MouseWheel(xOffset, yOffset);
-    });
-    OnKeyPressed.Subscribe([=](int keycode) {
-        if (keycode == GLFW_KEY_BACKSPACE)
-            uiWrapper->KeyDown(cppgui::KeyBackspace, false, "");
-    });
-    OnKeyRelease.Subscribe([=](int keycode) {
-        if (keycode == GLFW_KEY_BACKSPACE)
-            uiWrapper->KeyUp(cppgui::KeyBackspace, false, "");
-    });
-    OnTextInput.Subscribe([=](std::string text) {
-        uiWrapper->KeyDown(cppgui::KeyNone, true, text);
-    });
-    buildGUI();
-}
-
-void FluidSolverWindow::buildGUI() {
-    auto theme = cppgui::Theme::getIndigoPink();
-    auto scaff = new cppgui::Scaffold(0, 0, 0, 0, theme);
-    uiWrapper->setScaffold(scaff);
-
-    fpsLabel = new cppgui::Label(0, 0, "FPS: ");
-    scaff->addChild(fpsLabel);
-    fpsLabel->Visible = true;
-    fpsLabel->setFontColor(cppgui::Color(1.0f, 1.0f, 1.0f));
-
-    simulationSettings = new FluidSolver::Gui::SimulationSettings(particleRenderer, this, particleCollection);
-
-    if (particleCollection != nullptr) simulationSettings->particleCollection = particleCollection;
-    scaff->addChild(new cppgui::AlignBox(cppgui::AlignmentRight, 300.0f, new cppgui::Spread(simulationSettings)));
 
 }
+
+
 
 void FluidSolverWindow::loadParticles() {
     // set up basic stuff
@@ -218,8 +163,6 @@ void FluidSolverWindow::loadParticles() {
     dataLogger = new DataLogger(sphFluidSolver, "log.csv");
     dataLogger->StartLogging();
 
-    // setup info box
-    if (simulationSettings != nullptr) simulationSettings->particleCollection = particleCollection;
 }
 
 void FluidSolverWindow::resetFluidSolverComponents() {
@@ -307,7 +250,7 @@ void FluidSolverWindow::onClick(float x, float y) {
 
     // set particle index in info box
     if (particleIndex != -1) {
-        simulationSettings->selectedParticle = particleIndex;
+
         particleRenderer->selectedParticle = particleIndex;
     }
 

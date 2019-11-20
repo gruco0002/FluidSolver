@@ -5,32 +5,29 @@
 #include <algorithm>
 #include "GuiEngineInterface.hpp"
 
-void GuiEngineInterface::DrawIcon(cppgui::FontSymbol symbol, cppgui::Color color, float positionX, float positionY,
-                                  float width, float height, cppgui::Vector4 cliparea) {
-    // TODO: implement correctly
-    rectangleRenderer->RenderRectangle(glm::vec2(positionX, positionY), glm::vec2(width, height),
-                                       glm::vec4(color.r, color.g, color.b, color.a),
-                                       glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
-}
 
-void GuiEngineInterface::DrawRectangle(float positionX, float positionY, float width, float height, cppgui::Color color,
-                                       cppgui::Vector4 cliparea) {
+void GuiEngineInterface::DrawRectangle(float positionX, float positionY, float width, float height,
+                                                   cppgui::Color color,
+                                                   cppgui::Vector4 cliparea) {
     rectangleRenderer->RenderRectangle(glm::vec2(positionX, positionY), glm::vec2(width, height),
                                        glm::vec4(color.r, color.g, color.b, color.a),
                                        glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
 }
 
 void
-GuiEngineInterface::DrawString(std::string text, float positionX, float positionY, float size, cppgui::Color color,
-                               cppgui::Vector4 cliparea) {
+GuiEngineInterface::DrawString(std::string text, float positionX, float positionY, float size,
+                                           cppgui::Color color,
+                                           cppgui::Vector4 cliparea) {
     size *= 0.5f;
-    textRenderer->Render(text, size, glm::vec2(positionX, positionY), glm::vec4(color.r, color.g, color.b, color.a),
+    textRenderer->Render(text, positionX, positionY, size, glm::vec4(color.r, color.g, color.b, color.a),
+                         glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w),
                          glm::vec4(cliparea.x, cliparea.y, cliparea.z, cliparea.w));
 }
 
 void
-GuiEngineInterface::DrawTexture(cppgui::GuiInterfaceTexture *texture, float positionX, float positionY, float width,
-                                float height, cppgui::Vector4 cliparea) {
+GuiEngineInterface::DrawTexture(cppgui::GuiInterfaceTexture *texture, float positionX, float positionY,
+                                            float width,
+                                            float height, cppgui::Vector4 cliparea) {
     // TODO: implement
 }
 
@@ -54,8 +51,7 @@ GuiEngineInterface::GuiEngineInterface(Engine::Window *window, Engine::Text::Fon
 
     textRenderer = new Engine::Text::TextRenderer(font);
     textRenderer->CreateProjectionMatrixForScreen(window->GetWidth(), window->GetHeight());
-    textRenderer->distanceFieldWidth = 0.49f;
-    textRenderer->distanceFieldEdge = 0.04f;
+
 
     rectangleRenderer = new Engine::RectangleRenderer();
     rectangleRenderer->CreateProjectionMatrixForScreen(window->GetWidth(), window->GetHeight());
