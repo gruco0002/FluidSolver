@@ -29,4 +29,4 @@ rename-item "glfw-3.3" "GLFW"
 
 remove-item GLFW.zip
 
-git clone https://github.com/gruco0002/cppgui.git
+git clone https://github.com/gruco0002/cppgui.git --branch version-2

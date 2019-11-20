@@ -10,8 +10,8 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW EXCLUDE_FROM_ALL)
 
-# add cgui
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui)
+# add cppgui
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui/library)
 
 
 # Setting linker flags and library stuff for the different platforms
