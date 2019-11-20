@@ -2,7 +2,7 @@
 // Created by corbi on 17.04.2019.
 //
 
-#include <engine/EngineException.hpp>
+#include "../EngineException.hpp"
 #include "Framebuffer.hpp"
 
 uint32_t  Engine::Graphics::Framebuffer::currentlyBound = 0;

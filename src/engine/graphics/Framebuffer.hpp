@@ -2,8 +2,8 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_FRAMEBUFFER_HPP
-#define FLUIDSOLVER_FRAMEBUFFER_HPP
+#ifndef CPPGUI_DEMO_FRAMEBUFFER_HPP
+#define CPPGUI_DEMO_FRAMEBUFFER_HPP
 
 #include <glad/glad.h>
 #include "Texture2D.hpp"
@@ -59,4 +59,4 @@ private:
     }
 }
 
-#endif //FLUIDSOLVER_FRAMEBUFFER_HPP
+#endif //CPPGUI_DEMO_FRAMEBUFFER_HPP

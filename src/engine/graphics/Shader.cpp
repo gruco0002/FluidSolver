@@ -2,7 +2,7 @@
 // Created by corbi on 17.04.2019.
 //
 
-#include <engine/EngineException.hpp>
+#include "../EngineException.hpp"
 #include "Shader.hpp"
 #include <libraries/glm/gtc/type_ptr.hpp>
 #include <fstream>
@@ -224,6 +224,35 @@ void Engine::Graphics::Shader::LoadShaderFilesAsShaderParts(
         p.type = part.type;
         parts.push_back(p);
     }
+}
+
+void Engine::Graphics::Shader::SetValue(const std::string &name, Engine::Graphics::Buffer::Buffer *uniformBuffer,
+                                        int32_t bindingPoint) {
+    if (uniformBuffer->GetType() != Buffer::Buffer::BufferTypeUniform)
+        throw EngineException("Shader Error: Only a uniform buffer can be bound!");
+    Bind();
+    uniformBuffer->Bind();
+    glUniformBlockBinding(ID, GetUniformBufferLocation(name), bindingPoint);
+    uniformBuffer->BindBase(bindingPoint);
+}
+
+GLint Engine::Graphics::Shader::GetUniformBufferLocation(const std::string &name) {
+    if (foundNames.find(name) != foundNames.end())
+        return uniformLoactions[name];
+    GLint location = glGetUniformBlockIndex(ID, name.c_str());
+    if (location == -1)
+        throw EngineException("Shader Error: Cannot retrieve uniform buffer object with this name!");
+
+    foundNames.insert(name);
+    uniformLoactions[name] = location;
+    return location;
+}
+
+void
+Engine::Graphics::Shader::SetValue(const std::string &name, Engine::Graphics::Texture2DArray *texture, uint32_t unit) {
+    Bind();
+    texture->Bind(unit);
+    glUniform1i(GetUniformLoaction(name), unit - GL_TEXTURE0);
 }
 
 Engine::Graphics::Shader::ProgramPart::ProgramPart() {

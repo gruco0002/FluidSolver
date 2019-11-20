@@ -2,15 +2,17 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_SHADER_HPP
-#define FLUIDSOLVER_SHADER_HPP
+#ifndef CPPGUI_DEMO_SHADER_HPP
+#define CPPGUI_DEMO_SHADER_HPP
 
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <libraries/glm/glm.hpp>
+#include <engine/graphics/buffer/Buffer.hpp>
 #include "Texture2D.hpp"
+#include "Texture2DArray.hpp"
 
 namespace Engine {
     namespace Graphics {
@@ -70,6 +72,8 @@ namespace Engine {
 
             void SetValue(const std::string &name, glm::mat4 value);
 
+            void SetValue(const std::string &name, Buffer::Buffer* uniformBuffer, int32_t bindingPoint);
+
             /**
              * Binds the texture to the texture unit and the uniform also.
              * @param name The name of the uniform variable
@@ -78,6 +82,15 @@ namespace Engine {
              * @note The texture unit should be between GL_TEXTURE0-GL_TEXTURE_MAX
              */
             void SetValue(const std::string &name, Texture2D *texture, uint32_t unit);
+
+            /**
+ * Binds the texture to the texture unit and the uniform also.
+ * @param name The name of the uniform variable
+ * @param texture The texture that should be bound.
+ * @param unit The texture unit the texture should be bound to.
+ * @note The texture unit should be between GL_TEXTURE0-GL_TEXTURE_MAX
+ */
+            void SetValue(const std::string &name, Texture2DArray *texture, uint32_t unit);
 
         private:
 
@@ -91,6 +104,8 @@ namespace Engine {
             std::unordered_set<std::string> foundNames;
 
             GLint GetUniformLoaction(const std::string &name);
+
+            GLint GetUniformBufferLocation(const std::string &name);
 
             void Generate();
 
@@ -110,4 +125,4 @@ namespace Engine {
 }
 
 
-#endif //FLUIDSOLVER_SHADER_HPP
+#endif //CPPGUI_DEMO_SHADER_HPP

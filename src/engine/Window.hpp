@@ -2,8 +2,8 @@
 // Created by corbi on 16.04.2019.
 //
 
-#ifndef FLUIDSOLVER_WINDOW_HPP
-#define FLUIDSOLVER_WINDOW_HPP
+#ifndef CPPGUI_DEMO_WINDOW_HPP
+#define CPPGUI_DEMO_WINDOW_HPP
 
 
 #include <string>
@@ -162,4 +162,4 @@ namespace Engine {
     };
 }
 
-#endif //FLUIDSOLVER_WINDOW_HPP
+#endif //CPPGUI_DEMO_WINDOW_HPP

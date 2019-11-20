@@ -2,13 +2,13 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_BUFFER_HPP
-#define FLUIDSOLVER_BUFFER_HPP
+#ifndef CPPGUI_DEMO_BUFFER_HPP
+#define CPPGUI_DEMO_BUFFER_HPP
 
 
 #include <glad/glad.h>
 #include <cstdint>
-#include <engine/EngineException.hpp>
+#include "../../EngineException.hpp"
 
 namespace Engine {
     namespace Graphics {
@@ -27,11 +27,13 @@ namespace Engine {
                 enum BufferType {
                     BufferTypeVertex = GL_ARRAY_BUFFER,
                     BufferTypeIndex = GL_ELEMENT_ARRAY_BUFFER,
+                    BufferTypeUniform = GL_UNIFORM_BUFFER
                 };
 
                 enum DataMode {
                     DataModeStatic = GL_STATIC_DRAW,
                     DataModeDynamic = GL_DYNAMIC_DRAW,
+                    DataModeStream = GL_STREAM_DRAW
                 };
 
                 /**
@@ -47,6 +49,8 @@ namespace Engine {
                 virtual ~Buffer();
 
                 void Bind();
+
+                void BindBase(int32_t base);
 
                 void Unbind();
 
@@ -97,4 +101,4 @@ namespace Engine {
     }
 }
 
-#endif //FLUIDSOLVER_BUFFER_HPP
+#endif //CPPGUI_DEMO_BUFFER_HPP

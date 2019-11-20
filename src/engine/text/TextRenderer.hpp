@@ -2,68 +2,69 @@
 // Created by corbi on 20.04.2019.
 //
 
-#ifndef FLUIDSOLVER_TEXTRENDERER_HPP
-#define FLUIDSOLVER_TEXTRENDERER_HPP
+#ifndef CPPGUI_DEMO_TEXTRENDERER_HPP
+#define CPPGUI_DEMO_TEXTRENDERER_HPP
 
-#include <engine/graphics/buffer/VertexBuffer.hpp>
-#include <engine/graphics/buffer/IndexBuffer.hpp>
-#include <engine/graphics/buffer/VertexArray.hpp>
-#include <engine/graphics/Shader.hpp>
+#include "../graphics/buffer/VertexBuffer.hpp"
+#include "../graphics/buffer/IndexBuffer.hpp"
+#include "../graphics/buffer/VertexArray.hpp"
+#include "../graphics/Shader.hpp"
 #include "Font.hpp"
 
 namespace Engine {
     namespace Text {
         class TextRenderer {
-
-
         public:
             TextRenderer(Font *font);
 
-            /**
-             * Renders a text to the bound framebuffer. All values are in pixel dimensions. The origin (0,0) is on the top left.
-             * @param text The text that should be rendered.
-             * @param size The font size in pixels.
-             * @param position The position of the text.
-             * @param color Color of the text in rgba. Reaching from 0.0f to 1.0f
-             * @param clipArea Rectangle in which the text will be rendered. Outside of the rectangle it will be clipped. Rectangle format is left, top, width, height.
-             *                 If clipArea is set to 0.0f,0.0f,0.0f,0.0f the clipping is turned off.
-             */
-            void Render(std::string &text, float size, glm::vec2 position, glm::vec4 color, glm::vec4 clipArea = glm::vec4(0.0f));
+            void Render(std::string text, float x, float y, float size, glm::vec4 color = glm::vec4(1.0f)
+            );
 
-            void CreateProjectionMatrixForScreen(float width, float height);
+            void Render(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 clipArea,
+                        glm::vec4 blendArea);
+
+            void RenderOutlined(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 outlineColor,
+                                float outlineScale);
+
+            void RenderOutlined(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 outlineColor,
+                                float outlineScale,
+                                glm::vec4 clipArea, glm::vec4 blendArea);
 
             glm::mat4 projectionMatrix;
 
-            ~TextRenderer();
+            Font *font = nullptr;
 
-            float distanceFieldWidth = 0.48f;
-            float distanceFieldEdge = 0.07f;
+            void CreateProjectionMatrixForScreen(float width, float height);
 
             glm::vec2 GetTextDimensions(std::string &text, float size);
 
         private:
+            std::vector<glm::vec3> CalculateCharacterInstances(std::string text, int32_t *characterCount);
 
-            void Generate();
+            Graphics::Buffer::VertexArray *vertexArray = nullptr;
 
-            void Delete();
+            Graphics::Shader *shader = nullptr;
 
+            Graphics::Buffer::VertexBuffer<float> *rectangleBuffer = nullptr;
 
-            void GenerateShader();
+            Graphics::Buffer::VertexBuffer<glm::vec3> *vertexBuffer = nullptr;
 
-            Font *font;
+            Engine::Graphics::Buffer::IndexBuffer<uint8_t> *indexBuffer = nullptr;
 
-            Graphics::Shader *textShader;
-            Graphics::Buffer::VertexBuffer<TextVertex> *vertexBuffer;
-            Graphics::Buffer::IndexBuffer<uint16_t> *indexBuffer;
-            Graphics::Buffer::VertexArray *vertexArray;
+            void CreateShader();
 
+            void CreateVertexArray();
 
+        public:
+            virtual ~TextRenderer();
 
-            glm::vec2 GetVertexNegative(std::vector<TextVertex> &vertices);
+        private:
+            static const std::string shaderVert;
+            static const std::string shaderFrag;
 
 
         };
     }
 }
 
-#endif //FLUIDSOLVER_TEXTRENDERER_HPP
+#endif //CPPGUI_DEMO_TEXTRENDERER_HPP

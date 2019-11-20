@@ -2,8 +2,8 @@
 // Created by corbi on 16.04.2019.
 //
 
-#ifndef FLUIDSOLVER_EVENTDELEGATE_HPP
-#define FLUIDSOLVER_EVENTDELEGATE_HPP
+#ifndef CPPGUI_DEMO_EVENTDELEGATE_HPP
+#define CPPGUI_DEMO_EVENTDELEGATE_HPP
 
 #include <cstdint>
 #include <map>
@@ -101,4 +101,4 @@ namespace Engine {
     }
 }
 
-#endif //FLUIDSOLVER_EVENTDELEGATE_HPP
+#endif //CPPGUI_DEMO_EVENTDELEGATE_HPP

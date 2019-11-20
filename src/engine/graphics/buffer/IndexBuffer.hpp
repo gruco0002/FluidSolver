@@ -2,8 +2,8 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_INDEXBUFFER_HPP
-#define FLUIDSOLVER_INDEXBUFFER_HPP
+#ifndef CPPGUI_DEMO_INDEXBUFFER_HPP
+#define CPPGUI_DEMO_INDEXBUFFER_HPP
 
 #include "Buffer.hpp"
 #include <vector>
@@ -126,4 +126,4 @@ namespace Engine {
     }
 }
 
-#endif //FLUIDSOLVER_INDEXBUFFER_HPP
+#endif //CPPGUI_DEMO_INDEXBUFFER_HPP

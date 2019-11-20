@@ -2,12 +2,12 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_VERTEXARRAY_HPP
-#define FLUIDSOLVER_VERTEXARRAY_HPP
+#ifndef CPPGUI_DEMO_VERTEXARRAY_HPP
+#define CPPGUI_DEMO_VERTEXARRAY_HPP
 
 #include <vector>
 #include <set>
-#include <engine/graphics/Enums.hpp>
+#include "../Enums.hpp"
 #include "Buffer.hpp"
 #include "IndexBuffer.hpp"
 
@@ -35,12 +35,13 @@ namespace Engine {
                     size_t byteOffsetToFirstAttributeElement = 0; // aka pointer
                     size_t byteOffsetBetweenAttributeElement = 4; // aka stride
                     ComponentType componentType = ComponentTypeFloat; // aka type
+                    bool isInstanced = false;
 
                     BufferBinding(Buffer *buffer, uint8_t attributeIndex = 0,
                                   uint8_t numberOfComponentsPerAttributeElement = 1,
                                   size_t byteOffsetToFirstAttributeElement = 0,
                                   size_t byteOffsetBetweenAttributeElement = 4,
-                                  ComponentType componentType = ComponentTypeFloat);
+                                  ComponentType componentType = ComponentTypeFloat, bool isInstanced = false);
 
                     BufferBinding();
                 };
@@ -86,4 +87,4 @@ namespace Engine {
     }
 }
 
-#endif //FLUIDSOLVER_VERTEXARRAY_HPP
+#endif //CPPGUI_DEMO_VERTEXARRAY_HPP

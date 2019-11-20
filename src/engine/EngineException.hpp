@@ -2,8 +2,8 @@
 // Created by corbi on 16.04.2019.
 //
 
-#ifndef FLUIDSOLVER_ENGINEEXCEPTION_HPP
-#define FLUIDSOLVER_ENGINEEXCEPTION_HPP
+#ifndef CPPGUI_DEMO_ENGINEEXCEPTION_HPP
+#define CPPGUI_DEMO_ENGINEEXCEPTION_HPP
 
 
 #include <exception>
@@ -22,4 +22,4 @@ namespace Engine {
     };
 
 }
-#endif //FLUIDSOLVER_ENGINEEXCEPTION_HPP
+#endif //CPPGUI_DEMO_ENGINEEXCEPTION_HPP

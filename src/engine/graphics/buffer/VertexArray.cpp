@@ -2,7 +2,7 @@
 // Created by corbi on 17.04.2019.
 //
 
-#include <engine/EngineException.hpp>
+#include "../../EngineException.hpp"
 #include "VertexArray.hpp"
 
 Engine::Graphics::Buffer::VertexArray::~VertexArray() {
@@ -52,12 +52,19 @@ void Engine::Graphics::Buffer::VertexArray::Generate() {
             glVertexAttribPointer(binding.attributeIndex, binding.numberOfComponentsPerAttributeElement,
                                   binding.componentType, GL_FALSE, binding.byteOffsetBetweenAttributeElement,
                                   (void *) binding.byteOffsetToFirstAttributeElement);
-        } else if (cp == ComponentTypeUInt || cp == ComponentTypeByte || cp == ComponentTypeShort || cp == ComponentTypeUnsignedByte) {
+        } else if (cp == ComponentTypeUInt || cp == ComponentTypeByte || cp == ComponentTypeShort ||
+                   cp == ComponentTypeUnsignedByte) {
             glVertexAttribIPointer(binding.attributeIndex, binding.numberOfComponentsPerAttributeElement,
                                    binding.componentType, binding.byteOffsetBetweenAttributeElement,
                                    (void *) binding.byteOffsetToFirstAttributeElement);
         } else {
             throw EngineException("Vertex Array Error: unsupported component type!");
+        }
+
+        if (binding.isInstanced) {
+            // enable instancing
+            // TODO: check if this is working as expected
+            glVertexAttribDivisor(binding.attributeIndex, 1);
         }
 
     }
@@ -104,13 +111,15 @@ Engine::Graphics::Buffer::VertexArray::BufferBinding::BufferBinding(Engine::Grap
                                                                     uint8_t numberOfComponentsPerAttributeElement,
                                                                     size_t byteOffsetToFirstAttributeElement,
                                                                     size_t byteOffsetBetweenAttributeElement,
-                                                                    Engine::ComponentType componentType) {
+                                                                    Engine::ComponentType componentType,
+                                                                    bool isInstanced) {
     this->buffer = buffer;
     this->attributeIndex = attributeIndex;
     this->numberOfComponentsPerAttributeElement = numberOfComponentsPerAttributeElement;
     this->byteOffsetBetweenAttributeElement = byteOffsetBetweenAttributeElement;
     this->byteOffsetToFirstAttributeElement = byteOffsetToFirstAttributeElement;
     this->componentType = componentType;
+    this->isInstanced = isInstanced;
 
 }
 

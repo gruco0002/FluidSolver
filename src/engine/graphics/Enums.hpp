@@ -2,8 +2,8 @@
 // Created by corbi on 19.04.2019.
 //
 
-#ifndef FLUIDSOLVER_ENUMS_HPP
-#define FLUIDSOLVER_ENUMS_HPP
+#ifndef CPPGUI_DEMO_ENUMS_HPP
+#define CPPGUI_DEMO_ENUMS_HPP
 
 #include <glad/glad.h>
 #include <cstdint>
@@ -23,4 +23,4 @@ namespace Engine {
     uint8_t SizeOfComponentType(ComponentType type);
 
 }
-#endif //FLUIDSOLVER_ENUMS_HPP
+#endif //CPPGUI_DEMO_ENUMS_HPP

@@ -2,8 +2,8 @@
 // Created by corbi on 17.04.2019.
 //
 
-#ifndef FLUIDSOLVER_TEXTURE2D_HPP
-#define FLUIDSOLVER_TEXTURE2D_HPP
+#ifndef CPPGUI_DEMO_TEXTURE2D_HPP
+#define CPPGUI_DEMO_TEXTURE2D_HPP
 
 
 #include <string>
@@ -127,4 +127,4 @@ namespace Engine {
 }
 
 
-#endif //FLUIDSOLVER_TEXTURE2D_HPP
+#endif //CPPGUI_DEMO_TEXTURE2D_HPP

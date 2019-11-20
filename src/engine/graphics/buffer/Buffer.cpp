@@ -2,7 +2,7 @@
 // Created by corbi on 17.04.2019.
 //
 
-#include <engine/EngineException.hpp>
+#include "../../EngineException.hpp"
 #include "Buffer.hpp"
 
 using namespace Engine::Graphics::Buffer;
@@ -92,3 +92,9 @@ size_t Buffer::GetSizeInBytes() const {
 IndexBufferDataType Buffer::GetIndexBufferDataType() {
     throw EngineException("Buffer Exception: Operation not valid for this buffer!");
 }
+
+void Buffer::BindBase(int32_t base) {
+    glBindBufferBase(type, base, ID);
+}
+
+

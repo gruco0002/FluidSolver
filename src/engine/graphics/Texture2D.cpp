@@ -2,7 +2,7 @@
 // Created by corbi on 17.04.2019.
 //
 
-#include <engine/EngineException.hpp>
+#include "../EngineException.hpp"
 #include <fstream>
 #include <iostream>
 #include "Texture2D.hpp"
@@ -169,7 +169,7 @@ void Engine::Graphics::Texture2D::SetData(std::vector<uint8_t> &data) {
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
                     pixelFormat, pixelDataType, data.data());
 
-    if (settings->GenerateMipmaps)
+    if (settings != nullptr && settings->GenerateMipmaps)
         glGenerateMipmap(GL_TEXTURE_2D);
 }
 

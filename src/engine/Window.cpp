@@ -59,6 +59,13 @@ namespace Engine {
 
         // unlock framerate
         glfwSwapInterval(0);
+
+
+        // Fixing texture stuff
+        // If the textures aren't working as expected this line should be changed
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        // If texture data isn't returned as expected this line should be changed
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
     }
 
     Window::~Window() {
@@ -189,8 +196,8 @@ namespace Engine {
             lastFrameTime = tmp - currentTime;
             currentTime = tmp;
 
-			lastFrameTimesIndex = (lastFrameTimesIndex + 1) % lastFrameTimesLength;
-			lastFrameTimes[lastFrameTimesIndex] = lastFrameTime;
+            lastFrameTimesIndex = (lastFrameTimesIndex + 1) % lastFrameTimesLength;
+            lastFrameTimes[lastFrameTimesIndex] = lastFrameTime;
 
             // input handling here
 
@@ -263,15 +270,14 @@ namespace Engine {
         return 1.0 / lastFrameTime;
     }
 
-	double Window::GetAvgFPS() const
-	{
-		double acc = 0.0f;
-		for (size_t i = 0; i < lastFrameTimesLength; i++) {
-			acc += lastFrameTimes[i];
-		}
-		acc /= (double)lastFrameTimesLength;
-		return 1.0 / acc;
-	}
+    double Window::GetAvgFPS() const {
+        double acc = 0.0f;
+        for (size_t i = 0; i < lastFrameTimesLength; i++) {
+            acc += lastFrameTimes[i];
+        }
+        acc /= (double) lastFrameTimesLength;
+        return 1.0 / acc;
+    }
 
     void Window::onKeyChanged(GLFWwindow *window, int key, int scancode, int action, int mods) {
         if (window != this->window) return;

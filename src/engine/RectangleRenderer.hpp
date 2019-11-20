@@ -2,15 +2,15 @@
 // Created by corbi on 22.04.2019.
 //
 
-#ifndef FLUIDSOLVER_RECTANGLERENDERER_HPP
-#define FLUIDSOLVER_RECTANGLERENDERER_HPP
+#ifndef CPPGUI_DEMO_RECTANGLERENDERER_HPP
+#define CPPGUI_DEMO_RECTANGLERENDERER_HPP
 
 #include <libraries/glm/glm.hpp>
-#include <engine/graphics/Texture2D.hpp>
-#include <engine/graphics/Shader.hpp>
-#include <engine/graphics/buffer/VertexBuffer.hpp>
-#include <engine/graphics/buffer/IndexBuffer.hpp>
-#include <engine/graphics/buffer/VertexArray.hpp>
+#include "graphics/Texture2D.hpp"
+#include "graphics/Shader.hpp"
+#include "graphics/buffer/VertexBuffer.hpp"
+#include "graphics/buffer/IndexBuffer.hpp"
+#include "graphics/buffer/VertexArray.hpp"
 
 namespace Engine {
 
@@ -57,4 +57,4 @@ namespace Engine {
 }
 
 
-#endif //FLUIDSOLVER_RECTANGLERENDERER_HPP
+#endif //CPPGUI_DEMO_RECTANGLERENDERER_HPP
