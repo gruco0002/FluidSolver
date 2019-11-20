@@ -10,7 +10,6 @@
 #include <core/SPHFluidSolver.hpp>
 #include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/CubicSplineKernel.hpp>
-#include <core/IntegrationSchemeEulerCromer.hpp>
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
     setupOptions(options);
@@ -78,8 +77,7 @@ void FluidSolverConsole::executeSimulation() {
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
-    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
-
+ 
     // set up scenario data
     FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
     sphFluidSolver->particleCollection = particleCollection;

@@ -15,7 +15,6 @@
 
 #include <core/CubicSplineKernel.hpp>
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
-#include <core/IntegrationSchemeEulerCromer.hpp>
 #include <core/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
 #include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 
@@ -168,13 +167,13 @@ void FluidSolverWindow::loadParticles() {
 void FluidSolverWindow::resetFluidSolverComponents() {
     delete sphFluidSolver->kernel;
     delete sphFluidSolver->neighborhoodSearch;
-    delete sphFluidSolver->integrationScheme;
+
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
     //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
-    sphFluidSolver->integrationScheme = new FluidSolver::IntegrationSchemeEulerCromer();
+
 }
 
 

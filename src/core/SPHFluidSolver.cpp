@@ -62,7 +62,13 @@ namespace FluidSolver {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
-            integrationScheme->Integrate(i, particleCollection, TimeStep);
+            // integrate using euler cromer
+            glm::vec2 acceleration = particleCollection->GetAcceleration(i);
+            glm::vec2 velocity = particleCollection->GetVelocity(i) + TimeStep * acceleration;
+            glm::vec2 position = particleCollection->GetPosition(i) + TimeStep * velocity;
+
+            particleCollection->SetVelocity(i, velocity);
+            particleCollection->SetPosition(i, position);
         }
 
         // modify the simulation

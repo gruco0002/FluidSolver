@@ -29,11 +29,10 @@ namespace FluidSolver {
         float Gravity = 9.81f;
 
         IParticleCollection *particleCollection = nullptr;
-        IIntegrationScheme *integrationScheme = nullptr;
         INeighborhoodSearch *neighborhoodSearch = nullptr;
         IKernel *kernel = nullptr;
 
-        std::vector<ISimulationModifier*> simulationModifiers;
+        std::vector<ISimulationModifier *> simulationModifiers;
 
         void ExecuteSimulationStep();
 
@@ -47,7 +46,7 @@ namespace FluidSolver {
 
         virtual glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
 
-        StatisticCollector* statisticCollector = new StatisticCollector(this);
+        StatisticCollector *statisticCollector = new StatisticCollector(this);
 
         virtual ~SPHFluidSolver();
     };
