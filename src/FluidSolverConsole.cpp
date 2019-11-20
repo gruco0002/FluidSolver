@@ -77,7 +77,7 @@ void FluidSolverConsole::executeSimulation() {
 
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
- 
+
     // set up scenario data
     FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
     sphFluidSolver->particleCollection = particleCollection;

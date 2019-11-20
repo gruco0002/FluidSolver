@@ -27,7 +27,7 @@ namespace FluidSolver {
 
         virtual void setParticleCollection(IParticleCollection *particleCollection) = 0;
 
-        virtual IParticleCollection *getParticleCollection(IParticleCollection *particleCollection) = 0;
+        virtual IParticleCollection *getParticleCollection() = 0;
 
 
     };

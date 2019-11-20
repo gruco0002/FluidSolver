@@ -193,4 +193,36 @@ namespace FluidSolver {
     SPHFluidSolver::~SPHFluidSolver() {
         delete statisticCollector;
     }
+
+    float SPHFluidSolver::getParticleSize() {
+        return ParticleSize;
+    }
+
+    void SPHFluidSolver::setParticleSize(float particleSize) {
+this->ParticleSize = particleSize;
+    }
+
+    float SPHFluidSolver::getRestDensity() {
+        return RestDensity;
+    }
+
+    void SPHFluidSolver::setRestDensity(float restDensity) {
+this->RestDensity = restDensity;
+    }
+
+    float SPHFluidSolver::getTimestep() {
+        return TimeStep;
+    }
+
+    void SPHFluidSolver::setTimestep(float timestep) {
+this->TimeStep = timestep;
+    }
+
+    void SPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
+    this->particleCollection = particleCollection;
+    }
+
+    IParticleCollection *SPHFluidSolver::getParticleCollection() {
+        return particleCollection;
+    }
 }
