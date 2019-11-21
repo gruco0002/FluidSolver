@@ -82,8 +82,7 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
 
 
     // compute pressure
-
-    
+    ComputePressure();
 
 
     // update velocity and position of all particles
@@ -237,9 +236,65 @@ void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
 
     // integrate using euler cromer
     glm::vec2 acceleration = ParticleCollection->GetAcceleration(particleIndex);
-    glm::vec2 velocity = ParticleCollection->GetVelocity(particleIndex) + Timestep * acceleration;
+    glm::vec2 velocity = ParticleCollection->GetPredictedVelocity(particleIndex) + Timestep * acceleration;
     glm::vec2 position = ParticleCollection->GetPosition(particleIndex) + Timestep * velocity;
 
     ParticleCollection->SetVelocity(particleIndex, velocity);
     ParticleCollection->SetPosition(particleIndex, position);
+}
+
+void FluidSolver::IISPHFluidSolver::ComputePressure() {
+
+    size_t iteration = 0;
+    float predictedDensityError = 0.0f;
+
+    // iteration
+    while (iteration < MinNumberOfIterations || predictedDensityError > MaxDensityErrorAllowed) {
+
+        // first loop: compute pressure acceleration
+#pragma omp parallel for
+        for (int64_t particleIndex = 0; particleIndex < ParticleCollection->GetSize(); particleIndex++) {
+            auto particleType = ParticleCollection->GetParticleType(particleIndex);
+            if (particleType == IParticleCollection::ParticleTypeDead)
+                continue; // we do not want to process dead particles
+
+            float particlePressure = ParticleCollection->GetPressure(particleIndex);
+            glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+
+            glm::vec2 sum = glm::vec2(0.0f);
+            for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+                auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+                if (neighborType == IParticleCollection::ParticleTypeDead)
+                    continue; // we do not want to process dead particles
+
+                glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+                float neighborMass = ParticleCollection->GetMass(neighborIndex);
+
+                if (neighborType == IParticleCollection::ParticleTypeNormal) {
+                    float neighborPressure = ParticleCollection->GetPressure(neighborIndex);
+
+                    sum += neighborMass * (particlePressure / RestDensity / RestDensity +
+                                           neighborPressure / RestDensity / RestDensity) *
+                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+                                                                    KernelSupport);
+                } else if (neighborType == IParticleCollection::ParticleTypeBoundary) {
+                    // pressure is mirrored here
+                    sum += neighborMass * (particlePressure / RestDensity / RestDensity +
+                                           particlePressure / RestDensity / RestDensity) *
+                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+                                                                    KernelSupport);
+                }
+
+            }
+            ParticleCollection->SetAcceleration(particleIndex, -sum);
+        }
+
+        // second loop
+#pragma omp parallel for
+        for (int64_t particle = 0; particle < ParticleCollection->GetSize(); particle++) {
+            
+        }
+
+    }
+
 }

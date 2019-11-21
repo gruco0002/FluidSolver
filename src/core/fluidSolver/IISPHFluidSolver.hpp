@@ -33,8 +33,14 @@ namespace FluidSolver {
         void ComputeDiagonalElement(uint32_t particleIndex);
         void InitializePressure(uint32_t particleIndex);
         void IntegrateParticle(uint32_t particleIndex);
+        void ComputePressure();
 
     public:
+
+        float MaxDensityErrorAllowed = 0.1f;
+
+        size_t MinNumberOfIterations = 2;
+
         float getGravity() override;
 
         void setGravity(float gravity) override;
