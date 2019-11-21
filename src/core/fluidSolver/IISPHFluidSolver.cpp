@@ -13,7 +13,10 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     // calculating density and non pressure accelerations
 #pragma omp parallel for
     for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        // TODO: prevent dead particles
+        auto type = ParticleCollection->GetParticleType(i);
+        if (type == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
         CalculateDensity(i);
         CalculateNonPressureAccelerationAndPredictedVelocity(i);
     }
@@ -21,7 +24,10 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     // compute source term, diagonal element and initialize pressure
 #pragma  omp parallel for
     for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        // TODO: prevent dead particles
+        auto type = ParticleCollection->GetParticleType(i);
+        if (type == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
         ComputeSourceTerm(i);
         ComputeDiagonalElement(i);
         InitializePressure(i);
