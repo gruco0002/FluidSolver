@@ -32,6 +32,7 @@ namespace FluidSolver {
         void ComputeSourceTerm(uint32_t particleIndex);
         void ComputeDiagonalElement(uint32_t particleIndex);
         void InitializePressure(uint32_t particleIndex);
+        void IntegrateParticle(uint32_t particleIndex);
 
     public:
         float getGravity() override;

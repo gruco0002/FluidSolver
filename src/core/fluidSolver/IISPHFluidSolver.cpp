@@ -4,37 +4,6 @@
 
 #include "IISPHFluidSolver.hpp"
 
-void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
-
-    // find neighbors for all particles
-    neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
-    neighborhoodSearch->FindNeighbors(ParticleCollection, NeighborhoodRadius);
-
-    // calculating density and non pressure accelerations
-#pragma omp parallel for
-    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        auto type = ParticleCollection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeDead)
-            continue; // we do not want to process dead particles
-
-        CalculateDensity(i);
-        CalculateNonPressureAccelerationAndPredictedVelocity(i);
-    }
-
-    // compute source term, diagonal element and initialize pressure
-#pragma  omp parallel for
-    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        auto type = ParticleCollection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeDead)
-            continue; // we do not want to process dead particles
-
-        ComputeSourceTerm(i);
-        ComputeDiagonalElement(i);
-        InitializePressure(i);
-    }
-
-
-}
 
 float FluidSolver::IISPHFluidSolver::getParticleSize() {
     return ParticleSize;
@@ -81,6 +50,50 @@ float FluidSolver::IISPHFluidSolver::getGravity() {
 void FluidSolver::IISPHFluidSolver::setGravity(float gravity) {
     this->Gravity = gravity;
 }
+
+void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
+
+    // find neighbors for all particles
+    neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
+    neighborhoodSearch->FindNeighbors(ParticleCollection, NeighborhoodRadius);
+
+    // calculating density and non pressure accelerations
+#pragma omp parallel for
+    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
+        auto type = ParticleCollection->GetParticleType(i);
+        if (type == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        CalculateDensity(i);
+        CalculateNonPressureAccelerationAndPredictedVelocity(i);
+    }
+
+    // compute source term, diagonal element and initialize pressure
+#pragma  omp parallel for
+    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
+        auto type = ParticleCollection->GetParticleType(i);
+        if (type == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        ComputeSourceTerm(i);
+        ComputeDiagonalElement(i);
+        InitializePressure(i);
+    }
+
+
+    // compute pressure
+
+    
+
+
+    // update velocity and position of all particles
+#pragma omp parallel for
+    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
+        IntegrateParticle(i);
+    }
+
+}
+
 
 void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
     glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
@@ -211,4 +224,22 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
 
 void FluidSolver::IISPHFluidSolver::InitializePressure(uint32_t particleIndex) {
     ParticleCollection->SetPressure(particleIndex, 0.0f);
+}
+
+void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
+    auto type = ParticleCollection->GetParticleType(particleIndex);
+    if (type == IParticleCollection::ParticleTypeBoundary) {
+        return; // don't calculate unnecessary values for the boundary particles.
+    }
+    if (type == IParticleCollection::ParticleTypeDead) {
+        return; // don*t calculate unnecessary values for dead particles.
+    }
+
+    // integrate using euler cromer
+    glm::vec2 acceleration = ParticleCollection->GetAcceleration(particleIndex);
+    glm::vec2 velocity = ParticleCollection->GetVelocity(particleIndex) + Timestep * acceleration;
+    glm::vec2 position = ParticleCollection->GetPosition(particleIndex) + Timestep * velocity;
+
+    ParticleCollection->SetVelocity(particleIndex, velocity);
+    ParticleCollection->SetPosition(particleIndex, position);
 }
