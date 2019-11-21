@@ -357,8 +357,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         }
 
-        // post calculations: calculate arithmetic average density error
+        // post calculations: calculate arithmetic average density error, increase iteration count
         predictedDensityError = predictedDensityError / (float) densityErrorCounter;
+        iteration++;
     }
 
 }

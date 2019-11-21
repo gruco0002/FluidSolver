@@ -13,6 +13,7 @@
 
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -102,17 +103,24 @@ void FluidSolverWindow::setupSimulation() {
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
 
-    // set up basic stuff
-    auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    /*  // set up basic stuff
+      auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
 
-    // set up values
-    sphFluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
-    sphFluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
-    sphFluidSolver->StiffnessK = 100000.0f;
-    sphFluidSolver->Viscosity = 5.0f;
-    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
-    simulation->setFluidSolver(sphFluidSolver);
+      // set up values
+      sphFluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
+      sphFluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+      sphFluidSolver->StiffnessK = 100000.0f;
+      sphFluidSolver->Viscosity = 5.0f;
+      sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+      sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
+      simulation->setFluidSolver(sphFluidSolver);
+      */
+
+    auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
+    isphFluidSolver->Omega = 1.0f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.1f;
+    isphFluidSolver->MinNumberOfIterations = 2;
+    simulation->setFluidSolver(isphFluidSolver);
 
 
     // set up scenario data
