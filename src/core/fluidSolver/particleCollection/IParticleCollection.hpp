@@ -48,6 +48,21 @@ namespace FluidSolver {
 
         virtual void SetParticleType(uint32_t index, ParticleType value) = 0;
 
+        virtual glm::vec2 GetNonPressureAcceleration(uint32_t index) = 0;
+
+        virtual void SetNonPressureAcceleration(uint32_t index, glm::vec2 value) = 0;
+
+        virtual glm::vec2 GetPredictedVelocity(uint32_t index) = 0;
+
+        virtual void SetPredictedVelocity(uint32_t index, glm::vec2 value) = 0;
+
+        virtual float GetSourceTerm(uint32_t index) = 0;
+
+        virtual void SetSourceTerm(uint32_t index, float value) = 0;
+
+        virtual float GetDiagonalElement(uint32_t index) = 0;
+
+        virtual void SetDiagonalElement(uint32_t index, float value) = 0;
 
 
     };

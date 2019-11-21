@@ -78,6 +78,37 @@ namespace FluidSolver {
         particles = input;
     }
 
+    glm::vec2 SimpleParticleCollection::GetNonPressureAcceleration(uint32_t index) {
+        return particles[index].NonPressureAcceleration;
+    }
+
+    void SimpleParticleCollection::SetNonPressureAcceleration(uint32_t index, glm::vec2 value) {
+        particles[index].NonPressureAcceleration = value;
+    }
+
+    glm::vec2 SimpleParticleCollection::GetPredictedVelocity(uint32_t index) {
+        return particles[index].PredictedVelocity;
+    }
+
+    void SimpleParticleCollection::SetPredictedVelocity(uint32_t index, glm::vec2 value) {
+        particles[index].PredictedVelocity = value;
+    }
+
+    float SimpleParticleCollection::GetSourceTerm(uint32_t index) {
+        return particles[index].SourceTerm;
+    }
+
+    void SimpleParticleCollection::SetSourceTerm(uint32_t index, float value) {
+        particles[index].SourceTerm = value;
+    }
+
+    float SimpleParticleCollection::GetDiagonalElement(uint32_t index) {
+        return particles[index].DiagonalElement;
+    }
+
+    void SimpleParticleCollection::SetDiagonalElement(uint32_t index, float value) {
+        particles[index].DiagonalElement = value;
+    }
 
 
     bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {

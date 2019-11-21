@@ -25,7 +25,13 @@ namespace FluidSolver {
         IParticleCollection* ParticleCollection = nullptr;
 
         HashedNeighborhoodSearch* neighborhoodSearch = nullptr;
-        CubicSplineKernel* kernel = new CubicSplineKernel();
+        IKernel* kernel = new CubicSplineKernel();
+
+        void CalculateDensity(uint32_t particleIndex);
+        void CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex);
+        void ComputeSourceTerm(uint32_t particleIndex);
+        void ComputeDiagonalElement(uint32_t particleIndex);
+        void InitializePressure(uint32_t particleIndex);
 
     public:
         float getGravity() override;

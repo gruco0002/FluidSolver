@@ -25,6 +25,10 @@ namespace FluidSolver {
             float Density;
 
             uint8_t Type;
+            glm::vec2 PredictedVelocity = glm::vec2(0.0f);
+            glm::vec2 NonPressureAcceleration = glm::vec2(0.0f);
+            float SourceTerm = 0.0f;
+            float DiagonalElement = 0.0f;
 
             bool operator==(const FluidParticle &rhs) const;
 
@@ -48,6 +52,14 @@ namespace FluidSolver {
 
         void SetPosition(uint32_t index, glm::vec2 value) override;
 
+        glm::vec2 GetNonPressureAcceleration(uint32_t index) override;
+
+        void SetNonPressureAcceleration(uint32_t index, glm::vec2 value) override;
+
+        glm::vec2 GetPredictedVelocity(uint32_t index) override;
+
+        void SetPredictedVelocity(uint32_t index, glm::vec2 value) override;
+
         glm::vec2 GetVelocity(uint32_t index) override;
 
         void SetVelocity(uint32_t index, glm::vec2 value) override;
@@ -69,6 +81,14 @@ namespace FluidSolver {
         std::vector<FluidParticle> &GetParticles();
 
         void SetParticles(std::vector<FluidParticle> &input);
+
+        float GetSourceTerm(uint32_t index) override;
+
+        void SetSourceTerm(uint32_t index, float value) override;
+
+        float GetDiagonalElement(uint32_t index) override;
+
+        void SetDiagonalElement(uint32_t index, float value) override;
 
 
     private:
