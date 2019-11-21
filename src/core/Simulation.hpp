@@ -35,6 +35,40 @@ namespace FluidSolver {
 
 
     public:
+        IParticleCollection *getParticleCollection() ;
+
+        void setParticleCollection(IParticleCollection *particleCollection);
+
+        IFluidSolver *getFluidSolver() ;
+
+        void setFluidSolver(IFluidSolver *fluidSolver);
+
+        StatisticCollector *getStatisticCollector() ;
+
+        void setStatisticCollector(StatisticCollector *statisticCollector);
+
+        DataLogger *getDataLogger() ;
+
+        void setDataLogger(DataLogger *dataLogger);
+
+        ISimulationVisualizer *getSimulationVisualizer() ;
+
+        void setSimulationVisualizer(ISimulationVisualizer *simulationVisualizer);
+
+        float getParticleSize() ;
+
+        void setParticleSize(float particleSize);
+
+        float getRestDensity() ;
+
+        void setRestDensity(float restDensity);
+
+        float getTimestep() ;
+
+        void setTimestep(float timestep);
+
+
+    public:
 
         void ExecuteSimulationStep();
 

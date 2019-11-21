@@ -6,35 +6,36 @@
 #include "ParticleRenderer.hpp"
 
 void ParticleRenderer::Render() {
-	particleShader->Bind();
-	particleShader->SetValue("projectionMatrix", projectionMatrix);
-	particleShader->SetValue("pointSize", pointSize);
-	particleShader->SetValue("colorSelection", (int)colorSelection);
-	particleShader->SetValue("bottomColor", bottomColor);
-	particleShader->SetValue("bottomValue", bottomValue);
-	particleShader->SetValue("topColor", topColor);
-	particleShader->SetValue("topValue", topValue);
-	particleShader->SetValue("boundaryColor", boundaryParticleColor);
-	if (showParticleSelection) {
-		particleShader->SetValue("selectedParticle", selectedParticle);
-	}
-	else {
-		particleShader->SetValue("selectedParticle", -1);
-	}
+    particleVertexArray->Update();
 
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    particleShader->Bind();
+    particleShader->SetValue("projectionMatrix", projectionMatrix);
+    particleShader->SetValue("pointSize", pointSize);
+    particleShader->SetValue("colorSelection", (int) colorSelection);
+    particleShader->SetValue("bottomColor", bottomColor);
+    particleShader->SetValue("bottomValue", bottomValue);
+    particleShader->SetValue("topColor", topColor);
+    particleShader->SetValue("topValue", topValue);
+    particleShader->SetValue("boundaryColor", boundaryParticleColor);
+    if (showParticleSelection) {
+        particleShader->SetValue("selectedParticle", selectedParticle);
+    } else {
+        particleShader->SetValue("selectedParticle", -1);
+    }
 
-	if (particleVertexArray != nullptr)
-		particleVertexArray->Draw();
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-	//glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    if (particleVertexArray != nullptr)
+        particleVertexArray->Draw();
+
+    //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
 
 ParticleRenderer::~ParticleRenderer() {
-	Delete();
+    Delete();
 }
 
 const std::string vertCode = R"(#version 330 core
@@ -181,30 +182,38 @@ void main(){
 )";
 
 void ParticleRenderer::Generate() {
-	particleShader = new Engine::Graphics::Shader({
-														  Engine::Graphics::Shader::ProgramPart(
-																  Engine::Graphics::Shader::ProgramPartTypeVertex,
-																  vertCode),
-														  Engine::Graphics::Shader::ProgramPart(
-																  Engine::Graphics::Shader::ProgramPartTypeGeometry,
-																  geomCode),
-														  Engine::Graphics::Shader::ProgramPart(
-																  Engine::Graphics::Shader::ProgramPartTypeFragment,
-																  fragCode),
+    particleShader = new Engine::Graphics::Shader({
+                                                          Engine::Graphics::Shader::ProgramPart(
+                                                                  Engine::Graphics::Shader::ProgramPartTypeVertex,
+                                                                  vertCode),
+                                                          Engine::Graphics::Shader::ProgramPart(
+                                                                  Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                                                                  geomCode),
+                                                          Engine::Graphics::Shader::ProgramPart(
+                                                                  Engine::Graphics::Shader::ProgramPartTypeFragment,
+                                                                  fragCode),
 
-		});
+                                                  });
 }
 
 void ParticleRenderer::Delete() {
-	delete particleShader;
+    delete particleShader;
 }
 
-ParticleRenderer::ParticleRenderer(ParticleVertexArray * particleVertexArray, glm::mat4 projectionMatrix) {
-	this->particleVertexArray = particleVertexArray;
-	this->projectionMatrix = projectionMatrix;
-	Generate();
+ParticleRenderer::ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix) {
+    this->particleVertexArray = particleVertexArray;
+    this->projectionMatrix = projectionMatrix;
+    Generate();
 }
 
 glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, float bottom) {
-	return glm::ortho((float)left, (float)right, (float)bottom, (float)top);
+    return glm::ortho((float) left, (float) right, (float) bottom, (float) top);
+}
+
+void ParticleRenderer::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
+    this->ParticleCollection = particleCollection;
+}
+
+FluidSolver::IParticleCollection *ParticleRenderer::getParticleCollection() {
+    return ParticleCollection;
 }

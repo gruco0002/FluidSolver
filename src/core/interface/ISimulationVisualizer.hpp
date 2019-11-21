@@ -11,7 +11,9 @@ namespace FluidSolver {
     class ISimulationVisualizer {
 
     public:
-        IParticleCollection *particleCollection = nullptr;
+        virtual void setParticleCollection(IParticleCollection *particleCollection) = 0;
+
+        virtual IParticleCollection *getParticleCollection() = 0;
 
         virtual void Render() = 0;
 

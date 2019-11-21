@@ -24,7 +24,7 @@ public:
 
     ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix);
 
-    ParticleVertexArray *particleVertexArray = nullptr;
+
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
 
@@ -51,7 +51,18 @@ public:
 
 
 private:
+
+    ParticleVertexArray *particleVertexArray = nullptr;
+
     Engine::Graphics::Shader *particleShader = nullptr;
+
+    FluidSolver::IParticleCollection* ParticleCollection = nullptr;
+public:
+    void setParticleCollection(FluidSolver::IParticleCollection *particleCollection) override;
+
+    FluidSolver::IParticleCollection *getParticleCollection() override;
+
+private:
 
     void Generate();
 
