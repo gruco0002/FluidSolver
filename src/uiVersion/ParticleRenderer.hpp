@@ -6,10 +6,11 @@
 #define FLUIDSOLVER_PARTICLERENDERER_HPP
 
 
+#include <core/interface/ISimulationVisualizer.hpp>
 #include "ParticleVertexArray.hpp"
 #include "engine/graphics/Shader.hpp"
 
-class ParticleRenderer {
+class ParticleRenderer : public FluidSolver::ISimulationVisualizer {
 
 public:
     enum ColorSelection {
@@ -27,7 +28,7 @@ public:
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
 
-    void Render();
+    void Render() override;
 
     virtual ~ParticleRenderer();
 
@@ -42,11 +43,11 @@ public:
 
     glm::vec4 topColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
     float topValue = 1.0f;
-	
-	int selectedParticle = 0;
-	bool showParticleSelection = false;
 
-	glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+    int selectedParticle = 0;
+    bool showParticleSelection = false;
+
+    glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 
 private:

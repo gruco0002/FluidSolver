@@ -4,7 +4,7 @@
 
 #include "gtest/gtest.h"
 
-#include "FluidSolverWindow.hpp"
+#include "uiVersion/FluidSolverWindow.hpp"
 #include "engine/EngineException.hpp"
 
 TEST(basic_check, test_even){
