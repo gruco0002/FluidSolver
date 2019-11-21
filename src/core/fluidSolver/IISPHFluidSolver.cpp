@@ -146,9 +146,69 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
 }
 
 void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleIndex) {
+    float sum = 0.0f;
+    glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+    float particleMass = ParticleCollection->GetMass(particleIndex);
 
+    // first and third part of the sum (since we sum over normal particles and boundary particles)
+    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        if (neighborType == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        float neighborMass = ParticleCollection->GetMass(neighborIndex);
+        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+
+        glm::vec2 internalSum = glm::vec2(0.0f);
+        for (uint32_t internalNeighbor: neighborhoodSearch->GetParticleNeighbors(
+                particleIndex)) { // TODO: check if neighbors of particle or neighbors of neighbor
+            auto internalNeighborType = ParticleCollection->GetParticleType(internalNeighbor);
+            if (internalNeighborType == IParticleCollection::ParticleTypeDead)
+                continue; // we do not want to process dead particles
+
+            float internalNeighborMass = ParticleCollection->GetMass(internalNeighbor);
+            glm::vec2 internalNeighborPosition = ParticleCollection->GetPosition(internalNeighbor);
+
+            internalSum += internalNeighborMass / RestDensity / RestDensity *
+                           kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
+                                                                    KernelSupport);
+
+            // since we have no factor for boundary particles, they can be handled as normal particles
+
+        }
+
+        sum += neighborMass *
+               glm::dot(-internalSum, kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+                                                                               KernelSupport));
+
+
+    }
+
+    // second part of the sum
+    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        if (neighborType == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        if (neighborType != IParticleCollection::ParticleTypeNormal)
+            continue; // this loop only processes normal particles
+
+        float neighborMass = ParticleCollection->GetMass(neighborIndex);
+        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+
+        sum += neighborMass * glm::dot(particleMass / RestDensity / RestDensity *
+                                       kernel->GetKernelDerivativeReversedValue(particlePosition, neighborPosition,
+                                                                                KernelSupport),
+                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+                                                                                KernelSupport));
+
+    }
+
+
+    float diagonalElement = Timestep * Timestep * sum;
+    ParticleCollection->SetDiagonalElement(particleIndex, diagonalElement);
 }
 
 void FluidSolver::IISPHFluidSolver::InitializePressure(uint32_t particleIndex) {
-
+    ParticleCollection->SetPressure(particleIndex, 0.0f);
 }
