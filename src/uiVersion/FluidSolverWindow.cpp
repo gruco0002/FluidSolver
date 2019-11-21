@@ -62,7 +62,9 @@ void FluidSolverWindow::render() {
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
     // render fbo to screen
-    rectangleRenderer->RenderTexture(glm::vec2(0.0f), glm::vec2(1.0f), fboColorTex);
+    rectangleRenderer->RenderTexture(glm::vec2(particleFBORect.x, particleFBORect.y),
+                                     glm::vec2(particleFBORect.z, particleFBORect.w),
+                                     fboColorTex);
 
 
 }
@@ -79,6 +81,7 @@ void FluidSolverWindow::load() {
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
+    OnFramebufferSizeChanged.Subscribe([=](int width, int height) { this->UpdateProjectionMatrices(); });
     rectangleRenderer = new Engine::RectangleRenderer();
     setupFBO();
 
@@ -231,35 +234,28 @@ void FluidSolverWindow::UpdateProjectionMatrices() {
 
 void FluidSolverWindow::UpdateRectangleRendererProjectionMatrix() {
 
+    // adopt rectangle renderer projection matrix
     float width = GetFramebufferWidth(); // screen width
     float height = GetFramebufferHeight(); // screen height
-    float fboWidth = framebufferWidth;
-    float fboHeight = framebufferHeight;
+    glm::mat4 generated = ParticleRenderer::GenerateOrtho(0.0f, width, 0.0f, height);
+    if (rectangleRenderer != nullptr)
+        rectangleRenderer->projectionMatrix = generated;
 
-
-    float top = 0.0f;
-    float left = 0.0f;
-    float right = 1.0f;
-    float bottom = 1.0f;
+    float fboWidth = particleFBOWidth;
+    float fboHeight = particleFBOHeight;
 
     if (fboWidth / fboHeight * height <= width) {
         // fbo fits heightwise, there must be borders left and right
         float newWidth = fboWidth / fboHeight * height;
-        float tweaked = width / newWidth;
-        left -= (tweaked - 1.0f) / 2.0f;
-        right += (tweaked - 1.0f) / 2.0f;
-
+        float rest = (width - newWidth) / 2.0f;
+        particleFBORect = glm::vec4(rest, 0.0f, newWidth, height);
     } else {
         // fbo fits width wise, there must be borders at top and bottom
         float newHeight = fboHeight / fboWidth * width;
-        float tweaked = height / newHeight;
-        top -= (tweaked - 1.0f) / 2.0f;
-        bottom += (tweaked - 1.0f) / 2.0f;
+        float rest = (height - newHeight) / 2.0f;
+        particleFBORect = glm::vec4(0.0f, rest, width, newHeight);
     }
 
-    glm::mat4 generated = ParticleRenderer::GenerateOrtho(left, right, top, bottom);
-    if (rectangleRenderer != nullptr)
-        rectangleRenderer->projectionMatrix = generated;
 
 }
 
@@ -270,8 +266,8 @@ void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX,
     float width = particlesX; // particle size is not taken into account
     float height = particlesY;
 
-    float fboWidth = framebufferWidth;
-    float fboHeight = framebufferHeight;
+    float fboWidth = particleFBOWidth;
+    float fboHeight = particleFBOHeight;
 
     if (width / fboWidth * fboHeight >= height) {
         height = width / fboWidth * fboHeight;
@@ -289,12 +285,12 @@ void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX,
 }
 
 void FluidSolverWindow::setupFBO() {
-    framebuffer = new Engine::Graphics::Framebuffer(framebufferWidth, framebufferHeight);
+    framebuffer = new Engine::Graphics::Framebuffer(particleFBOWidth, particleFBOHeight);
     auto *depthSettings = new Engine::Graphics::Texture2DSettings();
     depthSettings->GenerateMipmaps = false;
     depthSettings->TextureMagnifyingFiltering = GL_NEAREST;
     depthSettings->TextureMinifyingFiltering = GL_NEAREST;
-    fboDepthTex = new Engine::Graphics::Texture2D(framebufferWidth, framebufferHeight, depthSettings,
+    fboDepthTex = new Engine::Graphics::Texture2D(particleFBOWidth, particleFBOHeight, depthSettings,
                                                   GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
                                                   Engine::ComponentType::ComponentTypeShort);
     framebuffer->AddAttachment(GL_DEPTH_ATTACHMENT, fboDepthTex);
@@ -302,7 +298,7 @@ void FluidSolverWindow::setupFBO() {
     auto colorSettings = new Engine::Graphics::Texture2DSettings();
     colorSettings->GenerateMipmaps = false;
 
-    fboColorTex = new Engine::Graphics::Texture2D(framebufferWidth, framebufferHeight, colorSettings, GL_RGB,
+    fboColorTex = new Engine::Graphics::Texture2D(particleFBOWidth, particleFBOHeight, colorSettings, GL_RGB,
                                                   Engine::ComponentType::ComponentTypeUnsignedByte);
     framebuffer->AddAttachment(GL_COLOR_ATTACHMENT0, fboColorTex);
 

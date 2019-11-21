@@ -47,19 +47,17 @@ public:
 
 private:
 
-    FluidSolver::Simulation* simulation = nullptr;
+    FluidSolver::Simulation *simulation = nullptr;
 
     void setupSimulation();
 
     void onClick(float x, float y);
 
 
-
     GuiEngineInterface *guiInterface = nullptr;
 
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
-
 
 
     void UpdateProjectionMatrices();
@@ -73,19 +71,17 @@ private:
 
     FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
 
-
+    glm::vec4 particleFBORect = glm::vec4(0.0f);
 
     // rendering
     Engine::Graphics::Framebuffer *framebuffer = nullptr;
-    uint32_t framebufferWidth = 1920 * 2;
-    uint32_t framebufferHeight = 1080 * 2;
+    uint32_t particleFBOWidth = 1920 * 2;
+    uint32_t particleFBOHeight = 1080 * 2;
     Engine::Graphics::Texture2D *fboDepthTex = nullptr;
     Engine::Graphics::Texture2D *fboColorTex = nullptr;
     Engine::RectangleRenderer *rectangleRenderer = nullptr;
 
     void setupFBO();
-
-
 
 
     void saveAsImage();
