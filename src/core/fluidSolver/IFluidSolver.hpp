@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_IFLUIDSOLVER_HPP
 #define FLUIDSOLVER_IFLUIDSOLVER_HPP
 
-#include "IParticleCollection.hpp"
+#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
 namespace FluidSolver {
 

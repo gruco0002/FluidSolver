@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_HELPERFUNCTIONS_HPP
 #define FLUIDSOLVER_HELPERFUNCTIONS_HPP
 
-#include <core/interface/INeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 
 /**
  * Creates a grid of positions starting from start with step size in both axis directions.

@@ -8,8 +8,8 @@
 #include <DataLogger.hpp>
 #include <core/interface/IExternalForce.hpp>
 #include <core/interface/ISimulationVisualizer.hpp>
-#include <core/interface/IFluidSolver.hpp>
-#include "SPHFluidSolver.hpp"
+#include <core/fluidSolver/IFluidSolver.hpp>
+#include "core/fluidSolver/SPHFluidSolver.hpp"
 
 namespace FluidSolver {
     class Simulation {

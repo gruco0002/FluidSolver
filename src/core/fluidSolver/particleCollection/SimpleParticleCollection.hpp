@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_SIMPLEPARTICLECOLLECTION_HPP
 
 #include "libraries/glm/glm.hpp"
-#include "core/interface/IParticleCollection.hpp"
+#include "IParticleCollection.hpp"
 #include <vector>
 
 namespace FluidSolver {

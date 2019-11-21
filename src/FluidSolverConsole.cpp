@@ -7,9 +7,9 @@
 #include <iostream>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
-#include <core/SPHFluidSolver.hpp>
-#include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <core/CubicSplineKernel.hpp>
+#include <core/fluidSolver/SPHFluidSolver.hpp>
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
     setupOptions(options);

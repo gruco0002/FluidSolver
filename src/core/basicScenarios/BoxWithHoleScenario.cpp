@@ -2,7 +2,7 @@
 // Created by corbi on 06.06.2019.
 //
 
-#include <core/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include <core/simulationModifiers/SpawnArea.hpp>
 #include "BoxWithHoleScenario.hpp"

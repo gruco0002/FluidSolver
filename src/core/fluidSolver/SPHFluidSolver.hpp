@@ -5,13 +5,12 @@
 #ifndef FLUIDSOLVER_SPHFLUIDSOLVER_HPP
 #define FLUIDSOLVER_SPHFLUIDSOLVER_HPP
 
-#include <core/interface/IIntegrationScheme.hpp>
-#include <core/interface/INeighborhoodSearch.hpp>
-#include <core/interface/IKernel.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
+#include <core/fluidSolver/kernel/IKernel.hpp>
 #include <core/interface/ISimulationModifier.hpp>
-#include <core/interface/IFluidSolver.hpp>
-#include "core/interface/IParticleCollection.hpp"
-#include "StatisticCollector.hpp"
+#include <core/fluidSolver/IFluidSolver.hpp>
+#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
+#include "core/StatisticCollector.hpp"
 
 namespace FluidSolver {
     class SPHFluidSolver : public IFluidSolver {

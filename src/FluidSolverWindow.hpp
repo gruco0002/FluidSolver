@@ -16,7 +16,7 @@
 #include "ParticleRenderer.hpp"
 
 
-#include <core/SPHFluidSolver.hpp>
+#include <core/fluidSolver/SPHFluidSolver.hpp>
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>

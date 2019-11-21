@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHPREALLOCATED_HPP
 #define FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHPREALLOCATED_HPP
 
-#include <core/interface/INeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 
 namespace FluidSolver {
     class QuadraticNeighborhoodSearchPreAllocated : public INeighborhoodSearch {

@@ -2,7 +2,7 @@
 // Created by corbi on 28.05.2019.
 //
 
-#include <core/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 #include "BoundaryTestScenario.hpp"
 
 void

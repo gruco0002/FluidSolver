@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_MULTIPLEHOLESCENARIO_HPP
 
 #include "Scenario.hpp"
-#include <core/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 
 namespace FluidSolver {
     class MultipleHoleScenario : public Scenario {

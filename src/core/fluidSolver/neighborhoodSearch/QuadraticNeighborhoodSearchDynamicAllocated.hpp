@@ -5,8 +5,8 @@
 #ifndef FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 #define FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 
-#include <core/interface/IParticleCollection.hpp>
-#include <core/interface/INeighborhoodSearch.hpp>
+#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 #include <unordered_map>
 
 namespace FluidSolver {

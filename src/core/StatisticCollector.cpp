@@ -4,7 +4,7 @@
 
 #include <algorithm>
 #include "StatisticCollector.hpp"
-#include "SPHFluidSolver.hpp"
+#include "core/fluidSolver/SPHFluidSolver.hpp"
 
 using namespace FluidSolver;
 

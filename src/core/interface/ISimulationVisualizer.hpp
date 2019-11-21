@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
-#include "IParticleCollection.hpp"
+#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
 namespace FluidSolver {
     class ISimulationVisualizer {

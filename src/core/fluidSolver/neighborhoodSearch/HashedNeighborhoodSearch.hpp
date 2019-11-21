@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 #define FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 
-#include <core/interface/INeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 #include <unordered_map>
 #include <vector>
 #include <list>

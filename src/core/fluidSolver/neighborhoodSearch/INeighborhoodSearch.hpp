@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "IParticleCollection.hpp"
+#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
 namespace FluidSolver {
 

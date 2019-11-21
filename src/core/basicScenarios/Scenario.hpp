@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_SCENARIO_HPP
 #define FLUIDSOLVER_SCENARIO_HPP
 
-#include <core/interface/IParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
 #include <core/interface/ISimulationModifier.hpp>
 #include <vector>
 

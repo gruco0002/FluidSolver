@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_ISIMULATIONMODIFIER_HPP
 #define FLUIDSOLVER_ISIMULATIONMODIFIER_HPP
 
-#include "IParticleCollection.hpp"
+#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
 namespace FluidSolver{
 

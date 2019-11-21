@@ -7,7 +7,7 @@
 
 #include <string>
 #include <iostream>
-#include <core/SPHFluidSolver.hpp>
+#include <core/fluidSolver/SPHFluidSolver.hpp>
 #include <fstream>
 
 class DataLogger {

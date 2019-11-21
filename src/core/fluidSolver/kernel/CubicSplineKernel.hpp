@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 #define FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 
-#include <core/interface/IKernel.hpp>
+#include <core/fluidSolver/kernel/IKernel.hpp>
 
 namespace  FluidSolver {
     class CubicSplineKernel : public IKernel{

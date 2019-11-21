@@ -8,7 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
-#include "core/interface/INeighborhoodSearch.hpp"
+#include "INeighborhoodSearch.hpp"
 
 namespace FluidSolver {
     class QuadraticNeighborhoodSearchGreedyAllocated : public INeighborhoodSearch {

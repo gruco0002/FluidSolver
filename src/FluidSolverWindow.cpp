@@ -13,10 +13,10 @@
 
 #include <iostream>
 
-#include <core/CubicSplineKernel.hpp>
-#include <core/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
-#include <core/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
-#include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+#include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
+#include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 
 
 

@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include <core/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
