@@ -84,6 +84,8 @@ namespace Engine {
              */
             Glyph *GetGlyphUTF8(const char *&character);
 
+            Glyph *GetGlyphByCodepoint(uint32_t codepoint);
+
             /**
              * Computes the dimensions of a given string
              * @param text The string where the dimensions should be computed

@@ -240,6 +240,12 @@ namespace Engine {
             delete glyphTexture;
         }
 
+        Glyph *Font::GetGlyphByCodepoint(uint32_t codepoint) {
+            if (glyphs.size() <= codepoint)
+                return nullptr;
+            return &glyphs[codepoint];
+        }
+
 
     }
 

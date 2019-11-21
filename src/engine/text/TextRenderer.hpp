@@ -30,6 +30,15 @@ namespace Engine {
                                 float outlineScale,
                                 glm::vec4 clipArea, glm::vec4 blendArea);
 
+            void RenderCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color, glm::vec4 clipArea,
+                        glm::vec4 blendArea);
+
+
+            void RenderOutlinedCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color, glm::vec4 outlineColor,
+                                float outlineScale,
+                                glm::vec4 clipArea, glm::vec4 blendArea);
+
+
             glm::mat4 projectionMatrix;
 
             Font *font = nullptr;
@@ -40,6 +49,7 @@ namespace Engine {
 
         private:
             std::vector<glm::vec3> CalculateCharacterInstances(std::string text, int32_t *characterCount);
+            std::vector<glm::vec3> CalculateCharacterInstances(uint32_t codepoint, int32_t *characterCount);
 
             Graphics::Buffer::VertexArray *vertexArray = nullptr;
 

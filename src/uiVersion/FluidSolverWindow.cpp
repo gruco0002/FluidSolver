@@ -322,12 +322,13 @@ void FluidSolverWindow::saveAsImage() {
 }
 
 void FluidSolverWindow::setupUI() {
-     font = new Engine::Text::Font("../resources/Roboto-Regular.ttf", 88, 5);
+    font = new Engine::Text::Font("../resources/Roboto-Regular.ttf", 88, 5);
+    iconFont = new Engine::Text::Font("../resources/MovedMaterialIcons.ttf", 88, 5);
     // create gui interface
-    guiInterface = new GuiEngineInterface(this, font);
+    guiInterface = new GuiEngineInterface(this, font, iconFont);
 
     // create ui entry point element
-     entryPoint = new FluidUI::RootElement(this);
+    entryPoint = new FluidUI::RootElement(this);
 
     // setup ui runner
     uiRunner = new cppgui::UIRunner(entryPoint, guiInterface);

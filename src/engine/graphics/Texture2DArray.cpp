@@ -41,6 +41,7 @@ namespace Engine {
 
             if (settings != nullptr && settings->GenerateMipmaps)
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+            Unbind();
         }
 
         Texture2DArray::~Texture2DArray() {

@@ -42,7 +42,7 @@ Engine::Text::TextRenderer::RenderOutlined(std::string text, float x, float y, f
                                            glm::vec4 outlineColor,
                                            float outlineScale, glm::vec4 clipArea, glm::vec4 blendArea) {
 
-    float scale = size / (float) (font->lineHeight - font->lineGap) * 2.0f;
+    float scale = size / (float) (font->lineHeight - font->lineGap);
     int32_t characterCount;
 
     shader->Bind();
@@ -92,6 +92,61 @@ Engine::Text::TextRenderer::RenderOutlined(std::string text, float x, float y, f
     //glEnable(GL_CULL_FACE);
 
 }
+
+void
+Engine::Text::TextRenderer::RenderOutlinedCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color,
+                                                    glm::vec4 outlineColor, float outlineScale, glm::vec4 clipArea,
+                                                    glm::vec4 blendArea) {
+    float scale = size / (float) (font->lineHeight - font->lineGap);
+    int32_t characterCount;
+
+    shader->Bind();
+
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+    auto instances = CalculateCharacterInstances(codepoint, &characterCount);
+    vertexBuffer->UpdateData(instances);
+
+    shader->SetValue("pMatrix", projectionMatrix);
+
+    shader->SetValue("textScale", scale);
+    shader->SetValue("textOffset", glm::vec2(x, y));
+    shader->SetValue("textColor", color);
+
+    shader->SetValue("outlineColor", outlineColor);
+    shader->SetValue("outlineScale", outlineScale);
+
+    shader->SetValue("edgeValue", ((float) font->edgeValue) / 255.0f);
+    shader->SetValue("smoothness", font->smoothness);
+
+    shader->SetValue("clipArea", clipArea);
+    //shader->SetValue("blendArea", blendArea); // currently not used in shader
+
+    shader->SetValue("glyphsTexture", font->glyphTexture, GL_TEXTURE0);
+
+    shader->SetValue("UBO1", font->firstGlyphBuffer, 0);
+    shader->SetValue("UBO2", font->secondGlyphBuffer, 1);
+
+    vertexArray->Bind();
+
+    //glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, characterCount);
+    glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, indexBuffer->GetIndexBufferDataType(), nullptr, characterCount);
+
+    glDisable(GL_BLEND);
+
+    vertexArray->Unbind();
+
+
+    font->firstGlyphBuffer->Unbind();
+    font->secondGlyphBuffer->Unbind();
+
+    //glEnable(GL_CULL_FACE);
+}
+
 
 std::vector<glm::vec3>
 Engine::Text::TextRenderer::CalculateCharacterInstances(std::string text, int32_t *characterCount) {
@@ -271,7 +326,7 @@ void Engine::Text::TextRenderer::CreateVertexArray() {
 glm::vec2 Engine::Text::TextRenderer::GetTextDimensions(std::string &text, float size) {
     float width;
     float height;
-    float scale = size / (float) (font->lineHeight - font->lineGap) * 2.0f;
+    float scale = size / (float) (font->lineHeight - font->lineGap);
     font->ComputeDimensions(text, scale, &width, &height);
     return glm::vec2(width, height);
 }
@@ -284,3 +339,44 @@ Engine::Text::TextRenderer::~TextRenderer() {
     delete shader;
 
 }
+
+std::vector<glm::vec3>
+Engine::Text::TextRenderer::CalculateCharacterInstances(uint32_t codepoint, int32_t *characterCount) {
+    *characterCount = 0;
+
+    auto instances = std::vector<glm::vec3>(1);
+
+    int32_t index = 0;
+
+    float xOffset = 0.0f;
+
+
+    Glyph *glyph = font->GetGlyphByCodepoint(codepoint);
+    if(glyph == nullptr)
+        return std::vector<glm::vec3>();
+
+    // Just visible characters should be rendered.
+    if (glyph->codepoint > 32 && glyph->texArrayIndex < ENGINE_GPU_GLYPH_COUNT) {
+        instances[index].x = glyph->offset.x + xOffset;
+        instances[index].y = glyph->offset.y + font->ascent;
+        instances[index].z = (float) glyph->texArrayIndex;
+        index++;
+    }
+
+
+
+    //  xOffset += glyph->advance + glyph->kern[nextGlyph->codepoint];
+
+
+
+    *characterCount = index;
+
+    return instances;
+}
+
+void Engine::Text::TextRenderer::RenderCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color,
+                                                 glm::vec4 clipArea, glm::vec4 blendArea) {
+    RenderOutlinedCodepoint(codepoint, x, y, size, color, glm::vec4(1.0f), 0.0f, clipArea, blendArea);
+}
+
+

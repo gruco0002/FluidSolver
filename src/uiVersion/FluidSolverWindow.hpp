@@ -93,6 +93,7 @@ private:
     GuiEngineInterface *guiInterface = nullptr;
     cppgui::UIRunner *uiRunner = nullptr;
     Engine::Text::Font *font = nullptr;
+    Engine::Text::Font *iconFont = nullptr;
     FluidUI::RootElement *entryPoint = nullptr;
 
 protected:
