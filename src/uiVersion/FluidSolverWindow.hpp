@@ -26,6 +26,11 @@
 #include <core/basicScenarios/SimpleDamScenario.hpp>
 #include <core/basicScenarios/HugeDamScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
+#include <dependencies/cppgui/library/src/basic/UIRunner.hpp>
+
+namespace FluidUI{
+    class RootElement;
+}
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -54,8 +59,6 @@ private:
     void onClick(float x, float y);
 
 
-    GuiEngineInterface *guiInterface = nullptr;
-
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
 
@@ -83,8 +86,14 @@ private:
 
     void setupFBO();
 
-
     void saveAsImage();
+
+    void setupUI();
+
+    GuiEngineInterface *guiInterface = nullptr;
+    cppgui::UIRunner *uiRunner = nullptr;
+    Engine::Text::Font *font = nullptr;
+    FluidUI::RootElement *entryPoint = nullptr;
 
 protected:
     void render() override;

@@ -3,21 +3,25 @@
 //
 
 #include "RootElement.hpp"
+#include "ControlAreaElement.hpp"
 
-RootElement::RootElement(FluidSolverWindow *window) : window(window) {
+FluidUI::RootElement::RootElement(FluidSolverWindow *window) : window(window) {
 
 }
 
-cppgui::Element *RootElement::Build(cppgui::StateContext stateContext) {
-    return nullptr;
+cppgui::Element *FluidUI::RootElement::Build(cppgui::StateContext stateContext) {
+    using namespace cppgui;
+    return new Theme(new Row(std::vector<Element *>({new Container(new ControlAreaElement(), Colors::White(), 300.0f)}),
+                             MainAxisAlignmentEnd,
+                             CrossAxisAlignmentStart));
 }
 
-cppgui::ElementState *RootElement::CreateState() {
+cppgui::ElementState *FluidUI::RootElement::CreateState() {
     auto state = new RootState();
     state->fluidSolverWindow = window;
     return state;
 }
 
-bool RootElement::StateMatchElement(cppgui::ElementState *state) {
+bool FluidUI::RootElement::StateMatchElement(cppgui::ElementState *state) {
     return dynamic_cast<RootState *>(state) != nullptr;
 }

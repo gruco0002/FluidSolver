@@ -8,32 +8,33 @@
 #include <cppgui/library/src/CPPGUI.hpp>
 #include <uiVersion/FluidSolverWindow.hpp>
 
-class RootElement : public cppgui::Element {
+namespace FluidUI {
+    class RootElement : public cppgui::Element {
 
 
-
-public:
-    class RootState : public cppgui::ElementState {
     public:
-        FluidSolverWindow *fluidSolverWindow = nullptr;
+        class RootState : public cppgui::ElementState {
+        public:
+            FluidSolverWindow *fluidSolverWindow = nullptr;
+        };
+
+    protected:
+        Element *Build(cppgui::StateContext stateContext) override;
+
+        cppgui::ElementState *CreateState() override;
+
+        bool StateMatchElement(cppgui::ElementState *state) override;
+
+    public:
+
+
+        RootElement(FluidSolverWindow *window);
+
+    private:
+        FluidSolverWindow *window = nullptr;
+
     };
-
-protected:
-    Element *Build(cppgui::StateContext stateContext) override;
-
-    cppgui::ElementState *CreateState() override;
-
-    bool StateMatchElement(cppgui::ElementState *state) override;
-
-public:
-
-
-    RootElement(FluidSolverWindow* window);
-
-private:
-    FluidSolverWindow* window = nullptr;
-
-};
+}
 
 
 #endif //FLUIDSOLVER_ROOTELEMENT_HPP

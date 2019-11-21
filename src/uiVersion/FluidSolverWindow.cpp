@@ -14,6 +14,7 @@
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
+#include <uiVersion/userInterface/RootElement.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -65,6 +66,11 @@ void FluidSolverWindow::render() {
     rectangleRenderer->RenderTexture(glm::vec2(particleFBORect.x, particleFBORect.y),
                                      glm::vec2(particleFBORect.z, particleFBORect.w),
                                      fboColorTex);
+    // render ui
+    if (uiRunner != nullptr) {
+        uiRunner->Update(GetLastFrameTime());
+        uiRunner->Render();
+    }
 
 
 }
@@ -84,9 +90,8 @@ void FluidSolverWindow::load() {
     OnFramebufferSizeChanged.Subscribe([=](int width, int height) { this->UpdateProjectionMatrices(); });
     rectangleRenderer = new Engine::RectangleRenderer();
     setupFBO();
-
-
     setupSimulation();
+    setupUI();
 
 }
 
@@ -314,5 +319,66 @@ void FluidSolverWindow::saveAsImage() {
 
     fboColorTex->SaveAsPNG(imagePath + "image_" + std::to_string(imageCounter) + ".png");*/
 
+}
+
+void FluidSolverWindow::setupUI() {
+     font = new Engine::Text::Font("../resources/Roboto-Regular.ttf", 88, 5);
+    // create gui interface
+    guiInterface = new GuiEngineInterface(this, font);
+
+    // create ui entry point element
+     entryPoint = new FluidUI::RootElement(this);
+
+    // setup ui runner
+    uiRunner = new cppgui::UIRunner(entryPoint, guiInterface);
+    uiRunner->setDebugView(false);
+
+    // setup interaction events
+    this->OnMouseDown.Subscribe([=](MouseButton b) {
+        if (b == LeftButton) {
+            uiRunner->interactionRunner->MouseDown(cppgui::MouseButtonLeft);
+        } else if (b == RightButton) {
+            uiRunner->interactionRunner->MouseDown(cppgui::MouseButtonRight);
+        }
+    });
+    this->OnMouseUp.Subscribe([=](MouseButton b) {
+        if (b == LeftButton) {
+            uiRunner->interactionRunner->MouseUp(cppgui::MouseButtonLeft);
+        } else if (b == RightButton) {
+            uiRunner->interactionRunner->MouseUp(cppgui::MouseButtonRight);
+        }
+    });
+    this->OnCursorPositionChanged.Subscribe([=](double x, double y) {
+        uiRunner->interactionRunner->MousePosition(cppgui::Vector2(x, y));
+    });
+    this->OnScrollChanged.Subscribe([=](double x, double y) {
+        uiRunner->interactionRunner->MouseScroll((x + y) * -30.0f);
+    });
+
+    this->OnTextInput.Subscribe([=](std::string textInput) {
+        uiRunner->interactionRunner->TextInput(textInput);
+    });
+    this->OnKeyPressed.Subscribe([=](int key) {
+        if (key == GLFW_KEY_BACKSPACE) {
+            uiRunner->interactionRunner->KeyDown(cppgui::KeyboardKeyBackspace);
+        } else if (key == GLFW_KEY_ESCAPE) {
+            uiRunner->interactionRunner->KeyDown(cppgui::KeyboardKeyEscape);
+        } else if (key == GLFW_KEY_LEFT) {
+            uiRunner->interactionRunner->KeyDown(cppgui::KeyboardKeyLeft);
+        } else if (key == GLFW_KEY_RIGHT) {
+            uiRunner->interactionRunner->KeyDown(cppgui::KeyboardKeyRight);
+        }
+    });
+    this->OnKeyRelease.Subscribe([=](int key) {
+        if (key == GLFW_KEY_BACKSPACE) {
+            uiRunner->interactionRunner->KeyUp(cppgui::KeyboardKeyBackspace);
+        } else if (key == GLFW_KEY_ESCAPE) {
+            uiRunner->interactionRunner->KeyUp(cppgui::KeyboardKeyEscape);
+        } else if (key == GLFW_KEY_LEFT) {
+            uiRunner->interactionRunner->KeyUp(cppgui::KeyboardKeyLeft);
+        } else if (key == GLFW_KEY_RIGHT) {
+            uiRunner->interactionRunner->KeyUp(cppgui::KeyboardKeyRight);
+        }
+    });
 }
 
