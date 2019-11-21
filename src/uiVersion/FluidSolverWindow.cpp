@@ -112,6 +112,7 @@ void FluidSolverWindow::setupSimulation() {
     sphFluidSolver->Viscosity = 5.0f;
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
     sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
+    simulation->setFluidSolver(sphFluidSolver);
 
 
     // set up scenario data
