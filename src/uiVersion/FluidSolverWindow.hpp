@@ -23,6 +23,9 @@
 #include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
+#include <core/basicScenarios/SimpleDamScenario.hpp>
+#include <core/basicScenarios/HugeDamScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenario.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -70,7 +73,7 @@ private:
 
     float accumulatedSimulationTime = 0.0f;
 
-    FluidSolver::Scenario *scenario = new FluidSolver::MultipleHoleScenario();
+    FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
 
 
 

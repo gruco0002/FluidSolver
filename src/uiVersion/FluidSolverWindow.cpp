@@ -117,9 +117,9 @@ void FluidSolverWindow::setupSimulation() {
       */
 
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
-    isphFluidSolver->Omega = 1.0f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.01f;
-    isphFluidSolver->MinNumberOfIterations = 2;
+    isphFluidSolver->Omega = 0.2f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
+    isphFluidSolver->MinNumberOfIterations = 10;
     simulation->setFluidSolver(isphFluidSolver);
 
 
