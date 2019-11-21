@@ -261,7 +261,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             auto particleType = ParticleCollection->GetParticleType(particleIndex);
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
-            // TODO: check if we want to ignore boundary particles
+            // TODO: check if we want to ignore boundary particles or not
+            if(particleType == IParticleCollection::ParticleTypeBoundary)
+                continue;
 
             float particlePressure = ParticleCollection->GetPressure(particleIndex);
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
@@ -300,7 +302,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             auto particleType = ParticleCollection->GetParticleType(particleIndex);
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
-            // TODO: check if we want to ignore boundary particles
+            // TODO: check if we want to ignore boundary particles or not
+            if(particleType == IParticleCollection::ParticleTypeBoundary)
+                continue;
 
             // First step calculate Ap
             glm::vec2 particlePressureAcceleration = ParticleCollection->GetAcceleration(particleIndex);
