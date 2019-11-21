@@ -13,6 +13,7 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     // calculating density and non pressure accelerations
 #pragma omp parallel for
     for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
+        // TODO: prevent dead particles
         CalculateDensity(i);
         CalculateNonPressureAccelerationAndPredictedVelocity(i);
     }
@@ -20,6 +21,7 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     // compute source term, diagonal element and initialize pressure
 #pragma  omp parallel for
     for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
+        // TODO: prevent dead particles
         ComputeSourceTerm(i);
         ComputeDiagonalElement(i);
         InitializePressure(i);
@@ -92,10 +94,13 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
 }
 
 void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex) {
+    auto type = ParticleCollection->GetParticleType(particleIndex);
     auto nonPressureAcc = ParticleCollection->GetNonPressureAcceleration(particleIndex);
     auto velocity = ParticleCollection->GetVelocity(particleIndex);
+
     // adding gravity to non pressure acceleration
-    nonPressureAcc += glm::vec2(0.0f, -Gravity);
+    if (type != IParticleCollection::ParticleTypeBoundary)
+        nonPressureAcc += glm::vec2(0.0f, -Gravity);
 
     // calculate predicted velocity
     glm::vec2 predictedVelocity = velocity + Timestep * nonPressureAcc;
@@ -106,6 +111,31 @@ void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredicted
 }
 
 void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
+    float particleDensity = ParticleCollection->GetDensity(particleIndex);
+    glm::vec2 particlePredictedVelocity = ParticleCollection->GetPredictedVelocity(particleIndex);
+    glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+
+    float sum = 0.0f;
+    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        if (neighborType == IParticleCollection::ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        float neighborMass = ParticleCollection->GetMass(neighborIndex);
+        glm::vec2 neighborPredictedVelocity = ParticleCollection->GetPredictedVelocity(neighborIndex);
+        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+
+        sum += neighborMass * glm::dot((particlePredictedVelocity - neighborPredictedVelocity),
+                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+                                                                                KernelSupport));
+        // the velocity of a boundary particle in the next timestep is here equal to the predicted velocity of said
+        // boundary particle, since there are no other forces that apply to them.
+
+    }
+
+    float sourceTerm = RestDensity - particleDensity - Timestep * sum;
+
+    ParticleCollection->SetSourceTerm(particleIndex, sourceTerm);
 
 }
 
