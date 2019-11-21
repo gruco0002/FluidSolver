@@ -72,12 +72,6 @@ FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int he
 
 }
 
-bool FluidSolverWindow::even(int input) {
-    if (input < 0)
-        throw Engine::EngineException("negative not allowed");
-    return input % 2 == 0;
-}
-
 
 void FluidSolverWindow::load() {
 

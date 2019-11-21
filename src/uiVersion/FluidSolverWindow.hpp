@@ -33,8 +33,6 @@ class FluidSolverWindow : public Engine::Window {
 public:
     FluidSolverWindow(const std::string &title, int width = 800, int height = 600);
 
-    static bool even(int input);
-
     void resetData();
 
     bool Pause = true;
