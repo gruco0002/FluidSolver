@@ -86,6 +86,8 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
             particles.push_back(p);
         }
     }
+
+    coll->SetParticles(particles);
 }
 
 int FluidSolver::HugeDamScenario::GetParticleCountX() {
