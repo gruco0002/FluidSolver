@@ -15,6 +15,10 @@ namespace FluidSolver {
 
         virtual IParticleCollection *getParticleCollection() = 0;
 
+        virtual void setParticleSize(float particleSize) = 0;
+
+        virtual float getParticleSize() = 0;
+
         virtual void Render() = 0;
 
     };

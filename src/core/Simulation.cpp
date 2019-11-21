@@ -3,6 +3,7 @@
 //
 
 #include "Simulation.hpp"
+#include <algorithm>
 
 void FluidSolver::Simulation::ExecuteSimulationStep() {
     if (fluidSolver == nullptr)
@@ -51,6 +52,8 @@ void FluidSolver::Simulation::setParticleCollection(FluidSolver::IParticleCollec
         this->fluidSolver->setParticleCollection(particleCollection);
     if (this->simulationVisualizer != nullptr)
         this->simulationVisualizer->setParticleCollection(particleCollection);
+    if (statisticCollector != nullptr)
+        statisticCollector->setParticleCollection(particleCollection);
 }
 
 FluidSolver::IFluidSolver *FluidSolver::Simulation::getFluidSolver() {
@@ -63,6 +66,7 @@ void FluidSolver::Simulation::setFluidSolver(FluidSolver::IFluidSolver *fluidSol
     fluidSolver->setParticleSize(this->particleSize);
     fluidSolver->setRestDensity(this->restDensity);
     fluidSolver->setTimestep(this->timestep);
+    fluidSolver->setGravity(this->gravity);
 }
 
 FluidSolver::StatisticCollector *FluidSolver::Simulation::getStatisticCollector() {
@@ -71,6 +75,13 @@ FluidSolver::StatisticCollector *FluidSolver::Simulation::getStatisticCollector(
 
 void FluidSolver::Simulation::setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector) {
     Simulation::statisticCollector = statisticCollector;
+    if (dataLogger != nullptr)
+        dataLogger->setStatisticCollector(statisticCollector);
+
+    statisticCollector->setTimestep(timestep);
+    statisticCollector->setParticleCollection(particleCollection);
+    statisticCollector->setParticleSize(particleSize);
+    statisticCollector->setRestDensity(restDensity);
 }
 
 DataLogger *FluidSolver::Simulation::getDataLogger() {
@@ -79,6 +90,8 @@ DataLogger *FluidSolver::Simulation::getDataLogger() {
 
 void FluidSolver::Simulation::setDataLogger(DataLogger *dataLogger) {
     Simulation::dataLogger = dataLogger;
+    dataLogger->setTimestep(timestep);
+    dataLogger->setStatisticCollector(statisticCollector);
 }
 
 FluidSolver::ISimulationVisualizer *FluidSolver::Simulation::getSimulationVisualizer() {
@@ -88,6 +101,7 @@ FluidSolver::ISimulationVisualizer *FluidSolver::Simulation::getSimulationVisual
 void FluidSolver::Simulation::setSimulationVisualizer(FluidSolver::ISimulationVisualizer *simulationVisualizer) {
     Simulation::simulationVisualizer = simulationVisualizer;
     simulationVisualizer->setParticleCollection(this->particleCollection);
+    simulationVisualizer->setParticleSize(particleSize);
 }
 
 float FluidSolver::Simulation::getParticleSize() {
@@ -96,7 +110,12 @@ float FluidSolver::Simulation::getParticleSize() {
 
 void FluidSolver::Simulation::setParticleSize(float particleSize) {
     Simulation::particleSize = particleSize;
-    fluidSolver->setParticleSize(particleSize);
+    if (fluidSolver != nullptr)
+        fluidSolver->setParticleSize(particleSize);
+    if (statisticCollector != nullptr)
+        statisticCollector->setParticleSize(particleSize);
+    if (simulationVisualizer != nullptr)
+        simulationVisualizer->setParticleSize(particleSize);
 }
 
 float FluidSolver::Simulation::getRestDensity() {
@@ -105,7 +124,10 @@ float FluidSolver::Simulation::getRestDensity() {
 
 void FluidSolver::Simulation::setRestDensity(float restDensity) {
     Simulation::restDensity = restDensity;
-    fluidSolver->setRestDensity(restDensity);
+    if (fluidSolver != nullptr)
+        fluidSolver->setRestDensity(restDensity);
+    if (statisticCollector != nullptr)
+        statisticCollector->setRestDensity(restDensity);
 }
 
 float FluidSolver::Simulation::getTimestep() {
@@ -114,5 +136,39 @@ float FluidSolver::Simulation::getTimestep() {
 
 void FluidSolver::Simulation::setTimestep(float timestep) {
     Simulation::timestep = timestep;
-    fluidSolver->setTimestep(timestep);
+    if (fluidSolver != nullptr)
+        fluidSolver->setTimestep(timestep);
+    if (dataLogger != nullptr)
+        dataLogger->setTimestep(timestep);
+    if (statisticCollector != nullptr)
+        statisticCollector->setTimestep(timestep);
+}
+
+void FluidSolver::Simulation::addSimulationModifier(FluidSolver::ISimulationModifier *modifier) {
+    simulationModifiers.push_back(modifier);
+}
+
+void FluidSolver::Simulation::removeSimulationModifier(FluidSolver::ISimulationModifier *modifier) {
+    simulationModifiers.erase(std::remove(simulationModifiers.begin(), simulationModifiers.end(), modifier),
+                              simulationModifiers.end());
+}
+
+void FluidSolver::Simulation::addExternalForce(FluidSolver::IExternalForce *force) {
+    externalForces.push_back(force);
+}
+
+void FluidSolver::Simulation::removeExternalForce(FluidSolver::IExternalForce *force) {
+    externalForces.erase(std::remove(externalForces.begin(), externalForces.end(), force), externalForces.end());
+}
+
+float FluidSolver::Simulation::getGravity() const {
+    return gravity;
+}
+
+void FluidSolver::Simulation::setGravity(float gravity) {
+    Simulation::gravity = gravity;
+    if (statisticCollector != nullptr)
+        statisticCollector->setGravity(gravity);
+    if (fluidSolver != nullptr)
+        fluidSolver->setGravity(gravity);
 }

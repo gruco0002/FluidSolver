@@ -4,8 +4,7 @@
 
 #include "DataLogger.hpp"
 
-DataLogger::DataLogger(FluidSolver::SPHFluidSolver *fluidSolver, const std::string &fileName) : fluidSolver(
-        fluidSolver), fileName(fileName) {}
+DataLogger::DataLogger(const std::string &fileName) : fileName(fileName) {}
 
 void DataLogger::StartLogging() {
     // open file
@@ -18,14 +17,14 @@ void DataLogger::StartLogging() {
 
     // reset data
     currentTime = 0;
-    startEnergy = fluidSolver->statisticCollector->CalculateEnergy();
+    startEnergy = StatisticCollector->CalculateEnergy();
 
     // initial log
     calculateAndLogData();
 }
 
 void DataLogger::TimeStepPassed() {
-    currentTime += fluidSolver->TimeStep;
+    currentTime += Timestep;
 
     calculateAndLogData();
 }
@@ -47,15 +46,31 @@ void DataLogger::log(float time, float avgDensity, float energy, float kineticEn
 
 void DataLogger::calculateAndLogData() {
 
-    float currentKineticEnergy = fluidSolver->statisticCollector->CalculateKineticEnergy();
-    float currentPotentialEnergy = fluidSolver->statisticCollector->CalculatePotentialEnergy();
-    float averageDensity = fluidSolver->statisticCollector->CalculateAverageDensity();
-    float totalEnergy = fluidSolver->statisticCollector->CalculateEnergy(currentKineticEnergy, currentPotentialEnergy);
-    float maxVelocity = fluidSolver->statisticCollector->CalculateMaximumVelocity();
-    float cflNumber = fluidSolver->statisticCollector->GetCFLNumber(maxVelocity);
-    uint32_t deadParticles = fluidSolver->statisticCollector->GetDeadParticleCount();
+    float currentKineticEnergy = StatisticCollector->CalculateKineticEnergy();
+    float currentPotentialEnergy = StatisticCollector->CalculatePotentialEnergy();
+    float averageDensity = StatisticCollector->CalculateAverageDensity();
+    float totalEnergy = StatisticCollector->CalculateEnergy(currentKineticEnergy, currentPotentialEnergy);
+    float maxVelocity = StatisticCollector->CalculateMaximumVelocity();
+    float cflNumber = StatisticCollector->GetCFLNumber(maxVelocity);
+    uint32_t deadParticles = StatisticCollector->GetDeadParticleCount();
 
     log(currentTime, averageDensity, totalEnergy - startEnergy, currentKineticEnergy, currentPotentialEnergy,
         maxVelocity, cflNumber, deadParticles);
+}
+
+FluidSolver::StatisticCollector *DataLogger::getStatisticCollector() const {
+    return StatisticCollector;
+}
+
+void DataLogger::setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector) {
+    StatisticCollector = statisticCollector;
+}
+
+float DataLogger::getTimestep() const {
+    return Timestep;
+}
+
+void DataLogger::setTimestep(float timestep) {
+    Timestep = timestep;
 }
 

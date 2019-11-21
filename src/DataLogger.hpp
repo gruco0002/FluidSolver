@@ -15,9 +15,8 @@ class DataLogger {
 
 public:
 
-    DataLogger(FluidSolver::SPHFluidSolver *fluidSolver, const std::string &fileName);
+    explicit DataLogger(const std::string &fileName);
 
-    FluidSolver::SPHFluidSolver *fluidSolver = nullptr;
 
     std::string fileName = "data.csv";
 
@@ -30,6 +29,20 @@ public:
     void FinishLogging();
 
     float zeroHeight = -500.0f;
+
+private:
+
+    FluidSolver::StatisticCollector* StatisticCollector = nullptr;
+    float Timestep = 0.0f;
+public:
+    float getTimestep() const;
+
+    void setTimestep(float timestep);
+
+public:
+    FluidSolver::StatisticCollector *getStatisticCollector() const;
+
+    void setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector);
 
 private:
 

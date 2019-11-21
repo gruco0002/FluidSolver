@@ -6,17 +6,15 @@
 #define FLUIDSOLVER_STATISTICCOLLECTOR_HPP
 
 #include <cstdint>
+#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
 
 namespace FluidSolver{
-
-    class SPHFluidSolver;
 
 class StatisticCollector {
 public:
 
-    StatisticCollector(SPHFluidSolver *sphFluidSolver);
+        StatisticCollector();
 
-    SPHFluidSolver* sphFluidSolver;
 
     float zeroHeight = -500.0f;
 
@@ -66,6 +64,35 @@ public:
      float GetCFLNumber();
 
      float GetCFLNumber(float maximumVelocity);
+
+private:
+    IParticleCollection* particleCollection = nullptr;
+
+    float Timestep = 0.0f;
+    float ParticleSize = 1.0f;
+    float Gravity = 0.0f;
+    float RestDensity = 1.0f;
+public:
+    float getRestDensity() const;
+
+    void setRestDensity(float restDensity);
+
+public:
+    IParticleCollection *getParticleCollection() const;
+
+    void setParticleCollection(IParticleCollection *particleCollection);
+
+    float getTimestep() const;
+
+    void setTimestep(float timestep);
+
+    float getParticleSize() const;
+
+    void setParticleSize(float particleSize);
+
+    float getGravity() const;
+
+    void setGravity(float gravity);
 
 };
 }

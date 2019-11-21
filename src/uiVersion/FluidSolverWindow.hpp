@@ -22,12 +22,8 @@
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>
 #include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <engine/graphics/Framebuffer.hpp>
+#include <core/Simulation.hpp>
 
-namespace FluidSolver {
-    namespace Gui {
-        class SimulationSettings;
-    }
-}
 
 class FluidSolverWindow : public Engine::Window {
 
@@ -38,30 +34,21 @@ public:
 
     void resetData();
 
-    FluidSolver::SPHFluidSolver *sphFluidSolver = nullptr;
-
-    FluidSolver::IParticleCollection *particleCollection = nullptr;
-
     bool Pause = true;
 
     float RealTimeSpeed = 1.0f;
 
-    bool saveFrames = false;
+    /*bool saveFrames = false;
     float saveFramesPerSecond = 60.0f;
     float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
     std::string imagePath = "./images/";
-    unsigned int imageCounter = 0;
+    unsigned int imageCounter = 0;*/
 
 private:
-    Engine::Text::Font *font;
 
-    void loadFont();
+    FluidSolver::Simulation* simulation = nullptr;
 
-    void loadGUI();
-
-
-
-    void loadParticles();
+    void setupSimulation();
 
     void onClick(float x, float y);
 
@@ -74,10 +61,6 @@ private:
 
 
 
-    FluidSolver::Gui::SimulationSettings *simulationSettings = nullptr;
-
-    void resetFluidSolverComponents();
-
     void UpdateProjectionMatrices();
 
     void UpdateRectangleRendererProjectionMatrix();
@@ -89,7 +72,7 @@ private:
 
     FluidSolver::Scenario *scenario = new FluidSolver::MultipleHoleScenario();
 
-    DataLogger *dataLogger = nullptr;
+
 
     // rendering
     Engine::Graphics::Framebuffer *framebuffer = nullptr;

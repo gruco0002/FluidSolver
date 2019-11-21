@@ -15,8 +15,19 @@
 namespace FluidSolver {
     class SPHFluidSolver : public IFluidSolver {
 
+    private:
+        float Gravity = 9.81f;
+        float TimeStep = 0.001f;
+        float ParticleSize = 1.0f;
+        float RestDensity = 1.0f;
+
+        IParticleCollection *particleCollection = nullptr;
 
     public:
+        float getGravity() override;
+
+        void setGravity(float gravity) override;
+
         float getParticleSize() override;
 
         void setParticleSize(float particleSize) override;
@@ -33,21 +44,15 @@ namespace FluidSolver {
 
         IParticleCollection *getParticleCollection() override;
 
-        float TimeStep = 0.001f;
-        float ParticleSize = 1.0f;
+
         float NeighborhoodRadius = 5.0f;
         float KernelSupport = 2.0f;
-        float RestDensity = 1.0f;
+
         float StiffnessK = 0.001f;
         float Viscosity = 0.01f;
 
-        float Gravity = 9.81f;
-
-        IParticleCollection *particleCollection = nullptr;
         INeighborhoodSearch *neighborhoodSearch = nullptr;
         IKernel *kernel = nullptr;
-
-        std::vector<ISimulationModifier *> simulationModifiers;
 
         void ExecuteSimulationStep() override;
 
@@ -60,8 +65,6 @@ namespace FluidSolver {
         glm::vec2 ComputePressureAcceleration(uint32_t particleIndex);
 
         glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
-
-        StatisticCollector *statisticCollector = new StatisticCollector(this);
 
         virtual ~SPHFluidSolver();
     };

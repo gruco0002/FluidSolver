@@ -36,7 +36,7 @@ namespace FluidSolver {
 
         // compute non pressure accelerations and pressure accelerations for all particles
 #pragma omp parallel for
-        for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
+        for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -53,7 +53,7 @@ namespace FluidSolver {
 
         // update velocity and position of all particles
 #pragma omp parallel for
-        for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
+        for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
             if (type == IParticleCollection::ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -69,15 +69,6 @@ namespace FluidSolver {
 
             particleCollection->SetVelocity(i, velocity);
             particleCollection->SetPosition(i, position);
-        }
-
-        // modify the simulation
-        ISimulationModifier::SimulationInfo info;
-        info.restDensity = RestDensity;
-        info.timeStep = TimeStep;
-        info.particleSize = ParticleSize;
-        for (ISimulationModifier *modifier : simulationModifiers) {
-            modifier->ModifySimulation(particleCollection, info);
         }
 
     }
@@ -191,7 +182,7 @@ namespace FluidSolver {
     }
 
     SPHFluidSolver::~SPHFluidSolver() {
-        delete statisticCollector;
+
     }
 
     float SPHFluidSolver::getParticleSize() {
@@ -199,7 +190,7 @@ namespace FluidSolver {
     }
 
     void SPHFluidSolver::setParticleSize(float particleSize) {
-this->ParticleSize = particleSize;
+        this->ParticleSize = particleSize;
     }
 
     float SPHFluidSolver::getRestDensity() {
@@ -207,7 +198,7 @@ this->ParticleSize = particleSize;
     }
 
     void SPHFluidSolver::setRestDensity(float restDensity) {
-this->RestDensity = restDensity;
+        this->RestDensity = restDensity;
     }
 
     float SPHFluidSolver::getTimestep() {
@@ -215,14 +206,22 @@ this->RestDensity = restDensity;
     }
 
     void SPHFluidSolver::setTimestep(float timestep) {
-this->TimeStep = timestep;
+        this->TimeStep = timestep;
     }
 
     void SPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
-    this->particleCollection = particleCollection;
+        this->particleCollection = particleCollection;
     }
 
     IParticleCollection *SPHFluidSolver::getParticleCollection() {
         return particleCollection;
+    }
+
+    float SPHFluidSolver::getGravity() {
+        return Gravity;
+    }
+
+    void SPHFluidSolver::setGravity(float gravity) {
+        this->Gravity = gravity;
     }
 }

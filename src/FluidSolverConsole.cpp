@@ -10,6 +10,7 @@
 #include <core/fluidSolver/SPHFluidSolver.hpp>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+#include <core/Simulation.hpp>
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
     setupOptions(options);
@@ -59,33 +60,41 @@ void FluidSolverConsole::executeSimulation() {
         return;
     }
 
-    // set up basic stuff
-    FluidSolver::SPHFluidSolver *sphFluidSolver = new FluidSolver::SPHFluidSolver();
+   auto simulation = new FluidSolver::Simulation();
 
-    // set timestep and particle size
-    sphFluidSolver->TimeStep = timestep;
-    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    // set particle size and timestep
+    simulation->setTimestep(timestep);
+    simulation->setParticleSize(scenario->GetParticleSize());
+    simulation->setRestDensity(1.0f);
+    simulation->setGravity(9.81f);
+
+    // set up basic stuff
+    auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
 
     // set up values
-    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->RestDensity = 1.0f;
-
-
-    sphFluidSolver->StiffnessK = stiffness;
-    sphFluidSolver->Viscosity = viscosity;
-
+    sphFluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
+    sphFluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+    sphFluidSolver->StiffnessK =stiffness;
+    sphFluidSolver->Viscosity =viscosity;
     sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
+
 
     // set up scenario data
-    FluidSolver::IParticleCollection *particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
-    sphFluidSolver->particleCollection = particleCollection;
-    sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
+    auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
+    simulation->setParticleCollection(particleCollection);
+    for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
+        simulation->addSimulationModifier(mod);
+    }
+
+    // set statistics collection
+    simulation->setStatisticCollector(new FluidSolver::StatisticCollector());
+
 
     // setup dataLogger
-    DataLogger *dataLogger = new DataLogger(sphFluidSolver, output);
+    auto dataLogger = new DataLogger(output);
     dataLogger->alwaysFlush = false; // we only want to write at the end
+    simulation->setDataLogger(dataLogger);
     dataLogger->StartLogging();
 
 
@@ -93,9 +102,9 @@ void FluidSolverConsole::executeSimulation() {
     float totalTime = 0.0f;
     float lastTimeMessage = 0.0f;
     while (totalTime <= length) {
-        totalTime += timestep;
-        sphFluidSolver->ExecuteSimulationStep();
-        dataLogger->TimeStepPassed();
+        totalTime += simulation->getTimestep();
+        simulation->ExecuteSimulationStep();
+        simulation->CollectStatistics();
 
         // messages
         if (totalTime >= lastTimeMessage) {
@@ -111,6 +120,8 @@ void FluidSolverConsole::executeSimulation() {
     // cleanup
     delete dataLogger;
     delete sphFluidSolver;
+    delete simulation;
+    // TODO: proper cleanup
 
 
 }

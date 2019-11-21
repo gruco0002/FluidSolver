@@ -200,8 +200,7 @@ void ParticleRenderer::Delete() {
     delete particleShader;
 }
 
-ParticleRenderer::ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix) {
-    this->particleVertexArray = particleVertexArray;
+ParticleRenderer::ParticleRenderer(glm::mat4 projectionMatrix) {
     this->projectionMatrix = projectionMatrix;
     Generate();
 }
@@ -212,8 +211,20 @@ glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, fl
 
 void ParticleRenderer::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
     this->ParticleCollection = particleCollection;
+    // delete old and create new vertex array
+    delete particleVertexArray;
+    particleVertexArray = new ParticleVertexArray(
+            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
 }
 
 FluidSolver::IParticleCollection *ParticleRenderer::getParticleCollection() {
     return ParticleCollection;
+}
+
+void ParticleRenderer::setParticleSize(float particleSize) {
+    this->pointSize = particleSize;
+}
+
+float ParticleRenderer::getParticleSize() {
+    return this->pointSize;
 }

@@ -22,7 +22,7 @@ public:
     };
 
 
-    ParticleRenderer(ParticleVertexArray *particleVertexArray, glm::mat4 projectionMatrix);
+    ParticleRenderer(glm::mat4 projectionMatrix);
 
 
 
@@ -49,6 +49,12 @@ public:
 
     glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
+
+private:
+public:
+    void setParticleSize(float particleSize) override;
+
+    float getParticleSize() override;
 
 private:
 

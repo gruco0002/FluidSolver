@@ -29,6 +29,10 @@ namespace FluidSolver {
 
         virtual IParticleCollection *getParticleCollection() = 0;
 
+        virtual float getGravity() = 0;
+
+        virtual void setGravity(float gravity) = 0;
+
 
     };
 

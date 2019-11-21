@@ -8,38 +8,28 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <engine/EngineException.hpp>
-
 
 #include <iostream>
 
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
-#include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
-#include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-
 
 
 void FluidSolverWindow::render() {
 
     // particle simulation
     bool simulationStepHappened = false;
-    if (sphFluidSolver != nullptr) {
+    if (simulation != nullptr) {
         if (!this->Pause) {
             accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
 
-            while (accumulatedSimulationTime >= sphFluidSolver->TimeStep) {
+            while (accumulatedSimulationTime >= simulation->getTimestep()) {
                 //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
-                sphFluidSolver->ExecuteSimulationStep();
+                simulation->ExecuteSimulationStep();
+                simulation->CollectStatistics();
                 simulationStepHappened = true;
-                if (saveFrames)
-                currentSaveFrameTime += sphFluidSolver->TimeStep;
-                if (dataLogger)
-                    dataLogger->TimeStepPassed();
             }
-
-
         } else {
             accumulatedSimulationTime = 0.0f;
         }
@@ -54,10 +44,8 @@ void FluidSolverWindow::render() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    if (particleRenderer != nullptr) {
-        if (sphFluidSolver != nullptr)
-            particleRenderer->pointSize = sphFluidSolver->ParticleSize;
-        particleRenderer->Render();
+    if (simulation != nullptr) {
+        simulation->VisualizeSimulation();
     }
 
     framebuffer->Unbind();
@@ -78,7 +66,10 @@ void FluidSolverWindow::render() {
 
 }
 
-FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {}
+FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
+
+
+}
 
 bool FluidSolverWindow::even(int input) {
     if (input < 0)
@@ -93,59 +84,45 @@ void FluidSolverWindow::load() {
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
-
     rectangleRenderer = new Engine::RectangleRenderer();
     setupFBO();
 
 
-    loadParticles();
-    loadFont();
-    loadGUI();
-}
-
-void FluidSolverWindow::loadFont() {
+    setupSimulation();
 
 }
 
-void FluidSolverWindow::loadGUI() {
-    guiInterface = new GuiEngineInterface(this, font);
+void FluidSolverWindow::setupSimulation() {
 
-
-}
-
-
-
-void FluidSolverWindow::loadParticles() {
-    // set up basic stuff
-    sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    simulation = new FluidSolver::Simulation();
 
     // set particle size and timestep
-    sphFluidSolver->TimeStep = 0.001f;
-    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    simulation->setTimestep(0.001f);
+    simulation->setParticleSize(scenario->GetParticleSize());
+    simulation->setRestDensity(1.0f);
+    simulation->setGravity(9.81f);
+
+    // set up basic stuff
+    auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
 
     // set up values
-    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->RestDensity = 1.0f;
+    sphFluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
+    sphFluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
     sphFluidSolver->StiffnessK = 100000.0f;
     sphFluidSolver->Viscosity = 5.0f;
-
-    resetFluidSolverComponents();
+    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
+    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
 
 
     // set up scenario data
-    particleCollection = scenario->GenerateScenario(sphFluidSolver->RestDensity);
-    sphFluidSolver->particleCollection = particleCollection;
-    sphFluidSolver->simulationModifiers = scenario->GetSimulationModifiers();
-
-
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
+    auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
+    simulation->setParticleCollection(particleCollection);
+    for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
+        simulation->addSimulationModifier(mod);
+    }
 
     // create particle renderer
-    particleRenderer = new ParticleRenderer(particleVertexArray, ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
     particleRenderer->pointSize = 30.0f;
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Density;
     particleRenderer->topValue = 2.0f;
@@ -153,72 +130,58 @@ void FluidSolverWindow::loadParticles() {
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
     this->UpdateProjectionMatrices();
-    particleRenderer->particleVertexArray = particleVertexArray;
+    simulation->setSimulationVisualizer(particleRenderer);
+
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
 
+    // set statistics collection
+    simulation->setStatisticCollector(new FluidSolver::StatisticCollector());
+
+
     // setup dataLogger
-    dataLogger = new DataLogger(sphFluidSolver, "log.csv");
+    auto dataLogger = new DataLogger("log.csv");
+    simulation->setDataLogger(dataLogger);
     dataLogger->StartLogging();
-
-}
-
-void FluidSolverWindow::resetFluidSolverComponents() {
-    delete sphFluidSolver->kernel;
-    delete sphFluidSolver->neighborhoodSearch;
-
-
-    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated();
-    //sphFluidSolver->neighborhoodSearch = new FluidSolver::QuadraticNeighborhoodSearchPreAllocated();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(sphFluidSolver->ParticleSize * 3);
 
 }
 
 
 void FluidSolverWindow::resetData() {
-    if (dataLogger)
-        dataLogger->FinishLogging();
+    if (simulation->getDataLogger())
+        simulation->getDataLogger()->FinishLogging();
 
     // set particle size
-    sphFluidSolver->ParticleSize = scenario->GetParticleSize();
+    simulation->setParticleSize(scenario->GetParticleSize());
 
-    resetFluidSolverComponents();
 
     // set up values
-    sphFluidSolver->KernelSupport = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->NeighborhoodRadius = 2.0f * sphFluidSolver->ParticleSize;
-    sphFluidSolver->RestDensity = 1.0f;
+    auto fluidSolver = dynamic_cast<FluidSolver::SPHFluidSolver *>(simulation->getFluidSolver());
+    fluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
+    fluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
 
     // set up scenario data
-    scenario->ResetData(particleCollection, sphFluidSolver->RestDensity);
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection));
-    if (particleRenderer != nullptr) {
-        particleRenderer->particleVertexArray = particleVertexArray;
-    }
+    scenario->ResetData(simulation->getParticleCollection(), simulation->getRestDensity());
 
 
     this->UpdateProjectionMatrices();
 
-    if (dataLogger)
-        dataLogger->StartLogging();
+    if (simulation->getDataLogger())
+        simulation->getDataLogger()->StartLogging();
 
-    this->imageCounter = 0;
-    this->currentSaveFrameTime = 1.0f / this->saveFramesPerSecond;
+    /* this->imageCounter = 0;
+     this->currentSaveFrameTime = 1.0f / this->saveFramesPerSecond;*/
 
 }
 
 
 void FluidSolverWindow::onClick(float x, float y) {
 
-    if (particleCollection == nullptr) return;
+    if (simulation->getParticleCollection() == nullptr) return;
     if (particleRenderer == nullptr) return;
     if (rectangleRenderer == nullptr) return;
-    if (simulationSettings == nullptr) return;
+
 
     auto rel = glm::vec2(x, y) / glm::vec2((float) GetWidth(), -(float) GetHeight());
     rel *= 2.0f;
@@ -238,8 +201,8 @@ void FluidSolverWindow::onClick(float x, float y) {
     // find nearest particle, that you have clicked on
     uint32_t particleIndex = -1;
     float dist = particleRenderer->pointSize * 0.5;
-    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-        auto particlePos = particleCollection->GetPosition(i);
+    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
         auto partDist = glm::length(pos - particlePos);
         if (partDist < dist) {
             particleIndex = i;
@@ -301,8 +264,8 @@ void FluidSolverWindow::UpdateRectangleRendererProjectionMatrix() {
 void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize) {
 
 
-    float width = particlesX ; // particle size is not taken into account
-    float height = particlesY ;
+    float width = particlesX; // particle size is not taken into account
+    float height = particlesY;
 
     float fboWidth = framebufferWidth;
     float fboHeight = framebufferHeight;
@@ -343,14 +306,14 @@ void FluidSolverWindow::setupFBO() {
 }
 
 void FluidSolverWindow::saveAsImage() {
-    if (!saveFrames)
+    /*if (!saveFrames)
         return;
-    if(currentSaveFrameTime < 1.0f / saveFramesPerSecond)
+    if (currentSaveFrameTime < 1.0f / saveFramesPerSecond)
         return;
     currentSaveFrameTime -= 1.0f / saveFramesPerSecond;
     imageCounter++;
 
-    fboColorTex->SaveAsPNG(imagePath + "image_" + std::to_string(imageCounter) + ".png");
+    fboColorTex->SaveAsPNG(imagePath + "image_" + std::to_string(imageCounter) + ".png");*/
 
 }
 

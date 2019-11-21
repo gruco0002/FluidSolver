@@ -32,40 +32,53 @@ namespace FluidSolver {
         float particleSize = 1.0f;
         float restDensity = 1.0f;
         float timestep = 0.001f;
+        float gravity = 9.81f;
+    public:
+        float getGravity() const;
+
+        void setGravity(float gravity);
 
 
     public:
-        IParticleCollection *getParticleCollection() ;
+        IParticleCollection *getParticleCollection();
 
         void setParticleCollection(IParticleCollection *particleCollection);
 
-        IFluidSolver *getFluidSolver() ;
+        IFluidSolver *getFluidSolver();
 
         void setFluidSolver(IFluidSolver *fluidSolver);
 
-        StatisticCollector *getStatisticCollector() ;
+        StatisticCollector *getStatisticCollector();
 
         void setStatisticCollector(StatisticCollector *statisticCollector);
 
-        DataLogger *getDataLogger() ;
+        DataLogger *getDataLogger();
 
         void setDataLogger(DataLogger *dataLogger);
 
-        ISimulationVisualizer *getSimulationVisualizer() ;
+        ISimulationVisualizer *getSimulationVisualizer();
 
         void setSimulationVisualizer(ISimulationVisualizer *simulationVisualizer);
 
-        float getParticleSize() ;
+        float getParticleSize();
 
         void setParticleSize(float particleSize);
 
-        float getRestDensity() ;
+        float getRestDensity();
 
         void setRestDensity(float restDensity);
 
-        float getTimestep() ;
+        float getTimestep();
 
         void setTimestep(float timestep);
+
+        void addSimulationModifier(ISimulationModifier *modifier);
+
+        void removeSimulationModifier(ISimulationModifier *modifier);
+
+        void addExternalForce(IExternalForce *force);
+
+        void removeExternalForce(IExternalForce *force);
 
 
     public:

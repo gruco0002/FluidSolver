@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include "StatisticCollector.hpp"
-#include "core/fluidSolver/SPHFluidSolver.hpp"
 
 using namespace FluidSolver;
 
@@ -13,12 +12,12 @@ float StatisticCollector::CalculateAverageDensity() {
     double densitySum = 0;
     uint32_t sumCount = 0;
 
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type != IParticleCollection::ParticleTypeNormal)
             continue;
-        auto density = sphFluidSolver->particleCollection->GetDensity(i);
-        if (density < sphFluidSolver->RestDensity)
+        auto density = particleCollection->GetDensity(i);
+        if (density < RestDensity)
             continue;
         densitySum += density;
         sumCount++;
@@ -30,18 +29,18 @@ float StatisticCollector::CalculateAverageDensity() {
 float StatisticCollector::CalculateEnergy() {
     float potentialEnergySum = 0.0f;
     float kineticEnergySum = 0.0f;
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type != IParticleCollection::ParticleTypeNormal)
             continue;
 
-        auto velocity = sphFluidSolver->particleCollection->GetVelocity(i);
-        auto position = sphFluidSolver->particleCollection->GetPosition(i);
-        auto mass = sphFluidSolver->particleCollection->GetMass(i);
+        auto velocity = particleCollection->GetVelocity(i);
+        auto position = particleCollection->GetPosition(i);
+        auto mass = particleCollection->GetMass(i);
         float particleVelocity = glm::length(velocity);
 
         // potential energy
-        potentialEnergySum += (position.y - zeroHeight) * mass * sphFluidSolver->Gravity;
+        potentialEnergySum += (position.y - zeroHeight) * mass * Gravity;
 
         // kinetic energy
         kineticEnergySum += 0.5f * mass * particleVelocity * particleVelocity;
@@ -52,20 +51,20 @@ float StatisticCollector::CalculateEnergy() {
 }
 
 float StatisticCollector::CalculateMaximumVelocity() {
-    if (sphFluidSolver->particleCollection->GetSize() == 0)return 0;
-    float maximum = glm::length(sphFluidSolver->particleCollection->GetVelocity(0));
+    if (particleCollection->GetSize() == 0)return 0;
+    float maximum = glm::length(particleCollection->GetVelocity(0));
 
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type != IParticleCollection::ParticleTypeNormal)
             continue;
-        auto velocity = sphFluidSolver->particleCollection->GetVelocity(i);
+        auto velocity = particleCollection->GetVelocity(i);
         maximum = std::max(maximum, glm::length(velocity));
     }
     return maximum;
 }
 
-StatisticCollector::StatisticCollector(SPHFluidSolver *sphFluidSolver) : sphFluidSolver(sphFluidSolver) {}
+StatisticCollector::StatisticCollector() {}
 
 float StatisticCollector::CalculateEnergy(float kineticEnergy, float potentialEnergy) {
     return kineticEnergy + potentialEnergy;
@@ -73,8 +72,8 @@ float StatisticCollector::CalculateEnergy(float kineticEnergy, float potentialEn
 
 uint32_t StatisticCollector::GetDeadParticleCount() {
     uint32_t counter = 0;
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type == IParticleCollection::ParticleTypeDead)
             counter++;
     }
@@ -83,13 +82,13 @@ uint32_t StatisticCollector::GetDeadParticleCount() {
 
 float StatisticCollector::CalculateKineticEnergy() {
     float kineticEnergySum = 0.0f;
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type != IParticleCollection::ParticleTypeNormal)
             continue;
 
-        auto velocity = sphFluidSolver->particleCollection->GetVelocity(i);
-        auto mass = sphFluidSolver->particleCollection->GetMass(i);
+        auto velocity = particleCollection->GetVelocity(i);
+        auto mass = particleCollection->GetMass(i);
         float particleVelocity = glm::length(velocity);
 
         // kinetic energy
@@ -102,17 +101,17 @@ float StatisticCollector::CalculateKineticEnergy() {
 float StatisticCollector::CalculatePotentialEnergy() {
     float potentialEnergySum = 0.0f;
 
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type != IParticleCollection::ParticleTypeNormal)
             continue;
 
 
-        auto position = sphFluidSolver->particleCollection->GetPosition(i);
-        auto mass = sphFluidSolver->particleCollection->GetMass(i);
+        auto position = particleCollection->GetPosition(i);
+        auto mass = particleCollection->GetMass(i);
 
         // potential energy
-        potentialEnergySum += (position.y - zeroHeight) * mass * sphFluidSolver->Gravity;
+        potentialEnergySum += (position.y - zeroHeight) * mass * Gravity;
 
 
     }
@@ -121,8 +120,8 @@ float StatisticCollector::CalculatePotentialEnergy() {
 
 uint32_t StatisticCollector::GetBoundaryParticleCount() {
     uint32_t counter = 0;
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type == IParticleCollection::ParticleTypeBoundary)
             counter++;
     }
@@ -135,16 +134,56 @@ float StatisticCollector::GetCFLNumber() {
 }
 
 float StatisticCollector::GetCFLNumber(float maximumVelocity) {
-    float cfl = maximumVelocity * sphFluidSolver->TimeStep / sphFluidSolver->ParticleSize;
+    float cfl = maximumVelocity * Timestep / ParticleSize;
     return cfl;
 }
 
 uint32_t StatisticCollector::GetNormalParticleCount() {
     uint32_t counter = 0;
-    for (uint32_t i = 0; i < sphFluidSolver->particleCollection->GetSize(); i++) {
-        auto type = sphFluidSolver->particleCollection->GetParticleType(i);
+    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
+        auto type = particleCollection->GetParticleType(i);
         if (type == IParticleCollection::ParticleTypeNormal)
             counter++;
     }
     return counter;
+}
+
+IParticleCollection *StatisticCollector::getParticleCollection() const {
+    return particleCollection;
+}
+
+void StatisticCollector::setParticleCollection(IParticleCollection *particleCollection) {
+    StatisticCollector::particleCollection = particleCollection;
+}
+
+float StatisticCollector::getTimestep() const {
+    return Timestep;
+}
+
+void StatisticCollector::setTimestep(float timestep) {
+    Timestep = timestep;
+}
+
+float StatisticCollector::getParticleSize() const {
+    return ParticleSize;
+}
+
+void StatisticCollector::setParticleSize(float particleSize) {
+    ParticleSize = particleSize;
+}
+
+float StatisticCollector::getGravity() const {
+    return Gravity;
+}
+
+void StatisticCollector::setGravity(float gravity) {
+    Gravity = gravity;
+}
+
+float StatisticCollector::getRestDensity() const {
+    return RestDensity;
+}
+
+void StatisticCollector::setRestDensity(float restDensity) {
+    RestDensity = restDensity;
 }
