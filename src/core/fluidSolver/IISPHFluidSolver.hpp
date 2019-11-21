@@ -7,6 +7,9 @@
 
 #include <core/fluidSolver/IFluidSolver.hpp>
 
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+
 namespace FluidSolver {
     class IISPHFluidSolver : public IFluidSolver {
 
@@ -14,10 +17,21 @@ namespace FluidSolver {
         float Timestep = 0.0f;
         float RestDensity = 0.0f;
         float ParticleSize = 0.0f;
+        float Gravity = 0.0f;
+
+        float KernelSupport = 0.0f;
+        float NeighborhoodRadius = 0.0f;
 
         IParticleCollection* ParticleCollection = nullptr;
 
+        HashedNeighborhoodSearch* neighborhoodSearch = nullptr;
+        CubicSplineKernel* kernel = new CubicSplineKernel();
+
     public:
+        float getGravity() override;
+
+        void setGravity(float gravity) override;
+
         void ExecuteSimulationStep() override;
 
         float getParticleSize() override;

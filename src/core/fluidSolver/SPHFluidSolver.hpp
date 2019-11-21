@@ -23,6 +23,16 @@ namespace FluidSolver {
 
         IParticleCollection *particleCollection = nullptr;
 
+        float ComputePressure(uint32_t particleIndex);
+
+        float ComputeDensity(uint32_t particleIndex);
+
+        glm::vec2 ComputeNonPressureAcceleration(uint32_t particleIndex);
+
+        glm::vec2 ComputePressureAcceleration(uint32_t particleIndex);
+
+        glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
+
     public:
         float getGravity() override;
 
@@ -55,17 +65,6 @@ namespace FluidSolver {
         IKernel *kernel = nullptr;
 
         void ExecuteSimulationStep() override;
-
-        float ComputePressure(uint32_t particleIndex);
-
-        float ComputeDensity(uint32_t particleIndex);
-
-        glm::vec2 ComputeNonPressureAcceleration(uint32_t particleIndex);
-
-        glm::vec2 ComputePressureAcceleration(uint32_t particleIndex);
-
-        glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
-
         virtual ~SPHFluidSolver();
     };
 }
