@@ -41,6 +41,8 @@ namespace FluidSolver {
 
         size_t MinNumberOfIterations = 2;
 
+        float Omega = 1.0f;
+
         float getGravity() override;
 
         void setGravity(float gravity) override;

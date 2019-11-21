@@ -251,12 +251,17 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
     // iteration
     while (iteration < MinNumberOfIterations || predictedDensityError > MaxDensityErrorAllowed) {
 
+        // pre calculations
+        predictedDensityError = 0.0f;
+        size_t densityErrorCounter = 0;
+
         // first loop: compute pressure acceleration
 #pragma omp parallel for
         for (int64_t particleIndex = 0; particleIndex < ParticleCollection->GetSize(); particleIndex++) {
             auto particleType = ParticleCollection->GetParticleType(particleIndex);
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
+            // TODO: check if we want to ignore boundary particles
 
             float particlePressure = ParticleCollection->GetPressure(particleIndex);
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
@@ -291,10 +296,65 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         // second loop
 #pragma omp parallel for
-        for (int64_t particle = 0; particle < ParticleCollection->GetSize(); particle++) {
-            
+        for (int64_t particleIndex = 0; particleIndex < ParticleCollection->GetSize(); particleIndex++) {
+            auto particleType = ParticleCollection->GetParticleType(particleIndex);
+            if (particleType == IParticleCollection::ParticleTypeDead)
+                continue; // we do not want to process dead particles
+            // TODO: check if we want to ignore boundary particles
+
+            // First step calculate Ap
+            glm::vec2 particlePressureAcceleration = ParticleCollection->GetAcceleration(particleIndex);
+            glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+
+            float sum = 0.0f;
+            for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+                auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+                if (neighborType == IParticleCollection::ParticleTypeDead)
+                    continue; // we do not want to process dead particles
+
+                float neighborMass = ParticleCollection->GetMass(neighborIndex);
+                glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+
+                if (neighborType == IParticleCollection::ParticleTypeNormal) {
+                    glm::vec2 neighborPressureAcceleration = ParticleCollection->GetAcceleration(neighborIndex);
+
+                    sum += neighborMass * glm::dot((particlePressureAcceleration - neighborPressureAcceleration),
+                                                   kernel->GetKernelDerivativeReversedValue(neighborPosition,
+                                                                                            particlePosition,
+                                                                                            KernelSupport));
+
+                } else if (neighborType == IParticleCollection::ParticleTypeBoundary) {
+                    sum += neighborMass * glm::dot(particlePressureAcceleration,
+                                                   kernel->GetKernelDerivativeReversedValue(neighborPosition,
+                                                                                            particlePosition,
+                                                                                            KernelSupport));
+                }
+            }
+
+            float Ap = Timestep * Timestep * sum;
+
+            // Second step: Update pressure
+            float particleDiagonalElement = ParticleCollection->GetDiagonalElement(particleIndex);
+            float particleSourceTerm = ParticleCollection->GetSourceTerm(particleIndex);
+            if (particleDiagonalElement != 0.0f) {
+                float particlePressure = ParticleCollection->GetPressure(particleIndex);
+                float particlePressureNextStep = std::fmax(0.0f, particlePressure + Omega * ((particleSourceTerm - Ap) /
+                                                                                             particleDiagonalElement));
+                // update pressure
+                ParticleCollection->SetPressure(particleIndex, particlePressureNextStep);
+
+            }
+
+            // Third step: Calculate predicted density error
+            float particleDensityError = Ap - particleSourceTerm;
+            predictedDensityError += particleDensityError;
+            densityErrorCounter++;
+            // TODO: check if predicted density error should be the arithmetic average of the particles density errors
+
         }
 
+        // post calculations: calculate arithmetic average density error
+        predictedDensityError = predictedDensityError / (float) densityErrorCounter;
     }
 
 }
