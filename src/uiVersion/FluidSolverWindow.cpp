@@ -169,8 +169,14 @@ void FluidSolverWindow::resetData() {
 
     // set up values
     auto fluidSolver = dynamic_cast<FluidSolver::SPHFluidSolver *>(simulation->getFluidSolver());
-    fluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
-    fluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+    if (fluidSolver != nullptr) {
+        fluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
+        fluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+    }
+    auto ifluidSolver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(simulation->getFluidSolver());
+    if (ifluidSolver != nullptr) {
+      
+    }
 
     // set up scenario data
     scenario->ResetData(simulation->getParticleCollection(), simulation->getRestDensity());
