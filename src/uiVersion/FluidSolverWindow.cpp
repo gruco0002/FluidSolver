@@ -100,7 +100,7 @@ void FluidSolverWindow::setupSimulation() {
     simulation = new FluidSolver::Simulation();
 
     // set particle size and timestep
-    simulation->setTimestep(0.001f);
+    simulation->setTimestep(0.01f);
     simulation->setParticleSize(scenario->GetParticleSize());
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
@@ -121,7 +121,7 @@ void FluidSolverWindow::setupSimulation() {
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->Omega = 0.5f;
     isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.01f;
     isphFluidSolver->MinNumberOfIterations = 5;
     simulation->setFluidSolver(isphFluidSolver);
 

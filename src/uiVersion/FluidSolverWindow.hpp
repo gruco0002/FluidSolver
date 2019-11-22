@@ -72,7 +72,7 @@ private:
 
     float accumulatedSimulationTime = 0.0f;
 
-    FluidSolver::Scenario *scenario = new FluidSolver::SimpleBoxScenario();
+    FluidSolver::Scenario *scenario = new FluidSolver::MultipleHoleScenario();
 
     glm::vec4 particleFBORect = glm::vec4(0.0f);
 

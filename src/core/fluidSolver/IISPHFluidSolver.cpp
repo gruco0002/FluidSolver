@@ -2,6 +2,7 @@
 // Created by corbi on 20.11.2019.
 //
 
+#include <iostream>
 #include "IISPHFluidSolver.hpp"
 
 
@@ -10,7 +11,7 @@ float FluidSolver::IISPHFluidSolver::getParticleSize() {
 }
 
 void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
-    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr || kernel == nullptr) {
+    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
         delete neighborhoodSearch;
         neighborhoodSearch = new HashedNeighborhoodSearch(particleSize * 3);
     }
@@ -255,7 +256,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
     float predictedDensityError = 0.0f;
 
     // iteration
-    while (iteration < MinNumberOfIterations || predictedDensityError > MaxDensityErrorAllowed) {
+    while (iteration < MinNumberOfIterations || abs(predictedDensityError) > MaxDensityErrorAllowed) {
 
         // pre calculations
         predictedDensityError = 0.0f;
@@ -365,6 +366,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
         // post calculations: calculate arithmetic average density error, increase iteration count
         predictedDensityError = predictedDensityError / (float) densityErrorCounter;
         iteration++;
+        std::cout << iteration << "\t" << predictedDensityError << std::endl;
     }
+
+
 
 }
