@@ -181,9 +181,15 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
             float internalNeighborMass = ParticleCollection->GetMass(internalNeighbor);
             glm::vec2 internalNeighborPosition = ParticleCollection->GetPosition(internalNeighbor);
 
-            internalSum += internalNeighborMass / RestDensity / RestDensity *
-                           kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
-                                                                    KernelSupport);
+            if (internalNeighborType == IParticleCollection::ParticleTypeNormal) {
+                internalSum += internalNeighborMass / RestDensity / RestDensity *
+                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
+                                                                        KernelSupport);
+            } else if (internalNeighborType == IParticleCollection::ParticleTypeBoundary) {
+                internalSum += 2.0f * Gamma * internalNeighborMass / RestDensity / RestDensity *
+                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
+                                                                        KernelSupport);
+            }
 
             // since we have no factor for boundary particles, they can be handled as normal particles
 
@@ -262,7 +268,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
             // TODO: check if we want to ignore boundary particles or not
-            if(particleType == IParticleCollection::ParticleTypeBoundary)
+            if (particleType == IParticleCollection::ParticleTypeBoundary)
                 continue;
 
             float particlePressure = ParticleCollection->GetPressure(particleIndex);
@@ -286,8 +292,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
                                                                     KernelSupport);
                 } else if (neighborType == IParticleCollection::ParticleTypeBoundary) {
                     // pressure is mirrored here
-                    sum += neighborMass * (particlePressure / RestDensity / RestDensity +
-                                           particlePressure / RestDensity / RestDensity) *
+                    sum += Gamma * neighborMass * 2.0f * (particlePressure / RestDensity / RestDensity) *
                            kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
                                                                     KernelSupport);
                 }
@@ -303,7 +308,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
             // TODO: check if we want to ignore boundary particles or not
-            if(particleType == IParticleCollection::ParticleTypeBoundary)
+            if (particleType == IParticleCollection::ParticleTypeBoundary)
                 continue;
 
             // First step calculate Ap
