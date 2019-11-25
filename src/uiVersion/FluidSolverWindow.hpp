@@ -23,9 +23,6 @@
 #include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
-#include <core/basicScenarios/SimpleDamScenario.hpp>
-#include <core/basicScenarios/HugeDamScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenario.hpp>
 #include <dependencies/cppgui/library/src/basic/UIRunner.hpp>
 
 namespace FluidUI{
@@ -72,7 +69,7 @@ private:
 
     float accumulatedSimulationTime = 0.0f;
 
-    FluidSolver::Scenario *scenario = new FluidSolver::MultipleHoleScenario();
+    FluidSolver::Scenario *scenario = nullptr;
 
     glm::vec4 particleFBORect = glm::vec4(0.0f);
 
