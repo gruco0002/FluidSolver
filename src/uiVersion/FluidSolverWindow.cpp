@@ -17,6 +17,8 @@
 #include <uiVersion/userInterface/RootElement.hpp>
 #include <core/basicScenarios/HugeDamScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
+#include <core/basicScenarios/MultipleHoleScenario.hpp>
+#include <core/basicScenarios/BoxWithHoleScenario.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -101,6 +103,7 @@ void FluidSolverWindow::setupSimulation() {
 
     //this->scenario = new FluidSolver::BoxWithHoleScenario();
     this->scenario = new FluidSolver::SimpleBoxScenario();
+    //this->scenario = new FluidSolver::MultipleHoleScenario();
 
 
     simulation = new FluidSolver::Simulation();
@@ -127,7 +130,7 @@ void FluidSolverWindow::setupSimulation() {
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->Omega = 0.5f;
     isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.05f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
     isphFluidSolver->MinNumberOfIterations = 5;
     simulation->setFluidSolver(isphFluidSolver);
 

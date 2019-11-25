@@ -19,8 +19,7 @@
 #include <core/fluidSolver/SPHFluidSolver.hpp>
 #include "DataLogger.hpp"
 #include <core/basicScenarios/Scenario.hpp>
-#include <core/basicScenarios/BoxWithHoleScenario.hpp>
-#include <core/basicScenarios/MultipleHoleScenario.hpp>
+
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
 #include <dependencies/cppgui/library/src/basic/UIRunner.hpp>
