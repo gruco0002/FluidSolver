@@ -75,6 +75,8 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
         auto type = ParticleCollection->GetParticleType(i);
         if (type == IParticleCollection::ParticleTypeDead)
             continue; // we do not want to process dead particles
+        if (type == IParticleCollection::ParticleTypeBoundary)
+            continue; // we do not want to process boundary particles
 
         ComputeSourceTerm(i);
         ComputeDiagonalElement(i);
@@ -96,6 +98,10 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
 
 
 void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
+    auto particleType = ParticleCollection->GetParticleType(particleIndex);
+    if (particleType == IParticleCollection::ParticleTypeBoundary) {
+        return; // don't calculate density for the boundary particles
+    }
     glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
 
     float density = 0.0f;
@@ -368,7 +374,6 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
         iteration++;
         std::cout << iteration << "\t" << predictedDensityError << std::endl;
     }
-
 
 
 }
