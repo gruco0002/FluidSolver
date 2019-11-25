@@ -11,7 +11,7 @@ FluidUI::RootElement::RootElement(FluidSolverWindow *window) : window(window) {
 
 cppgui::Element *FluidUI::RootElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
-    return new Theme(new Row(std::vector<Element *>({new Container(new ControlAreaElement(), Colors::White(), 300.0f)}),
+    return new Theme(new Row(std::vector<Element *>({new Container(new ControlAreaElement(), Color(Colors::White(), 0.5f), 300.0f)}),
                              MainAxisAlignmentEnd,
                              CrossAxisAlignmentStart));
 }
