@@ -99,7 +99,8 @@ void FluidSolverWindow::load() {
 
 void FluidSolverWindow::setupSimulation() {
 
-    this->scenario = new FluidSolver::MultipleHoleScenario();
+    //this->scenario = new FluidSolver::BoxWithHoleScenario();
+    this->scenario = new FluidSolver::SimpleBoxScenario();
 
 
     simulation = new FluidSolver::Simulation();
@@ -126,7 +127,7 @@ void FluidSolverWindow::setupSimulation() {
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->Omega = 0.5f;
     isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 99999990.01f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.05f;
     isphFluidSolver->MinNumberOfIterations = 5;
     simulation->setFluidSolver(isphFluidSolver);
 

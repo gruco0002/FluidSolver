@@ -180,7 +180,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
 
         glm::vec2 internalSum = glm::vec2(0.0f);
         for (uint32_t internalNeighbor: neighborhoodSearch->GetParticleNeighbors(
-                particleIndex)) { // TODO: check if neighbors of particle or neighbors of neighbor
+                particleIndex)) {
             auto internalNeighborType = ParticleCollection->GetParticleType(internalNeighbor);
             if (internalNeighborType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
@@ -244,7 +244,7 @@ void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
         return; // don't calculate unnecessary values for the boundary particles.
     }
     if (type == IParticleCollection::ParticleTypeDead) {
-        return; // don*t calculate unnecessary values for dead particles.
+        return; // don't calculate unnecessary values for dead particles.
     }
 
     // integrate using euler cromer
@@ -274,7 +274,6 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             auto particleType = ParticleCollection->GetParticleType(particleIndex);
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
-            // TODO: check if we want to ignore boundary particles or not
             if (particleType == IParticleCollection::ParticleTypeBoundary)
                 continue;
 
@@ -314,7 +313,6 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             auto particleType = ParticleCollection->GetParticleType(particleIndex);
             if (particleType == IParticleCollection::ParticleTypeDead)
                 continue; // we do not want to process dead particles
-            // TODO: check if we want to ignore boundary particles or not
             if (particleType == IParticleCollection::ParticleTypeBoundary)
                 continue;
 
@@ -365,7 +363,8 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             float particleDensityError = Ap - particleSourceTerm;
             predictedDensityError += particleDensityError;
             densityErrorCounter++;
-            // TODO: check if predicted density error should be the arithmetic average of the particles density errors
+            // TODO: check if predicted density error should be the arithmetic average of the particles density errors,
+            //       if it should be an abs value, and if it should only be calculated for particles with neighbors
 
         }
 
