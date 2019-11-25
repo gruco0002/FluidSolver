@@ -15,6 +15,8 @@
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <uiVersion/userInterface/RootElement.hpp>
+#include <core/basicScenarios/HugeDamScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenario.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -97,6 +99,9 @@ void FluidSolverWindow::load() {
 
 void FluidSolverWindow::setupSimulation() {
 
+    this->scenario = new FluidSolver::MultipleHoleScenario();
+
+
     simulation = new FluidSolver::Simulation();
 
     // set particle size and timestep
@@ -121,7 +126,7 @@ void FluidSolverWindow::setupSimulation() {
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->Omega = 0.5f;
     isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.01f;
+    isphFluidSolver->MaxDensityErrorAllowed = 99999990.01f;
     isphFluidSolver->MinNumberOfIterations = 5;
     simulation->setFluidSolver(isphFluidSolver);
 
@@ -176,7 +181,7 @@ void FluidSolverWindow::resetData() {
     }
     auto ifluidSolver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(simulation->getFluidSolver());
     if (ifluidSolver != nullptr) {
-      
+
     }
 
     // set up scenario data
