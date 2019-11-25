@@ -137,6 +137,7 @@ void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredicted
 
 void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
     float particleDensity = ParticleCollection->GetDensity(particleIndex);
+
     glm::vec2 particlePredictedVelocity = ParticleCollection->GetPredictedVelocity(particleIndex);
     glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
@@ -361,8 +362,10 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
             // Third step: Calculate predicted density error
             float particleDensityError = Ap - particleSourceTerm;
-            predictedDensityError += particleDensityError;
-            densityErrorCounter++;
+            if(particleDensityError >= 0.0f) {
+                predictedDensityError += particleDensityError;
+                densityErrorCounter++;
+            }
             // TODO: check if predicted density error should be the arithmetic average of the particles density errors,
             //       if it should be an abs value, and if it should only be calculated for particles with neighbors
 
