@@ -362,7 +362,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
             // Third step: Calculate predicted density error
             float particleDensityError = Ap - particleSourceTerm;
-            if(particleDensityError >= 0.0f) {
+            if (particleDensityError >= 0.0f) {
                 predictedDensityError += particleDensityError;
                 densityErrorCounter++;
             }

@@ -19,6 +19,7 @@
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
 #include <core/basicScenarios/MultipleHoleScenario.hpp>
 #include <core/basicScenarios/BoxWithHoleScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -102,8 +103,9 @@ void FluidSolverWindow::load() {
 void FluidSolverWindow::setupSimulation() {
 
     //this->scenario = new FluidSolver::BoxWithHoleScenario();
-    this->scenario = new FluidSolver::SimpleBoxScenario();
+    //this->scenario = new FluidSolver::SimpleBoxScenario();
     //this->scenario = new FluidSolver::MultipleHoleScenario();
+    this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
 
 
     simulation = new FluidSolver::Simulation();
