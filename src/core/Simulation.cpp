@@ -47,7 +47,7 @@ FluidSolver::IParticleCollection *FluidSolver::Simulation::getParticleCollection
 }
 
 void FluidSolver::Simulation::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
-    Simulation::particleCollection = particleCollection;
+    this->particleCollection = particleCollection;
     if (this->fluidSolver != nullptr)
         this->fluidSolver->setParticleCollection(particleCollection);
     if (this->simulationVisualizer != nullptr)
@@ -61,7 +61,7 @@ FluidSolver::IFluidSolver *FluidSolver::Simulation::getFluidSolver() {
 }
 
 void FluidSolver::Simulation::setFluidSolver(FluidSolver::IFluidSolver *fluidSolver) {
-    Simulation::fluidSolver = fluidSolver;
+    this->fluidSolver = fluidSolver;
     fluidSolver->setParticleCollection(this->particleCollection);
     fluidSolver->setParticleSize(this->particleSize);
     fluidSolver->setRestDensity(this->restDensity);
@@ -74,7 +74,7 @@ FluidSolver::StatisticCollector *FluidSolver::Simulation::getStatisticCollector(
 }
 
 void FluidSolver::Simulation::setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector) {
-    Simulation::statisticCollector = statisticCollector;
+    this->statisticCollector = statisticCollector;
     if (dataLogger != nullptr)
         dataLogger->setStatisticCollector(statisticCollector);
 
@@ -89,7 +89,7 @@ DataLogger *FluidSolver::Simulation::getDataLogger() {
 }
 
 void FluidSolver::Simulation::setDataLogger(DataLogger *dataLogger) {
-    Simulation::dataLogger = dataLogger;
+    this->dataLogger = dataLogger;
     dataLogger->setTimestep(timestep);
     dataLogger->setStatisticCollector(statisticCollector);
 }
@@ -99,7 +99,7 @@ FluidSolver::ISimulationVisualizer *FluidSolver::Simulation::getSimulationVisual
 }
 
 void FluidSolver::Simulation::setSimulationVisualizer(FluidSolver::ISimulationVisualizer *simulationVisualizer) {
-    Simulation::simulationVisualizer = simulationVisualizer;
+    this->simulationVisualizer = simulationVisualizer;
     simulationVisualizer->setParticleCollection(this->particleCollection);
     simulationVisualizer->setParticleSize(particleSize);
 }
@@ -109,7 +109,7 @@ float FluidSolver::Simulation::getParticleSize() {
 }
 
 void FluidSolver::Simulation::setParticleSize(float particleSize) {
-    Simulation::particleSize = particleSize;
+    this->particleSize = particleSize;
     if (fluidSolver != nullptr)
         fluidSolver->setParticleSize(particleSize);
     if (statisticCollector != nullptr)
@@ -123,7 +123,7 @@ float FluidSolver::Simulation::getRestDensity() {
 }
 
 void FluidSolver::Simulation::setRestDensity(float restDensity) {
-    Simulation::restDensity = restDensity;
+    this->restDensity = restDensity;
     if (fluidSolver != nullptr)
         fluidSolver->setRestDensity(restDensity);
     if (statisticCollector != nullptr)
@@ -135,7 +135,7 @@ float FluidSolver::Simulation::getTimestep() {
 }
 
 void FluidSolver::Simulation::setTimestep(float timestep) {
-    Simulation::timestep = timestep;
+    this->timestep = timestep;
     if (fluidSolver != nullptr)
         fluidSolver->setTimestep(timestep);
     if (dataLogger != nullptr)
@@ -166,7 +166,7 @@ float FluidSolver::Simulation::getGravity() const {
 }
 
 void FluidSolver::Simulation::setGravity(float gravity) {
-    Simulation::gravity = gravity;
+    this->gravity = gravity;
     if (statisticCollector != nullptr)
         statisticCollector->setGravity(gravity);
     if (fluidSolver != nullptr)

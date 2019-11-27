@@ -21,6 +21,10 @@ namespace FluidSolver {
         float ParticleSize = 1.0f;
         float RestDensity = 1.0f;
 
+
+        float NeighborhoodRadius = 5.0f;
+        float KernelSupport = 2.0f;
+
         IParticleCollection *particleCollection = nullptr;
 
         float ComputePressure(uint32_t particleIndex);
@@ -32,6 +36,10 @@ namespace FluidSolver {
         glm::vec2 ComputePressureAcceleration(uint32_t particleIndex);
 
         glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
+
+    public:
+        SPHFluidSolver();
+
 
     public:
         float getGravity() override;
@@ -55,8 +63,6 @@ namespace FluidSolver {
         IParticleCollection *getParticleCollection() override;
 
 
-        float NeighborhoodRadius = 5.0f;
-        float KernelSupport = 2.0f;
 
         float StiffnessK = 0.001f;
         float Viscosity = 0.01f;

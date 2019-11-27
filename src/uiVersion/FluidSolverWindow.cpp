@@ -104,8 +104,8 @@ void FluidSolverWindow::setupSimulation() {
 
     //this->scenario = new FluidSolver::BoxWithHoleScenario();
     //this->scenario = new FluidSolver::SimpleBoxScenario();
-    //this->scenario = new FluidSolver::MultipleHoleScenario();
-    this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
+    this->scenario = new FluidSolver::MultipleHoleScenario();
+    //this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
 
 
     simulation = new FluidSolver::Simulation();
@@ -116,25 +116,24 @@ void FluidSolverWindow::setupSimulation() {
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
 
-    /*  // set up basic stuff
+      // set up basic stuff
       auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
 
       // set up values
-      sphFluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
-      sphFluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+
       sphFluidSolver->StiffnessK = 100000.0f;
       sphFluidSolver->Viscosity = 5.0f;
       sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
       sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
       simulation->setFluidSolver(sphFluidSolver);
-      */
 
-    auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
+
+   /* auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->Omega = 0.5f;
     isphFluidSolver->Gamma = 0.7f;
     isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
     isphFluidSolver->MinNumberOfIterations = 5;
-    simulation->setFluidSolver(isphFluidSolver);
+    simulation->setFluidSolver(isphFluidSolver);*/
 
 
     // set up scenario data
@@ -182,8 +181,7 @@ void FluidSolverWindow::resetData() {
     // set up values
     auto fluidSolver = dynamic_cast<FluidSolver::SPHFluidSolver *>(simulation->getFluidSolver());
     if (fluidSolver != nullptr) {
-        fluidSolver->KernelSupport = 2.0f * simulation->getParticleSize();
-        fluidSolver->NeighborhoodRadius = 2.0f * simulation->getParticleSize();
+
     }
     auto ifluidSolver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(simulation->getFluidSolver());
     if (ifluidSolver != nullptr) {

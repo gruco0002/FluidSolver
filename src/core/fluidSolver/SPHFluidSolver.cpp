@@ -191,6 +191,8 @@ namespace FluidSolver {
 
     void SPHFluidSolver::setParticleSize(float particleSize) {
         this->ParticleSize = particleSize;
+        KernelSupport = 2.0f * this->ParticleSize;
+        NeighborhoodRadius = 2.0f * this->ParticleSize;
     }
 
     float SPHFluidSolver::getRestDensity() {
@@ -223,5 +225,9 @@ namespace FluidSolver {
 
     void SPHFluidSolver::setGravity(float gravity) {
         this->Gravity = gravity;
+    }
+
+    SPHFluidSolver::SPHFluidSolver() {
+
     }
 }

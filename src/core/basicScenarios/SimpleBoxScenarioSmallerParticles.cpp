@@ -88,8 +88,8 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
     }
 
     // particles
-    for (int x = -20; x <= 0; x++) {
-        for (int y = 7; y >= -13; y--) {
+    for (int x = 0; x <= 0; x++) {
+        for (int y = 7; y >= -0; y--) {
             // normal particle
             FluidSolver::SimpleParticleCollection::FluidParticle p;
 
@@ -100,12 +100,12 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
             p.Mass = mass;
             p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
 
-            for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
-                for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
-                    p.Position = glm::vec2((float) x + offsetX, (float) y + offsetY);
+           // for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
+             //   for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
+                    p.Position = glm::vec2((float) x , (float) y );
                     particles.push_back(p);
-                }
-            }
+            //    }
+          //  }
         }
     }
 
