@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <algorithm>
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include "SPHFluidSolver.hpp"
 
 namespace FluidSolver {
@@ -190,6 +191,10 @@ namespace FluidSolver {
     }
 
     void SPHFluidSolver::setParticleSize(float particleSize) {
+        if(this->ParticleSize != particleSize || neighborhoodSearch == nullptr){
+            delete neighborhoodSearch;
+            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(getParticleSize() * 3.0f);
+        }
         this->ParticleSize = particleSize;
         KernelSupport = 2.0f * this->ParticleSize;
         NeighborhoodRadius = 2.0f * this->ParticleSize;

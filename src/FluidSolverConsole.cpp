@@ -74,8 +74,6 @@ void FluidSolverConsole::executeSimulation() {
     // set up values
     sphFluidSolver->StiffnessK =stiffness;
     sphFluidSolver->Viscosity =viscosity;
-    sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-    sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
     simulation->setFluidSolver(sphFluidSolver);
 
 

@@ -9,6 +9,7 @@
 #include <core/fluidSolver/kernel/IKernel.hpp>
 #include <core/interface/ISimulationModifier.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
+#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 #include "core/StatisticCollector.hpp"
 
@@ -26,6 +27,9 @@ namespace FluidSolver {
         float KernelSupport = 2.0f;
 
         IParticleCollection *particleCollection = nullptr;
+
+        INeighborhoodSearch *neighborhoodSearch = nullptr;
+        IKernel *kernel = new FluidSolver::CubicSplineKernel();
 
         float ComputePressure(uint32_t particleIndex);
 
@@ -63,14 +67,12 @@ namespace FluidSolver {
         IParticleCollection *getParticleCollection() override;
 
 
-
         float StiffnessK = 0.001f;
         float Viscosity = 0.01f;
 
-        INeighborhoodSearch *neighborhoodSearch = nullptr;
-        IKernel *kernel = nullptr;
 
         void ExecuteSimulationStep() override;
+
         virtual ~SPHFluidSolver();
     };
 }

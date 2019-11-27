@@ -103,8 +103,8 @@ void FluidSolverWindow::load() {
 void FluidSolverWindow::setupSimulation() {
 
     //this->scenario = new FluidSolver::BoxWithHoleScenario();
-    //this->scenario = new FluidSolver::SimpleBoxScenario();
-    this->scenario = new FluidSolver::MultipleHoleScenario();
+    this->scenario = new FluidSolver::SimpleBoxScenario();
+    //this->scenario = new FluidSolver::MultipleHoleScenario();
     //this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
 
 
@@ -123,8 +123,6 @@ void FluidSolverWindow::setupSimulation() {
 
       sphFluidSolver->StiffnessK = 100000.0f;
       sphFluidSolver->Viscosity = 5.0f;
-      sphFluidSolver->kernel = new FluidSolver::CubicSplineKernel();
-      sphFluidSolver->neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(simulation->getParticleSize() * 3);
       simulation->setFluidSolver(sphFluidSolver);
 
 
