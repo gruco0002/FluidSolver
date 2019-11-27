@@ -66,5 +66,5 @@ Be sure that you have installed the XCode Command Line Tools for OSX before inst
 To install those tools execute `xcode-select --install`.
 
 After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
-Below `if (APPLE)` are paths that have to be adapted to your llvm location.
+Below `if (APPLE)` are paths that have to be adapted to your llvm location. (Normally they should be `/usr/local/opt/llvm/`)
 Please be sure that these paths behind the variable names `CMAKE_PREFIX_PATH`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER` and `openmpDylibPath` are set correctly.
