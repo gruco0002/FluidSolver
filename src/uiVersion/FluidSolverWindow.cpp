@@ -103,8 +103,8 @@ void FluidSolverWindow::load() {
 void FluidSolverWindow::setupSimulation() {
 
     //this->scenario = new FluidSolver::BoxWithHoleScenario();
-    this->scenario = new FluidSolver::SimpleBoxScenario();
-    //this->scenario = new FluidSolver::MultipleHoleScenario();
+    //this->scenario = new FluidSolver::SimpleBoxScenario();
+    this->scenario = new FluidSolver::MultipleHoleScenario();
     //this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
 
 
@@ -116,22 +116,22 @@ void FluidSolverWindow::setupSimulation() {
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
 
-      // set up basic stuff
-      auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    // set up basic stuff
+    auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
 
-      // set up values
+    // set up values
 
-      sphFluidSolver->StiffnessK = 100000.0f;
-      sphFluidSolver->Viscosity = 5.0f;
-      simulation->setFluidSolver(sphFluidSolver);
+    sphFluidSolver->StiffnessK = 100000.0f;
+    sphFluidSolver->Viscosity = 5.0f;
+    simulation->setFluidSolver(sphFluidSolver);
 
 
-   /* auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
-    isphFluidSolver->Omega = 0.5f;
-    isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
-    isphFluidSolver->MinNumberOfIterations = 5;
-    simulation->setFluidSolver(isphFluidSolver);*/
+    /* auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
+     isphFluidSolver->Omega = 0.5f;
+     isphFluidSolver->Gamma = 0.7f;
+     isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
+     isphFluidSolver->MinNumberOfIterations = 5;
+     simulation->setFluidSolver(isphFluidSolver);*/
 
 
     // set up scenario data
