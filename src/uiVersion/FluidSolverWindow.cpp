@@ -117,18 +117,18 @@ void FluidSolverWindow::setupSimulation() {
     simulation->setGravity(9.81f);
 
     // set up basic stuff
-    auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
+    /*auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
     sphFluidSolver->StiffnessK = 100000.0f;
     sphFluidSolver->Viscosity = 5.0f;
-    simulation->setFluidSolver(sphFluidSolver);
+    simulation->setFluidSolver(sphFluidSolver);*/
 
 
-     /*auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
+     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
      isphFluidSolver->Omega = 0.5f;
      isphFluidSolver->Gamma = 0.7f;
      isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
      isphFluidSolver->MinNumberOfIterations = 5;
-     simulation->setFluidSolver(isphFluidSolver);*/
+     simulation->setFluidSolver(isphFluidSolver);
 
 
     // set up scenario data
