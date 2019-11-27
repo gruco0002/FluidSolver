@@ -118,7 +118,11 @@ namespace FluidSolver {
                Mass == rhs.Mass &&
                Pressure == rhs.Pressure &&
                Density == rhs.Density &&
-               Type == rhs.Type;
+               Type == rhs.Type &&
+               PredictedVelocity == rhs.PredictedVelocity &&
+               NonPressureAcceleration == rhs.NonPressureAcceleration &&
+               SourceTerm == rhs.SourceTerm &&
+               DiagonalElement == rhs.DiagonalElement;
     }
 
     bool SimpleParticleCollection::FluidParticle::operator!=(const SimpleParticleCollection::FluidParticle &rhs) const {
