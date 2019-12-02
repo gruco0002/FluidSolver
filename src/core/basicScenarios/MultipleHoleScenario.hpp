@@ -7,6 +7,7 @@
 
 #include "Scenario.hpp"
 #include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <string>
 
 namespace FluidSolver {
     class MultipleHoleScenario : public Scenario {
@@ -21,6 +22,8 @@ namespace FluidSolver {
         std::vector<ISimulationModifier *> GetSimulationModifiers() override;
 
         float GetParticleSize() override;
+
+        std::string GetName() override;
 
     private:
 

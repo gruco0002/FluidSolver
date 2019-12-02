@@ -4,36 +4,36 @@
 
 #include "ControlAreaElement.hpp"
 #include "SimulationControlElement.hpp"
+#include "ScenarioSelectionElement.hpp"
 
 cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
 
-    Element* top =  new Container(new Row(std::vector<Element*>(
-                                                           {
-                                                               new Padding(new Text("Fluid Solver", 25.0f),
-                                                                        Padding::Border(5.0f, 10.0f)),
+    Element *top = new Container(new Row(std::vector<Element *>(
+            {
+                    new Padding(new Text("Fluid Solver", 25.0f),
+                                Padding::Border(5.0f, 10.0f)),
 
-                                                            new Padding(
-                                                                    new Button(new Icon(new GuiIconSource(GetState()->Expanded?"keyboard_arrow_right" : "keyboard_arrow_left")), [=]() {
-                                                                        GetState()->Expanded = !GetState()->Expanded;
-                                                                        OnStateChanged();
-                                                                    }), Padding::Border(5.0f, 0)),
-                                                           }), MainAxisAlignmentSpaceBetween, CrossAxisAlignmentCenter), Colors::Transparent(), NullValue, 50.0f)
-
-                                           ;
+                    new Padding(
+                            new Button(new Icon(new GuiIconSource(
+                                    GetState()->Expanded ? "keyboard_arrow_right" : "keyboard_arrow_left")), [=]() {
+                                GetState()->Expanded = !GetState()->Expanded;
+                                OnStateChanged();
+                            }), Padding::Border(5.0f, 0)),
+            }), MainAxisAlignmentSpaceBetween, CrossAxisAlignmentCenter), Colors::Transparent(), NullValue, 50.0f);
     if (GetState()->Expanded) {
 
-        top = new Column(std::vector<Element*>({top,new Expanded(new ScrollView(new Column(std::vector<Element *>({
-                                                                                                                          new SimulationControlElement(),
+        top = new Column(std::vector<Element *>({top, new Expanded(new ScrollView(new Column(std::vector<Element *>({
+                                                                                                                            new SimulationControlElement(),
+                                                                                                                            new ScenarioSelectionElement(),
 
-
-                                                                                                                  }),
-                                                                                           MainAxisAlignmentStart,
-                                                                                           CrossAxisAlignmentStart,
-                                                                                           AxisSizeMin))) }));
+                                                                                                                    }),
+                                                                                             MainAxisAlignmentStart,
+                                                                                             CrossAxisAlignmentStart,
+                                                                                             AxisSizeMin)))}));
     }
 
-    return new Container(top, Colors::White(), 300.0f, NullValue,GetState()->Expanded);
+    return new Container(top, Colors::White(), 300.0f, NullValue, GetState()->Expanded);
 
 }
 

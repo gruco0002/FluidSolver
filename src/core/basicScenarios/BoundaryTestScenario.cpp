@@ -52,3 +52,7 @@ int FluidSolver::BoundaryTestScenario::GetParticleCountX() {
 int FluidSolver::BoundaryTestScenario::GetParticleCountY() {
     return 20;
 }
+
+std::string FluidSolver::BoundaryTestScenario::GetName() {
+    return "Boundary Test";
+}

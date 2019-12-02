@@ -23,8 +23,15 @@
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
 #include <dependencies/cppgui/library/src/basic/UIRunner.hpp>
+#include <core/basicScenarios/HugeDamScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenario.hpp>
+#include <core/basicScenarios/MultipleHoleScenario.hpp>
+#include <core/basicScenarios/BoxWithHoleScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
+#include <core/basicScenarios/SimpleDamScenario.hpp>
+#include <core/basicScenarios/BoundaryTestScenario.hpp>
 
-namespace FluidUI{
+namespace FluidUI {
     class RootElement;
 }
 
@@ -45,6 +52,22 @@ public:
     float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
     std::string imagePath = "./images/";
     unsigned int imageCounter = 0;*/
+
+    std::vector<FluidSolver::Scenario *> Scenarios = std::vector<FluidSolver::Scenario *>({
+                                                                                                  new FluidSolver::SimpleBoxScenario(),
+                                                                                                  new FluidSolver::BoxWithHoleScenario(),
+                                                                                                  new FluidSolver::MultipleHoleScenario(),
+                                                                                                  new FluidSolver::SimpleBoxScenarioSmallerParticles(),
+                                                                                                  new FluidSolver::SimpleDamScenario(),
+                                                                                                  new FluidSolver::HugeDamScenario(),
+                                                                                                  new FluidSolver::BoundaryTestScenario(),
+                                                                                          }
+
+    );
+
+    void SetScenario(FluidSolver::Scenario *scenario);
+
+    FluidSolver::Scenario* GetScenario();
 
 private:
 

@@ -5,6 +5,7 @@
 #ifndef FLUIDSOLVER_SIMPLEBOXSCENARIOSMALLERPARTICLES_HPP
 #define FLUIDSOLVER_SIMPLEBOXSCENARIOSMALLERPARTICLES_HPP
 
+#include <string>
 #include "Scenario.hpp"
 
 namespace FluidSolver {
@@ -22,6 +23,8 @@ namespace FluidSolver {
         int GetParticleCountY() override;
 
         std::vector<ISimulationModifier *> GetSimulationModifiers() override;
+
+        std::string GetName() override;
     };
 }
 

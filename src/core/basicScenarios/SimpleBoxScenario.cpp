@@ -105,3 +105,7 @@ int FluidSolver::SimpleBoxScenario::GetParticleCountY() {
 std::vector<FluidSolver::ISimulationModifier *> FluidSolver::SimpleBoxScenario::GetSimulationModifiers() {
     return {new DeathBox(25, -25, -20, 15)};
 }
+
+std::string FluidSolver::SimpleBoxScenario::GetName() {
+    return "Simple box";
+}

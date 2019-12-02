@@ -113,3 +113,7 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::BoxWithHoleScenario
             new FluidSolver::SpawnArea(25, -18, 22, -10, 40.0f, glm::vec2(0.0f, -6.0f)),
     };
 }
+
+std::string FluidSolver::BoxWithHoleScenario::GetName() {
+    return "Box with hole";
+}

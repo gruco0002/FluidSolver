@@ -100,12 +100,12 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
             p.Mass = mass;
             p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
 
-           // for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
-             //   for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
-                    p.Position = glm::vec2((float) x , (float) y );
-                    particles.push_back(p);
+            // for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
+            //   for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
+            p.Position = glm::vec2((float) x, (float) y);
+            particles.push_back(p);
             //    }
-          //  }
+            //  }
         }
     }
 
@@ -127,4 +127,8 @@ FluidSolver::SimpleBoxScenarioSmallerParticles::GetSimulationModifiers() {
 
 float FluidSolver::SimpleBoxScenarioSmallerParticles::GetParticleSize() {
     return Size;
+}
+
+std::string FluidSolver::SimpleBoxScenarioSmallerParticles::GetName() {
+    return "Simple box (small particles)";
 }

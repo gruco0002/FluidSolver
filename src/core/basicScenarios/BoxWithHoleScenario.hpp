@@ -19,6 +19,8 @@ namespace FluidSolver {
 
         std::vector<ISimulationModifier *> GetSimulationModifiers() override;
 
+        std::string GetName() override;
+
     };
 }
 

@@ -240,3 +240,7 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimplePartic
 float FluidSolver::MultipleHoleScenario::GetParticleSize() {
     return 1.0f / (float) factor;
 }
+
+std::string FluidSolver::MultipleHoleScenario::GetName() {
+    return "Multiple holes & sources";
+}

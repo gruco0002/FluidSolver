@@ -8,6 +8,7 @@
 #include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
 #include <core/interface/ISimulationModifier.hpp>
 #include <vector>
+#include <string>
 
 namespace FluidSolver {
     class Scenario {
@@ -25,6 +26,8 @@ namespace FluidSolver {
         virtual int GetParticleCountY() = 0;
 
         virtual std::vector<ISimulationModifier*> GetSimulationModifiers();
+
+        virtual std::string GetName() = 0;
     };
 }
 

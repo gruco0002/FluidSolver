@@ -88,3 +88,7 @@ int FluidSolver::SimpleDamScenario::GetParticleCountX() {
 int FluidSolver::SimpleDamScenario::GetParticleCountY() {
     return 20;
 }
+
+std::string FluidSolver::SimpleDamScenario::GetName() {
+    return "Simple dam";
+}

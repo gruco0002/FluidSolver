@@ -15,12 +15,6 @@
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <uiVersion/userInterface/RootElement.hpp>
-#include <core/basicScenarios/HugeDamScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenario.hpp>
-#include <core/basicScenarios/MultipleHoleScenario.hpp>
-#include <core/basicScenarios/BoxWithHoleScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
-#include <core/basicScenarios/SimpleDamScenario.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -103,12 +97,8 @@ void FluidSolverWindow::load() {
 
 void FluidSolverWindow::setupSimulation() {
 
-    //this->scenario = new FluidSolver::BoxWithHoleScenario();
     this->scenario = new FluidSolver::SimpleBoxScenario();
-    //this->scenario = new FluidSolver::MultipleHoleScenario();
-    //this->scenario = new FluidSolver::SimpleBoxScenarioSmallerParticles();
-    //this->scenario = new FluidSolver::SimpleDamScenario();
-    //this->scenario = new FluidSolver::HugeDamScenario();
+
 
     simulation = new FluidSolver::Simulation();
 
@@ -125,12 +115,12 @@ void FluidSolverWindow::setupSimulation() {
     simulation->setFluidSolver(sphFluidSolver);*/
 
 
-     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
-     isphFluidSolver->Omega = 0.5f;
-     isphFluidSolver->Gamma = 0.7f;
-     isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
-     isphFluidSolver->MinNumberOfIterations = 5;
-     simulation->setFluidSolver(isphFluidSolver);
+    auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
+    isphFluidSolver->Omega = 0.5f;
+    isphFluidSolver->Gamma = 0.7f;
+    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
+    isphFluidSolver->MinNumberOfIterations = 5;
+    simulation->setFluidSolver(isphFluidSolver);
 
 
     // set up scenario data
@@ -394,5 +384,16 @@ void FluidSolverWindow::setupUI() {
             uiRunner->interactionRunner->KeyUp(cppgui::KeyboardKeyRight);
         }
     });
+}
+
+void FluidSolverWindow::SetScenario(FluidSolver::Scenario *scenario) {
+    if (this->scenario == scenario)
+        return;
+    this->scenario = scenario;
+    resetData();
+}
+
+FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
+    return scenario;
 }
 

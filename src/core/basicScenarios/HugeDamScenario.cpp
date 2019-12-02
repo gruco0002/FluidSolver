@@ -97,3 +97,7 @@ int FluidSolver::HugeDamScenario::GetParticleCountX() {
 int FluidSolver::HugeDamScenario::GetParticleCountY() {
     return 106;
 }
+
+std::string FluidSolver::HugeDamScenario::GetName() {
+    return "Huge dam";
+}

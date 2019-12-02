@@ -5,6 +5,7 @@
 #ifndef FLUIDSOLVER_SIMPLEDAMSCENARIO_HPP
 #define FLUIDSOLVER_SIMPLEDAMSCENARIO_HPP
 
+#include <string>
 #include "Scenario.hpp"
 
 namespace FluidSolver {
@@ -17,6 +18,9 @@ namespace FluidSolver {
         int GetParticleCountX() override;
 
         int GetParticleCountY() override;
+
+        std::string GetName() override;
+
     };
 
 }
