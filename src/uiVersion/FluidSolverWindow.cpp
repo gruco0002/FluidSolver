@@ -178,8 +178,10 @@ void FluidSolverWindow::resetData() {
 
     }
 
-    // set up scenario data
-    scenario->ResetData(simulation->getParticleCollection(), simulation->getRestDensity());
+    // set up scenario data, delete old particle collection
+    delete simulation->getParticleCollection();
+    auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
+    simulation->setParticleCollection(particleCollection);
 
     // set up simulation modifiers
     simulation->clearSimulationModifiers();

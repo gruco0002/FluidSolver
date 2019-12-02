@@ -78,6 +78,7 @@ namespace FluidSolver {
          */
         virtual void FindNeighbors(IParticleCollection *particleCollection, float radius);
 
+        virtual ~INeighborhoodSearch() = default;
 
     protected:
         /**

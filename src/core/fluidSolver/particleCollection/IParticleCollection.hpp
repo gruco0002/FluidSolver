@@ -64,6 +64,8 @@ namespace FluidSolver {
 
         virtual void SetDiagonalElement(uint32_t index, float value) = 0;
 
+        virtual ~IParticleCollection() = default;
+
 
     };
 

@@ -191,7 +191,7 @@ namespace FluidSolver {
     }
 
     void SPHFluidSolver::setParticleSize(float particleSize) {
-        if(this->ParticleSize != particleSize || neighborhoodSearch == nullptr){
+        if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
             delete neighborhoodSearch;
             neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(getParticleSize() * 3.0f);
         }
@@ -217,6 +217,10 @@ namespace FluidSolver {
     }
 
     void SPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
+        if (neighborhoodSearch != nullptr) {
+            delete neighborhoodSearch;
+            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(getParticleSize() * 3.0f);
+        }
         this->particleCollection = particleCollection;
     }
 

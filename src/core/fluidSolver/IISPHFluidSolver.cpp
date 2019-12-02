@@ -37,6 +37,10 @@ void FluidSolver::IISPHFluidSolver::setTimestep(float timestep) {
 }
 
 void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticleCollection *ParticleCollection) {
+    if (neighborhoodSearch != nullptr) {
+        delete neighborhoodSearch;
+        neighborhoodSearch = new HashedNeighborhoodSearch(this->getParticleSize() * 3);
+    }
     this->ParticleCollection = ParticleCollection;
 }
 
