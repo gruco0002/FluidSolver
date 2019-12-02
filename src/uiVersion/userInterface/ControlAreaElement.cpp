@@ -5,6 +5,7 @@
 #include "ControlAreaElement.hpp"
 #include "SimulationControlElement.hpp"
 #include "ScenarioSelectionElement.hpp"
+#include "SimulationSettingsElement.hpp"
 
 cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
@@ -26,6 +27,7 @@ cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateCo
         top = new Column(std::vector<Element *>({top, new Expanded(new ScrollView(new Column(std::vector<Element *>({
                                                                                                                             new SimulationControlElement(),
                                                                                                                             new ScenarioSelectionElement(),
+                                                                                                                            new SimulationSettingsElement(),
 
                                                                                                                     }),
                                                                                              MainAxisAlignmentStart,

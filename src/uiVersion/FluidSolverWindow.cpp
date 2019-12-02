@@ -408,3 +408,27 @@ FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
     return scenario;
 }
 
+float FluidSolverWindow::GetTimestep() {
+    return simulation->getTimestep();
+}
+
+void FluidSolverWindow::SetTimestep(float timestep) {
+    simulation->setTimestep(timestep);
+}
+
+float FluidSolverWindow::GetRestDensity() {
+    return simulation->getRestDensity();
+}
+
+void FluidSolverWindow::SetRestDensity(float restdensity) {
+    simulation->setRestDensity(restdensity);
+}
+
+FluidSolver::IFluidSolver *FluidSolverWindow::GetFluidSolver() {
+    return simulation->getFluidSolver();
+}
+
+void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolver *solver) {
+    simulation->setFluidSolver(solver);
+}
+

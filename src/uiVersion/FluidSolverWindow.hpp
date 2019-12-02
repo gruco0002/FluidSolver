@@ -67,7 +67,19 @@ public:
 
     void SetScenario(FluidSolver::Scenario *scenario);
 
-    FluidSolver::Scenario* GetScenario();
+    FluidSolver::Scenario *GetScenario();
+
+    float GetTimestep();
+
+    void SetTimestep(float timestep);
+
+    float GetRestDensity();
+
+    void SetRestDensity(float restdensity);
+
+    FluidSolver::IFluidSolver *GetFluidSolver();
+
+    void SetFluidSolver(FluidSolver::IFluidSolver *solver);
 
 private:
 

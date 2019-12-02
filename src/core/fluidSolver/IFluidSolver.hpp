@@ -33,6 +33,8 @@ namespace FluidSolver {
 
         virtual void setGravity(float gravity) = 0;
 
+        virtual ~IFluidSolver() = default;
+
 
     };
 
