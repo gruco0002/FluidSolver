@@ -25,3 +25,12 @@ cppgui::ElementState *FluidUI::RootElement::CreateState() {
 bool FluidUI::RootElement::StateMatchElement(cppgui::ElementState *state) {
     return dynamic_cast<RootState *>(state) != nullptr;
 }
+
+void FluidUI::RootElement::RootState::InitState(cppgui::StateContext stateContext) {
+    ElementState::InitState(stateContext);
+    this->TickerNotificationTime = 0.05f;
+}
+
+void FluidUI::RootElement::RootState::OnTick() {
+    OnStateChanged();
+}

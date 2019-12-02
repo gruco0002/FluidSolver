@@ -13,9 +13,14 @@ namespace FluidUI {
 
 
     public:
-        class RootState : public cppgui::ElementState {
+        class RootState : public cppgui::ElementStateWithTicker {
         public:
             FluidSolverWindow *fluidSolverWindow = nullptr;
+
+            void InitState(cppgui::StateContext stateContext) override;
+
+        protected:
+            void OnTick() override;
         };
 
     protected:
