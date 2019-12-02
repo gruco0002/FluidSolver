@@ -8,7 +8,7 @@
 cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
 
-    Element* top =  new Row(std::vector<Element*>(
+    Element* top =  new Container(new Row(std::vector<Element*>(
                                                            {
                                                                new Padding(new Text("Fluid Solver", 25.0f),
                                                                         Padding::Border(5.0f, 10.0f)),
@@ -17,8 +17,8 @@ cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateCo
                                                                     new Button(new Icon(new GuiIconSource(GetState()->Expanded?"keyboard_arrow_right" : "keyboard_arrow_left")), [=]() {
                                                                         GetState()->Expanded = !GetState()->Expanded;
                                                                         OnStateChanged();
-                                                                    }), Padding::Border(5.0f, 10.0f)),
-                                                           }), MainAxisAlignmentSpaceBetween)
+                                                                    }), Padding::Border(5.0f, 0)),
+                                                           }), MainAxisAlignmentSpaceBetween, CrossAxisAlignmentCenter), Colors::Transparent(), NullValue, 50.0f)
 
                                            ;
     if (GetState()->Expanded) {
