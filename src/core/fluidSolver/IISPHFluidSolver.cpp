@@ -374,7 +374,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
         if(densityErrorCounter != 0) {
             // post calculations: calculate arithmetic average density error
             predictedDensityError = predictedDensityError / (float) densityErrorCounter;
-            std::cout << iteration << "\t" << predictedDensityError << std::endl;
+            //std::cout << iteration << "\t" << predictedDensityError << std::endl;
         }else{
             //std::cout << iteration << "\t" << "No particles contributing to density error" << std::endl;
         }
