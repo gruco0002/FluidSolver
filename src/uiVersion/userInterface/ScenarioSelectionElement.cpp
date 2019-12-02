@@ -9,10 +9,12 @@ cppgui::Element *FluidUI::ScenarioSelectionElement::Build(cppgui::StateContext s
     using namespace cppgui;
 
     auto root = stateContext.FindAncestor<RootElement::RootState>();
+    auto theme = stateContext.FindAncestor<Theme::ThemeData>();
 
 
     std::vector<Element *> scenarioButtonList;
     scenarioButtonList.push_back(BuildScenarioInfo(stateContext));
+    scenarioButtonList.push_back(new Padding(new Text("Load Scenarios", theme->ControlFontSize), Padding::Border(0, 5)));
     for (FluidSolver::Scenario *ele: root->fluidSolverWindow->Scenarios) {
         scenarioButtonList.push_back(new Button(new Text(ele->GetName()), [=]() {
             root->fluidSolverWindow->SetScenario(ele);
@@ -40,17 +42,17 @@ FluidUI::ScenarioSelectionElement::ScenarioSelectionElementState *FluidUI::Scena
 }
 
 cppgui::Element *FluidUI::ScenarioSelectionElement::BuildScenarioInfo(cppgui::StateContext stateContext) {
+    using namespace cppgui;
     auto root = stateContext.FindAncestor<RootElement::RootState>();
     auto currentScenario = root->fluidSolverWindow->GetScenario();
-
-    using namespace cppgui;
+    auto theme = stateContext.FindAncestor<Theme::ThemeData>();
 
     return new Column(std::vector<Element *>({
 
-                                                     new Text("Current"),
+                                                     new Padding(new Text("Current", theme->ControlFontSize), Padding::Border(0,0,0, 5)),
                                                      new Row(std::vector<Element *>({
 
-                                                                                            new Column(
+                                                                                            new Padding(new Column(
                                                                                                     std::vector<Element *>(
                                                                                                             {
                                                                                                                     new Text(
@@ -61,6 +63,9 @@ cppgui::Element *FluidUI::ScenarioSelectionElement::BuildScenarioInfo(cppgui::St
                                                                                                     MainAxisAlignmentStart,
                                                                                                     CrossAxisAlignmentStart,
                                                                                                     AxisSizeMin),
+                                                                                                        Padding::Border(
+                                                                                                                0, 5, 0,
+                                                                                                                0)),
                                                                                             new Column(
                                                                                                     std::vector<Element *>(
                                                                                                             {
