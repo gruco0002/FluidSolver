@@ -10,6 +10,7 @@ ParticleVertexArray::ParticleVertexArray(FluidSolver::SimpleParticleCollection *
 }
 
 void ParticleVertexArray::Update() {
+    this->particleCount = simpleParticleCollection->GetSize();
     vertexBuffer->UpdateData(simpleParticleCollection->GetParticles());
 }
 

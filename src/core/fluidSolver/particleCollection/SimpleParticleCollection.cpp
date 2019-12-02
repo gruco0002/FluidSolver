@@ -75,6 +75,7 @@ namespace FluidSolver {
     }
 
     void SimpleParticleCollection::SetParticles(std::vector<FluidParticle> &input) {
+        particles.clear();
         particles = input;
     }
 
