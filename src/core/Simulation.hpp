@@ -76,6 +76,10 @@ namespace FluidSolver {
 
         void removeSimulationModifier(ISimulationModifier *modifier);
 
+        void clearSimulationModifiers();
+
+        void clearExternalForces();
+
         void addExternalForce(IExternalForce *force);
 
         void removeExternalForce(IExternalForce *force);

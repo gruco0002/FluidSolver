@@ -172,3 +172,11 @@ void FluidSolver::Simulation::setGravity(float gravity) {
     if (fluidSolver != nullptr)
         fluidSolver->setGravity(gravity);
 }
+
+void FluidSolver::Simulation::clearSimulationModifiers() {
+    this->simulationModifiers.clear();
+}
+
+void FluidSolver::Simulation::clearExternalForces() {
+    this->externalForces.clear();
+}

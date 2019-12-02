@@ -126,6 +126,9 @@ void FluidSolverWindow::setupSimulation() {
     // set up scenario data
     auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
     simulation->setParticleCollection(particleCollection);
+
+    // add simulation modifiers
+    simulation->clearSimulationModifiers();
     for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
         simulation->addSimulationModifier(mod);
     }
@@ -177,6 +180,12 @@ void FluidSolverWindow::resetData() {
 
     // set up scenario data
     scenario->ResetData(simulation->getParticleCollection(), simulation->getRestDensity());
+
+    // set up simulation modifiers
+    simulation->clearSimulationModifiers();
+    for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
+        simulation->addSimulationModifier(mod);
+    }
 
 
     this->UpdateProjectionMatrices();

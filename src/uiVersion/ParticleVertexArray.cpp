@@ -11,7 +11,13 @@ ParticleVertexArray::ParticleVertexArray(FluidSolver::SimpleParticleCollection *
 
 void ParticleVertexArray::Update() {
     this->particleCount = simpleParticleCollection->GetSize();
-    vertexBuffer->UpdateData(simpleParticleCollection->GetParticles());
+    if (vertexBuffer->GetElementCount() >= this->particleCount) {
+        // the size of the buffer is large enough for the particles: Update the data because it is faster
+        vertexBuffer->UpdateData(simpleParticleCollection->GetParticles());
+    } else {
+        // the buffer is too small, set the data to force a resize
+        vertexBuffer->SetData(simpleParticleCollection->GetParticles());
+    }
 }
 
 void ParticleVertexArray::Draw() {
