@@ -21,6 +21,8 @@ namespace FluidUI {
     protected:
         Element *Build(cppgui::StateContext stateContext) override;
 
+        Element* BuildScenarioInfo(cppgui::StateContext stateContext);
+
         cppgui::ElementState *CreateState() override;
 
         bool StateMatchElement(cppgui::ElementState *state) override;
