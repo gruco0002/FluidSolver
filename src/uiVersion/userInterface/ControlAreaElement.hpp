@@ -10,8 +10,20 @@
 namespace FluidUI {
     class ControlAreaElement : public cppgui::Element{
 
+    private:
+    class ControlAreaElementState: public cppgui::ElementState{
+    public:
+        bool Expanded = true;
+        };
+
+    ControlAreaElementState* GetState();
+
     protected:
         Element *Build(cppgui::StateContext stateContext) override;
+
+        cppgui::ElementState *CreateState() override;
+
+        bool StateMatchElement(cppgui::ElementState *state) override;
 
     };
 }
