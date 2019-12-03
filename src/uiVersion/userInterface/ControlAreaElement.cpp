@@ -6,6 +6,7 @@
 #include "SimulationControlElement.hpp"
 #include "ScenarioSelectionElement.hpp"
 #include "SimulationSettingsElement.hpp"
+#include "FluidSolverElement.hpp"
 
 cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
@@ -28,6 +29,7 @@ cppgui::Element *FluidUI::ControlAreaElement::Build(cppgui::StateContext stateCo
                                                                                                                             new SimulationControlElement(),
                                                                                                                             new ScenarioSelectionElement(),
                                                                                                                             new SimulationSettingsElement(),
+                                                                                                                            new FluidSolverElement(),
 
                                                                                                                     }),
                                                                                              MainAxisAlignmentStart,

@@ -5,6 +5,7 @@
 #include <dependencies/cppgui/library/src/CPPGUI.hpp>
 #include "SimulationSettingsElement.hpp"
 #include "RootElement.hpp"
+#include "CustomTextBox.hpp"
 
 cppgui::Element *FluidUI::SimulationSettingsElement::Build(cppgui::StateContext stateContext) {
     using namespace cppgui;
@@ -12,34 +13,35 @@ cppgui::Element *FluidUI::SimulationSettingsElement::Build(cppgui::StateContext 
     auto theme = stateContext.FindAncestor<Theme::ThemeData>();
 
     auto liste = std::vector<Element *>({
-                                                new Text("Timestep"),
-                                                new TextBox(GetState()->timestepText,
-                                                            [=](std::string newText) {
-                                                                GetState()->timestepText = newText;
-                                                                try {
-                                                                    float value = std::stof(newText);
-                                                                    if (value > 0.0f) {
-                                                                        root->fluidSolverWindow->SetTimestep(value);
-                                                                    }
-                                                                } catch (...) {
+                                                new CustomTextBox("Timestep", GetState()->timestepText,
+                                                                  [=](std::string newText) {
+                                                                      GetState()->timestepText = newText;
+                                                                      try {
+                                                                          float value = std::stof(newText);
+                                                                          if (value > 0.0f) {
+                                                                              root->fluidSolverWindow->SetTimestep(
+                                                                                      value);
+                                                                          }
+                                                                      } catch (...) {
 
-                                                                }
-                                                                OnStateChanged();
-                                                            }),
-                                                new Text("Rest Density"),
-                                                new TextBox(GetState()->restDensityText,
-                                                            [=](std::string newText) {
-                                                                GetState()->restDensityText = newText;
-                                                                try {
-                                                                    float value = std::stof(newText);
-                                                                    if (value > 0.0f) {
-                                                                        root->fluidSolverWindow->SetRestDensity(value);
-                                                                    }
-                                                                } catch (...) {
+                                                                      }
+                                                                      OnStateChanged();
+                                                                  }),
+                                                new CustomTextBox("Rest Density", GetState()->restDensityText,
+                                                                  [=](std::string newText) {
+                                                                      GetState()->restDensityText = newText;
+                                                                      try {
+                                                                          float value = std::stof(newText);
+                                                                          if (value > 0.0f) {
+                                                                              root->fluidSolverWindow->SetRestDensity(
+                                                                                      value);
+                                                                          }
+                                                                      } catch (...) {
 
-                                                                }
-                                                                OnStateChanged();
-                                                            })
+                                                                      }
+                                                                      OnStateChanged();
+                                                                  }),
+
                                         });
 
     return new Expander(new Text("Simulation"),
