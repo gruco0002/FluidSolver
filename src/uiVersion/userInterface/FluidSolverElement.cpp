@@ -54,6 +54,7 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
         sphFluidSolver->StiffnessK = 100000.0f;
         sphFluidSolver->Viscosity = 5.0f;
         root->fluidSolverWindow->SetFluidSolver(sphFluidSolver);
+        delete iisph;
 
         GetState()->FluidSolverChanged(root->fluidSolverWindow->GetFluidSolver());
         OnStateChanged();
@@ -69,6 +70,7 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
         isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
         isphFluidSolver->MinNumberOfIterations = 5;
         root->fluidSolverWindow->SetFluidSolver(isphFluidSolver);
+        delete simple;
 
         GetState()->FluidSolverChanged(root->fluidSolverWindow->GetFluidSolver());
         OnStateChanged();
