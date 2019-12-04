@@ -4,7 +4,7 @@
 
 
 #include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
-#include <core/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <libraries/glm/gtx/matrix_transform_2d.hpp>
 #include <core/interface/Constants.hpp>
 #include "gtest/gtest.h"
