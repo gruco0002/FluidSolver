@@ -24,6 +24,7 @@ namespace FluidUI {
 
             // IISPH Stuff
             std::string minIterationsString = "";
+            std::string maxIterationsString = "";
             std::string maxDensityErrorAllowedString = "";
             std::string omegaString = "";
             std::string gammaString = "";

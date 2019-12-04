@@ -29,6 +29,7 @@ void FluidUI::FluidSolverElement::FluidSolverElementState::FluidSolverChanged(Fl
         this->omegaString = std::to_string(iisph->Omega);
         this->maxDensityErrorAllowedString = std::to_string(iisph->MaxDensityErrorAllowed);
         this->minIterationsString = std::to_string(iisph->MinNumberOfIterations);
+        this->maxIterationsString = std::to_string(iisph->MaxNumberOfIterations);
     } else {
         throw cppgui::GuiException("Fluid solver not supported in gui");
     }
@@ -115,6 +116,20 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
                         int value = std::stoi(newText);
                         if (value >= 0) {
                             iisph->MinNumberOfIterations = value;
+                        }
+                    } catch (...) {
+
+                    }
+                    OnStateChanged();
+                }));
+
+        liste.push_back(
+                new CustomTextBox("Max. Iterations", GetState()->maxIterationsString, [=](std::string newText) {
+                    GetState()->maxIterationsString = newText;
+                    try {
+                        int value = std::stoi(newText);
+                        if (value >= 0) {
+                            iisph->MaxNumberOfIterations = value;
                         }
                     } catch (...) {
 

@@ -267,7 +267,8 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
     float predictedDensityError = 0.0f;
 
     // iteration
-    while (iteration < MinNumberOfIterations || abs(predictedDensityError) > MaxDensityErrorAllowed) {
+    while ((iteration < MinNumberOfIterations || abs(predictedDensityError) > MaxDensityErrorAllowed) &&
+           iteration < MaxNumberOfIterations) {
 
         // pre calculations
         predictedDensityError = 0.0f;
@@ -355,7 +356,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             // Second step: Update pressure
             float particleDiagonalElement = ParticleCollection->GetDiagonalElement(particleIndex);
             float particleSourceTerm = ParticleCollection->GetSourceTerm(particleIndex);
-            if (particleDiagonalElement != 0.0f) {
+            if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
                 float particlePressure = ParticleCollection->GetPressure(particleIndex);
                 float particlePressureNextStep = std::fmax(0.0f, particlePressure + Omega * ((particleSourceTerm - Ap) /
                                                                                              particleDiagonalElement));
@@ -364,23 +365,29 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
             }
 
+            // Info: The calculation of the particle density error is based on the implementation of IISPH by Stefan Band
             // Third step: Calculate predicted density error
-            float particleDensityError = Ap - particleSourceTerm;
-            if (particleDensityError >= 0.0f) {
+            float particleDensityError = std::abs(particleSourceTerm - Ap);
+            if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
+                if (ParticleCollection->GetPressure(particleIndex) == 0.0f) {
+                    // if the new pressure is zero, we do not have a density error
+                    predictedDensityError = 0.0f;
+                }
+
                 predictedDensityError += particleDensityError;
                 densityErrorCounter++;
             }
-            // TODO: check if predicted density error should be the arithmetic average of the particles density errors,
-            //       if it should be an abs value, and if it should only be calculated for particles with neighbors
+
 
         }
 
-        if(densityErrorCounter != 0) {
+        if (densityErrorCounter != 0) {
             // post calculations: calculate arithmetic average density error
             predictedDensityError = predictedDensityError / (float) densityErrorCounter;
-            //std::cout << iteration << "\t" << predictedDensityError << std::endl;
-        }else{
-            //std::cout << iteration << "\t" << "No particles contributing to density error" << std::endl;
+            std::cout << iteration << "\t" << predictedDensityError << std::endl;
+        } else {
+            predictedDensityError = 0.0f;
+            std::cout << iteration << "\t" << "No particles contributing to density error" << std::endl;
         }
 
         // increate iteration count
