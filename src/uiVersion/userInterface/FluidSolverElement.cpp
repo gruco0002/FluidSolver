@@ -30,6 +30,7 @@ void FluidUI::FluidSolverElement::FluidSolverElementState::FluidSolverChanged(Fl
         this->maxDensityErrorAllowedString = std::to_string(iisph->MaxDensityErrorAllowed);
         this->minIterationsString = std::to_string(iisph->MinNumberOfIterations);
         this->maxIterationsString = std::to_string(iisph->MaxNumberOfIterations);
+        this->viscosityString = std::to_string(iisph->Viscosity);
     } else {
         throw cppgui::GuiException("Fluid solver not supported in gui");
     }
@@ -173,6 +174,19 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
                         float value = std::stof(newText);
                         if (value >= 0.0f) {
                             iisph->Omega = value;
+                        }
+                    } catch (...) {
+
+                    }
+                    OnStateChanged();
+                }));
+        liste.push_back(
+                new CustomTextBox("Viscosity", GetState()->viscosityString, [=](std::string newText) {
+                    GetState()->viscosityString = newText;
+                    try {
+                        float value = std::stof(newText);
+                        if (value >= 0.0f) {
+                            iisph->Viscosity = value;
                         }
                     } catch (...) {
 

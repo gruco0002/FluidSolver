@@ -29,6 +29,7 @@ namespace FluidSolver {
 
         void CalculateDensity(uint32_t particleIndex);
         void CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex);
+        glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
         void ComputeSourceTerm(uint32_t particleIndex);
         void ComputeDiagonalElement(uint32_t particleIndex);
         void InitializePressure(uint32_t particleIndex);
@@ -44,6 +45,7 @@ namespace FluidSolver {
 
         float Omega = 1.0f;
         float Gamma = 0.7f;
+        float Viscosity = 5.0f;
 
         float getGravity() override;
 

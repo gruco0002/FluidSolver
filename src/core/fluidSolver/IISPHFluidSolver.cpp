@@ -128,8 +128,10 @@ void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredicted
     auto velocity = ParticleCollection->GetVelocity(particleIndex);
 
     // adding gravity to non pressure acceleration
-    if (type != IParticleCollection::ParticleTypeBoundary)
+    if (type != IParticleCollection::ParticleTypeBoundary) {
         nonPressureAcc += glm::vec2(0.0f, -Gravity);
+        nonPressureAcc += ComputeViscosityAcceleration(particleIndex);
+    }
 
     // calculate predicted velocity
     glm::vec2 predictedVelocity = velocity + Timestep * nonPressureAcc;
@@ -138,6 +140,41 @@ void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredicted
     ParticleCollection->SetPredictedVelocity(particleIndex, predictedVelocity);
     ParticleCollection->SetNonPressureAcceleration(particleIndex, glm::vec2(0.0f));
 }
+
+glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
+    glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
+    glm::vec2 velocity = ParticleCollection->GetVelocity(particleIndex);
+
+
+    glm::vec2 tmp = glm::vec2(0.0f);
+    for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto type = ParticleCollection->GetParticleType(neighbor);
+        if (type == IParticleCollection::ParticleTypeDead) {
+            continue; // don*t calculate unnecessary values for dead particles.
+        }
+
+        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
+        glm::vec2 neighborVelocity = ParticleCollection->GetVelocity(neighbor);
+        float neighborMass = ParticleCollection->GetMass(neighbor);
+        float neighborDensity = ParticleCollection->GetDensity(neighbor);
+
+        if (neighborDensity == 0.0f)
+            continue;
+
+        glm::vec2 vij = velocity - neighborVelocity;
+        glm::vec2 xij = position - neighborPosition;
+
+        tmp += (neighborMass / neighborDensity) *
+               (glm::dot(vij, xij) / (glm::dot(xij, xij) + 0.01f * ParticleSize * ParticleSize)) *
+               kernel->GetKernelDerivativeReversedValue(neighborPosition, position, KernelSupport);
+
+
+    }
+
+    glm::vec2 viscosityAcceleration = 2.0f * Viscosity * tmp;
+    return viscosityAcceleration;
+}
+
 
 void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
     float particleDensity = ParticleCollection->GetDensity(particleIndex);
@@ -397,3 +434,4 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
 
 }
+
