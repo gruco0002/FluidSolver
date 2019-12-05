@@ -78,7 +78,7 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
         OnStateChanged();
     }));
 
-    liste.push_back(new Padding(new Text("Current", theme->ControlFontSize), Padding::Border(0, 0, 0, 5)));
+    liste.push_back(new Padding(new Text("Current", theme->ControlFontSize), Padding::Border(0, 0, 10, 5)));
     if (GetState()->Type == FluidSolverElementState::FluidSolverTypeSimpleSPH) {
         liste.push_back(new Text("Name: Simple SPH Fluid Solver"));
         liste.push_back(
@@ -112,6 +112,7 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
         liste.push_back(new Text("Name: IISPH Fluid Solver"));
         liste.push_back(new Text("Last Iteration Count: " + std::to_string(iisph->getLastIterationCount())));
         liste.push_back(new Text("Last Predicted Density Error: " + std::to_string(iisph->getLastPredictedDensityError())));
+        liste.push_back(new Text("Max Predicted Density Error: " + std::to_string(iisph->getMaxPredictedDensityErrorReached())));
         liste.push_back(
                 new CustomTextBox("Min. Iterations", GetState()->minIterationsString, [=](std::string newText) {
                     GetState()->minIterationsString = newText;

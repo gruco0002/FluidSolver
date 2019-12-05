@@ -42,6 +42,7 @@ void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticle
         neighborhoodSearch = new HashedNeighborhoodSearch(this->getParticleSize() * 3);
     }
     this->ParticleCollection = ParticleCollection;
+    this->maxPredictedDensityErrorReached = 0.0f;
 }
 
 FluidSolver::IParticleCollection *FluidSolver::IISPHFluidSolver::getParticleCollection() {
@@ -433,6 +434,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
     }
 
     lastPredictedDensityError = predictedDensityError;
+    maxPredictedDensityErrorReached = std::max(maxPredictedDensityErrorReached, lastPredictedDensityError);
     lastIterationCount = iteration;
 
 
@@ -444,5 +446,9 @@ float FluidSolver::IISPHFluidSolver::getLastPredictedDensityError() const {
 
 size_t FluidSolver::IISPHFluidSolver::getLastIterationCount() const {
     return lastIterationCount;
+}
+
+float FluidSolver::IISPHFluidSolver::getMaxPredictedDensityErrorReached() const {
+    return maxPredictedDensityErrorReached;
 }
 

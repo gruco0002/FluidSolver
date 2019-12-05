@@ -23,6 +23,11 @@ namespace FluidSolver {
         float NeighborhoodRadius = 0.0f;
 
         float lastPredictedDensityError = 0.0f;
+        float maxPredictedDensityErrorReached = 0.0f;
+    public:
+        float getMaxPredictedDensityErrorReached() const;
+
+    private:
         size_t lastIterationCount = 0;
     public:
         float getLastPredictedDensityError() const;
