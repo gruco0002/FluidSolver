@@ -110,6 +110,8 @@ cppgui::Element *FluidUI::FluidSolverElement::Build(cppgui::StateContext stateCo
 
     } else if (GetState()->Type == FluidSolverElementState::FluidSolverTypeIISPH) {
         liste.push_back(new Text("Name: IISPH Fluid Solver"));
+        liste.push_back(new Text("Last Iteration Count: " + std::to_string(iisph->getLastIterationCount())));
+        liste.push_back(new Text("Last Predicted Density Error: " + std::to_string(iisph->getLastPredictedDensityError())));
         liste.push_back(
                 new CustomTextBox("Min. Iterations", GetState()->minIterationsString, [=](std::string newText) {
                     GetState()->minIterationsString = newText;

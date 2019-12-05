@@ -22,6 +22,15 @@ namespace FluidSolver {
         float KernelSupport = 0.0f;
         float NeighborhoodRadius = 0.0f;
 
+        float lastPredictedDensityError = 0.0f;
+        size_t lastIterationCount = 0;
+    public:
+        float getLastPredictedDensityError() const;
+
+        size_t getLastIterationCount() const;
+
+    private:
+
         IParticleCollection* ParticleCollection = nullptr;
 
         HashedNeighborhoodSearch* neighborhoodSearch = nullptr;

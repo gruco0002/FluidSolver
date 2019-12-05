@@ -432,6 +432,17 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
     }
 
+    lastPredictedDensityError = predictedDensityError;
+    lastIterationCount = iteration;
 
+
+}
+
+float FluidSolver::IISPHFluidSolver::getLastPredictedDensityError() const {
+    return lastPredictedDensityError;
+}
+
+size_t FluidSolver::IISPHFluidSolver::getLastIterationCount() const {
+    return lastIterationCount;
 }
 
