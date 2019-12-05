@@ -15,9 +15,17 @@
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <uiVersion/userInterface/RootElement.hpp>
+#include <thread>
+#include <chrono>
 
 
 void FluidSolverWindow::render() {
+
+    if(this->Pause){
+        // sleep some time to save resources
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    }
+
 
     // particle simulation
     bool simulationStepHappened = false;
