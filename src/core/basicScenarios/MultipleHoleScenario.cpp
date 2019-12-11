@@ -138,11 +138,11 @@ FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *p
 }
 
 int FluidSolver::MultipleHoleScenario::GetParticleCountX() {
-    return 96;
+    return 96 * factor;
 }
 
 int FluidSolver::MultipleHoleScenario::GetParticleCountY() {
-    return 32;
+    return 32 * factor;
 }
 
 std::vector<FluidSolver::ISimulationModifier *> FluidSolver::MultipleHoleScenario::GetSimulationModifiers() {
@@ -154,12 +154,17 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::MultipleHoleScenari
     const float spawnRateRight = 20.0f * factor * factor;
     const glm::vec2 initialSpeed = glm::vec2(0.0f, -6.0f);
 
-    return {new FluidSolver::DeathBox(-0 + yOffset, -2 + xOffset, -36 + yOffset, 98 + xOffset),
+    return {new FluidSolver::DeathBox((-0 + yOffset) * factor, (-2 + xOffset) * factor, (-36 + yOffset) * factor,
+                                      (98 + xOffset) * factor),
 
-            new FluidSolver::SpawnArea(-3 + yOffset, 5 + xOffset, -5 + yOffset, 12 + xOffset, spawnRateLeft, initialSpeed),
-            new FluidSolver::SpawnArea(-3 + yOffset, 43 + xOffset, -5 + yOffset, 62 + xOffset, spawnRateMiddle, initialSpeed),
-            new FluidSolver::SpawnArea(-3 + yOffset, 80 + xOffset, -5 + yOffset, 84 + xOffset, spawnRateRight, initialSpeed),
-            new FluidSolver::SpawnArea(-3 + yOffset, 89 + xOffset, -5 + yOffset, 92 + xOffset, spawnRateRight, initialSpeed)
+            new FluidSolver::SpawnArea((-3 + yOffset) * factor, (5 + xOffset) * factor, (-5 + yOffset) * factor,
+                                       (12 + xOffset) * factor, spawnRateLeft, initialSpeed),
+            new FluidSolver::SpawnArea((-3 + yOffset) * factor, (43 + xOffset) * factor, (-5 + yOffset) * factor,
+                                       (62 + xOffset) * factor, spawnRateMiddle, initialSpeed),
+            new FluidSolver::SpawnArea((-3 + yOffset) * factor, (80 + xOffset) * factor, (-5 + yOffset) * factor,
+                                       (84 + xOffset) * factor, spawnRateRight, initialSpeed),
+            new FluidSolver::SpawnArea((-3 + yOffset) * factor, (89 + xOffset) * factor, (-5 + yOffset) * factor,
+                                       (92 + xOffset) * factor, spawnRateRight, initialSpeed)
     };
 }
 
@@ -177,14 +182,14 @@ FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::SimpleParticleCo
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
 
-    for(int i = 0; i < factor; i++){
-        for(int j = 0; j < factor; j++){
-            float calcX = GetParticleSize() * i;
-            float calcY =  GetParticleSize() * j;
+    for (int i = 0; i < factor; i++) {
+        for (int j = 0; j < factor; j++) {
+            float calcX = 1.0f / (float)factor * i;
+            float calcY = 1.0f / (float)factor * j;
             calcX -= 0.5f;
             calcY -= 0.5f;
 
-            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) +calcY);
+            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) + calcY) * (float) factor;
             particles->push_back(p);
         }
     }
@@ -204,14 +209,14 @@ void FluidSolver::MultipleHoleScenario::addBoundary(
     p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
 
 
-    for(int i = 0; i < factor; i++){
-        for(int j = 0; j < factor; j++){
-            float calcX = GetParticleSize() * i;
-            float calcY =  GetParticleSize() * j;
+    for (int i = 0; i < factor; i++) {
+        for (int j = 0; j < factor; j++) {
+            float calcX = 1.0f / (float)factor * i;
+            float calcY = 1.0f / (float)factor * j;
             calcX -= 0.5f;
             calcY -= 0.5f;
 
-            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) +calcY);
+            p.Position = glm::vec2(((float) x) + calcX, (-(float) y) + calcY) * (float) factor;
             particles->push_back(p);
         }
     }
@@ -224,7 +229,7 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimplePartic
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
     FluidSolver::SimpleParticleCollection::FluidParticle p;
-    p.Position = glm::vec2(0.0f, 0.0f);
+    p.Position = glm::vec2(0.0f, 0.0f) * (float) factor;
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);
     p.Pressure = 0.0f;
@@ -232,13 +237,13 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimplePartic
     p.Mass = mass;
     p.Type = FluidSolver::IParticleCollection::ParticleTypeDead;
 
-    for(int i = 0; i < factor; i++){
+    for (int i = 0; i < factor; i++) {
         particles->push_back(p);
     }
 }
 
 float FluidSolver::MultipleHoleScenario::GetParticleSize() {
-    return 1.0f / (float) factor;
+    return 1.0f;
 }
 
 std::string FluidSolver::MultipleHoleScenario::GetName() {
