@@ -30,6 +30,7 @@
 #include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
 #include <core/basicScenarios/SimpleDamScenario.hpp>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
+#include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
 
 namespace FluidUI {
     class RootElement;
@@ -58,6 +59,7 @@ public:
                                                                                                   new FluidSolver::BoxWithHoleScenario(),
                                                                                                   new FluidSolver::MultipleHoleScenario(),
                                                                                                   new FluidSolver::SimpleBoxScenarioSmallerParticles(),
+                                                                                                  new FluidSolver::SimpleBoxScenarioLargerParticles(),
                                                                                                   new FluidSolver::SimpleDamScenario(),
                                                                                                   new FluidSolver::HugeDamScenario(),
                                                                                                   new FluidSolver::BoundaryTestScenario(),
