@@ -402,6 +402,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
                 // update pressure
                 ParticleCollection->SetPressure(particleIndex, particlePressureNextStep);
 
+            } else {
+                // otherwise set pressure to zero
+                ParticleCollection->SetPressure(particleIndex, 0.0f);
             }
 
             // Info: The calculation of the particle density error is based on the implementation of IISPH by Stefan Band
