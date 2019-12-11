@@ -110,7 +110,7 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
     }
     glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
 
-    double density = 0.0f;
+    float density = 0.0f;
     for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
         auto type = ParticleCollection->GetParticleType(neighbor);
         if (type == IParticleCollection::ParticleTypeDead) {
@@ -184,7 +184,7 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
     glm::vec2 particlePredictedVelocity = ParticleCollection->GetPredictedVelocity(particleIndex);
     glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
-    double sum = 0.0f;
+    float sum = 0.0f;
     for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
         auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
         if (neighborType == IParticleCollection::ParticleTypeDead)
@@ -202,14 +202,14 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
 
     }
 
-    double sourceTerm = RestDensity - particleDensity - Timestep * sum;
+    float sourceTerm = RestDensity - particleDensity - Timestep * sum;
 
     ParticleCollection->SetSourceTerm(particleIndex, sourceTerm);
 
 }
 
 void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleIndex) {
-    double sum = 0.0f;
+    float sum = 0.0f;
     glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
     float particleMass = ParticleCollection->GetMass(particleIndex);
 
@@ -222,7 +222,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         float neighborMass = ParticleCollection->GetMass(neighborIndex);
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
 
-        glm::dvec2 internalSum = glm::dvec2(0.0f);
+        glm::vec2 internalSum = glm::vec2(0.0f);
         for (uint32_t internalNeighbor: neighborhoodSearch->GetParticleNeighbors(
                 particleIndex)) {
             auto internalNeighborType = ParticleCollection->GetParticleType(internalNeighbor);
@@ -247,7 +247,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         }
 
         sum += neighborMass *
-               glm::dot(-glm::vec2(internalSum.x, internalSum.y), kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
+               glm::dot(-internalSum, kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
                                                                                KernelSupport));
 
 
@@ -274,7 +274,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
     }
 
 
-    double diagonalElement = Timestep * Timestep * sum;
+    float diagonalElement = Timestep * Timestep * sum;
     ParticleCollection->SetDiagonalElement(particleIndex, diagonalElement);
 }
 
@@ -303,7 +303,7 @@ void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
 void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
     size_t iteration = 0;
-    double predictedDensityError = 0.0f;
+    float predictedDensityError = 0.0f;
 
     // iteration
     while ((iteration < MinNumberOfIterations || abs(predictedDensityError) > MaxDensityErrorAllowed) &&
@@ -325,7 +325,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             float particlePressure = ParticleCollection->GetPressure(particleIndex);
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
-            glm::dvec2 sum = glm::dvec2(0.0f);
+            glm::vec2 sum = glm::vec2(0.0f);
             for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
                 auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
                 if (neighborType == IParticleCollection::ParticleTypeDead)
@@ -365,7 +365,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             glm::vec2 particlePressureAcceleration = ParticleCollection->GetAcceleration(particleIndex);
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
-            double sum = 0.0f;
+            float sum = 0.0f;
             for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
                 auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
                 if (neighborType == IParticleCollection::ParticleTypeDead)
@@ -390,14 +390,14 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
                 }
             }
 
-            double Ap = Timestep * Timestep * sum;
+            float Ap = Timestep * Timestep * sum;
 
             // Second step: Update pressure
             float particleDiagonalElement = ParticleCollection->GetDiagonalElement(particleIndex);
             float particleSourceTerm = ParticleCollection->GetSourceTerm(particleIndex);
             if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
                 float particlePressure = ParticleCollection->GetPressure(particleIndex);
-                double particlePressureNextStep = std::fmax(0.0f, particlePressure + Omega * ((particleSourceTerm - Ap) /
+                float particlePressureNextStep = std::fmax(0.0f, particlePressure + Omega * ((particleSourceTerm - Ap) /
                                                                                              particleDiagonalElement));
                 // update pressure
                 ParticleCollection->SetPressure(particleIndex, particlePressureNextStep);
@@ -409,7 +409,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
             // Info: The calculation of the particle density error is based on the implementation of IISPH by Stefan Band
             // Third step: Calculate predicted density error
-            double particleDensityError = std::abs(particleSourceTerm - Ap);
+            float particleDensityError = std::abs(particleSourceTerm - Ap);
             if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
                 if (std::abs(ParticleCollection->GetPressure(particleIndex)) <= std::numeric_limits<float>::epsilon()) {
                     // if the new pressure is zero, we do not have a density error
@@ -425,7 +425,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         if (densityErrorCounter != 0) {
             // post calculations: calculate arithmetic average density error
-            predictedDensityError = predictedDensityError / (double) densityErrorCounter;
+            predictedDensityError = predictedDensityError / (float) densityErrorCounter;
             //std::cout << iteration << "\t" << predictedDensityError << std::endl;
         } else {
             predictedDensityError = 0.0f;
