@@ -9,6 +9,7 @@
 #include <core/interface/IExternalForce.hpp>
 #include <core/interface/ISimulationVisualizer.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
+#include <core/timestep/ITimestep.hpp>
 #include "core/fluidSolver/SPHFluidSolver.hpp"
 
 namespace FluidSolver {
@@ -29,9 +30,10 @@ namespace FluidSolver {
 
         ISimulationVisualizer *simulationVisualizer = nullptr;
 
+        ITimestep *timestep = nullptr;
+
         float particleSize = 1.0f;
         float restDensity = 1.0f;
-        float timestep = 0.001f;
         float gravity = 9.81f;
     public:
         float getGravity() const;
@@ -68,9 +70,9 @@ namespace FluidSolver {
 
         void setRestDensity(float restDensity);
 
-        float getTimestep();
+        ITimestep* getTimestep();
 
-        void setTimestep(float timestep);
+        void setTimestep(ITimestep* timestep);
 
         void addSimulationModifier(ISimulationModifier *modifier);
 

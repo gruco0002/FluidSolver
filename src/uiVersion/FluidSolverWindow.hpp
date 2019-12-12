@@ -71,9 +71,9 @@ public:
 
     FluidSolver::Scenario *GetScenario();
 
-    float GetTimestep();
+    FluidSolver::ITimestep* GetTimestep();
 
-    void SetTimestep(float timestep);
+    void SetTimestep(FluidSolver::ITimestep* timestep);
 
     float GetRestDensity();
 

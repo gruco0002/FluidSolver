@@ -11,6 +11,7 @@
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/Simulation.hpp>
+#include <core/timestep/ConstantTimestep.hpp>
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
     setupOptions(options);
@@ -63,7 +64,7 @@ void FluidSolverConsole::executeSimulation() {
    auto simulation = new FluidSolver::Simulation();
 
     // set particle size and timestep
-    simulation->setTimestep(timestep);
+    simulation->setTimestep(new FluidSolver::ConstantTimestep(timestep));
     simulation->setParticleSize(scenario->GetParticleSize());
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
@@ -99,9 +100,10 @@ void FluidSolverConsole::executeSimulation() {
     float totalTime = 0.0f;
     float lastTimeMessage = 0.0f;
     while (totalTime <= length) {
-        totalTime += simulation->getTimestep();
         simulation->ExecuteSimulationStep();
         simulation->CollectStatistics();
+
+        totalTime += simulation->getTimestep()->getCurrentTimestep();
 
         // messages
         if (totalTime >= lastTimeMessage) {

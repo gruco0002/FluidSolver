@@ -3,6 +3,7 @@
 //
 
 #include <dependencies/cppgui/library/src/CPPGUI.hpp>
+#include <core/timestep/ConstantTimestep.hpp>
 #include "SimulationSettingsElement.hpp"
 #include "RootElement.hpp"
 #include "CustomTextBox.hpp"
@@ -20,7 +21,7 @@ cppgui::Element *FluidUI::SimulationSettingsElement::Build(cppgui::StateContext 
                                                                           float value = std::stof(newText);
                                                                           if (value > 0.0f) {
                                                                               root->fluidSolverWindow->SetTimestep(
-                                                                                      value);
+                                                                                      new FluidSolver::ConstantTimestep(value));
                                                                           }
                                                                       } catch (...) {
 
@@ -67,6 +68,6 @@ FluidUI::SimulationSettingsElement::SimulationSettingsElementState *FluidUI::Sim
 
 void FluidUI::SimulationSettingsElement::SimulationSettingsElementState::InitState(cppgui::StateContext stateContext) {
     auto root = stateContext.FindAncestor<RootElement::RootState>();
-    timestepText = std::to_string(root->fluidSolverWindow->GetTimestep());
+    timestepText = std::to_string(root->fluidSolverWindow->GetTimestep()->getCurrentTimestep());
     restDensityText = std::to_string(root->fluidSolverWindow->GetRestDensity());
 }

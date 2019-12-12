@@ -17,11 +17,12 @@
 #include <uiVersion/userInterface/RootElement.hpp>
 #include <thread>
 #include <chrono>
+#include <core/timestep/ConstantTimestep.hpp>
 
 
 void FluidSolverWindow::render() {
 
-    if(this->Pause){
+    if (this->Pause) {
         // sleep some time to save resources
         std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
@@ -33,7 +34,7 @@ void FluidSolverWindow::render() {
         if (!this->Pause) {
             accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
 
-            while (accumulatedSimulationTime >= simulation->getTimestep()) {
+            while (accumulatedSimulationTime >= simulation->getTimestep()->getCurrentTimestep()) {
                 //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
                 simulation->ExecuteSimulationStep();
@@ -111,7 +112,7 @@ void FluidSolverWindow::setupSimulation() {
     simulation = new FluidSolver::Simulation();
 
     // set particle size and timestep
-    simulation->setTimestep(0.001f);
+    simulation->setTimestep(new FluidSolver::ConstantTimestep(0.001f));
     simulation->setParticleSize(scenario->GetParticleSize());
     simulation->setRestDensity(1.0f);
     simulation->setGravity(9.81f);
@@ -415,11 +416,12 @@ FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
     return scenario;
 }
 
-float FluidSolverWindow::GetTimestep() {
+FluidSolver::ITimestep *FluidSolverWindow::GetTimestep() {
     return simulation->getTimestep();
 }
 
-void FluidSolverWindow::SetTimestep(float timestep) {
+void FluidSolverWindow::SetTimestep(FluidSolver::ITimestep *timestep) {
+    delete simulation->getTimestep();
     simulation->setTimestep(timestep);
 }
 
