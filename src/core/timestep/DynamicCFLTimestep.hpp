@@ -13,9 +13,23 @@ namespace FluidSolver {
     private:
         float currentTimestep = 0.0f;
 
-        float maximumTimestep = 0.1f;
-        float minimumTimestep = 0.0001f;
+        float MaximumTimestep = 0.1f;
+        float MinimumTimestep = 0.0001f;
         float CFLNumber = 0.4f;
+    public:
+        float getMaximumTimestep() const;
+
+        void setMaximumTimestep(float maximumTimestep);
+
+        float getMinimumTimestep() const;
+
+        void setMinimumTimestep(float minimumTimestep);
+
+        float getCflNumber() const;
+
+        void setCflNumber(float cflNumber);
+
+    private:
 
         float CalculateMaximumVelocity();
 

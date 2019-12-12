@@ -7,11 +7,11 @@
 
 void FluidSolver::DynamicCFLTimestep::CalculateCurrentTimestep() {
     float maxVelocity = CalculateMaximumVelocity();
-    float timestep = minimumTimestep;
+    float timestep = MinimumTimestep;
     if (maxVelocity > std::numeric_limits<float>::epsilon()) {
         // try to obtain cfl number
         timestep = CFLNumber * ParticleSize / maxVelocity;
-        timestep = std::min(maximumTimestep, std::max(minimumTimestep, timestep));
+        timestep = std::min(MaximumTimestep, std::max(MinimumTimestep, timestep));
     }
     currentTimestep = timestep;
 }
@@ -32,4 +32,28 @@ float FluidSolver::DynamicCFLTimestep::CalculateMaximumVelocity() {
         maximum = std::max(maximum, glm::length(velocity));
     }
     return maximum;
+}
+
+float FluidSolver::DynamicCFLTimestep::getMaximumTimestep() const {
+    return MaximumTimestep;
+}
+
+void FluidSolver::DynamicCFLTimestep::setMaximumTimestep(float maximumTimestep) {
+    MaximumTimestep = maximumTimestep;
+}
+
+float FluidSolver::DynamicCFLTimestep::getMinimumTimestep() const {
+    return MinimumTimestep;
+}
+
+void FluidSolver::DynamicCFLTimestep::setMinimumTimestep(float minimumTimestep) {
+    MinimumTimestep = minimumTimestep;
+}
+
+float FluidSolver::DynamicCFLTimestep::getCflNumber() const {
+    return CFLNumber;
+}
+
+void FluidSolver::DynamicCFLTimestep::setCflNumber(float cflNumber) {
+    CFLNumber = cflNumber;
 }
