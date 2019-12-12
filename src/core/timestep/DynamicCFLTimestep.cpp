@@ -57,3 +57,8 @@ float FluidSolver::DynamicCFLTimestep::getCflNumber() const {
 void FluidSolver::DynamicCFLTimestep::setCflNumber(float cflNumber) {
     CFLNumber = cflNumber;
 }
+
+FluidSolver::DynamicCFLTimestep::DynamicCFLTimestep(float maximumTimestep, float minimumTimestep, float cflNumber)
+        : MaximumTimestep(maximumTimestep), MinimumTimestep(minimumTimestep), CFLNumber(cflNumber) {}
+
+FluidSolver::DynamicCFLTimestep::DynamicCFLTimestep() {}

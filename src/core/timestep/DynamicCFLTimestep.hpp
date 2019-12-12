@@ -17,6 +17,10 @@ namespace FluidSolver {
         float MinimumTimestep = 0.0001f;
         float CFLNumber = 0.4f;
     public:
+        DynamicCFLTimestep(float maximumTimestep, float minimumTimestep, float cflNumber);
+
+        explicit DynamicCFLTimestep();
+
         float getMaximumTimestep() const;
 
         void setMaximumTimestep(float maximumTimestep);

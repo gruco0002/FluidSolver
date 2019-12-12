@@ -421,7 +421,6 @@ FluidSolver::ITimestep *FluidSolverWindow::GetTimestep() {
 }
 
 void FluidSolverWindow::SetTimestep(FluidSolver::ITimestep *timestep) {
-    delete simulation->getTimestep();
     simulation->setTimestep(timestep);
 }
 
