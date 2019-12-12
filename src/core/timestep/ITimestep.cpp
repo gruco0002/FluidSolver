@@ -15,3 +15,11 @@ FluidSolver::IParticleCollection *FluidSolver::ITimestep::getParticleCollection(
 FluidSolver::ITimestep::~ITimestep() {
 
 }
+
+float FluidSolver::ITimestep::getParticleSize() const {
+    return ParticleSize;
+}
+
+void FluidSolver::ITimestep::setParticleSize(float particleSize) {
+    ParticleSize = particleSize;
+}

@@ -12,6 +12,13 @@ namespace FluidSolver {
 
     protected:
         IParticleCollection *particleCollection = nullptr;
+
+        float ParticleSize = 1.0f;
+    public:
+        float getParticleSize() const;
+
+        void setParticleSize(float particleSize);
+
     public:
 
         virtual IParticleCollection *getParticleCollection();

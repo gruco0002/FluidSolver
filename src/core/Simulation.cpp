@@ -127,6 +127,8 @@ void FluidSolver::Simulation::setParticleSize(float particleSize) {
         statisticCollector->setParticleSize(particleSize);
     if (simulationVisualizer != nullptr)
         simulationVisualizer->setParticleSize(particleSize);
+    if (timestep != nullptr)
+        timestep->setParticleSize(particleSize);
 }
 
 float FluidSolver::Simulation::getRestDensity() {
@@ -147,8 +149,10 @@ FluidSolver::ITimestep *FluidSolver::Simulation::getTimestep() {
 
 void FluidSolver::Simulation::setTimestep(ITimestep *timestep) {
     this->timestep = timestep;
-    if (timestep != nullptr)
+    if (timestep != nullptr) {
         timestep->setParticleCollection(particleCollection);
+        timestep->setParticleSize(particleSize);
+    }
 }
 
 void FluidSolver::Simulation::addSimulationModifier(FluidSolver::ISimulationModifier *modifier) {
