@@ -413,7 +413,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
                 if (std::abs(ParticleCollection->GetPressure(particleIndex)) <= std::numeric_limits<float>::epsilon()) {
                     // if the new pressure is zero, we do not have a density error
-                    predictedDensityError = 0.0f;
+                    particleDensityError = 0.0f;
                 }
 
                 predictedDensityError += particleDensityError;
