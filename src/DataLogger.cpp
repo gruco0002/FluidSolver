@@ -2,6 +2,7 @@
 // Created by corbi on 28.05.2019.
 //
 
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include "DataLogger.hpp"
 
 DataLogger::DataLogger(const std::string &fileName) : fileName(fileName) {}
@@ -10,14 +11,23 @@ void DataLogger::StartLogging() {
     // open file
     myFile.open(fileName);
 
+    std::string header = "Time(s);Average Density;Relative Energy;Kinetic Energy;Potential Energy;Maximal Velocity;CFL Number;Dead Particles";
+
+    if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {
+        auto solver = dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver);
+        // nothing to do
+    } else if (dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver) != nullptr) {
+        auto solver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver);
+        header.append(";SolverIterations;PredictedDensityError");
+    }
+
     // write header
-    myFile
-            << "Time(s);Average Density;Relative Energy;Kinetic Energy;Potential Energy;Maximal Velocity;CFL Number;Dead Particles"
-            << std::endl;
+    myFile << header << std::endl;
 
     // reset data
     currentTime = 0;
-    startEnergy = StatisticCollector->CalculateEnergy();
+    StatisticCollector->CalculateData();
+    startEnergy = StatisticCollector->getCalculatedEnergy();
 
     // initial log
     calculateAndLogData();
@@ -34,29 +44,44 @@ void DataLogger::FinishLogging() {
     myFile.close();
 }
 
-void DataLogger::log(float time, float avgDensity, float energy, float kineticEnergy, float potentialEnergy,
-                     float maxVelocity, float cflNumber, uint32_t deadParticleCount) {
-    myFile << std::to_string(time) << ";" << std::to_string(avgDensity) << ";" << std::to_string(energy) << ";"
-           << std::to_string(kineticEnergy) << ";" << std::to_string(potentialEnergy) << ";"
-           << std::to_string(maxVelocity) << ";" << std::to_string(cflNumber) << ";"
-           << std::to_string(deadParticleCount)
-           << std::endl;
-    if (alwaysFlush)
-        myFile.flush();
-}
 
 void DataLogger::calculateAndLogData() {
 
-    float currentKineticEnergy = StatisticCollector->CalculateKineticEnergy();
-    float currentPotentialEnergy = StatisticCollector->CalculatePotentialEnergy();
-    float averageDensity = StatisticCollector->CalculateAverageDensity();
-    float totalEnergy = StatisticCollector->CalculateEnergy(currentKineticEnergy, currentPotentialEnergy);
-    float maxVelocity = StatisticCollector->CalculateMaximumVelocity();
-    float cflNumber = StatisticCollector->GetCFLNumber(maxVelocity);
-    uint32_t deadParticles = StatisticCollector->GetDeadParticleCount();
+    // get values
+    float currentKineticEnergy = StatisticCollector->getCalculatedKineticEnergy();
+    float currentPotentialEnergy = StatisticCollector->getCalculatedPotentialEnergy();
+    float averageDensity = StatisticCollector->getCalculatedAverageDensity();
+    float totalEnergy = StatisticCollector->getCalculatedEnergy();
+    float maxVelocity = StatisticCollector->getCalculatedMaximumVelocity();
+    float cflNumber = StatisticCollector->getCalculatedCflNumber();
+    uint32_t deadParticles = StatisticCollector->getCalculatedDeadParticleCount();
 
-    log(currentTime, averageDensity, totalEnergy - startEnergy, currentKineticEnergy, currentPotentialEnergy,
-        maxVelocity, cflNumber, deadParticles);
+    // calculate relative energy
+    float relativeEnergy = totalEnergy - startEnergy;
+
+    // create basic data
+    std::string data = std::to_string(currentTime) + ";" + std::to_string(averageDensity) + ";"
+                       + std::to_string(relativeEnergy) + ";"
+                       + std::to_string(currentKineticEnergy) + ";" + std::to_string(currentPotentialEnergy) + ";"
+                       + std::to_string(maxVelocity) + ";" + std::to_string(cflNumber) + ";"
+                       + std::to_string(deadParticles);
+
+    // append data based on solver type
+    if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {
+        auto solver = dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver);
+        // nothing to do
+    } else if (dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver) != nullptr) {
+        auto solver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver);
+        data.append(";" + std::to_string(solver->getLastIterationCount()));
+        data.append(";" + std::to_string(solver->getLastPredictedDensityError()));
+    }
+
+    // write data
+    myFile << data << std::endl;
+
+
+    if (alwaysFlush)
+        myFile.flush();
 }
 
 FluidSolver::StatisticCollector *DataLogger::getStatisticCollector() const {
@@ -73,5 +98,13 @@ float DataLogger::getTimestep() const {
 
 void DataLogger::setTimestep(float timestep) {
     Timestep = timestep;
+}
+
+FluidSolver::IFluidSolver *DataLogger::getFluidSolver() const {
+    return FluidSolver;
+}
+
+void DataLogger::setFluidSolver(FluidSolver::IFluidSolver *fluidSolver) {
+    FluidSolver = fluidSolver;
 }
 

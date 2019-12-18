@@ -18,6 +18,41 @@ namespace FluidSolver {
 
         float zeroHeight = -500.0f;
 
+        void CalculateData();
+
+    private:
+
+        float calculatedAverageDensity = 0.0f;
+        float calculatedEnergy = 0.0f;
+        float calculatedMaximumVelocity = 0.0f;
+        uint32_t calculatedDeadParticleCount = 0;
+        float calculatedKineticEnergy = 0.0f;
+        float calculatedPotentialEnergy = 0.0f;
+        uint32_t calculatedBoundaryParticleCount = 0;
+        uint32_t calculatedNormalParticleCount = 0;
+        float calculatedCFLNumber = 0.0f;
+    public:
+        float getCalculatedAverageDensity() const;
+
+        float getCalculatedEnergy() const;
+
+        float getCalculatedMaximumVelocity() const;
+
+        uint32_t getCalculatedDeadParticleCount() const;
+
+        float getCalculatedKineticEnergy() const;
+
+        float getCalculatedPotentialEnergy() const;
+
+        uint32_t getCalculatedBoundaryParticleCount() const;
+
+        uint32_t getCalculatedNormalParticleCount() const;
+
+        float getCalculatedCflNumber() const;
+
+    private:
+
+
         /**
          * Calculates the average density. Boundary Particles and Particles with Density Below the Rest Density are ignored.
          * @return
@@ -65,13 +100,15 @@ namespace FluidSolver {
 
         float GetCFLNumber(float maximumVelocity);
 
-    private:
+
         IParticleCollection *particleCollection = nullptr;
 
         float Timestep = 0.0f;
         float ParticleSize = 1.0f;
         float Gravity = 0.0f;
         float RestDensity = 1.0f;
+
+
     public:
         float getRestDensity() const;
 

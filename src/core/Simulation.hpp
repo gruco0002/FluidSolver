@@ -70,9 +70,9 @@ namespace FluidSolver {
 
         void setRestDensity(float restDensity);
 
-        ITimestep* getTimestep();
+        ITimestep *getTimestep();
 
-        void setTimestep(ITimestep* timestep);
+        void setTimestep(ITimestep *timestep);
 
         void addSimulationModifier(ISimulationModifier *modifier);
 

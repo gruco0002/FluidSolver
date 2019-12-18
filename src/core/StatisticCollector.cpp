@@ -187,3 +187,51 @@ float StatisticCollector::getRestDensity() const {
 void StatisticCollector::setRestDensity(float restDensity) {
     RestDensity = restDensity;
 }
+
+void StatisticCollector::CalculateData() {
+    calculatedKineticEnergy = CalculateKineticEnergy();
+    calculatedPotentialEnergy = CalculatePotentialEnergy();
+    calculatedAverageDensity = CalculateAverageDensity();
+    calculatedEnergy = CalculateEnergy(calculatedKineticEnergy, calculatedPotentialEnergy);
+    calculatedMaximumVelocity = CalculateMaximumVelocity();
+    calculatedCFLNumber = GetCFLNumber(calculatedMaximumVelocity);
+    calculatedDeadParticleCount = GetDeadParticleCount();
+    calculatedBoundaryParticleCount = GetBoundaryParticleCount();
+    calculatedNormalParticleCount = GetNormalParticleCount();
+}
+
+float StatisticCollector::getCalculatedAverageDensity() const {
+    return calculatedAverageDensity;
+}
+
+float StatisticCollector::getCalculatedEnergy() const {
+    return calculatedEnergy;
+}
+
+float StatisticCollector::getCalculatedMaximumVelocity() const {
+    return calculatedMaximumVelocity;
+}
+
+uint32_t StatisticCollector::getCalculatedDeadParticleCount() const {
+    return calculatedDeadParticleCount;
+}
+
+float StatisticCollector::getCalculatedKineticEnergy() const {
+    return calculatedKineticEnergy;
+}
+
+float StatisticCollector::getCalculatedPotentialEnergy() const {
+    return calculatedPotentialEnergy;
+}
+
+uint32_t StatisticCollector::getCalculatedBoundaryParticleCount() const {
+    return calculatedBoundaryParticleCount;
+}
+
+uint32_t StatisticCollector::getCalculatedNormalParticleCount() const {
+    return calculatedNormalParticleCount;
+}
+
+float StatisticCollector::getCalculatedCflNumber() const {
+    return calculatedCFLNumber;
+}

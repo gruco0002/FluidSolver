@@ -17,7 +17,6 @@ public:
 
     explicit DataLogger(const std::string &fileName);
 
-
     std::string fileName = "data.csv";
 
     bool alwaysFlush = true;
@@ -28,34 +27,33 @@ public:
 
     void FinishLogging();
 
-private:
+    FluidSolver::IFluidSolver *getFluidSolver() const;
 
-    FluidSolver::StatisticCollector *StatisticCollector = nullptr;
-    float Timestep = 0.0f;
+    void setFluidSolver(FluidSolver::IFluidSolver *fluidSolver);
 
-public:
     float getTimestep() const;
 
     void setTimestep(float timestep);
 
-public:
     FluidSolver::StatisticCollector *getStatisticCollector() const;
 
     void setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector);
 
 private:
 
+    FluidSolver::StatisticCollector *StatisticCollector = nullptr;
+
+    float Timestep = 0.0f;
+
+    FluidSolver::IFluidSolver *FluidSolver = nullptr;
+
     std::ofstream myFile;
 
-    float startEnergy;
+    float startEnergy = 0.0f;
 
-    float currentTime;
-
-    void log(float time, float avgDensity, float energy, float kineticEnergy, float potentialEnergy, float maxVelocity,
-             float cflNumber, uint32_t deadParticleCount);
+    float currentTime = 0.0f;
 
     void calculateAndLogData();
-
 
 };
 
