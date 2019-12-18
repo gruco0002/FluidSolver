@@ -122,8 +122,11 @@ FluidSolver::ISimulationVisualizer *FluidSolver::Simulation::getSimulationVisual
 
 void FluidSolver::Simulation::setSimulationVisualizer(FluidSolver::ISimulationVisualizer *simulationVisualizer) {
     this->simulationVisualizer = simulationVisualizer;
-    simulationVisualizer->setParticleCollection(this->particleCollection);
-    simulationVisualizer->setParticleSize(particleSize);
+    if (simulationVisualizer != nullptr) {
+        simulationVisualizer->setParticleCollection(this->particleCollection);
+        simulationVisualizer->setParticleSize(particleSize);
+        simulationVisualizer->setRestDensity(restDensity);
+    }
 }
 
 float FluidSolver::Simulation::getParticleSize() {
@@ -152,6 +155,8 @@ void FluidSolver::Simulation::setRestDensity(float restDensity) {
         fluidSolver->setRestDensity(restDensity);
     if (statisticCollector != nullptr)
         statisticCollector->setRestDensity(restDensity);
+    if (simulationVisualizer != nullptr)
+        simulationVisualizer->setRestDensity(restDensity);
 }
 
 FluidSolver::ITimestep *FluidSolver::Simulation::getTimestep() {
