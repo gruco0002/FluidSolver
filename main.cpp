@@ -4,7 +4,9 @@
 #include <FluidSolverConsole.hpp>
 
 void printHelp(cxxopts::Options &options) {
-    std::cout << std::endl << options.help({"", "Simulation"}) << std::endl;
+    std::cout << std::endl << options.help(
+            {"", "Simulation", "FluidSolver: SimpleSPH", "FluidSolver: IISPH", "Timestep: Constant",
+             "Timestep: DynamicCFL"}) << std::endl;
 }
 
 int main(int argc, char *argv[]) {
