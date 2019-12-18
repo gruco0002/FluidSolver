@@ -19,6 +19,10 @@ namespace FluidSolver {
 
         virtual float getParticleSize() = 0;
 
+        virtual float getRestDensity() = 0;
+
+        virtual void setRestDensity(float restDensity) = 0;
+
         virtual void Render() = 0;
 
     };

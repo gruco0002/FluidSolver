@@ -22,8 +22,7 @@ public:
     };
 
 
-    ParticleRenderer(glm::mat4 projectionMatrix);
-
+    explicit ParticleRenderer(glm::mat4 projectionMatrix);
 
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
@@ -50,11 +49,17 @@ public:
     glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
 
-private:
-public:
     void setParticleSize(float particleSize) override;
 
     float getParticleSize() override;
+
+    float getRestDensity() override;
+
+    void setRestDensity(float restDensity) override;
+
+    void setParticleCollection(FluidSolver::IParticleCollection *particleCollection) override;
+
+    FluidSolver::IParticleCollection *getParticleCollection() override;
 
 private:
 
@@ -62,13 +67,11 @@ private:
 
     Engine::Graphics::Shader *particleShader = nullptr;
 
-    FluidSolver::IParticleCollection* ParticleCollection = nullptr;
-public:
-    void setParticleCollection(FluidSolver::IParticleCollection *particleCollection) override;
+    FluidSolver::IParticleCollection *ParticleCollection = nullptr;
 
-    FluidSolver::IParticleCollection *getParticleCollection() override;
 
-private:
+    float RestDensity = 0.0f;
+
 
     void Generate();
 

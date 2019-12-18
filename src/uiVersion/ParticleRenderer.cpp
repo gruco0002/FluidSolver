@@ -228,3 +228,11 @@ void ParticleRenderer::setParticleSize(float particleSize) {
 float ParticleRenderer::getParticleSize() {
     return this->pointSize;
 }
+
+float ParticleRenderer::getRestDensity() {
+    return RestDensity;
+}
+
+void ParticleRenderer::setRestDensity(float restDensity) {
+    RestDensity = restDensity;
+}
