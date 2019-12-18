@@ -28,12 +28,11 @@ public:
 
     void FinishLogging();
 
-    float zeroHeight = -500.0f;
-
 private:
 
-    FluidSolver::StatisticCollector* StatisticCollector = nullptr;
+    FluidSolver::StatisticCollector *StatisticCollector = nullptr;
     float Timestep = 0.0f;
+
 public:
     float getTimestep() const;
 
@@ -52,7 +51,8 @@ private:
 
     float currentTime;
 
-    void log(float time, float avgDensity, float energy, float kineticEnergy, float potentialEnergy, float maxVelocity,  float cflNumber, uint32_t deadParticleCount);
+    void log(float time, float avgDensity, float energy, float kineticEnergy, float potentialEnergy, float maxVelocity,
+             float cflNumber, uint32_t deadParticleCount);
 
     void calculateAndLogData();
 

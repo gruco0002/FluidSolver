@@ -12,7 +12,7 @@ void DataLogger::StartLogging() {
 
     // write header
     myFile
-            << "Time(s);Average Density;Relative Energy;Kinetic Energy;Potential Energy;Maximal Velocity;CFL Number; Dead Particles"
+            << "Time(s);Average Density;Relative Energy;Kinetic Energy;Potential Energy;Maximal Velocity;CFL Number;Dead Particles"
             << std::endl;
 
     // reset data
@@ -38,7 +38,8 @@ void DataLogger::log(float time, float avgDensity, float energy, float kineticEn
                      float maxVelocity, float cflNumber, uint32_t deadParticleCount) {
     myFile << std::to_string(time) << ";" << std::to_string(avgDensity) << ";" << std::to_string(energy) << ";"
            << std::to_string(kineticEnergy) << ";" << std::to_string(potentialEnergy) << ";"
-           << std::to_string(maxVelocity) << ";" << std::to_string(cflNumber) << ";" << std::to_string(deadParticleCount)
+           << std::to_string(maxVelocity) << ";" << std::to_string(cflNumber) << ";"
+           << std::to_string(deadParticleCount)
            << std::endl;
     if (alwaysFlush)
         myFile.flush();
