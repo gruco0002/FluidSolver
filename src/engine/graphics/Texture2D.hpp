@@ -85,6 +85,8 @@ namespace Engine {
 
             void SetData(std::vector<uint8_t> &data);
 
+            void SetData(void *data, size_t length);
+
             std::vector<uint8_t> GetData();
 
             void SaveAsPNG(std::string filepath);
@@ -120,7 +122,7 @@ namespace Engine {
                                       GLenum pixelFormat, GLenum internalPixelFormat, ComponentType pixelDataType);
 
 
-            void FlipYDataOfArray(std::vector<uint8_t>&data);
+            void FlipYDataOfArray(std::vector<uint8_t> &data);
 
         };
     }

@@ -165,12 +165,7 @@ unsigned int Engine::Graphics::Texture2D::GetID() {
 }
 
 void Engine::Graphics::Texture2D::SetData(std::vector<uint8_t> &data) {
-    glBindTexture(GL_TEXTURE_2D, ID);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
-                    pixelFormat, pixelDataType, data.data());
-
-    if (settings != nullptr && settings->GenerateMipmaps)
-        glGenerateMipmap(GL_TEXTURE_2D);
+    SetData(data.data(), data.size());
 }
 
 uint32_t Engine::Graphics::Texture2D::getWidth() const {
@@ -227,4 +222,13 @@ void Engine::Graphics::Texture2D::FlipYDataOfArray(std::vector<uint8_t> &data) {
             }
         }
     }
+}
+
+void Engine::Graphics::Texture2D::SetData(void *data, size_t length) {
+    glBindTexture(GL_TEXTURE_2D, ID);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
+                    pixelFormat, pixelDataType, data);
+
+    if (settings != nullptr && settings->GenerateMipmaps)
+        glGenerateMipmap(GL_TEXTURE_2D);
 }
