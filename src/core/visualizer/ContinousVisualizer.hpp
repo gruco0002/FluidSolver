@@ -27,6 +27,14 @@ namespace FluidSolver {
 
         };
 
+        struct Viewport{
+            float Top = 0.0f;
+            float Left = 0.0f;
+
+            float Width = 0.0f;
+            float Height = 0.0f;
+        };
+
         ContinousVisualizer(size_t width, size_t height);
 
         void setParticleCollection(IParticleCollection *particleCollection) override;
@@ -42,6 +50,12 @@ namespace FluidSolver {
         float getRestDensity() override;
 
         void setRestDensity(float restDensity) override;
+
+        virtual void AfterRender(std::vector<Color> &data);
+
+        Viewport viewport;
+
+        Viewport FitViewportToAspectRation(Viewport value);
 
     private:
 

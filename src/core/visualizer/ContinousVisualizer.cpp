@@ -36,8 +36,8 @@ void FluidSolver::ContinousVisualizer::Render() {
     neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
     neighborhoodSearch->SetupForPositionNeighborSearch(ParticleCollection);
 
-    // clear data (set everything to clear color)
-    std::fill(data.begin(), data.end(), ClearColor);
+    // clear data (set everything to clear color) --> clearing is not needed, since we set each pixel value in the loop
+    //std::fill(data.begin(), data.end(), ClearColor);
 
     // calculate color for each pixel
 #pragma omp parallel for
@@ -47,6 +47,9 @@ void FluidSolver::ContinousVisualizer::Render() {
 
         data[i] = CalculateColorForPixel(x, y);
     }
+
+
+    AfterRender(data);
 
 }
 
@@ -109,7 +112,40 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
 }
 
 glm::vec2 FluidSolver::ContinousVisualizer::CalculatePositionForPixel(size_t x, size_t y) {
-    return glm::vec2();
+    float xCoord = viewport.Left;
+    float yCoord = viewport.Top;
+    xCoord += x / (float) Width * viewport.Width;
+    yCoord += y / (float) Height * viewport.Height;
+    return glm::vec2(xCoord, yCoord);
+}
+
+void FluidSolver::ContinousVisualizer::AfterRender(std::vector<Color> &data) {
+    // do nothing, this is meant for other classes
+}
+
+FluidSolver::ContinousVisualizer::Viewport
+FluidSolver::ContinousVisualizer::FitViewportToAspectRation(FluidSolver::ContinousVisualizer::Viewport value) {
+    Viewport res;
+    res.Top = value.Top;
+    res.Left = value.Left;
+
+    if (value.Width / value.Height * (float) Height < (float) Width) {
+        // height is okay, width must be larger
+        res.Height = value.Height;
+        res.Width = (float) Width / (float) Height * value.Height;
+
+        // center the additional gained width
+        res.Left -= (res.Width - value.Width) / 2.0f;
+    } else {
+        // width is okay, height must be larger
+        res.Width = value.Width;
+        res.Height = (float) Height / (float) Width * value.Width;
+
+        // center the additional gained height
+        res.Top -= (res.Height - value.Height) / 2.0f;
+    }
+    
+    return res;
 }
 
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}
