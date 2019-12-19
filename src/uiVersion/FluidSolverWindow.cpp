@@ -142,7 +142,7 @@ void FluidSolverWindow::setupSimulation() {
     }
 
     // create particle renderer
-    particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    /*particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
     particleRenderer->pointSize = 30.0f;
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Density;
     particleRenderer->topValue = 2.0f;
@@ -150,7 +150,9 @@ void FluidSolverWindow::setupSimulation() {
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
     this->UpdateProjectionMatrices();
-    simulation->setSimulationVisualizer(particleRenderer);
+    simulation->setSimulationVisualizer(particleRenderer);*/
+    visualizerOpenGl = new ContinousVisualizerOpenGL();
+    simulation->setSimulationVisualizer(visualizerOpenGl);
 
 
     // reset simulation time

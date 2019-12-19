@@ -18,6 +18,7 @@
 
 #include <core/fluidSolver/SPHFluidSolver.hpp>
 #include "DataLogger.hpp"
+#include "ContinousVisualizerOpenGL.hpp"
 
 
 #include <engine/graphics/Framebuffer.hpp>
@@ -96,6 +97,7 @@ private:
 
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
+    ContinousVisualizerOpenGL* visualizerOpenGl = nullptr;
 
 
     void UpdateProjectionMatrices();
