@@ -13,9 +13,9 @@ namespace FluidSolver {
     private:
         float currentTimestep = 0.0f;
 
-        float MaximumTimestep = 0.1f;
+        float MaximumTimestep = 0.02f;
         float MinimumTimestep = 0.0001f;
-        float CFLNumber = 0.4f;
+        float CFLNumber = 0.8f;
     public:
         DynamicCFLTimestep(float maximumTimestep, float minimumTimestep, float cflNumber);
 
