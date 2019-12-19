@@ -57,6 +57,14 @@ namespace FluidSolver {
 
         Viewport FitViewportToAspectRation(Viewport value);
 
+        size_t getWidth() const;
+
+        void setWidth(size_t width);
+
+        size_t getHeight() const;
+
+        void setHeight(size_t height);
+
     private:
 
         float ParticleSize = 0.0f;

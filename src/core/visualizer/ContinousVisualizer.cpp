@@ -144,8 +144,26 @@ FluidSolver::ContinousVisualizer::FitViewportToAspectRation(FluidSolver::Contino
         // center the additional gained height
         res.Top -= (res.Height - value.Height) / 2.0f;
     }
-    
+
     return res;
+}
+
+size_t FluidSolver::ContinousVisualizer::getWidth() const {
+    return Width;
+}
+
+void FluidSolver::ContinousVisualizer::setWidth(size_t width) {
+    Width = width;
+    data.resize(Width * Height);
+}
+
+size_t FluidSolver::ContinousVisualizer::getHeight() const {
+    return Height;
+}
+
+void FluidSolver::ContinousVisualizer::setHeight(size_t height) {
+    Height = height;
+    data.resize(Width * Height);
 }
 
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}
