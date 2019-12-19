@@ -23,7 +23,6 @@ public:
     virtual ~ContinousVisualizerOpenGL();
 
 private:
-    Viewport ScenarioViewport;
 
     Engine::Graphics::Texture2D *texture = nullptr;
 
