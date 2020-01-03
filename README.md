@@ -55,6 +55,7 @@ Use CMake to compile the project:
 - stb_truetype (Version 1.19), included in this repository
 - OpenMP (Version 4.5)
 - cxxopts (Version 2.1.2), included in this repository
+- Dear imgui (Version 1.74), needs to be downloaded
 
 ### Using the Code on OSX (Mac)
 Since the project uses OpenMP (libomp) to parallelize the execution and the current
