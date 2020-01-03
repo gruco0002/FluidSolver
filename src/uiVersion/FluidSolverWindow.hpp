@@ -7,11 +7,9 @@
 
 
 #include <engine/Window.hpp>
-#include <engine/text/Font.hpp>
-#include <engine/text/TextRenderer.hpp>
+
 #include <engine/RectangleRenderer.hpp>
 
-#include "GuiEngineInterface.hpp"
 #include "ParticleVertexArray.hpp"
 #include "ParticleRenderer.hpp"
 
@@ -23,7 +21,6 @@
 
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
-#include <dependencies/cppgui/library/src/basic/UIRunner.hpp>
 
 #include <core/basicScenarios/Scenario.hpp>
 #include <core/basicScenarios/HugeDamScenario.hpp>
@@ -34,10 +31,6 @@
 #include <core/basicScenarios/SimpleDamScenario.hpp>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
-
-namespace FluidUI {
-    class RootElement;
-}
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -129,11 +122,6 @@ private:
 
     void setupUI();
 
-    GuiEngineInterface *guiInterface = nullptr;
-    cppgui::UIRunner *uiRunner = nullptr;
-    Engine::Text::Font *font = nullptr;
-    Engine::Text::Font *iconFont = nullptr;
-    FluidUI::RootElement *entryPoint = nullptr;
 
 protected:
     void render() override;

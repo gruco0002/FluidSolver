@@ -8,7 +8,7 @@ Since GLAD is very small, it is already contained in the repo. Dear imgui is als
 in the repo.
 
 This folder should contain glad in a subdirectory called `Glad`, GLFW-3.3 in a
-subdirectory called `GLFW` and cppgui in a subdirectory called `cppgui`
+subdirectory called `GLFW`.
 The directory structure should be the following:
 ```$xslt
 dependencies
@@ -22,9 +22,6 @@ dependencies
         include
         src
         tests
-        ...
-    cppgui
-        src
         ...
     imgui
         ...

@@ -20,7 +20,6 @@ endif ()
 include_directories(src)
 include_directories(src/dependencies)
 include_directories(src/dependencies/Glad)
-include_directories(src/dependencies/cppgui/library/src)
 include_directories(dependencies/imgui)
 include_directories(dependencies/imguiHelper)
 
