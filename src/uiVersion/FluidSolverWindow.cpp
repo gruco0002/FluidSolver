@@ -77,17 +77,20 @@ void FluidSolverWindow::render() {
 
 
 
-    // render fbo to screen
+   /*TODO: this is not used anymore, remove it
+    *
+    * // render fbo to screen
     rectangleRenderer->RenderTexture(glm::vec2(particleFBORect.x, particleFBORect.y),
                                      glm::vec2(particleFBORect.z, particleFBORect.w),
-                                     fboColorTex);
+                                     fboColorTex);*/
 
     auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
-    ImGui::ShowDemoWindow();
+
     ImGui::SetNextWindowDockID(id);
     ImGui::Begin("Simulation Visualization");
 
+    // render visualization
     auto maxRegion = ImGui::GetContentRegionMax();
     float width = 0.0f;
     float height = 0.0f;
@@ -101,6 +104,8 @@ void FluidSolverWindow::render() {
     }
     ImGui::Image((void *) fboColorTex->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
     ImGui::End();
+
+    mainUi->Run();
 
     ImGuiHelper::PostRender();
 
@@ -378,7 +383,7 @@ void FluidSolverWindow::saveAsImage() {
 
 void FluidSolverWindow::setupUI() {
 
-
+    mainUi = new FluidUI::MainUi(this);
 
 }
 
@@ -418,6 +423,7 @@ void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolver *solver) {
 }
 
 FluidSolverWindow::~FluidSolverWindow() {
+    delete mainUi;
     ImGuiHelper::Uninit();
     Engine::Window::~Window();
 }

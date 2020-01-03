@@ -31,12 +31,13 @@
 #include <core/basicScenarios/SimpleDamScenario.hpp>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
+#include <uiVersion/userInterface/MainUi.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
 
 public:
-    FluidSolverWindow(const std::string &title, int width = 800, int height = 600);
+    explicit FluidSolverWindow(const std::string &title, int width = 800, int height = 600);
 
     void resetData();
 
@@ -121,6 +122,8 @@ private:
     void saveAsImage();
 
     void setupUI();
+
+    FluidUI::MainUi* mainUi = nullptr;
 
 
 protected:
