@@ -185,6 +185,12 @@ void FluidUI::MainUi::FluidSolver() {
         ImGui::InputFloat("Gamma", &iisph->Gamma);
         ImGui::InputFloat("Omega", &iisph->Omega);
         ImGui::InputFloat("Viscosity", &iisph->Viscosity);
+
+        ImGui::Separator();
+        ImGui::Text("Last Iteration Count: %zu", iisph->getLastIterationCount());
+        ImGui::Text("Last Predicted Density Error: %f", iisph->getLastPredictedDensityError());
+        ImGui::Text("Max Predicted Density Error: %f", iisph->getMaxPredictedDensityErrorReached());
+
     }
 
     ImGui::End();
