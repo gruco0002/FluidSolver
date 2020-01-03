@@ -12,7 +12,7 @@
 #ifdef __linux__
 // linux
 // TODO: check if this is correct
-#include <examples/imgui_impl_osx.h>
+
 
 #endif
 #ifdef _WIN32
@@ -21,7 +21,7 @@
 #endif
 #ifdef __APPLE__
 // os x
-#include <examples/imgui_impl_osx.h>
+
 #endif
 
 
