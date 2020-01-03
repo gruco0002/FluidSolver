@@ -72,7 +72,7 @@ void FluidSolverWindow::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-ImGuiHelper::PreRender();
+    ImGuiHelper::PreRender();
 
 
 
@@ -88,22 +88,24 @@ ImGuiHelper::PreRender();
         uiRunner->Render();
     }
 
+    auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
     ImGui::ShowDemoWindow();
+    ImGui::SetNextWindowDockID(id);
+    ImGui::Begin("Simulation Visualization");
 
-    ImGui::Begin("OpenGL Texture Text");
     auto maxRegion = ImGui::GetContentRegionMax();
     float width = 0.0f;
     float height = 0.0f;
-    if((float)fboColorTex->getWidth() / (float)fboColorTex->getHeight()  * maxRegion.y > maxRegion.x){
+    if ((float) fboColorTex->getWidth() / (float) fboColorTex->getHeight() * maxRegion.y > maxRegion.x) {
         // height is too small
         width = maxRegion.x;
-        height = (float)fboColorTex->getHeight() / (float)fboColorTex->getWidth() * maxRegion.x;
-    }else{
+        height = (float) fboColorTex->getHeight() / (float) fboColorTex->getWidth() * maxRegion.x;
+    } else {
         height = maxRegion.y;
-        width = (float)fboColorTex->getWidth() / (float)fboColorTex->getHeight() * maxRegion.y;
+        width = (float) fboColorTex->getWidth() / (float) fboColorTex->getHeight() * maxRegion.y;
     }
-    ImGui::Image((void*)fboColorTex->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((void *) fboColorTex->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
     ImGui::End();
 
     ImGuiHelper::PostRender();
