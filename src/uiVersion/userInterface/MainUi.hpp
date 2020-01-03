@@ -6,12 +6,15 @@
 #define FLUIDSOLVER_MAINUI_HPP
 
 
+#include <string>
+#include <vector>
+
 class FluidSolverWindow;
 
 namespace FluidUI {
     class MainUi {
     public:
-        FluidSolverWindow* window = nullptr;
+        FluidSolverWindow *window = nullptr;
 
         explicit MainUi(FluidSolverWindow *window);
 
@@ -20,6 +23,12 @@ namespace FluidUI {
     private:
 
         void SimulationControl();
+
+        std::vector<std::string> Scenario_Names;
+        int Scenario_selectedScenario = 0;
+        bool Scenario_init = false;
+        void Scenario();
+
     };
 }
 
