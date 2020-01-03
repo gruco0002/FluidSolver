@@ -8,6 +8,7 @@
 #include <imguiHelper.hpp>
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 
 FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
@@ -17,6 +18,7 @@ void FluidUI::MainUi::Run() {
     SimulationControl();
     Scenario();
     Simulation();
+    FluidSolver();
 
 }
 
@@ -135,4 +137,56 @@ void FluidUI::MainUi::Simulation() {
 
 
     ImGui::End();
+}
+
+void FluidUI::MainUi::FluidSolver() {
+
+    auto simple = dynamic_cast<FluidSolver::SPHFluidSolver *>(window->GetFluidSolver());
+    auto iisph = dynamic_cast<FluidSolver::IISPHFluidSolver *>(window->GetFluidSolver());
+
+    if (!FluidSolver_Init) {
+        if (simple != nullptr) {
+            FluidSolver_SelectedSolver = 0;
+        } else {
+            FluidSolver_SelectedSolver = 1;
+        }
+
+        FluidSolver_Init = true;
+    }
+
+
+    ImGui::Begin("Fluid Solver");
+
+    static const char *selection[]{"Simple SPH Fluid Solver", "IISPH Fluid Solver"};
+    if (FluidSolver_SelectedSolver == 0 && simple == nullptr) {
+        auto tmp = new FluidSolver::SPHFluidSolver();
+        delete window->GetFluidSolver();
+        window->SetFluidSolver(tmp);
+        simple = tmp;
+        iisph = nullptr;
+    } else if (FluidSolver_SelectedSolver == 1 && iisph == nullptr) {
+        auto tmp = new FluidSolver::IISPHFluidSolver();
+        delete window->GetFluidSolver();
+        window->SetFluidSolver(tmp);
+        simple = nullptr;
+        iisph = tmp;
+    }
+
+    ImGui::ListBox("Solver", &FluidSolver_SelectedSolver, selection, 2);
+
+
+    if (simple != nullptr) {
+        ImGui::InputFloat("Stiffness (k)", &simple->StiffnessK);
+        ImGui::InputFloat("Viscosity", &simple->Viscosity);
+    } else if (iisph != nullptr) {
+        ImGui::InputInt("Min. Iterations", reinterpret_cast<int *>(&iisph->MinNumberOfIterations));
+        ImGui::InputInt("Max. Iterations", reinterpret_cast<int *>(&iisph->MaxNumberOfIterations));
+        ImGui::InputFloat("Max. Density Error", &iisph->MaxDensityErrorAllowed, 0, 0, "%.6f");
+        ImGui::InputFloat("Gamma", &iisph->Gamma);
+        ImGui::InputFloat("Omega", &iisph->Omega);
+        ImGui::InputFloat("Viscosity", &iisph->Viscosity);
+    }
+
+    ImGui::End();
+
 }

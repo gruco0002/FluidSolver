@@ -36,6 +36,11 @@ namespace FluidUI {
         int Simulation_SelectedTimestep = 0;
         void Simulation();
 
+
+        bool FluidSolver_Init = false;
+        int FluidSolver_SelectedSolver = 0;
+        void FluidSolver();
+
     };
 }
 
