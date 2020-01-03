@@ -52,12 +52,12 @@ namespace FluidSolver {
 
     public:
 
-        float MaxDensityErrorAllowed = 0.1f;
+        float MaxDensityErrorAllowed = 0.001f;
 
         size_t MinNumberOfIterations = 2;
         size_t MaxNumberOfIterations = 100;
 
-        float Omega = 1.0f;
+        float Omega = 0.5f;
         float Gamma = 0.7f;
         float Viscosity = 5.0f;
 

@@ -67,8 +67,8 @@ namespace FluidSolver {
         IParticleCollection *getParticleCollection() override;
 
 
-        float StiffnessK = 0.001f;
-        float Viscosity = 0.01f;
+        float StiffnessK = 100000.0f;
+        float Viscosity = 5.0f;
 
 
         void ExecuteSimulationStep() override;
