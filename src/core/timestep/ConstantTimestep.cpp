@@ -9,15 +9,15 @@ void FluidSolver::ConstantTimestep::CalculateCurrentTimestep() {
 }
 
 float FluidSolver::ConstantTimestep::getCurrentTimestep() {
-    return timestep;
+    return Timestep;
 }
 
 float FluidSolver::ConstantTimestep::getTimestep() const {
-    return timestep;
+    return Timestep;
 }
 
 void FluidSolver::ConstantTimestep::setTimestep(float timestep) {
-    ConstantTimestep::timestep = timestep;
+    ConstantTimestep::Timestep = Timestep;
 }
 
-FluidSolver::ConstantTimestep::ConstantTimestep(float timestep) : timestep(timestep) {}
+FluidSolver::ConstantTimestep::ConstantTimestep(float timestep) : Timestep(timestep) {}

@@ -9,9 +9,11 @@
 
 namespace FluidSolver {
     class ConstantTimestep : public ITimestep {
-    private:
-        float timestep = 0.001f;
+
+
     public:
+        float Timestep = 0.001f;
+
         float getTimestep() const;
 
         void setTimestep(float timestep);
