@@ -72,10 +72,7 @@ void FluidSolverWindow::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-    // feed inputs to dear imgui, start new frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
+ImGuiHelper::PreRender();
 
 
 
@@ -94,10 +91,7 @@ void FluidSolverWindow::render() {
     // render your GUI
     ImGui::ShowDemoWindow();
 
-    // Render dear imgui into screen
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+    ImGuiHelper::PostRender();
 
 }
 
@@ -120,15 +114,7 @@ void FluidSolverWindow::load() {
     setupUI();
 
     // SETUP IMGUI
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(this->GetWindowHandler(), true);
-    ImGui_ImplOpenGL3_Init("#version 330 core");
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
+    ImGuiHelper::Init(this->GetWindowHandler());
 
 }
 
@@ -474,5 +460,10 @@ FluidSolver::IFluidSolver *FluidSolverWindow::GetFluidSolver() {
 
 void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolver *solver) {
     simulation->setFluidSolver(solver);
+}
+
+FluidSolverWindow::~FluidSolverWindow() {
+    ImGuiHelper::Uninit();
+    Engine::Window::~Window();
 }
 

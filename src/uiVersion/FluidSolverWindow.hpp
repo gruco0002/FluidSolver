@@ -47,6 +47,8 @@ public:
 
     void resetData();
 
+    ~FluidSolverWindow() override;
+
     bool Pause = true;
 
     float RealTimeSpeed = 1.0f;

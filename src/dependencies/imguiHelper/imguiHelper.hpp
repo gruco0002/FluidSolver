@@ -25,6 +25,16 @@
 #endif
 
 
+namespace ImGuiHelper{
+
+    void Init(GLFWwindow* window);
+    void Uninit();
+
+    void PreRender();
+    void PostRender();
+
+}
+
 
 
 #endif //IMGUI_IMGUIHELPER_HPP
