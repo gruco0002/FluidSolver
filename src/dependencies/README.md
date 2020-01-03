@@ -4,11 +4,11 @@ Use the given scripts `download_dependencies.sh` on UNIX systems or `download_de
 the needed dependencies.
 
 ### Notes
-Since GLAD is very small, it is already contained in the repo.
+Since GLAD is very small, it is already contained in the repo. Dear imgui is also already contained
+in the repo.
 
 This folder should contain glad in a subdirectory called `Glad`, GLFW-3.3 in a
-subdirectory called `GLFW`, cppgui in a subdirectory called `cppgui` and
-Dear imgui 1.74 in a subdirectory called `imgui`.
+subdirectory called `GLFW` and cppgui in a subdirectory called `cppgui`
 The directory structure should be the following:
 ```$xslt
 dependencies
@@ -27,7 +27,5 @@ dependencies
         src
         ...
     imgui
-        ...
-    imguiHelper
         ...
 ```

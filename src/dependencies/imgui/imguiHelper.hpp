@@ -6,8 +6,8 @@
 #define IMGUI_IMGUIHELPER_HPP
 
 #include <imgui.h>
-#include <examples/imgui_impl_opengl3.h>
-#include <examples/imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
 
 #ifdef __linux__
 // linux
@@ -17,7 +17,7 @@
 #endif
 #ifdef _WIN32
 // windows
-#include <examples/imgui_impl_win32.h>
+#include <imgui_impl_win32.h>
 #endif
 #ifdef __APPLE__
 // os x

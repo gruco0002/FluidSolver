@@ -28,20 +28,3 @@ rename-item "glfw-3.3" "GLFW"
 
 
 remove-item GLFW.zip
-
-
-#Download imgui Version 1.74
-$file = "imgui.zip"
-
-Invoke-WebRequest -Uri "https://github.com/ocornut/imgui/archive/v1.74.zip" -OutFile $file -TimeoutSec 5
-
-# Unzip the file to specified location
-$location = Get-Location
-$zip_file = (new-object -com shell.application).namespace("$location\$file")
-$destination = (new-object -com shell.application).namespace("$location")
-$items = $zip_file.items()
-$destination.Copyhere($items)
-rename-item "imgui-1.74" "imgui"
-
-
-remove-item imgui.zip

@@ -14,7 +14,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW EXCLUDE_FROM_ALL)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui/library)
 
 # add imgui
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguiHelper)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui)
 
 
 # Setting linker flags and library stuff for the different platforms
