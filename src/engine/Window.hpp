@@ -60,6 +60,8 @@ namespace Engine {
 
         virtual void load() = 0;
 
+        GLFWwindow *GetWindowHandler();
+
     private:
         void init();
 

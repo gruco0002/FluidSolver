@@ -6,6 +6,8 @@
 #define IMGUI_IMGUIHELPER_HPP
 
 #include <imgui.h>
+#include <examples/imgui_impl_opengl3.h>
+#include <examples/imgui_impl_glfw.h>
 
 #ifdef __linux__
 // linux

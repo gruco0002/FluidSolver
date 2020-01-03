@@ -323,4 +323,8 @@ namespace Engine {
         onAnyKeyChanged.Fire(window, key, scancode, action, mods);
     }
 
+    GLFWwindow *Window::GetWindowHandler() {
+        return window;
+    }
+
 }

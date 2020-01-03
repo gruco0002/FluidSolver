@@ -18,6 +18,7 @@
 #include <thread>
 #include <chrono>
 #include <core/timestep/ConstantTimestep.hpp>
+#include <imguiHelper.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -71,6 +72,15 @@ void FluidSolverWindow::render() {
     glClear(GL_COLOR_BUFFER_BIT);
     glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
+    // feed inputs to dear imgui, start new frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+
+
+
     // render fbo to screen
     rectangleRenderer->RenderTexture(glm::vec2(particleFBORect.x, particleFBORect.y),
                                      glm::vec2(particleFBORect.z, particleFBORect.w),
@@ -80,6 +90,13 @@ void FluidSolverWindow::render() {
         uiRunner->Update(GetLastFrameTime());
         uiRunner->Render();
     }
+
+    // render your GUI
+    ImGui::ShowDemoWindow();
+
+    // Render dear imgui into screen
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
 }
@@ -101,6 +118,17 @@ void FluidSolverWindow::load() {
     setupFBO();
     setupSimulation();
     setupUI();
+
+    // SETUP IMGUI
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    // Setup Platform/Renderer bindings
+    ImGui_ImplGlfw_InitForOpenGL(this->GetWindowHandler(), true);
+    ImGui_ImplOpenGL3_Init("#version 330 core");
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
 
 }
 
@@ -142,18 +170,18 @@ void FluidSolverWindow::setupSimulation() {
     }
 
     // create particle renderer
-    /*particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
     particleRenderer->pointSize = 30.0f;
     particleRenderer->colorSelection = ParticleRenderer::ColorSelection::Density;
     particleRenderer->topValue = 2.0f;
     particleRenderer->bottomValue = 0.0f;
     particleRenderer->topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     particleRenderer->bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
-    simulation->setSimulationVisualizer(particleRenderer);*/
+    simulation->setSimulationVisualizer(particleRenderer);
 
-    visualizerOpenGl = new ContinousVisualizerOpenGL();
+    /*visualizerOpenGl = new ContinousVisualizerOpenGL();
     visualizerOpenGl->SetScenarioSize(scenario);
-    simulation->setSimulationVisualizer(visualizerOpenGl);
+    simulation->setSimulationVisualizer(visualizerOpenGl);*/
 
     this->UpdateProjectionMatrices();
 
