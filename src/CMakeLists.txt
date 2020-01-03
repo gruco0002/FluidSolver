@@ -13,6 +13,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/GLFW EXCLUDE_FROM_ALL)
 # add cppgui
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/cppgui/library)
 
+# add imgui
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imguiHelper)
+
 
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
@@ -90,6 +93,8 @@ include_directories(./)
 include_directories(dependencies)
 include_directories(dependencies/Glad)
 include_directories(dependencies/cppgui/library/src)
+include_directories(dependencies/imgui)
+include_directories(dependencies/imguiHelper)
 
 
 set(FLUID_SOLVER_SOURCE_FILES
@@ -100,4 +105,4 @@ set(FLUID_SOLVER_SOURCE_FILES
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
-target_link_libraries(FluidSolver PUBLIC ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui )
+target_link_libraries(FluidSolver PUBLIC ${FLUIDSOLVER_LIBS} ${FLUIDSOLVER_SYSTEM_LIBS} cppgui IMGUI)
