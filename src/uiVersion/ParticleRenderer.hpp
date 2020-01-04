@@ -33,15 +33,15 @@ public:
 
     glm::mat4 projectionMatrix;
 
-    float pointSize = 2.0f;
+    float pointSize = 30.0f;
 
-    ColorSelection colorSelection = ColorSelection::Pressure;
+    ColorSelection colorSelection = ColorSelection::Density;
 
-    glm::vec4 bottomColor = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    glm::vec4 bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
     float bottomValue = 0.0f;
 
-    glm::vec4 topColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    float topValue = 1.0f;
+    glm::vec4 topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+    float topValue = 2.0f;
 
     int selectedParticle = 0;
     bool showParticleSelection = false;
