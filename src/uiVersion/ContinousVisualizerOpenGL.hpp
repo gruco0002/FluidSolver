@@ -13,16 +13,17 @@
 
 class ContinousVisualizerOpenGL : public FluidSolver::ContinousVisualizer {
 public:
+    void setRenderTargetSize(size_t width, size_t height) override;
 
     ContinousVisualizerOpenGL();
-
-    void SetScenarioSize(FluidSolver::Scenario *scenario);
 
     void AfterRender(std::vector<Color> &data) override;
 
     virtual ~ContinousVisualizerOpenGL();
 
 private:
+
+    void RecreateTexture();
 
     Engine::Graphics::Texture2D *texture = nullptr;
 

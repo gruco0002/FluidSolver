@@ -111,7 +111,6 @@ void FluidSolverWindow::load() {
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
-    OnFramebufferSizeChanged.Subscribe([=](int width, int height) { this->UpdateProjectionMatrices(); });
     setupFBO();
     setupSimulation();
     setupUI();
@@ -159,14 +158,13 @@ void FluidSolverWindow::setupSimulation() {
     }
 
     // create particle renderer
-    particleRenderer = new ParticleRenderer(ParticleRenderer::GenerateOrtho(-10, 10, 10, -10));
+    particleRenderer = new ParticleRenderer();
     simulation->setSimulationVisualizer(particleRenderer);
 
     /*visualizerOpenGl = new ContinousVisualizerOpenGL();
-    visualizerOpenGl->SetScenarioSize(scenario);
     simulation->setSimulationVisualizer(visualizerOpenGl);*/
 
-    this->UpdateProjectionMatrices();
+    UpdateVisualizerViewport();
 
 
     // reset simulation time
@@ -214,10 +212,7 @@ void FluidSolverWindow::resetData() {
     }
 
 
-    this->UpdateProjectionMatrices();
-
-    if (visualizerOpenGl != nullptr)
-        visualizerOpenGl->SetScenarioSize(scenario);
+    UpdateVisualizerViewport();
 
     if (simulation->getDataLogger())
         simulation->getDataLogger()->StartLogging();
@@ -254,38 +249,6 @@ void FluidSolverWindow::onClick(float x, float y) {
 
 }
 
-void FluidSolverWindow::UpdateProjectionMatrices() {
-    if (scenario != nullptr)
-        UpdateParticleRendererProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
-                                               scenario->GetParticleSize());
-
-}
-
-
-void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize) {
-
-    // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
-
-    float width = particlesX; // particle size is not taken into account
-    float height = particlesY;
-
-    float fboWidth = particleFBOWidth;
-    float fboHeight = particleFBOHeight;
-
-    if (width / fboWidth * fboHeight >= height) {
-        height = width / fboWidth * fboHeight;
-    } else {
-        width = height / fboHeight * fboWidth;
-    }
-
-    glm::mat4 generated = ParticleRenderer::GenerateOrtho(-width / 2.0f, width / 2.0f, height / 2.0f, -height / 2.0f);
-
-    if (particleRenderer != nullptr) {
-        particleRenderer->projectionMatrix = generated;
-    }
-
-
-}
 
 void FluidSolverWindow::setupFBO() {
     framebuffer = new Engine::Graphics::Framebuffer(particleFBOWidth, particleFBOHeight);
@@ -330,6 +293,7 @@ void FluidSolverWindow::SetScenario(FluidSolver::Scenario *scenario) {
         return;
     this->scenario = scenario;
     resetData();
+    UpdateVisualizerViewport();
 }
 
 FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
@@ -368,5 +332,30 @@ FluidSolverWindow::~FluidSolverWindow() {
 
 FluidSolver::ISimulationVisualizer *FluidSolverWindow::GetVisualizer() {
     return simulation->getSimulationVisualizer();
+}
+
+void FluidSolverWindow::UpdateVisualizerViewport() {
+    if (simulation == nullptr)
+        return;
+    auto vis = simulation->getSimulationVisualizer();
+    if (vis == nullptr)
+        return;
+    vis->setRenderTargetSize(this->particleFBOWidth, this->particleFBOHeight);
+    if (scenario == nullptr)
+        return;
+
+    int particlesX = scenario->GetParticleCountX();
+    int particlesY = scenario->GetParticleCountY();
+
+    float width = (float) particlesX;
+    float height = (float) particlesY;
+    FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea;
+    viewArea.Top = height / 2.0f;
+    viewArea.Bottom = -height / 2.0f;
+    viewArea.Left = -width / 2.0f;
+    viewArea.Right = width / 2.0f;
+
+    vis->setSimulationViewArea(viewArea);
+
 }
 

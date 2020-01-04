@@ -97,11 +97,7 @@ private:
     ParticleRenderer *particleRenderer = nullptr;
     ContinousVisualizerOpenGL *visualizerOpenGl = nullptr;
 
-
-    void UpdateProjectionMatrices();
-
-
-    void UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize);
+    void UpdateVisualizerViewport();
 
 
     float accumulatedSimulationTime = 0.0f;
@@ -111,8 +107,8 @@ private:
 
     // rendering
     Engine::Graphics::Framebuffer *framebuffer = nullptr;
-    uint32_t particleFBOWidth = 1920 * 2;
-    uint32_t particleFBOHeight = 1080 * 2;
+    uint32_t particleFBOWidth = 1920;
+    uint32_t particleFBOHeight = 1080;
     Engine::Graphics::Texture2D *fboDepthTex = nullptr;
     Engine::Graphics::Texture2D *fboColorTex = nullptr;
 

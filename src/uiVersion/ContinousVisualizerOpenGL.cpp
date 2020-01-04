@@ -6,26 +6,33 @@
 
 void ContinousVisualizerOpenGL::AfterRender(std::vector<Color> &data) {
     texture->SetData(data.data(), data.size() * 3);
-    rectangleRenderer->RenderTexture(glm::vec2(0.0f), glm::vec2((float) getWidth(), (float) getHeight()), texture);
+    rectangleRenderer->RenderTexture(glm::vec2(0.0f, (float) getHeight()),
+                                     glm::vec2((float) getWidth(), -((float) getHeight())), texture);
 }
 
-void ContinousVisualizerOpenGL::SetScenarioSize(FluidSolver::Scenario *scenario) {
-    int particlesX = scenario->GetParticleCountX();
-    int particlesY = scenario->GetParticleCountY();
-
-    float width = particlesX;
-    float height = particlesY;
-
-    Viewport port;
-    port.Left = -width / 2.0f;
-    port.Top = -height / 2.0f;
-    port.Width = width;
-    port.Height = height;
-
-    viewport = FitViewportToAspectRation(port);
-}
 
 ContinousVisualizerOpenGL::ContinousVisualizerOpenGL() : ContinousVisualizer(1920, 1080) {
+
+    RecreateTexture();
+    rectangleRenderer = new Engine::RectangleRenderer();
+    rectangleRenderer->CreateProjectionMatrixForScreen(getWidth(), getHeight());
+
+}
+
+ContinousVisualizerOpenGL::~ContinousVisualizerOpenGL() {
+    delete texture;
+    delete rectangleRenderer;
+}
+
+void ContinousVisualizerOpenGL::setRenderTargetSize(size_t width, size_t height) {
+    ContinousVisualizer::setRenderTargetSize(width, height);
+    if (rectangleRenderer != nullptr)
+        rectangleRenderer->CreateProjectionMatrixForScreen(getWidth(), getHeight());
+    RecreateTexture();
+}
+
+void ContinousVisualizerOpenGL::RecreateTexture() {
+    delete texture;
 
     auto settings = new Engine::Graphics::Texture2DSettings();
     settings->FlipTextureWhenLoadingFromFile = false;
@@ -34,12 +41,5 @@ ContinousVisualizerOpenGL::ContinousVisualizerOpenGL() : ContinousVisualizer(192
     texture = new Engine::Graphics::Texture2D(getWidth(), getHeight(), settings, GL_RGB,
                                               Engine::ComponentTypeUnsignedByte);
 
-    rectangleRenderer = new Engine::RectangleRenderer();
-    rectangleRenderer->CreateProjectionMatrixForScreen(getWidth(), getHeight());
-
-}
-
-ContinousVisualizerOpenGL::~ContinousVisualizerOpenGL() {
-    delete texture;
 }
 

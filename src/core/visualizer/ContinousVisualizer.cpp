@@ -64,6 +64,7 @@ void FluidSolver::ContinousVisualizer::setRestDensity(float restDensity) {
 
 FluidSolver::ContinousVisualizer::ContinousVisualizer(size_t width, size_t height) : Width(width), Height(height) {
     data = std::vector<Color>(Width * Height);
+    recalculateViewportData();
 }
 
 FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::CalculateColorForPixel(size_t x, size_t y) {
@@ -115,7 +116,7 @@ glm::vec2 FluidSolver::ContinousVisualizer::CalculatePositionForPixel(size_t x, 
     float xCoord = viewport.Left;
     float yCoord = viewport.Top;
     xCoord += x / (float) Width * viewport.Width;
-    yCoord += y / (float) Height * viewport.Height;
+    yCoord -= y / (float) Height * viewport.Height;
     return glm::vec2(xCoord, yCoord);
 }
 
@@ -155,6 +156,7 @@ size_t FluidSolver::ContinousVisualizer::getWidth() const {
 void FluidSolver::ContinousVisualizer::setWidth(size_t width) {
     Width = width;
     data.resize(Width * Height);
+    recalculateViewportData();
 }
 
 size_t FluidSolver::ContinousVisualizer::getHeight() const {
@@ -164,6 +166,30 @@ size_t FluidSolver::ContinousVisualizer::getHeight() const {
 void FluidSolver::ContinousVisualizer::setHeight(size_t height) {
     Height = height;
     data.resize(Width * Height);
+    recalculateViewportData();
+}
+
+void FluidSolver::ContinousVisualizer::setSimulationViewArea(
+        FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea) {
+    this->viewArea = viewArea;
+    recalculateViewportData();
+}
+
+void FluidSolver::ContinousVisualizer::setRenderTargetSize(size_t width, size_t height) {
+    Width = width;
+    Height = height;
+    data.resize(Width * Height);
+    recalculateViewportData();
+}
+
+void FluidSolver::ContinousVisualizer::recalculateViewportData() {
+    Viewport port;
+    port.Top = viewArea.Top;
+    port.Left = viewArea.Left;
+    port.Width = viewArea.Right - viewArea.Left;
+    port.Height = viewArea.Top - viewArea.Bottom;
+
+    this->viewport = this->FitViewportToAspectRation(port);
 }
 
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}

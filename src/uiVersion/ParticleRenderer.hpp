@@ -22,7 +22,7 @@ public:
     };
 
 
-    explicit ParticleRenderer(glm::mat4 projectionMatrix);
+    ParticleRenderer();
 
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
@@ -31,7 +31,6 @@ public:
 
     virtual ~ParticleRenderer();
 
-    glm::mat4 projectionMatrix;
 
     float pointSize = 30.0f;
 
@@ -63,8 +62,19 @@ public:
 
     FluidSolver::IParticleCollection *getParticleCollection() override;
 
+    void setSimulationViewArea(SimulationViewArea viewArea) override;
+
+    void setRenderTargetSize(size_t width, size_t height) override;
+
 private:
 
+    SimulationViewArea viewArea;
+    size_t renderTargetWidth = 1920;
+    size_t renderTargetHeight = 1080;
+
+    void CalculateProjectionMatrix();
+
+    glm::mat4 projectionMatrix;
     ParticleVertexArray *particleVertexArray = nullptr;
 
     Engine::Graphics::Shader *particleShader = nullptr;

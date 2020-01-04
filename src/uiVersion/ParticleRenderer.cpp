@@ -204,9 +204,9 @@ void ParticleRenderer::Delete() {
     delete particleShader;
 }
 
-ParticleRenderer::ParticleRenderer(glm::mat4 projectionMatrix) {
-    this->projectionMatrix = projectionMatrix;
+ParticleRenderer::ParticleRenderer() {
     Generate();
+    CalculateProjectionMatrix();
 }
 
 glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, float bottom) {
@@ -240,3 +240,40 @@ float ParticleRenderer::getRestDensity() {
 void ParticleRenderer::setRestDensity(float restDensity) {
     RestDensity = restDensity;
 }
+
+void ParticleRenderer::setSimulationViewArea(FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea) {
+    this->viewArea = viewArea;
+    CalculateProjectionMatrix();
+}
+
+void ParticleRenderer::setRenderTargetSize(size_t width, size_t height) {
+    this->renderTargetWidth = width;
+    this->renderTargetHeight = height;
+    CalculateProjectionMatrix();
+}
+
+void ParticleRenderer::CalculateProjectionMatrix() {
+    // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
+
+    float width = viewArea.Right - viewArea.Left; // particle size is not taken into account
+    float height = viewArea.Top - viewArea.Bottom;
+
+    float fboWidth = renderTargetWidth;
+    float fboHeight = renderTargetHeight;
+
+    if (width / height * fboHeight > fboWidth) {
+        height = width / fboWidth * fboHeight;
+    } else {
+        width = height / fboHeight * fboWidth;
+    }
+
+    glm::mat4 generated = ParticleRenderer::GenerateOrtho(
+            viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) - width * 0.5f,
+            viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) + width * 0.5f,
+            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) + height * 0.5f,
+            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) - height * 0.5f);
+
+    projectionMatrix = generated;
+
+}
+

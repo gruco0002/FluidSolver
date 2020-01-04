@@ -15,6 +15,9 @@ namespace FluidSolver {
     class ContinousVisualizer : public ISimulationVisualizer {
 
     public:
+        void setSimulationViewArea(FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea) override;
+
+        void setRenderTargetSize(size_t width, size_t height) override;
 
         struct Color {
             unsigned char R = 0;
@@ -27,13 +30,6 @@ namespace FluidSolver {
 
         };
 
-        struct Viewport{
-            float Top = 0.0f;
-            float Left = 0.0f;
-
-            float Width = 0.0f;
-            float Height = 0.0f;
-        };
 
         ContinousVisualizer(size_t width, size_t height);
 
@@ -53,10 +49,6 @@ namespace FluidSolver {
 
         virtual void AfterRender(std::vector<Color> &data);
 
-        Viewport viewport;
-
-        Viewport FitViewportToAspectRation(Viewport value);
-
         size_t getWidth() const;
 
         void setWidth(size_t width);
@@ -67,13 +59,29 @@ namespace FluidSolver {
 
     private:
 
+        SimulationViewArea viewArea;
+
+        struct Viewport {
+            float Top = 0.0f;
+            float Left = 0.0f;
+
+            float Width = 0.0f;
+            float Height = 0.0f;
+        };
+
+        Viewport viewport;
+
+        void recalculateViewportData();
+
+        Viewport FitViewportToAspectRation(Viewport value);
+
         float ParticleSize = 0.0f;
         IParticleCollection *ParticleCollection = nullptr;
         float RestDensity = 0.0f;
         float MinimumRenderDensity = 0.0f;
 
         size_t Width = 1920;
-        size_t Height = 1920;
+        size_t Height = 1080;
 
         Color ClearColor = Color(0, 0, 0);
         std::vector<Color> data;
