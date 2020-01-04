@@ -46,7 +46,11 @@ void ParticleRenderer::Render() {
 }
 
 ParticleRenderer::~ParticleRenderer() {
-    Delete();
+    delete particleShader;
+    delete fboColorTex;
+    delete fboDepthTex;
+    delete framebuffer;
+    delete particleVertexArray;
 }
 
 const std::string vertCode = R"(#version 330 core
@@ -207,9 +211,6 @@ void ParticleRenderer::Generate() {
                                                   });
 }
 
-void ParticleRenderer::Delete() {
-    delete particleShader;
-}
 
 ParticleRenderer::ParticleRenderer() {
     Generate();

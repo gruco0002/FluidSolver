@@ -96,7 +96,6 @@ private:
 
     void Generate();
 
-    void Delete();
 
 };
 
