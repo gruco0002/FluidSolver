@@ -18,6 +18,7 @@
 #include <chrono>
 #include <core/timestep/ConstantTimestep.hpp>
 #include <imguiHelper.hpp>
+#include <core/CachedStatisticCollector.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -172,7 +173,7 @@ void FluidSolverWindow::setupSimulation() {
     accumulatedSimulationTime = 0.0f;
 
     // set statistics collection
-    simulation->setStatisticCollector(new FluidSolver::StatisticCollector());
+    simulation->setStatisticCollector(new FluidSolver::CachedStatisticCollector());
 
 
     // setup dataLogger
@@ -365,6 +366,10 @@ void FluidSolverWindow::setVisualizerRenderTargetHeight(size_t visualizerRenderT
 void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer) {
     this->simulation->setSimulationVisualizer(visualizer);
     UpdateVisualizerViewport();
+}
+
+FluidSolver::StatisticCollector *FluidSolverWindow::GetStatisticCollector() {
+    return simulation->getStatisticCollector();
 }
 
 

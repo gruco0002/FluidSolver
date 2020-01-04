@@ -86,6 +86,8 @@ public:
 
     void SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer);
 
+    FluidSolver::StatisticCollector* GetStatisticCollector();
+
 private:
 
     FluidSolver::Simulation *simulation = nullptr;

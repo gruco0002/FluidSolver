@@ -235,3 +235,7 @@ uint32_t StatisticCollector::getCalculatedNormalParticleCount() const {
 float StatisticCollector::getCalculatedCflNumber() const {
     return calculatedCFLNumber;
 }
+
+StatisticCollector::~StatisticCollector() {
+
+}

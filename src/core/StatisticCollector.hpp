@@ -18,7 +18,9 @@ namespace FluidSolver {
 
         float zeroHeight = -500.0f;
 
-        void CalculateData();
+        virtual void CalculateData();
+
+        virtual ~StatisticCollector();
 
     private:
 
