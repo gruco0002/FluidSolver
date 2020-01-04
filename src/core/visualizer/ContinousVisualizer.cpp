@@ -59,7 +59,7 @@ float FluidSolver::ContinousVisualizer::getRestDensity() {
 
 void FluidSolver::ContinousVisualizer::setRestDensity(float restDensity) {
     RestDensity = restDensity;
-    MinimumRenderDensity = 0.8f * restDensity;
+    MinimumRenderDensity = 0.4f * restDensity;
 }
 
 FluidSolver::ContinousVisualizer::ContinousVisualizer(size_t width, size_t height) : Width(width), Height(height) {
