@@ -41,6 +41,9 @@ namespace FluidUI {
         int FluidSolver_SelectedSolver = 0;
         void FluidSolver();
 
+
+        void VisualizerSettings();
+
     };
 }
 

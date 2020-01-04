@@ -19,6 +19,7 @@ void FluidUI::MainUi::Run() {
     Scenario();
     Simulation();
     FluidSolver();
+    VisualizerSettings();
 
 }
 
@@ -195,4 +196,32 @@ void FluidUI::MainUi::FluidSolver() {
 
     ImGui::End();
 
+}
+
+void FluidUI::MainUi::VisualizerSettings() {
+
+    auto pr = dynamic_cast<ParticleRenderer *>(window->GetVisualizer());
+
+    ImGui::Begin("Visualizer Settings");
+
+    if (pr != nullptr) {
+
+        ImGui::Text("Particle Renderer");
+
+        static const char *selection[]{"Velocity", "Acceleration", "Mass", "Pressure", "Density"};
+        ImGui::Combo("Value", (int *) &pr->colorSelection, selection, 5);
+
+        ImGui::InputFloat("Bottom Value", &pr->bottomValue, 0, 0, "%.6f");
+        ImGui::ColorEdit3("Bottom Color", reinterpret_cast<float *>(&pr->bottomColor));
+
+        ImGui::InputFloat("Top Value", &pr->topValue, 0, 0, "%.6f");
+        ImGui::ColorEdit3("Top Color", reinterpret_cast<float *>(&pr->topColor));
+
+        ImGui::Separator();
+
+        ImGui::ColorEdit3("Boundary Color", reinterpret_cast<float *>(&pr->boundaryParticleColor));
+        ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&pr->backgroundClearColor));
+    }
+
+    ImGui::End();
 }

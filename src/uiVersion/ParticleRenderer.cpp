@@ -6,6 +6,10 @@
 #include "ParticleRenderer.hpp"
 
 void ParticleRenderer::Render() {
+
+    glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     particleVertexArray->Update();
 
     particleShader->Bind();
@@ -48,11 +52,11 @@ layout (location = 5) in float aDensity;
 layout (location = 6) in uint aType;
 
 
-#define COLOR_SELECTION_VELOCITY 1
-#define COLOR_SELECTION_ACCELERATION 2
-#define COLOR_SELECTION_MASS 3
-#define COLOR_SELECTION_PRESSURE 4
-#define COLOR_SELECTION_DENSITY 5
+#define COLOR_SELECTION_VELOCITY 0
+#define COLOR_SELECTION_ACCELERATION 1
+#define COLOR_SELECTION_MASS 2
+#define COLOR_SELECTION_PRESSURE 3
+#define COLOR_SELECTION_DENSITY 4
 
 #define PARTICLE_TYPE_BOUNDARY 1u
 #define PARTICLE_TYPE_DEAD 2u

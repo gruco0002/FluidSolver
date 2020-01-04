@@ -52,8 +52,6 @@ void FluidSolverWindow::render() {
 
     // render particles to fbo
     framebuffer->Bind(true);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
 
     if (simulation != nullptr) {
         simulation->VisualizeSimulation();
@@ -426,5 +424,9 @@ FluidSolverWindow::~FluidSolverWindow() {
     delete mainUi;
     ImGuiHelper::Uninit();
     Engine::Window::~Window();
+}
+
+FluidSolver::ISimulationVisualizer *FluidSolverWindow::GetVisualizer() {
+    return simulation->getSimulationVisualizer();
 }
 

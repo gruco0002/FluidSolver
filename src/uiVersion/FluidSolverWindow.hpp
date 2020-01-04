@@ -82,6 +82,8 @@ public:
 
     void SetFluidSolver(FluidSolver::IFluidSolver *solver);
 
+    FluidSolver::ISimulationVisualizer* GetVisualizer();
+
 private:
 
     FluidSolver::Simulation *simulation = nullptr;

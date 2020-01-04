@@ -14,11 +14,11 @@ class ParticleRenderer : public FluidSolver::ISimulationVisualizer {
 
 public:
     enum ColorSelection {
-        Velocity = 1,
-        Acceleration = 2,
-        Mass = 3,
-        Pressure = 4,
-        Density = 5,
+        Velocity = 0,
+        Acceleration = 1,
+        Mass = 2,
+        Pressure = 3,
+        Density = 4,
     };
 
 
@@ -47,6 +47,8 @@ public:
     bool showParticleSelection = false;
 
     glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+
+    glm::vec4 backgroundClearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 
     void setParticleSize(float particleSize) override;
