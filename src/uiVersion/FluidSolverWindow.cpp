@@ -72,16 +72,6 @@ void FluidSolverWindow::render() {
     ImGuiHelper::PreRender();
 
 
-
-
-
-   /*TODO: this is not used anymore, remove it
-    *
-    * // render fbo to screen
-    rectangleRenderer->RenderTexture(glm::vec2(particleFBORect.x, particleFBORect.y),
-                                     glm::vec2(particleFBORect.z, particleFBORect.w),
-                                     fboColorTex);*/
-
     auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
 
@@ -122,7 +112,6 @@ void FluidSolverWindow::load() {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
     OnFramebufferSizeChanged.Subscribe([=](int width, int height) { this->UpdateProjectionMatrices(); });
-    rectangleRenderer = new Engine::RectangleRenderer();
     setupFBO();
     setupSimulation();
     setupUI();
@@ -246,26 +235,10 @@ void FluidSolverWindow::resetData() {
 
 
 void FluidSolverWindow::onClick(float x, float y) {
-
-    if (simulation->getParticleCollection() == nullptr) return;
-    if (particleRenderer == nullptr) return;
-    if (rectangleRenderer == nullptr) return;
-
-
-    auto rel = glm::vec2(x, y) / glm::vec2((float) GetWidth(), -(float) GetHeight());
-    rel *= 2.0f;
-    rel += glm::vec2(-1.0f, 1.0f);
-    auto unprojectedTMP = glm::inverse(rectangleRenderer->projectionMatrix) * glm::vec4(rel.x, rel.y, 0.0f, 1.0f);
-
-    auto clip = glm::vec2(unprojectedTMP.x, -unprojectedTMP.y);
-    clip *= 2.0;
-    clip += glm::vec2(-1.0f, 1.0f);
-
-
-    auto unprojected = glm::inverse(particleRenderer->projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0f, 1.0f);
-
+    return;
+    // TODO: fix
     // pos is the position in particle space
-    glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
+    glm::vec2 pos = glm::vec2(0, 0);
 
     // find nearest particle, that you have clicked on
     uint32_t particleIndex = -1;
@@ -291,40 +264,13 @@ void FluidSolverWindow::UpdateProjectionMatrices() {
     if (scenario != nullptr)
         UpdateParticleRendererProjectionMatrix(scenario->GetParticleCountX(), scenario->GetParticleCountY(),
                                                scenario->GetParticleSize());
-    UpdateRectangleRendererProjectionMatrix();
-
-}
-
-void FluidSolverWindow::UpdateRectangleRendererProjectionMatrix() {
-
-    // adopt rectangle renderer projection matrix
-    float width = GetFramebufferWidth(); // screen width
-    float height = GetFramebufferHeight(); // screen height
-    glm::mat4 generated = ParticleRenderer::GenerateOrtho(0.0f, width, 0.0f, height);
-    if (rectangleRenderer != nullptr)
-        rectangleRenderer->projectionMatrix = generated;
-
-    float fboWidth = particleFBOWidth;
-    float fboHeight = particleFBOHeight;
-
-    if (fboWidth / fboHeight * height <= width) {
-        // fbo fits heightwise, there must be borders left and right
-        float newWidth = fboWidth / fboHeight * height;
-        float rest = (width - newWidth) / 2.0f;
-        particleFBORect = glm::vec4(rest, 0.0f, newWidth, height);
-    } else {
-        // fbo fits width wise, there must be borders at top and bottom
-        float newHeight = fboHeight / fboWidth * width;
-        float rest = (height - newHeight) / 2.0f;
-        particleFBORect = glm::vec4(0.0f, rest, width, newHeight);
-    }
-
 
 }
 
 
 void FluidSolverWindow::UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize) {
 
+    // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
 
     float width = particlesX; // particle size is not taken into account
     float height = particlesY;

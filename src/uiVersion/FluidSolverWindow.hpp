@@ -70,9 +70,9 @@ public:
 
     FluidSolver::Scenario *GetScenario();
 
-    FluidSolver::ITimestep* GetTimestep();
+    FluidSolver::ITimestep *GetTimestep();
 
-    void SetTimestep(FluidSolver::ITimestep* timestep);
+    void SetTimestep(FluidSolver::ITimestep *timestep);
 
     float GetRestDensity();
 
@@ -82,7 +82,7 @@ public:
 
     void SetFluidSolver(FluidSolver::IFluidSolver *solver);
 
-    FluidSolver::ISimulationVisualizer* GetVisualizer();
+    FluidSolver::ISimulationVisualizer *GetVisualizer();
 
 private:
 
@@ -95,12 +95,11 @@ private:
 
     ParticleVertexArray *particleVertexArray = nullptr;
     ParticleRenderer *particleRenderer = nullptr;
-    ContinousVisualizerOpenGL* visualizerOpenGl = nullptr;
+    ContinousVisualizerOpenGL *visualizerOpenGl = nullptr;
 
 
     void UpdateProjectionMatrices();
 
-    void UpdateRectangleRendererProjectionMatrix();
 
     void UpdateParticleRendererProjectionMatrix(float particlesX, float particlesY, float particleSize);
 
@@ -109,7 +108,6 @@ private:
 
     FluidSolver::Scenario *scenario = nullptr;
 
-    glm::vec4 particleFBORect = glm::vec4(0.0f);
 
     // rendering
     Engine::Graphics::Framebuffer *framebuffer = nullptr;
@@ -117,7 +115,6 @@ private:
     uint32_t particleFBOHeight = 1080 * 2;
     Engine::Graphics::Texture2D *fboDepthTex = nullptr;
     Engine::Graphics::Texture2D *fboColorTex = nullptr;
-    Engine::RectangleRenderer *rectangleRenderer = nullptr;
 
     void setupFBO();
 
@@ -125,7 +122,7 @@ private:
 
     void setupUI();
 
-    FluidUI::MainUi* mainUi = nullptr;
+    FluidUI::MainUi *mainUi = nullptr;
 
 
 protected:
