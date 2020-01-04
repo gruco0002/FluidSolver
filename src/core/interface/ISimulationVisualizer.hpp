@@ -42,6 +42,8 @@ namespace FluidSolver {
 
         virtual void setRenderTargetSize(size_t width, size_t height) = 0;
 
+        virtual ~ISimulationVisualizer() = default;
+
     };
 }
 

@@ -201,10 +201,16 @@ void FluidUI::MainUi::FluidSolver() {
 void FluidUI::MainUi::VisualizerSettings() {
 
     auto pr = dynamic_cast<ParticleRenderer *>(window->GetVisualizer());
+    auto cv = dynamic_cast<ContinousVisualizerOpenGL *>(window->GetVisualizer());
 
     if (!Visualizer_Init) {
         Visualizer_Width = window->getVisualizerRenderTargetWidth();
         Visualizer_Height = window->getVisualizerRenderTargetHeight();
+        if (pr != nullptr) {
+            Visualizer_Selection = 0;
+        } else if (cv != nullptr) {
+            Visualizer_Selection = 1;
+        }
         Visualizer_Init = true;
     }
 
@@ -219,6 +225,27 @@ void FluidUI::MainUi::VisualizerSettings() {
 
     ImGui::InputInt("Width (px)", reinterpret_cast<int *>(&Visualizer_Width));
     ImGui::InputInt("Height (px)", reinterpret_cast<int *>(&Visualizer_Height));
+
+    static const char *visSelection[]{"Particle Renderer", "Continuous Visualizer"};
+
+    if (Visualizer_Selection == 0 && pr == nullptr) {
+        // set particle renderer
+        auto tmp = new ParticleRenderer();
+        delete window->GetVisualizer();
+        window->SetVisualizer(tmp);
+        pr = tmp;
+        cv = nullptr;
+
+    } else if (Visualizer_Selection == 1 && cv == nullptr) {
+        // set continuous renderer
+        auto tmp = new ContinousVisualizerOpenGL();
+        delete window->GetVisualizer();
+        window->SetVisualizer(tmp);
+        pr = nullptr;
+        cv = tmp;
+    }
+
+    ImGui::ListBox("Visualizer", &Visualizer_Selection, visSelection, 2);
 
     ImGui::Separator();
 

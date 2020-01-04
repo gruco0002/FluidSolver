@@ -47,9 +47,6 @@ void FluidSolverWindow::render() {
     }
 
 
-    if (particleVertexArray != nullptr)
-        particleVertexArray->Update();
-
     // visualize the simulation
     if (simulation != nullptr) {
         simulation->VisualizeSimulation();
@@ -164,11 +161,9 @@ void FluidSolverWindow::setupSimulation() {
     }
 
     // create particle renderer
-    particleRenderer = new ParticleRenderer();
+    auto particleRenderer = new ParticleRenderer();
     simulation->setSimulationVisualizer(particleRenderer);
 
-    // visualizerOpenGl = new ContinousVisualizerOpenGL();
-    // simulation->setSimulationVisualizer(visualizerOpenGl);
 
     UpdateVisualizerViewport();
 
@@ -232,26 +227,26 @@ void FluidSolverWindow::resetData() {
 void FluidSolverWindow::onClick(float x, float y) {
     return;
     // TODO: fix
-    // pos is the position in particle space
-    glm::vec2 pos = glm::vec2(0, 0);
+    /* // pos is the position in particle space
+     glm::vec2 pos = glm::vec2(0, 0);
 
-    // find nearest particle, that you have clicked on
-    uint32_t particleIndex = -1;
-    float dist = particleRenderer->pointSize * 0.5;
-    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-        auto partDist = glm::length(pos - particlePos);
-        if (partDist < dist) {
-            particleIndex = i;
-            dist = partDist;
-        }
-    }
+     // find nearest particle, that you have clicked on
+     uint32_t particleIndex = -1;
+     float dist = particleRenderer->pointSize * 0.5;
+     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+         auto particlePos = simulation->getParticleCollection()->GetPosition(i);
+         auto partDist = glm::length(pos - particlePos);
+         if (partDist < dist) {
+             particleIndex = i;
+             dist = partDist;
+         }
+     }
 
-    // set particle index in info box
-    if (particleIndex != -1) {
+     // set particle index in info box
+     if (particleIndex != -1) {
 
-        particleRenderer->selectedParticle = particleIndex;
-    }
+         particleRenderer->selectedParticle = particleIndex;
+     }*/
 
 }
 
@@ -366,4 +361,10 @@ void FluidSolverWindow::setVisualizerRenderTargetHeight(size_t visualizerRenderT
         UpdateVisualizerViewport();
     }
 }
+
+void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer) {
+    this->simulation->setSimulationVisualizer(visualizer);
+    UpdateVisualizerViewport();
+}
+
 

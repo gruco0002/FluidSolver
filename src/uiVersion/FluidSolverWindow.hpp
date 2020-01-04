@@ -84,6 +84,8 @@ public:
 
     FluidSolver::ISimulationVisualizer *GetVisualizer();
 
+    void SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer);
+
 private:
 
     FluidSolver::Simulation *simulation = nullptr;
@@ -92,10 +94,6 @@ private:
 
     void onClick(float x, float y);
 
-
-    ParticleVertexArray *particleVertexArray = nullptr;
-    ParticleRenderer *particleRenderer = nullptr;
-    ContinousVisualizerOpenGL *visualizerOpenGl = nullptr;
 
     void UpdateVisualizerViewport();
 

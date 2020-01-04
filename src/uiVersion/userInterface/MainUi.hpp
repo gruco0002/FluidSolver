@@ -45,6 +45,7 @@ namespace FluidUI {
         bool Visualizer_Init = false;
         size_t Visualizer_Width = 0;
         size_t Visualizer_Height = 0;
+        int Visualizer_Selection = 0;
         void VisualizerSettings();
 
     };
