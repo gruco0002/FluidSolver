@@ -59,7 +59,7 @@ namespace FluidSolver {
 
         void setHeight(size_t height);
 
-        glm::vec3 ClearColor = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 ClearColor = glm::vec3(1.0f, 1.0f, 1.0f);
         float MinimumRenderDensity = 0.0f;
 
     private:

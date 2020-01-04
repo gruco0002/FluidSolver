@@ -102,12 +102,13 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
         return Color(ClearColor);
 
     // check which type of density is larger and return the corresponding color
-    if (normalDensity > boundaryDensity) {
-        // fluid
-        return Color(0, 0, 255);
-    } else {
+    // first of, boundary density should dominate on a boundary
+    if (boundaryDensity >= MinimumRenderDensity) {
         // boundary
         return Color(128, 128, 128);
+    } else {
+        // fluid
+        return Color(0, 0, 255);
     }
 
 }
