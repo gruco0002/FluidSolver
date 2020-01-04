@@ -105,10 +105,18 @@ private:
     FluidSolver::Scenario *scenario = nullptr;
 
 
-    // rendering
+    size_t visualizerRenderTargetWidth = 1920;
+public:
+    size_t getVisualizerRenderTargetWidth() const;
 
-    uint32_t particleFBOWidth = 1920;
-    uint32_t particleFBOHeight = 1080;
+    void setVisualizerRenderTargetWidth(size_t visualizerRenderTargetWidth);
+
+    size_t getVisualizerRenderTargetHeight() const;
+
+    void setVisualizerRenderTargetHeight(size_t visualizerRenderTargetHeight);
+
+private:
+    size_t visualizerRenderTargetHeight = 1080;
 
     void saveAsImage();
 

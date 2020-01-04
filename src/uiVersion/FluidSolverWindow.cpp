@@ -326,7 +326,7 @@ void FluidSolverWindow::UpdateVisualizerViewport() {
     auto vis = simulation->getSimulationVisualizer();
     if (vis == nullptr)
         return;
-    vis->setRenderTargetSize(this->particleFBOWidth, this->particleFBOHeight);
+    vis->setRenderTargetSize(this->visualizerRenderTargetWidth, this->visualizerRenderTargetHeight);
     if (scenario == nullptr)
         return;
 
@@ -343,5 +343,27 @@ void FluidSolverWindow::UpdateVisualizerViewport() {
 
     vis->setSimulationViewArea(viewArea);
 
+}
+
+size_t FluidSolverWindow::getVisualizerRenderTargetWidth() const {
+    return visualizerRenderTargetWidth;
+}
+
+void FluidSolverWindow::setVisualizerRenderTargetWidth(size_t visualizerRenderTargetWidth) {
+    if (this->visualizerRenderTargetWidth != visualizerRenderTargetWidth) {
+        this->visualizerRenderTargetWidth = visualizerRenderTargetWidth;
+        UpdateVisualizerViewport();
+    }
+}
+
+size_t FluidSolverWindow::getVisualizerRenderTargetHeight() const {
+    return visualizerRenderTargetHeight;
+}
+
+void FluidSolverWindow::setVisualizerRenderTargetHeight(size_t visualizerRenderTargetHeight) {
+    if (this->visualizerRenderTargetHeight != visualizerRenderTargetHeight) {
+        this->visualizerRenderTargetHeight = visualizerRenderTargetHeight;
+        UpdateVisualizerViewport();
+    }
 }
 

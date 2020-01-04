@@ -202,7 +202,25 @@ void FluidUI::MainUi::VisualizerSettings() {
 
     auto pr = dynamic_cast<ParticleRenderer *>(window->GetVisualizer());
 
+    if (!Visualizer_Init) {
+        Visualizer_Width = window->getVisualizerRenderTargetWidth();
+        Visualizer_Height = window->getVisualizerRenderTargetHeight();
+        Visualizer_Init = true;
+    }
+
+    if (window->getVisualizerRenderTargetWidth() != Visualizer_Width && Visualizer_Width <= 16000) {
+        window->setVisualizerRenderTargetWidth(Visualizer_Width);
+    }
+    if (window->getVisualizerRenderTargetHeight() != Visualizer_Height && Visualizer_Height <= 16000) {
+        window->setVisualizerRenderTargetHeight(Visualizer_Height);
+    }
+
     ImGui::Begin("Visualizer Settings");
+
+    ImGui::InputInt("Width (px)", reinterpret_cast<int *>(&Visualizer_Width));
+    ImGui::InputInt("Height (px)", reinterpret_cast<int *>(&Visualizer_Height));
+
+    ImGui::Separator();
 
     if (pr != nullptr) {
 
