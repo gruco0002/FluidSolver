@@ -50,14 +50,12 @@ void FluidSolverWindow::render() {
     if (particleVertexArray != nullptr)
         particleVertexArray->Update();
 
-    // render particles to fbo
-    framebuffer->Bind(true);
-
+    // visualize the simulation
     if (simulation != nullptr) {
         simulation->VisualizeSimulation();
     }
 
-    framebuffer->Unbind();
+    // force pending opengl stuff to finish
     glFlush();
 
     // save as image
@@ -78,19 +76,28 @@ void FluidSolverWindow::render() {
     ImGui::SetNextWindowDockID(id);
     ImGui::Begin("Simulation Visualization");
 
-    // render visualization
-    auto maxRegion = ImGui::GetContentRegionMax();
-    float width = 0.0f;
-    float height = 0.0f;
-    if ((float) fboColorTex->getWidth() / (float) fboColorTex->getHeight() * maxRegion.y > maxRegion.x) {
-        // height is too small
-        width = maxRegion.x;
-        height = (float) fboColorTex->getHeight() / (float) fboColorTex->getWidth() * maxRegion.x;
-    } else {
-        height = maxRegion.y;
-        width = (float) fboColorTex->getWidth() / (float) fboColorTex->getHeight() * maxRegion.y;
+    if (simulation != nullptr) {
+        auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->getSimulationVisualizer());
+        if (glRenderer != nullptr) {
+            auto tex = glRenderer->GetTexture();
+            // render visualization
+            auto maxRegion = ImGui::GetContentRegionMax();
+            float width = 0.0f;
+            float height = 0.0f;
+            if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
+                // height is too small
+                width = maxRegion.x;
+                height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
+            } else {
+                height = maxRegion.y;
+                width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
+            }
+            ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
+        } else {
+            ImGui::Text("No OpenGL compatible visualizer!");
+        }
     }
-    ImGui::Image((void *) fboColorTex->GetID(), ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0));
+
     ImGui::End();
 
     mainUi->Run();
@@ -111,7 +118,6 @@ void FluidSolverWindow::load() {
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
         this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
     });
-    setupFBO();
     setupSimulation();
     setupUI();
 
@@ -161,8 +167,8 @@ void FluidSolverWindow::setupSimulation() {
     particleRenderer = new ParticleRenderer();
     simulation->setSimulationVisualizer(particleRenderer);
 
-    /*visualizerOpenGl = new ContinousVisualizerOpenGL();
-    simulation->setSimulationVisualizer(visualizerOpenGl);*/
+    // visualizerOpenGl = new ContinousVisualizerOpenGL();
+    // simulation->setSimulationVisualizer(visualizerOpenGl);
 
     UpdateVisualizerViewport();
 
@@ -249,26 +255,6 @@ void FluidSolverWindow::onClick(float x, float y) {
 
 }
 
-
-void FluidSolverWindow::setupFBO() {
-    framebuffer = new Engine::Graphics::Framebuffer(particleFBOWidth, particleFBOHeight);
-    auto *depthSettings = new Engine::Graphics::Texture2DSettings();
-    depthSettings->GenerateMipmaps = false;
-    depthSettings->TextureMagnifyingFiltering = GL_NEAREST;
-    depthSettings->TextureMinifyingFiltering = GL_NEAREST;
-    fboDepthTex = new Engine::Graphics::Texture2D(particleFBOWidth, particleFBOHeight, depthSettings,
-                                                  GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
-                                                  Engine::ComponentType::ComponentTypeShort);
-    framebuffer->AddAttachment(GL_DEPTH_ATTACHMENT, fboDepthTex);
-
-    auto colorSettings = new Engine::Graphics::Texture2DSettings();
-    colorSettings->GenerateMipmaps = false;
-
-    fboColorTex = new Engine::Graphics::Texture2D(particleFBOWidth, particleFBOHeight, colorSettings, GL_RGB,
-                                                  Engine::ComponentType::ComponentTypeUnsignedByte);
-    framebuffer->AddAttachment(GL_COLOR_ATTACHMENT0, fboColorTex);
-
-}
 
 void FluidSolverWindow::saveAsImage() {
     /*if (!saveFrames)

@@ -7,10 +7,14 @@
 
 
 #include <core/interface/ISimulationVisualizer.hpp>
+#include <engine/graphics/Framebuffer.hpp>
 #include "ParticleVertexArray.hpp"
 #include "engine/graphics/Shader.hpp"
+#include "IOpenGLVisualizer.hpp"
 
-class ParticleRenderer : public FluidSolver::ISimulationVisualizer {
+class ParticleRenderer : public FluidSolver::ISimulationVisualizer, public IOpenGLVisualizer {
+public:
+    Engine::Graphics::Texture2D *GetTexture() override;
 
 public:
     enum ColorSelection {
@@ -77,6 +81,10 @@ private:
     glm::mat4 projectionMatrix;
     ParticleVertexArray *particleVertexArray = nullptr;
 
+    Engine::Graphics::Framebuffer *framebuffer = nullptr;
+    Engine::Graphics::Texture2D *fboDepthTex = nullptr;
+    Engine::Graphics::Texture2D *fboColorTex = nullptr;
+
     Engine::Graphics::Shader *particleShader = nullptr;
 
     FluidSolver::IParticleCollection *ParticleCollection = nullptr;
@@ -84,6 +92,7 @@ private:
 
     float RestDensity = 0.0f;
 
+    void RecreateFBOStuff();
 
     void Generate();
 

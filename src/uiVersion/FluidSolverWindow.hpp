@@ -106,13 +106,9 @@ private:
 
 
     // rendering
-    Engine::Graphics::Framebuffer *framebuffer = nullptr;
+
     uint32_t particleFBOWidth = 1920;
     uint32_t particleFBOHeight = 1080;
-    Engine::Graphics::Texture2D *fboDepthTex = nullptr;
-    Engine::Graphics::Texture2D *fboColorTex = nullptr;
-
-    void setupFBO();
 
     void saveAsImage();
 

@@ -7,6 +7,9 @@
 
 void ParticleRenderer::Render() {
 
+    // render particles to fbo
+    framebuffer->Bind(true);
+
     glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -36,6 +39,10 @@ void ParticleRenderer::Render() {
         particleVertexArray->Draw();
 
     //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    // finish up
+    framebuffer->Unbind();
+    glFlush();
 }
 
 ParticleRenderer::~ParticleRenderer() {
@@ -206,6 +213,7 @@ void ParticleRenderer::Delete() {
 
 ParticleRenderer::ParticleRenderer() {
     Generate();
+    RecreateFBOStuff();
     CalculateProjectionMatrix();
 }
 
@@ -247,9 +255,13 @@ void ParticleRenderer::setSimulationViewArea(FluidSolver::ISimulationVisualizer:
 }
 
 void ParticleRenderer::setRenderTargetSize(size_t width, size_t height) {
-    this->renderTargetWidth = width;
-    this->renderTargetHeight = height;
+    if (this->renderTargetWidth != width || this->renderTargetHeight != height) {
+        this->renderTargetWidth = width;
+        this->renderTargetHeight = height;
+        RecreateFBOStuff();
+    }
     CalculateProjectionMatrix();
+
 }
 
 void ParticleRenderer::CalculateProjectionMatrix() {
@@ -267,13 +279,41 @@ void ParticleRenderer::CalculateProjectionMatrix() {
         width = height / fboHeight * fboWidth;
     }
 
+    // top and bottom is swapped, so that everything is rendered correctly (otherwise, we render it upside down)
     glm::mat4 generated = ParticleRenderer::GenerateOrtho(
             viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) - width * 0.5f,
             viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) + width * 0.5f,
-            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) + height * 0.5f,
-            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) - height * 0.5f);
+            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) - height * 0.5f,
+            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) + height * 0.5f);
 
     projectionMatrix = generated;
 
+}
+
+void ParticleRenderer::RecreateFBOStuff() {
+    delete fboColorTex;
+    delete fboDepthTex;
+    delete framebuffer;
+
+    framebuffer = new Engine::Graphics::Framebuffer(renderTargetWidth, renderTargetHeight);
+    auto *depthSettings = new Engine::Graphics::Texture2DSettings();
+    depthSettings->GenerateMipmaps = false;
+    depthSettings->TextureMagnifyingFiltering = GL_NEAREST;
+    depthSettings->TextureMinifyingFiltering = GL_NEAREST;
+    fboDepthTex = new Engine::Graphics::Texture2D(renderTargetWidth, renderTargetHeight, depthSettings,
+                                                  GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT16,
+                                                  Engine::ComponentType::ComponentTypeShort);
+    framebuffer->AddAttachment(GL_DEPTH_ATTACHMENT, fboDepthTex);
+
+    auto colorSettings = new Engine::Graphics::Texture2DSettings();
+    colorSettings->GenerateMipmaps = false;
+
+    fboColorTex = new Engine::Graphics::Texture2D(renderTargetWidth, renderTargetHeight, colorSettings, GL_RGB,
+                                                  Engine::ComponentType::ComponentTypeUnsignedByte);
+    framebuffer->AddAttachment(GL_COLOR_ATTACHMENT0, fboColorTex);
+}
+
+Engine::Graphics::Texture2D *ParticleRenderer::GetTexture() {
+    return fboColorTex;
 }
 

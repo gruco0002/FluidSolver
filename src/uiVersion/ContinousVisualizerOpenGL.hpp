@@ -10,8 +10,12 @@
 #include <core/basicScenarios/Scenario.hpp>
 #include <engine/graphics/Texture2D.hpp>
 #include <engine/RectangleRenderer.hpp>
+#include "IOpenGLVisualizer.hpp"
 
-class ContinousVisualizerOpenGL : public FluidSolver::ContinousVisualizer {
+class ContinousVisualizerOpenGL : public FluidSolver::ContinousVisualizer, public IOpenGLVisualizer {
+public:
+    Engine::Graphics::Texture2D *GetTexture() override;
+
 public:
     void setRenderTargetSize(size_t width, size_t height) override;
 
@@ -27,7 +31,6 @@ private:
 
     Engine::Graphics::Texture2D *texture = nullptr;
 
-    Engine::RectangleRenderer *rectangleRenderer = nullptr;
 
 };
 
