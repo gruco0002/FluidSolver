@@ -48,6 +48,9 @@ namespace FluidUI {
         int Visualizer_Selection = 0;
         void VisualizerSettings();
 
+
+        void Statistics();
+
     };
 }
 

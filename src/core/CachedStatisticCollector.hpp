@@ -21,7 +21,7 @@ namespace FluidSolver {
 
 
     private:
-        size_t CacheSize = 100;
+        size_t CacheSize = 1000;
 
         size_t CurrentCacheDataSize = 0;
         size_t CurrentCacheDataPointer = 0;

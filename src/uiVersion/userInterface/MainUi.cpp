@@ -9,6 +9,7 @@
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
+#include <core/CachedStatisticCollector.hpp>
 
 FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
@@ -20,6 +21,7 @@ void FluidUI::MainUi::Run() {
     Simulation();
     FluidSolver();
     VisualizerSettings();
+    Statistics();
 
 }
 
@@ -270,6 +272,33 @@ void FluidUI::MainUi::VisualizerSettings() {
         ImGui::Text("Continuous Visualizer");
         ImGui::InputFloat("Min. Render Density", &cv->MinimumRenderDensity);
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&cv->ClearColor));
+    }
+
+    ImGui::End();
+}
+
+void FluidUI::MainUi::Statistics() {
+    ImGui::Begin("Statistics");
+
+    auto cached = dynamic_cast<FluidSolver::CachedStatisticCollector*>(window->GetStatisticCollector());
+
+    if(cached != nullptr) {
+        ImGui::PlotConfig conf;
+        conf.values.xs = cached->getTimestepCache().data(); // this line is optional
+        conf.values.ys = cached->getAverageDensityCache().data();
+        conf.values.count = cached->getCurrentCacheDataSize();
+        conf.scale.min = 1.0f;
+        conf.scale.max = 1.001f;
+        conf.tooltip.show = true;
+        conf.tooltip.format = "x=%.8f, y=%.8f";
+        conf.grid_x.show = true;
+        conf.grid_y.show = true;
+        conf.frame_size = ImGui::GetContentRegionMax();
+        conf.frame_size.x -= 20.0f;
+        conf.frame_size.y -= 30.0f;
+        conf.line_thickness = 2.f;
+
+        ImGui::Plot("Average Density", conf);
     }
 
     ImGui::End();
