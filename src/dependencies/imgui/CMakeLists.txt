@@ -7,23 +7,23 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
 # folder for glfw include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../GLFW/include)
 
-set(IMGUI_SOURCE_FILES ../imgui/imgui.cpp ../imgui/imgui.h ../imgui/imgui_draw.cpp ../imgui/imconfig.h ../imgui/imgui_demo.cpp
-        ../imgui/imgui_internal.h ../imgui/imgui_widgets.cpp ../imgui/imstb_rectpack.h ../imgui/imstb_textedit.h
-        ../imgui/imstb_truetype.h ../imgui/imgui_impl_opengl3.cpp ../imgui/imgui_impl_opengl3.h
-        ../imgui/imgui_impl_glfw.cpp ../imgui/imgui_impl_glfw.h imguiHelper.cpp imguiHelper.hpp)
+set(IMGUI_SOURCE_FILES imgui.cpp imgui.h imgui_draw.cpp imconfig.h imgui_demo.cpp
+        imgui_internal.h imgui_widgets.cpp imstb_rectpack.h imstb_textedit.h
+        imstb_truetype.h imgui_impl_opengl3.cpp imgui_impl_opengl3.h
+        imgui_impl_glfw.cpp imgui_impl_glfw.h imguiHelper.cpp imguiHelper.hpp imgui_plot.cpp imgui_plot.h)
 
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
-    set(ADDITIONAL_SOURCES ../imgui/imgui_impl_win32.cpp ../imgui/imgui_impl_win32.h)
+    set(ADDITIONAL_SOURCES imgui_impl_win32.cpp imgui_impl_win32.h)
 endif ()
 
 if (APPLE)
-    set(ADDITIONAL_SOURCES ../imgui/imgui_impl_osx.mm ../imgui/imgui_impl_osx.h)
+    set(ADDITIONAL_SOURCES imgui_impl_osx.mm imgui_impl_osx.h)
 endif ()
 
 if (UNIX AND NOT APPLE)
     # TODO: check if this is correct
-    set(ADDITIONAL_SOURCES ../imgui/imgui_impl_osx.mm ../imgui/imgui_impl_osx.h)
+    set(ADDITIONAL_SOURCES imgui_impl_osx.mm imgui_impl_osx.h)
 endif ()
 
 

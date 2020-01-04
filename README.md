@@ -45,17 +45,29 @@ Use CMake to compile the project:
 
 ### Used dependencies and libraries
 
-- GLFW (Version 3.3), needs to be downloaded
-- googletest (Version 1.8.1), needs to be downloaded
-- GLAD (Version 0.1.29), included in this repository
-- GLM (Version 0.9.7.1), included in this repository
-- stb_image (Version 2.19), included in this repository
-- stb_image_resize (Version 0.95), included in this repository
-- stb_image_write (Version 1.09), included in this repository
-- stb_truetype (Version 1.19), included in this repository
+- [GLFW](https://www.glfw.org/) (Version 3.3),
+  *needs to be downloaded*
+- [googletest](https://github.com/google/googletest) (Version 1.8.1),
+  *needs to be downloaded*
+- [GLAD](https://github.com/Dav1dde/glad) (Version 0.1.29),
+  included in this repository
+- [GLM](https://glm.g-truc.net/) (Version 0.9.7.1),
+  included in this repository
+- [stb_image](https://github.com/nothings/stb) (Version 2.19),
+  included in this repository
+- [stb_image_resize](https://github.com/nothings/stb) (Version 0.95),
+  included in this repository
+- [stb_image_write](https://github.com/nothings/stb) (Version 1.09),
+  included in this repository
+- [stb_truetype](https://github.com/nothings/stb) (Version 1.19),
+  included in this repository
 - OpenMP (Version 4.5)
-- cxxopts (Version 2.1.2), included in this repository
-- Dear imgui (Version 1.74, docking branch), included in this repository
+- [cxxopts](https://github.com/jarro2783/cxxopts) (Version 2.1.2),
+  included in this repository
+- [Dear imgui](https://github.com/ocornut/imgui) (Version 1.74, docking branch),
+  included in this repository
+- [imgui-plot](https://github.com/soulthreads/imgui-plot) (Version ce5f24e),
+  included in this repository
 
 ### Using the Code on OSX (Mac)
 Since the project uses OpenMP (libomp) to parallelize the execution and the current
