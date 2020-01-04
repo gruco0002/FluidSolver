@@ -13,7 +13,7 @@
 FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
 void FluidUI::MainUi::Run() {
-    ImGui::ShowDemoWindow();
+    //ImGui::ShowDemoWindow();
 
     SimulationControl();
     Scenario();
