@@ -266,6 +266,10 @@ void FluidUI::MainUi::VisualizerSettings() {
 
         ImGui::ColorEdit3("Boundary Color", reinterpret_cast<float *>(&pr->boundaryParticleColor));
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&pr->backgroundClearColor));
+    }else if(cv != nullptr){
+        ImGui::Text("Continuous Visualizer");
+        ImGui::InputFloat("Min. Render Density", &cv->MinimumRenderDensity);
+        ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&cv->ClearColor));
     }
 
     ImGui::End();

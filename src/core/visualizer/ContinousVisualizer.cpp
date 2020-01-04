@@ -99,7 +99,7 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
 
     // if density is too small return nothing
     if (density < MinimumRenderDensity)
-        return Color(0, 0, 0);
+        return Color(ClearColor);
 
     // check which type of density is larger and return the corresponding color
     if (normalDensity > boundaryDensity) {
@@ -196,4 +196,10 @@ FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g,
 
 FluidSolver::ContinousVisualizer::Color::Color() {
 
+}
+
+FluidSolver::ContinousVisualizer::Color::Color(glm::vec3 color) {
+    R = (unsigned char) (color.r * 255.0f);
+    G = (unsigned char) (color.g * 255.0f);
+    B = (unsigned char) (color.b * 255.0f);
 }

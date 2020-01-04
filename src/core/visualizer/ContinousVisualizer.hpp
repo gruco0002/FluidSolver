@@ -28,6 +28,8 @@ namespace FluidSolver {
 
             Color();
 
+            Color(glm::vec3 color);
+
         };
 
 
@@ -57,6 +59,9 @@ namespace FluidSolver {
 
         void setHeight(size_t height);
 
+        glm::vec3 ClearColor = glm::vec3(0.0f, 0.0f, 0.0f);
+        float MinimumRenderDensity = 0.0f;
+
     private:
 
         SimulationViewArea viewArea;
@@ -78,12 +83,12 @@ namespace FluidSolver {
         float ParticleSize = 0.0f;
         IParticleCollection *ParticleCollection = nullptr;
         float RestDensity = 0.0f;
-        float MinimumRenderDensity = 0.0f;
+
 
         size_t Width = 1920;
         size_t Height = 1080;
 
-        Color ClearColor = Color(0, 0, 0);
+
         std::vector<Color> data;
 
         HashedNeighborhoodSearch *neighborhoodSearch = nullptr;
