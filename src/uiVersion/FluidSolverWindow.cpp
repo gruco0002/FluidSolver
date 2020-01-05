@@ -80,6 +80,8 @@ void FluidSolverWindow::render() {
             auto tex = glRenderer->GetTexture();
             // render visualization
             auto maxRegion = ImGui::GetContentRegionMax();
+            maxRegion.x -= 20.0f;
+            maxRegion.y -= 30.0f;
             float width = 0.0f;
             float height = 0.0f;
             if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
