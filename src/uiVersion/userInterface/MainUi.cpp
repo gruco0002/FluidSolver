@@ -328,23 +328,23 @@ void FluidUI::MainUi::Statistics() {
 
         }
 
-        ImGui::PlotConfig conf;
-        conf.values.xs = cached->getTimestepCache().data(); // this line is optional
-        conf.values.ys_list = Statistics_yData.data();
-        conf.values.ys_count = Statistics_yData.size();
-        conf.values.count = cached->getCurrentCacheDataSize();
-        conf.scale.min = Statistics_ScaleMin;
-        conf.scale.max = Statistics_ScaleMax;
-        conf.tooltip.show = true;
-        conf.tooltip.format = "x=%.8f, y=%.8f";
-        conf.grid_x.show = true;
-        conf.grid_y.show = true;
-        conf.frame_size = ImGui::GetContentRegionMax();
-        conf.frame_size.x -= 20.0f;
-        conf.frame_size.y -= 30.0f;
-        conf.line_thickness = 2.f;
 
-        if (Statistics_yData.size() > 0) {
+        if (!Statistics_yData.empty()) {
+            ImGui::PlotConfig conf;
+            conf.values.xs = cached->getTimestepCache().data(); // this line is optional
+            conf.values.ys_list = Statistics_yData.data();
+            conf.values.ys_count = Statistics_yData.size();
+            conf.values.count = cached->getCurrentCacheDataSize();
+            conf.scale.min = Statistics_ScaleMin;
+            conf.scale.max = Statistics_ScaleMax;
+            conf.tooltip.show = true;
+            conf.tooltip.format = "x=%.8f, y=%.8f";
+            conf.grid_x.show = true;
+            conf.grid_y.show = true;
+            conf.frame_size = ImGui::GetContentRegionMax();
+            conf.frame_size.x -= 20.0f;
+            conf.frame_size.y -= 30.0f;
+            conf.line_thickness = 2.f;
             ImGui::Plot("Data Visualization", conf);
         } else {
             ImGui::Text("No data to show");
@@ -358,12 +358,14 @@ void FluidUI::MainUi::Statistics() {
     ImGui::InputFloat("Scale Max", &Statistics_ScaleMax, 0, 0, "%.6f");
 
 
-    ImGui::ListBoxHeader("Data");
-    for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
-        ImGui::Selectable(visSelection[i], &Statistics_GraphSelection[i]);
-    }
+    if (ImGui::ListBoxHeader("Data")) {
 
-    ImGui::ListBoxFooter();
+        for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
+            ImGui::Selectable(visSelection[i], &Statistics_GraphSelection[i]);
+        }
+
+        ImGui::ListBoxFooter();
+    }
 
     ImGui::Columns();
 

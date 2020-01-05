@@ -71,7 +71,7 @@ void FluidSolverWindow::render() {
     auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
 
-    ImGui::SetNextWindowDockID(id);
+
     ImGui::Begin("Simulation Visualization");
 
     if (simulation != nullptr) {
