@@ -30,11 +30,11 @@ namespace FluidSolver {
         std::vector<float> AverageDensityCache;
         std::vector<float> EnergyCache;
         std::vector<float> MaximumVelocityCache;
-        std::vector<uint32_t> DeadParticleCountCache;
+        std::vector<float> DeadParticleCountCache;
         std::vector<float> KineticEnergyCache;
         std::vector<float> PotentialEnergyCache;
-        std::vector<uint32_t> BoundaryParticleCountCache;
-        std::vector<uint32_t> NormalParticleCountCache;
+        std::vector<float> BoundaryParticleCountCache;
+        std::vector<float> NormalParticleCountCache;
         std::vector<float> CflNumberCache;
 
         void ResizeVectors();
@@ -52,15 +52,15 @@ namespace FluidSolver {
 
         const std::vector<float> &getMaximumVelocityCache() const;
 
-        const std::vector<uint32_t> &getDeadParticleCountCache() const;
+        const std::vector<float> &getDeadParticleCountCache() const;
 
         const std::vector<float> &getKineticEnergyCache() const;
 
         const std::vector<float> &getPotentialEnergyCache() const;
 
-        const std::vector<uint32_t> &getBoundaryParticleCountCache() const;
+        const std::vector<float> &getBoundaryParticleCountCache() const;
 
-        const std::vector<uint32_t> &getNormalParticleCountCache() const;
+        const std::vector<float> &getNormalParticleCountCache() const;
 
         const std::vector<float> &getCflNumberCache() const;
 

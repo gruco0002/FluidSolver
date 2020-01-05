@@ -81,7 +81,7 @@ const std::vector<float> &FluidSolver::CachedStatisticCollector::getMaximumVeloc
     return MaximumVelocityCache;
 }
 
-const std::vector<uint32_t> &FluidSolver::CachedStatisticCollector::getDeadParticleCountCache() const {
+const std::vector<float> &FluidSolver::CachedStatisticCollector::getDeadParticleCountCache() const {
     return DeadParticleCountCache;
 }
 
@@ -93,11 +93,11 @@ const std::vector<float> &FluidSolver::CachedStatisticCollector::getPotentialEne
     return PotentialEnergyCache;
 }
 
-const std::vector<uint32_t> &FluidSolver::CachedStatisticCollector::getBoundaryParticleCountCache() const {
+const std::vector<float> &FluidSolver::CachedStatisticCollector::getBoundaryParticleCountCache() const {
     return BoundaryParticleCountCache;
 }
 
-const std::vector<uint32_t> &FluidSolver::CachedStatisticCollector::getNormalParticleCountCache() const {
+const std::vector<float> &FluidSolver::CachedStatisticCollector::getNormalParticleCountCache() const {
     return NormalParticleCountCache;
 }
 

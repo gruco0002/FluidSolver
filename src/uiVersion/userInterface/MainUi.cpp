@@ -122,7 +122,7 @@ void FluidUI::MainUi::Simulation() {
         constant = nullptr;
     }
 
-    ImGui::ListBox("Timestep", &Simulation_SelectedTimestep, selection, 2);
+    ImGui::ListBox("Timestep", &Simulation_SelectedTimestep, selection, IM_ARRAYSIZE(selection));
 
     ImGui::Text("Current Timestep: %f", window->GetTimestep()->getCurrentTimestep());
 
@@ -175,7 +175,7 @@ void FluidUI::MainUi::FluidSolver() {
         iisph = tmp;
     }
 
-    ImGui::ListBox("Solver", &FluidSolver_SelectedSolver, selection, 2);
+    ImGui::ListBox("Solver", &FluidSolver_SelectedSolver, selection, IM_ARRAYSIZE(selection));
 
 
     if (simple != nullptr) {
@@ -247,7 +247,7 @@ void FluidUI::MainUi::VisualizerSettings() {
         cv = tmp;
     }
 
-    ImGui::ListBox("Visualizer", &Visualizer_Selection, visSelection, 2);
+    ImGui::ListBox("Visualizer", &Visualizer_Selection, visSelection, IM_ARRAYSIZE(visSelection));
 
     ImGui::Separator();
 
@@ -256,7 +256,7 @@ void FluidUI::MainUi::VisualizerSettings() {
         ImGui::Text("Particle Renderer");
 
         static const char *selection[]{"Velocity", "Acceleration", "Mass", "Pressure", "Density"};
-        ImGui::Combo("Value", (int *) &pr->colorSelection, selection, 5);
+        ImGui::Combo("Value", (int *) &pr->colorSelection, selection, IM_ARRAYSIZE(selection));
 
         ImGui::InputFloat("Bottom Value", &pr->bottomValue, 0, 0, "%.6f");
         ImGui::ColorEdit3("Bottom Color", reinterpret_cast<float *>(&pr->bottomColor));
@@ -268,7 +268,7 @@ void FluidUI::MainUi::VisualizerSettings() {
 
         ImGui::ColorEdit3("Boundary Color", reinterpret_cast<float *>(&pr->boundaryParticleColor));
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&pr->backgroundClearColor));
-    }else if(cv != nullptr){
+    } else if (cv != nullptr) {
         ImGui::Text("Continuous Visualizer");
         ImGui::InputFloat("Min. Render Density", &cv->MinimumRenderDensity);
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&cv->ClearColor));
@@ -280,15 +280,61 @@ void FluidUI::MainUi::VisualizerSettings() {
 void FluidUI::MainUi::Statistics() {
     ImGui::Begin("Statistics");
 
-    auto cached = dynamic_cast<FluidSolver::CachedStatisticCollector*>(window->GetStatisticCollector());
+    static const char *visSelection[]{"Average Density", "Energy", "Potential Energy", "Kinetic Energy",
+                                      "Max. Velocity", "CFL Number", "Dead Particles", "Boundary Particles",
+                                      "Normal Particles"};
 
-    if(cached != nullptr) {
+    ImGui::Columns(2);
+    auto cached = dynamic_cast<FluidSolver::CachedStatisticCollector *>(window->GetStatisticCollector());
+
+    if (cached != nullptr) {
+        Statistics_yData.clear();
+        for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
+            if (!Statistics_GraphSelection[i])
+                continue;
+
+            switch (i) {
+                case 0:
+                    Statistics_yData.push_back(cached->getAverageDensityCache().data());
+                    break;
+                case 1:
+                    Statistics_yData.push_back(cached->getEnergyCache().data());
+                    break;
+                case 2:
+                    Statistics_yData.push_back(cached->getPotentialEnergyCache().data());
+                    break;
+                case 3:
+                    Statistics_yData.push_back(cached->getKineticEnergyCache().data());
+                    break;
+                case 4:
+                    Statistics_yData.push_back(cached->getMaximumVelocityCache().data());
+                    break;
+                case 5:
+                    Statistics_yData.push_back(cached->getCflNumberCache().data());
+                    break;
+                case 6:
+                    Statistics_yData.push_back(cached->getDeadParticleCountCache().data());
+                    break;
+                case 7:
+                    Statistics_yData.push_back(cached->getBoundaryParticleCountCache().data());
+                    break;
+                case 8:
+                    Statistics_yData.push_back(cached->getNormalParticleCountCache().data());
+                    break;
+                default:
+                    break;
+            }
+
+
+        }
+
         ImGui::PlotConfig conf;
         conf.values.xs = cached->getTimestepCache().data(); // this line is optional
-        conf.values.ys = cached->getAverageDensityCache().data();
+        conf.values.ys_list = Statistics_yData.data();
+        conf.values.ys_count = Statistics_yData.size();
         conf.values.count = cached->getCurrentCacheDataSize();
-        conf.scale.min = 1.0f;
-        conf.scale.max = 1.001f;
+        conf.scale.min = Statistics_ScaleMin;
+        conf.scale.max = Statistics_ScaleMax;
         conf.tooltip.show = true;
         conf.tooltip.format = "x=%.8f, y=%.8f";
         conf.grid_x.show = true;
@@ -298,8 +344,28 @@ void FluidUI::MainUi::Statistics() {
         conf.frame_size.y -= 30.0f;
         conf.line_thickness = 2.f;
 
-        ImGui::Plot("Average Density", conf);
+        if (Statistics_yData.size() > 0) {
+            ImGui::Plot("Data Visualization", conf);
+        } else {
+            ImGui::Text("No data to show");
+        }
     }
+
+    ImGui::NextColumn();
+
+    ImGui::Text("Chart settings");
+    ImGui::InputFloat("Scale Min", &Statistics_ScaleMin, 0, 0, "%.6f");
+    ImGui::InputFloat("Scale Max", &Statistics_ScaleMax, 0, 0, "%.6f");
+
+
+    ImGui::ListBoxHeader("Data");
+    for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
+        ImGui::Selectable(visSelection[i], &Statistics_GraphSelection[i]);
+    }
+
+    ImGui::ListBoxFooter();
+
+    ImGui::Columns();
 
     ImGui::End();
 }
