@@ -13,7 +13,7 @@ void ParticleRenderer::Render() {
     glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    particleVertexArray->Update();
+    particleVertexArray->Update(particleSelection);
 
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
@@ -24,11 +24,8 @@ void ParticleRenderer::Render() {
     particleShader->SetValue("topColor", topColor);
     particleShader->SetValue("topValue", topValue);
     particleShader->SetValue("boundaryColor", boundaryParticleColor);
-    if (showParticleSelection) {
-        particleShader->SetValue("selectedParticle", selectedParticle);
-    } else {
-        particleShader->SetValue("selectedParticle", -1);
-    }
+    particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
+
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -61,6 +58,7 @@ layout (location = 3) in float aMass;
 layout (location = 4) in float aPressure;
 layout (location = 5) in float aDensity;
 layout (location = 6) in uint aType;
+layout (location = 7) in int aIsSelected;
 
 
 #define COLOR_SELECTION_VELOCITY 0
@@ -78,8 +76,8 @@ uniform vec4 bottomColor;
 uniform vec4 topColor;
 uniform float bottomValue;
 uniform float topValue;
-uniform int selectedParticle;
 uniform vec4 boundaryColor;
+uniform int showParticleSelection;
 
 
 out VS_OUT {
@@ -95,9 +93,11 @@ void main()
     vs_out.discarded = 0;
 	vs_out.selected = 0;
 
-	if(gl_VertexID == selectedParticle){
-		vs_out.selected = 1;
-	}
+    // determine selection
+    if(showParticleSelection + aIsSelected == 2){
+        vs_out.selected = 1;
+    }
+
 
     float val = 0.0;
     if(colorSelection == COLOR_SELECTION_VELOCITY){

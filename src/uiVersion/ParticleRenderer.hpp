@@ -46,7 +46,7 @@ public:
     glm::vec4 topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
     float topValue = 2.0f;
 
-    int selectedParticle = 0;
+
     bool showParticleSelection = false;
 
     glm::vec4 boundaryParticleColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);

@@ -9,7 +9,7 @@ ParticleVertexArray::ParticleVertexArray(FluidSolver::SimpleParticleCollection *
     Generate();
 }
 
-void ParticleVertexArray::Update() {
+void ParticleVertexArray::Update(FluidSolver::IParticleSelection *particleSelection) {
     this->particleCount = simpleParticleCollection->GetSize();
     if (vertexBuffer->GetElementCount() >= this->particleCount) {
         // the size of the buffer is large enough for the particles: Update the data because it is faster
@@ -18,6 +18,26 @@ void ParticleVertexArray::Update() {
         // the buffer is too small, set the data to force a resize
         vertexBuffer->SetData(simpleParticleCollection->GetParticles());
     }
+
+    // first update the selection data, then update the buffer
+    UpdateSelectionData(particleSelection);
+    if (selectionBuffer->GetElementCount() >= this->selectionData.size()) {
+        // the size of the buffer is large enough for the particles: Update the data because it is faster
+        selectionBuffer->UpdateData(selectionData);
+    } else {
+        // the buffer is too small, set the data to force a resize
+        selectionBuffer->SetData(selectionData);
+    }
+
+    // resize index buffer iff needed
+    if (indexBuffer->GetElementCount() < this->particleCount) {
+        std::vector<uint32_t> indices(this->particleCount);
+        for (uint32_t i = 0; i < this->particleCount; i++) {
+            indices[i] = i;
+        }
+        indexBuffer->SetData(indices);
+    }
+
 }
 
 void ParticleVertexArray::Draw() {
@@ -34,6 +54,10 @@ void ParticleVertexArray::Generate() {
         indices[i] = i;
     }
     indexBuffer = new Engine::Graphics::Buffer::IndexBuffer<uint32_t>(indices);
+
+    selectionData.resize(this->particleCount);
+    selectionBuffer = new Engine::Graphics::Buffer::VertexBuffer<int8_t>(selectionData,
+                                                                         Engine::Graphics::Buffer::Buffer::DataModeDynamic);
 
 
     vao = new Engine::Graphics::Buffer::VertexArray({
@@ -105,18 +129,31 @@ void ParticleVertexArray::Generate() {
                                                                     sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
                                                                     Engine::ComponentTypeUnsignedByte
                                                             ),
-
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    selectionBuffer,
+                                                                    7, 1, 0, sizeof(int8_t),
+                                                                    Engine::ComponentTypeByte
+                                                            )
 
                                                     });
 
 }
 
-void ParticleVertexArray::Delete() {
+
+ParticleVertexArray::~ParticleVertexArray() {
     delete vao;
     delete vertexBuffer;
     delete indexBuffer;
+    delete selectionBuffer;
 }
 
-ParticleVertexArray::~ParticleVertexArray() {
-    Delete();
+void ParticleVertexArray::UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection) {
+    size_t size = simpleParticleCollection->GetSize();
+    selectionData.resize(size);
+
+#pragma omp parallel for
+    for (int64_t particleIndex = 0; particleIndex < size; particleIndex++) {
+        bool selected = particleSelection->IsParticleSelected(particleIndex, simpleParticleCollection);
+        selectionData[particleIndex] = selected ? 1 : 0;
+    }
 }

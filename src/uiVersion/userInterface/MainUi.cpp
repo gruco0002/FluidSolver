@@ -283,6 +283,9 @@ void FluidUI::MainUi::VisualizerSettings() {
 
         ImGui::ColorEdit3("Boundary Color", reinterpret_cast<float *>(&pr->boundaryParticleColor));
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&pr->backgroundClearColor));
+
+        ImGui::Checkbox("Show Selection", &pr->showParticleSelection);
+
     } else if (cv != nullptr) {
         ImGui::Text("Continuous Visualizer");
         ImGui::InputFloat("Min. Render Density", &cv->MinimumRenderDensity);

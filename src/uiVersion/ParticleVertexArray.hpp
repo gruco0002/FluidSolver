@@ -10,6 +10,7 @@
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
+#include <core/selection/IParticleSelection.hpp>
 
 class ParticleVertexArray {
 
@@ -28,9 +29,9 @@ class ParticleVertexArray {
 
 public:
 
-    ParticleVertexArray(FluidSolver::SimpleParticleCollection *simpleParticleCollection);
+    explicit ParticleVertexArray(FluidSolver::SimpleParticleCollection *simpleParticleCollection);
 
-    void Update();
+    void Update(FluidSolver::IParticleSelection *particleSelection);
 
     void Draw();
 
@@ -38,17 +39,22 @@ public:
 
 private:
 
-    uint32_t particleCount;
+    std::vector<int8_t> selectionData;
 
-    FluidSolver::SimpleParticleCollection *simpleParticleCollection;
+    void UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection);
+
+    uint32_t particleCount = 0;
+
+    FluidSolver::SimpleParticleCollection *simpleParticleCollection = nullptr;
 
     void Generate();
 
-    void Delete();
 
-    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::SimpleParticleCollection::FluidParticle> *vertexBuffer;
-    Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer;
-    Engine::Graphics::Buffer::VertexArray *vao;
+    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::SimpleParticleCollection::FluidParticle> *vertexBuffer = nullptr;
+    Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexArray *vao = nullptr;
+
+    Engine::Graphics::Buffer::VertexBuffer<int8_t> *selectionBuffer = nullptr;
 
 };
 
