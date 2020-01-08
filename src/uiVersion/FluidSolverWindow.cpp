@@ -145,8 +145,15 @@ void FluidSolverWindow::load() {
 
     OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
-        this->onClick(this->GetMousePositionX(), this->GetMousePositionY(), btn);
+        this->onMouseDown(this->GetMousePositionX(), this->GetMousePositionY(), btn);
     });
+    OnMouseUp.Subscribe([=](Engine::Window::MouseButton btn) {
+        this->onMouseUp(this->GetMousePositionX(), this->GetMousePositionY(), btn);
+    });
+    OnCursorPositionChanged.Subscribe([=](double x, double y) {
+        this->onMouseMove(this->GetMousePositionX(), this->GetMousePositionY());
+    });
+
     setupSimulation();
     setupUI();
 
@@ -255,11 +262,48 @@ void FluidSolverWindow::resetData() {
 
 }
 
-
-void FluidSolverWindow::onClick(float x, float y, Engine::Window::MouseButton button) {
+void FluidSolverWindow::onMouseDown(float x, float y, Engine::Window::MouseButton button) {
     if (simulation == nullptr) return;
     if (simulation->getSimulationVisualizer() == nullptr) return;
     if (!mouseInsideVisualization)return;
+
+    isMouseDown = true;
+
+
+    // setting coordinates for the drag start
+    mouseDragStart = glm::vec2(x, y);
+    mouseDragStarted = false;
+
+    // calculating position on image on drag start in simulation space
+    glm::vec2 positionOnImage = glm::vec2(x - visualizationWindowCoordinates.x, y - visualizationWindowCoordinates.y);
+    positionOnImage.x = positionOnImage.x / visualizationWindowCoordinates.z;
+    positionOnImage.y = positionOnImage.y / visualizationWindowCoordinates.w;
+    positionOnImage.x = positionOnImage.x * (float) visualizerRenderTargetWidth;
+    positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
+    positionOnImageInSimSpaceDragStart = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace(
+            (size_t) positionOnImage.x,
+            (size_t) positionOnImage.y);
+
+}
+
+void FluidSolverWindow::onMouseMove(float x, float y) {
+    const float DRAG_START_THRESHOLD_DISTANCE = 3.5f;
+    if (isMouseDown) {
+        glm::vec2 tmp = glm::vec2(x, y);
+        if (glm::length(tmp - mouseDragStart) >= DRAG_START_THRESHOLD_DISTANCE) {
+            mouseDragStarted = true;
+        }
+    }
+}
+
+
+void FluidSolverWindow::onMouseUp(float x, float y, Engine::Window::MouseButton button) {
+    isMouseDown = false;
+
+    if (simulation == nullptr) return;
+    if (simulation->getSimulationVisualizer() == nullptr) return;
+    if (!mouseInsideVisualization)return;
+
 
     glm::vec2 positionOnImage = glm::vec2(x - visualizationWindowCoordinates.x, y - visualizationWindowCoordinates.y);
     positionOnImage.x = positionOnImage.x / visualizationWindowCoordinates.z;
@@ -271,10 +315,14 @@ void FluidSolverWindow::onClick(float x, float y, Engine::Window::MouseButton bu
     auto pos = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
                                                                                             (size_t) positionOnImage.y);
 
-
-    this->SelectParticle(pos, button == Engine::Window::MouseButton::RightButton ? SelectionType::SelectionTypeDeselect
-                                                                                 : SelectionTypeSelect);
-
+    auto selectionType = button == Engine::Window::MouseButton::RightButton ? SelectionType::SelectionTypeDeselect
+                                                                            : SelectionTypeSelect;
+    if (mouseDragStarted) {
+        mouseDragStarted = false;
+        this->SelectParticles(pos, positionOnImageInSimSpaceDragStart, selectionType);
+    } else {
+        this->SelectParticle(pos, selectionType);
+    }
 
 }
 
@@ -415,6 +463,10 @@ void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::Se
     uint32_t particleIndex = -1;
     float dist = simulation->getParticleSize();
     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+        auto particleType = simulation->getParticleCollection()->GetParticleType(i);
+        if (particleType == FluidSolver::IParticleCollection::ParticleTypeDead)
+            continue;
+
         if (custom != nullptr) {
             auto isSelected = custom->IsParticleSelected(i, simulation->getParticleCollection());
             if (type == SelectionType::SelectionTypeSelect && isSelected) {
@@ -445,5 +497,49 @@ void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::Se
         }
     }
 }
+
+void
+FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, FluidSolverWindow::SelectionType type) {
+
+    float minX = std::fmin(position1.x, position2.x);
+    float minY = std::fmin(position1.y, position2.y);
+    float maxX = std::fmax(position1.x, position2.x);
+    float maxY = std::fmax(position1.y, position2.y);
+
+    // find nearest particle, that you have clicked on depending on type
+    std::vector<uint32_t> particles;
+    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+        auto particleType = simulation->getParticleCollection()->GetParticleType(i);
+        if (particleType == FluidSolver::IParticleCollection::ParticleTypeDead)
+            continue;
+
+
+        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
+        if (particlePos.x >= minX && particlePos.x <= maxX) {
+            if (particlePos.y >= minY && particlePos.y <= maxY) {
+                particles.push_back(i);
+            }
+        }
+    }
+
+    // select corresponding particle(s)
+    auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
+
+    for (auto particleIndex:particles) {
+        if (custom == nullptr) {
+            custom = new FluidSolver::ParticleSelection();
+            delete simulation->getParticleSelection();
+            simulation->setParticleSelection(custom);
+        }
+        if (type == SelectionType::SelectionTypeSelect) {
+            custom->AddParticleToSelection(particleIndex);
+        } else if (type == SelectionType::SelectionTypeDeselect) {
+            custom->RemoveParticleFromSelection(particleIndex);
+        }
+    }
+
+
+}
+
 
 

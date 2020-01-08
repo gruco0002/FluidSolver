@@ -100,7 +100,11 @@ private:
 
     void setupSimulation();
 
-    void onClick(float x, float y, Engine::Window::MouseButton button);
+    void onMouseUp(float x, float y, Engine::Window::MouseButton button);
+
+    void onMouseDown(float x, float y, Engine::Window::MouseButton button);
+
+    void onMouseMove(float x, float y);
 
 
     void UpdateVisualizerViewport();
@@ -140,6 +144,13 @@ private:
 
     void SelectParticle(glm::vec2 position, SelectionType type);
 
+    void SelectParticles(glm::vec2 position1, glm::vec2 position2, SelectionType type);
+
+    // mouse dragging stuff
+    bool mouseDragStarted = false;
+    bool isMouseDown = false;
+    glm::vec2 mouseDragStart = glm::vec2(0.0f);
+    glm::vec2 positionOnImageInSimSpaceDragStart = glm::vec2(0.0f);
 
 protected:
     void render() override;
