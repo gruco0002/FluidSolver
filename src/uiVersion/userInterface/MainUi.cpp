@@ -234,6 +234,12 @@ void FluidUI::MainUi::VisualizerSettings() {
     static const char *visSelection[]{"Particle Renderer", "Continuous Visualizer"};
 
     if (Visualizer_Selection == 0 && pr == nullptr) {
+        // change resolution
+        Visualizer_Width = 1920;
+        Visualizer_Height = 1080;
+        window->setVisualizerRenderTargetWidth(Visualizer_Width);
+        window->setVisualizerRenderTargetHeight(Visualizer_Height);
+
         // set particle renderer
         auto tmp = new ParticleRenderer();
         delete window->GetVisualizer();
@@ -242,6 +248,12 @@ void FluidUI::MainUi::VisualizerSettings() {
         cv = nullptr;
 
     } else if (Visualizer_Selection == 1 && cv == nullptr) {
+        // change resolution
+        Visualizer_Width = 300;
+        Visualizer_Height = 300;
+        window->setVisualizerRenderTargetWidth(Visualizer_Width);
+        window->setVisualizerRenderTargetHeight(Visualizer_Height);
+
         // set continuous renderer
         auto tmp = new ContinousVisualizerOpenGL();
         delete window->GetVisualizer();
@@ -412,6 +424,6 @@ void FluidUI::MainUi::Selection() {
     } else if (custom != nullptr) {
         ImGui::Text("Selected: %zu Particles", custom->GetSize());
     }
-    
+
     ImGui::End();
 }

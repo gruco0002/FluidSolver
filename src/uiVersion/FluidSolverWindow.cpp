@@ -19,6 +19,7 @@
 #include <core/timestep/ConstantTimestep.hpp>
 #include <imguiHelper.hpp>
 #include <core/statistics/CachedStatisticCollector.hpp>
+#include <core/selection/ParticleSelection.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -92,7 +93,35 @@ void FluidSolverWindow::render() {
                 height = maxRegion.y;
                 width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
             }
-            ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
+
+
+            // im gui image location finder trick
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+            if (ImGui::BeginChild("SimView")) {
+
+                bool imageHasFocus = ImGui::IsWindowHovered();
+                auto pos = ImGui::GetWindowPos();
+                auto padding = ImGui::GetStyle().WindowPadding;
+                auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
+                auto windowSize = glm::vec2(width, height);
+                visualizationWindowCoordinates = glm::vec4(windowPosition.x, windowPosition.y, windowSize.x,
+                                                           windowSize.y);
+                mouseInsideVisualization = imageHasFocus;
+
+                ImGui::PushItemWidth(width);
+
+                ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
+
+                ImGui::PopItemWidth();
+            }
+
+            ImGui::PopStyleVar(3);
+
+            ImGui::EndChild();
+
         } else {
             ImGui::Text("No OpenGL compatible visualizer!");
         }
@@ -228,28 +257,46 @@ void FluidSolverWindow::resetData() {
 
 
 void FluidSolverWindow::onClick(float x, float y) {
-    return;
-    // TODO: fix
-    /* // pos is the position in particle space
-     glm::vec2 pos = glm::vec2(0, 0);
+    if (simulation == nullptr) return;
+    if (simulation->getSimulationVisualizer() == nullptr) return;
+    if (!mouseInsideVisualization)return;
 
-     // find nearest particle, that you have clicked on
-     uint32_t particleIndex = -1;
-     float dist = particleRenderer->pointSize * 0.5;
-     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-         auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-         auto partDist = glm::length(pos - particlePos);
-         if (partDist < dist) {
-             particleIndex = i;
-             dist = partDist;
-         }
-     }
+    glm::vec2 positionOnImage = glm::vec2(x - visualizationWindowCoordinates.x, y - visualizationWindowCoordinates.y);
+    positionOnImage.x = positionOnImage.x / visualizationWindowCoordinates.z;
+    positionOnImage.y = positionOnImage.y / visualizationWindowCoordinates.w;
+    positionOnImage.x = positionOnImage.x * (float) visualizerRenderTargetWidth;
+    positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
 
-     // set particle index in info box
-     if (particleIndex != -1) {
 
-         particleRenderer->selectedParticle = particleIndex;
-     }*/
+
+    auto pos = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
+                                                                                            (size_t) positionOnImage.y);
+
+    std::cout << pos.x << "\t" << pos.y << std::endl;
+
+    // find nearest particle, that you have clicked on
+    uint32_t particleIndex = -1;
+    float dist = 100.0f;
+    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
+        auto partDist = glm::length(pos - particlePos);
+        if (partDist < dist) {
+            particleIndex = i;
+            dist = partDist;
+        }
+    }
+
+    // set particle index in info box
+    if (particleIndex != -1) {
+        auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
+        if (custom == nullptr) {
+            custom = new FluidSolver::ParticleSelection();
+            delete simulation->getParticleSelection();
+            simulation->setParticleSelection(custom);
+        }
+        custom->AddParticleToSelection(particleIndex);
+        std::cout << "set particle " << particleIndex << std::endl;
+    }
 
 }
 

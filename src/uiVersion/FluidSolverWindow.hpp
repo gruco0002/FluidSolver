@@ -130,6 +130,9 @@ private:
 
     FluidUI::MainUi *mainUi = nullptr;
 
+    bool mouseInsideVisualization = false;
+    glm::vec4 visualizationWindowCoordinates = glm::vec4(0.0f);
+
 
 protected:
     void render() override;
