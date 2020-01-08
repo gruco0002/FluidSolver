@@ -68,6 +68,14 @@ namespace FluidSolver {
 
         SimulationViewArea viewArea;
 
+        IParticleSelection* particleSelection = nullptr;
+    public:
+        void setParticleSelection(IParticleSelection *particleSelection) override;
+
+        IParticleSelection *getParticleSelection() override;
+
+    private:
+
         struct Viewport {
             float Top = 0.0f;
             float Left = 0.0f;

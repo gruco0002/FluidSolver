@@ -147,7 +147,7 @@ float StatisticCollector::getCalculatedCflNumber() const {
 }
 
 StatisticCollector::~StatisticCollector() {
-    delete particleSelection;
+
 }
 
 IParticleSelection *StatisticCollector::getParticleSelection() const {

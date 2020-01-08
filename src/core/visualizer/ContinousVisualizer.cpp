@@ -206,6 +206,14 @@ glm::vec2 FluidSolver::ContinousVisualizer::ConvertPixelCoordinateToParticleSpac
     return glm::vec2(xCoord, yCoord);
 }
 
+void FluidSolver::ContinousVisualizer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
+    this->particleSelection = particleSelection;
+}
+
+FluidSolver::IParticleSelection *FluidSolver::ContinousVisualizer::getParticleSelection() {
+    return particleSelection;
+}
+
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}
 
 FluidSolver::ContinousVisualizer::Color::Color() {

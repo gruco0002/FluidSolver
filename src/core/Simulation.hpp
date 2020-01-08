@@ -32,9 +32,16 @@ namespace FluidSolver {
 
         ITimestep *timestep = nullptr;
 
+        IParticleSelection* particleSelection = new AllParticleSelection();
+
         float particleSize = 1.0f;
         float restDensity = 1.0f;
         float gravity = 9.81f;
+    public:
+        IParticleSelection *getParticleSelection() const;
+
+        void setParticleSelection(IParticleSelection *particleSelection);
+
     public:
         float getGravity() const;
 

@@ -65,7 +65,7 @@ namespace FluidSolver {
 
     private:
 
-        IParticleSelection *particleSelection = new AllParticleSelection();
+        IParticleSelection *particleSelection = nullptr;
     public:
         IParticleSelection *getParticleSelection() const;
 

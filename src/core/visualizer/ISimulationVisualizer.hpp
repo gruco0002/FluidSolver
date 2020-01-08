@@ -5,6 +5,7 @@
 #ifndef FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
+#include <core/selection/IParticleSelection.hpp>
 #include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
 namespace FluidSolver {
@@ -45,6 +46,10 @@ namespace FluidSolver {
         virtual ~ISimulationVisualizer() = default;
 
         virtual glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) = 0;
+
+        virtual void setParticleSelection(IParticleSelection *particleSelection) = 0;
+
+        virtual IParticleSelection *getParticleSelection() = 0;
 
     };
 }

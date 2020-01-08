@@ -74,6 +74,14 @@ public:
 
 private:
 
+    FluidSolver::IParticleSelection *particleSelection = nullptr;
+public:
+    void setParticleSelection(FluidSolver::IParticleSelection *particleSelection) override;
+
+    FluidSolver::IParticleSelection *getParticleSelection() override;
+
+private:
+
     SimulationViewArea viewArea;
     size_t renderTargetWidth = 1920;
     size_t renderTargetHeight = 1080;

@@ -99,9 +99,12 @@ void FluidSolver::Simulation::setStatisticCollector(FluidSolver::StatisticCollec
     if (dataLogger != nullptr)
         dataLogger->setStatisticCollector(statisticCollector);
 
-    statisticCollector->setParticleCollection(particleCollection);
-    statisticCollector->setParticleSize(particleSize);
-    statisticCollector->setRestDensity(restDensity);
+    if (statisticCollector != nullptr) {
+        statisticCollector->setParticleCollection(particleCollection);
+        statisticCollector->setParticleSize(particleSize);
+        statisticCollector->setRestDensity(restDensity);
+        statisticCollector->setParticleCollection(particleCollection);
+    }
 }
 
 DataLogger *FluidSolver::Simulation::getDataLogger() {
@@ -126,6 +129,7 @@ void FluidSolver::Simulation::setSimulationVisualizer(FluidSolver::ISimulationVi
         simulationVisualizer->setParticleCollection(this->particleCollection);
         simulationVisualizer->setParticleSize(particleSize);
         simulationVisualizer->setRestDensity(restDensity);
+        simulationVisualizer->setParticleSelection(particleSelection);
     }
 }
 
@@ -206,4 +210,16 @@ void FluidSolver::Simulation::clearSimulationModifiers() {
 
 void FluidSolver::Simulation::clearExternalForces() {
     this->externalForces.clear();
+}
+
+FluidSolver::IParticleSelection *FluidSolver::Simulation::getParticleSelection() const {
+    return particleSelection;
+}
+
+void FluidSolver::Simulation::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
+    this->particleSelection = particleSelection;
+    if (statisticCollector != nullptr)
+        statisticCollector->setParticleSelection(particleSelection);
+    if (simulationVisualizer != nullptr)
+        simulationVisualizer->setParticleSelection(particleSelection);
 }

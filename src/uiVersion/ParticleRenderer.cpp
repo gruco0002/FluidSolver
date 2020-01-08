@@ -338,3 +338,11 @@ glm::vec2 ParticleRenderer::ConvertPixelCoordinateToParticleSpace(size_t pixelX,
     return pos;
 }
 
+void ParticleRenderer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
+    this->particleSelection = particleSelection;
+}
+
+FluidSolver::IParticleSelection *ParticleRenderer::getParticleSelection() {
+    return particleSelection;
+}
+
