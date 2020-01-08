@@ -115,7 +115,18 @@ void FluidSolverWindow::render() {
 
                 ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
 
+
+                if (mouseDragStarted) {
+                    // draw selection rectangle
+                    glm::vec2 currentMousePos = glm::vec2((float) this->GetMousePositionX(),
+                                                          (float) this->GetMousePositionY());
+                    ImDrawList *drawList = ImGui::GetWindowDrawList();
+                    drawList->AddRect(ImVec2(mouseDragStart.x, mouseDragStart.y),
+                                      ImVec2(currentMousePos.x, currentMousePos.y), 0xFF0000FF);
+                }
+
                 ImGui::PopItemWidth();
+
             }
 
             ImGui::PopStyleVar(3);
