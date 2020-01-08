@@ -79,6 +79,8 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
     // particle selection
     float maxNormalDensityContribution = 0.0f;
     bool maxNormalDensityContributerIsSelected = false;
+    float maxBoundaryDensityContribution = 0.0f;
+    bool maxBoundaryDensityContributerIsSelected = false;
 
     auto neighbors = neighborhoodSearch->GetParticleNeighborsByPosition(position, KernelSupport, ParticleCollection);
 
@@ -100,6 +102,11 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
             }
         } else if (type == IParticleCollection::ParticleTypeBoundary) {
             boundaryDensity += densityContribution;
+            if (maxBoundaryDensityContribution <= densityContribution) {
+                maxBoundaryDensityContribution = densityContribution;
+                maxBoundaryDensityContributerIsSelected = particleSelection->IsParticleSelected(neighbor,
+                                                                                                ParticleCollection);
+            }
         }
 
     }
@@ -114,6 +121,8 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
     // first of, boundary density should dominate on a boundary
     if (boundaryDensity >= MinimumRenderDensity) {
         // boundary
+        if (this->VisualizeParticleSelection && maxBoundaryDensityContributerIsSelected)
+            return Color(128, 0, 0);
         return Color(128, 128, 128);
     } else {
         // fluid
