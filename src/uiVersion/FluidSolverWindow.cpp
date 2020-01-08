@@ -272,11 +272,11 @@ void FluidSolverWindow::onClick(float x, float y) {
     auto pos = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
                                                                                             (size_t) positionOnImage.y);
 
-    std::cout << pos.x << "\t" << pos.y << std::endl;
+
 
     // find nearest particle, that you have clicked on
     uint32_t particleIndex = -1;
-    float dist = 100.0f;
+    float dist = simulation->getParticleSize();
     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
         auto particlePos = simulation->getParticleCollection()->GetPosition(i);
         auto partDist = glm::length(pos - particlePos);
@@ -286,7 +286,7 @@ void FluidSolverWindow::onClick(float x, float y) {
         }
     }
 
-    // set particle index in info box
+    // select corresponding particle(s)
     if (particleIndex != -1) {
         auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
         if (custom == nullptr) {
@@ -295,7 +295,6 @@ void FluidSolverWindow::onClick(float x, float y) {
             simulation->setParticleSelection(custom);
         }
         custom->AddParticleToSelection(particleIndex);
-        std::cout << "set particle " << particleIndex << std::endl;
     }
 
 }

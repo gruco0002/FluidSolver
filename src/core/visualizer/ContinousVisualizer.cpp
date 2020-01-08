@@ -214,16 +214,7 @@ void FluidSolver::ContinousVisualizer::recalculateViewportData() {
 }
 
 glm::vec2 FluidSolver::ContinousVisualizer::ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) {
-    float xCoord = (float) pixelX;
-    float yCoord = (float) pixelY;
-    xCoord -= viewport.Left;
-    yCoord -= viewport.Top;
-    yCoord *= -1.0f;
-
-    xCoord = xCoord * (float) Width / viewport.Width;
-    yCoord = yCoord * (float) Height / viewport.Height;
-
-    return glm::vec2(xCoord, yCoord);
+    return CalculatePositionForPixel(pixelX, pixelY);
 }
 
 void FluidSolver::ContinousVisualizer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
