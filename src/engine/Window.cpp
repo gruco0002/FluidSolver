@@ -209,6 +209,7 @@ namespace Engine {
 
         }
 
+        unload();
     }
 
     void Window::cursor_position_callback(GLFWwindow *window, double xpos, double ypos) {

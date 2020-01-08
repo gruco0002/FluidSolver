@@ -308,11 +308,6 @@ void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolver *solver) {
     simulation->setFluidSolver(solver);
 }
 
-FluidSolverWindow::~FluidSolverWindow() {
-    delete mainUi;
-    ImGuiHelper::Uninit();
-    Engine::Window::~Window();
-}
 
 FluidSolver::ISimulationVisualizer *FluidSolverWindow::GetVisualizer() {
     return simulation->getSimulationVisualizer();
@@ -372,6 +367,11 @@ void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visual
 
 FluidSolver::StatisticCollector *FluidSolverWindow::GetStatisticCollector() {
     return simulation->getStatisticCollector();
+}
+
+void FluidSolverWindow::unload() {
+    delete mainUi;
+    ImGuiHelper::Uninit();
 }
 
 
