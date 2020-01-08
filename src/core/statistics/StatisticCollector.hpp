@@ -7,8 +7,8 @@
 
 #include <cstdint>
 #include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
-#include <core/statistics/selection/IParticleSelection.hpp>
-#include <core/statistics/selection/AllParticleSelection.hpp>
+#include <core/selection/IParticleSelection.hpp>
+#include <core/selection/AllParticleSelection.hpp>
 
 namespace FluidSolver {
 
