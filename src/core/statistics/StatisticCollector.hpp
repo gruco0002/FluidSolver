@@ -7,13 +7,15 @@
 
 #include <cstdint>
 #include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
+#include <core/statistics/selection/IParticleSelection.hpp>
+#include <core/statistics/selection/AllParticleSelection.hpp>
 
 namespace FluidSolver {
 
     class StatisticCollector {
     public:
 
-        StatisticCollector();
+        StatisticCollector() = default;
 
 
         float zeroHeight = -500.0f;
@@ -54,53 +56,14 @@ namespace FluidSolver {
 
     private:
 
+        IParticleSelection* particleSelection = new AllParticleSelection();
+    public:
+        IParticleSelection *getParticleSelection() const;
 
-        /**
-         * Calculates the average density. Boundary Particles and Particles with Density Below the Rest Density are ignored.
-         * @return
-         */
-        float CalculateAverageDensity();
+        void setParticleSelection(IParticleSelection *particleSelection);
 
-        /**
-         * Calculates the current Energy of all particles except Boundary Particles.
-         * @param zeroHeight The zero Height used for potential energy calculation.
-         * @param gravity Used for potential energy calculation.
-         * @return
-         */
-        float CalculateEnergy();
+    private:
 
-        /**
-         * Calculates the total Energy provided precalculated information.
-         * Result is the same as in calculate energy, but calculated way faster.
-         * @param kineticEnergy
-         * @param potentialEnergy
-         * @return
-         */
-        float CalculateEnergy(float kineticEnergy, float potentialEnergy);
-
-        /**
-         * Calculates the maximal velocity of all particles.
-         * @return
-         */
-        float CalculateMaximumVelocity();
-
-        /**
-         * Return the number of dead particles.
-         * @return
-         */
-        uint32_t GetDeadParticleCount();
-
-        float CalculateKineticEnergy();
-
-        float CalculatePotentialEnergy();
-
-        uint32_t GetBoundaryParticleCount();
-
-        uint32_t GetNormalParticleCount();
-
-        float GetCFLNumber();
-
-        float GetCFLNumber(float maximumVelocity);
 
 
         IParticleCollection *particleCollection = nullptr;

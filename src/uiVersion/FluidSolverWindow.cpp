@@ -18,7 +18,7 @@
 #include <chrono>
 #include <core/timestep/ConstantTimestep.hpp>
 #include <imguiHelper.hpp>
-#include <core/CachedStatisticCollector.hpp>
+#include <core/statistics/CachedStatisticCollector.hpp>
 
 
 void FluidSolverWindow::render() {

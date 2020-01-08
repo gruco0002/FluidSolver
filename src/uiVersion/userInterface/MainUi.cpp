@@ -9,7 +9,7 @@
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
-#include <core/CachedStatisticCollector.hpp>
+#include <core/statistics/CachedStatisticCollector.hpp>
 
 FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
