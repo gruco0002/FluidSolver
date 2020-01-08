@@ -22,3 +22,7 @@ bool FluidSolver::ParticleSelection::IsParticleSelected(uint32_t particleIndex,
 size_t FluidSolver::ParticleSelection::GetSize() {
     return selectedParticles.size();
 }
+
+void FluidSolver::ParticleSelection::RemoveParticleFromSelection(uint32_t particleIndex) {
+    selectedParticles.erase(particleIndex);
+}

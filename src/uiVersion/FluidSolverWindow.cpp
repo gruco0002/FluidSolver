@@ -145,7 +145,7 @@ void FluidSolverWindow::load() {
 
     OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
     OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
-        this->onClick(this->GetMousePositionX(), this->GetMousePositionY());
+        this->onClick(this->GetMousePositionX(), this->GetMousePositionY(), btn);
     });
     setupSimulation();
     setupUI();
@@ -256,7 +256,7 @@ void FluidSolverWindow::resetData() {
 }
 
 
-void FluidSolverWindow::onClick(float x, float y) {
+void FluidSolverWindow::onClick(float x, float y, Engine::Window::MouseButton button) {
     if (simulation == nullptr) return;
     if (simulation->getSimulationVisualizer() == nullptr) return;
     if (!mouseInsideVisualization)return;
@@ -268,34 +268,13 @@ void FluidSolverWindow::onClick(float x, float y) {
     positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
 
 
-
     auto pos = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
                                                                                             (size_t) positionOnImage.y);
 
 
+    this->SelectParticle(pos, button == Engine::Window::MouseButton::RightButton ? SelectionType::SelectionTypeDeselect
+                                                                                 : SelectionTypeSelect);
 
-    // find nearest particle, that you have clicked on
-    uint32_t particleIndex = -1;
-    float dist = simulation->getParticleSize();
-    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-        auto partDist = glm::length(pos - particlePos);
-        if (partDist < dist) {
-            particleIndex = i;
-            dist = partDist;
-        }
-    }
-
-    // select corresponding particle(s)
-    if (particleIndex != -1) {
-        auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
-        if (custom == nullptr) {
-            custom = new FluidSolver::ParticleSelection();
-            delete simulation->getParticleSelection();
-            simulation->setParticleSelection(custom);
-        }
-        custom->AddParticleToSelection(particleIndex);
-    }
 
 }
 
@@ -426,6 +405,45 @@ void FluidSolverWindow::SetParticleSelection(FluidSolver::IParticleSelection *pa
 
 FluidSolver::IParticleSelection *FluidSolverWindow::GetParticleSelection() {
     return simulation->getParticleSelection();
+}
+
+void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::SelectionType type) {
+
+    auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
+
+    // find nearest particle, that you have clicked on depending on type
+    uint32_t particleIndex = -1;
+    float dist = simulation->getParticleSize();
+    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+        if (custom != nullptr) {
+            auto isSelected = custom->IsParticleSelected(i, simulation->getParticleCollection());
+            if (type == SelectionType::SelectionTypeSelect && isSelected) {
+                continue; // skip this one, since it is already selected
+            } else if (type == SelectionType::SelectionTypeDeselect && !isSelected) {
+                continue; // skip this one, since it is already deselected
+            }
+        }
+        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
+        auto partDist = glm::length(position - particlePos);
+        if (partDist < dist) {
+            particleIndex = i;
+            dist = partDist;
+        }
+    }
+
+    // select corresponding particle(s)
+    if (particleIndex != -1) {
+        if (custom == nullptr) {
+            custom = new FluidSolver::ParticleSelection();
+            delete simulation->getParticleSelection();
+            simulation->setParticleSelection(custom);
+        }
+        if (type == SelectionType::SelectionTypeSelect) {
+            custom->AddParticleToSelection(particleIndex);
+        } else if (type == SelectionType::SelectionTypeDeselect) {
+            custom->RemoveParticleFromSelection(particleIndex);
+        }
+    }
 }
 
 

@@ -100,7 +100,7 @@ private:
 
     void setupSimulation();
 
-    void onClick(float x, float y);
+    void onClick(float x, float y, Engine::Window::MouseButton button);
 
 
     void UpdateVisualizerViewport();
@@ -132,6 +132,13 @@ private:
 
     bool mouseInsideVisualization = false;
     glm::vec4 visualizationWindowCoordinates = glm::vec4(0.0f);
+
+    enum SelectionType {
+        SelectionTypeSelect,
+        SelectionTypeDeselect
+    };
+
+    void SelectParticle(glm::vec2 position, SelectionType type);
 
 
 protected:

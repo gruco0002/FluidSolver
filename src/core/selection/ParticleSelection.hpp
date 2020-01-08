@@ -16,12 +16,14 @@ namespace FluidSolver {
 
         void AddParticleToSelection(uint32_t particleIndex);
 
+        void RemoveParticleFromSelection(uint32_t particleIndex);
+
         void ClearSelection();
 
         size_t GetSize();
 
     private:
-        std::unordered_set<uint32_t > selectedParticles;
+        std::unordered_set<uint32_t> selectedParticles;
 
     };
 }
