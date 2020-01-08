@@ -103,11 +103,11 @@ namespace FluidSolver {
         particles[index].SourceTerm = value;
     }
 
-    double SimpleParticleCollection::GetDiagonalElement(uint32_t index) {
+    float SimpleParticleCollection::GetDiagonalElement(uint32_t index) {
         return particles[index].DiagonalElement;
     }
 
-    void SimpleParticleCollection::SetDiagonalElement(uint32_t index, double value) {
+    void SimpleParticleCollection::SetDiagonalElement(uint32_t index, float value) {
         particles[index].DiagonalElement = value;
     }
 
