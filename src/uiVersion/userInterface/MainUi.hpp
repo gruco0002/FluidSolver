@@ -60,6 +60,10 @@ namespace FluidUI {
 
         void Statistics();
 
+
+
+        void Selection();
+
     };
 }
 

@@ -10,6 +10,8 @@
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <core/statistics/CachedStatisticCollector.hpp>
+#include <core/selection/NormalParticleSelection.hpp>
+#include <core/selection/ParticleSelection.hpp>
 
 FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
@@ -22,6 +24,7 @@ void FluidUI::MainUi::Run() {
     FluidSolver();
     VisualizerSettings();
     Statistics();
+    Selection();
 
 }
 
@@ -370,5 +373,45 @@ void FluidUI::MainUi::Statistics() {
 
     ImGui::Columns();
 
+    ImGui::End();
+}
+
+void FluidUI::MainUi::Selection() {
+    auto selection = window->GetParticleSelection();
+
+    auto all = dynamic_cast<FluidSolver::AllParticleSelection *>(selection);
+    auto normal = dynamic_cast<FluidSolver::NormalParticleSelection *>(selection);
+    auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(selection);
+
+    ImGui::Begin("Selection");
+
+    if (ImGui::Button("Select All")) {
+        auto tmp = new FluidSolver::AllParticleSelection();
+        delete window->GetParticleSelection();
+        window->SetParticleSelection(tmp);
+        all = tmp;
+        custom = nullptr;
+        normal = nullptr;
+    }
+
+    if (ImGui::Button("Select Normal")) {
+        auto tmp = new FluidSolver::NormalParticleSelection();
+        delete window->GetParticleSelection();
+        window->SetParticleSelection(tmp);
+        all = nullptr;
+        custom = nullptr;
+        normal = tmp;
+    }
+
+    ImGui::Separator();
+
+    if (all != nullptr) {
+        ImGui::Text("Selected: All Particles");
+    } else if (normal != nullptr) {
+        ImGui::Text("Selected: Normal Particles");
+    } else if (custom != nullptr) {
+        ImGui::Text("Selected: %zu Particles", custom->GetSize());
+    }
+    
     ImGui::End();
 }

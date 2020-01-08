@@ -374,4 +374,12 @@ void FluidSolverWindow::unload() {
     ImGuiHelper::Uninit();
 }
 
+void FluidSolverWindow::SetParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
+    simulation->setParticleSelection(particleSelection);
+}
+
+FluidSolver::IParticleSelection *FluidSolverWindow::GetParticleSelection() {
+    return simulation->getParticleSelection();
+}
+
 

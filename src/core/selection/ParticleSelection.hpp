@@ -18,6 +18,8 @@ namespace FluidSolver {
 
         void ClearSelection();
 
+        size_t GetSize();
+
     private:
         std::unordered_set<uint32_t > selectedParticles;
 

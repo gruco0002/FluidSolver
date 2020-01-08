@@ -18,3 +18,7 @@ bool FluidSolver::ParticleSelection::IsParticleSelected(uint32_t particleIndex,
     if (selectedParticles.empty()) return true;
     return selectedParticles.find(particleIndex) != selectedParticles.end();
 }
+
+size_t FluidSolver::ParticleSelection::GetSize() {
+    return selectedParticles.size();
+}

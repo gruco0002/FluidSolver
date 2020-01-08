@@ -88,7 +88,11 @@ public:
 
     void SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer);
 
-    FluidSolver::StatisticCollector* GetStatisticCollector();
+    FluidSolver::StatisticCollector *GetStatisticCollector();
+
+    FluidSolver::IParticleSelection *GetParticleSelection();
+
+    void SetParticleSelection(FluidSolver::IParticleSelection *particleSelection);
 
 private:
 
