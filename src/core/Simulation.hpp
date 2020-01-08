@@ -7,7 +7,7 @@
 
 #include <DataLogger.hpp>
 #include <core/interface/IExternalForce.hpp>
-#include <core/interface/ISimulationVisualizer.hpp>
+#include <core/visualizer/ISimulationVisualizer.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
 #include "core/fluidSolver/SPHFluidSolver.hpp"

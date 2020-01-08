@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_CONTINOUSVISUALIZER_HPP
 #define FLUIDSOLVER_CONTINOUSVISUALIZER_HPP
 
-#include <core/interface/ISimulationVisualizer.hpp>
+#include <core/visualizer/ISimulationVisualizer.hpp>
 #include <vector>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/kernel/IKernel.hpp>

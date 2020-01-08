@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_PARTICLERENDERER_HPP
 
 
-#include <core/interface/ISimulationVisualizer.hpp>
+#include <core/visualizer/ISimulationVisualizer.hpp>
 #include <engine/graphics/Framebuffer.hpp>
 #include "ParticleVertexArray.hpp"
 #include "engine/graphics/Shader.hpp"
