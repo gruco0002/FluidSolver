@@ -144,7 +144,7 @@ FluidSolver::ContinousVisualizer::FitViewportToAspectRation(FluidSolver::Contino
         res.Height = (float) Height / (float) Width * value.Width;
 
         // center the additional gained height
-        res.Top -= (res.Height - value.Height) / 2.0f;
+        res.Top += (res.Height - value.Height) / 2.0f;
     }
 
     return res;
