@@ -64,11 +64,13 @@ namespace FluidSolver {
 
         glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) override;
 
+        bool VisualizeParticleSelection = false;
+
     private:
 
         SimulationViewArea viewArea;
 
-        IParticleSelection* particleSelection = nullptr;
+        IParticleSelection *particleSelection = nullptr;
     public:
         void setParticleSelection(IParticleSelection *particleSelection) override;
 
