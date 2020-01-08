@@ -155,5 +155,5 @@ IParticleSelection *StatisticCollector::getParticleSelection() const {
 }
 
 void StatisticCollector::setParticleSelection(IParticleSelection *particleSelection) {
-    StatisticCollector::particleSelection = particleSelection;
+    this->particleSelection = particleSelection;
 }
