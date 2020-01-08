@@ -319,7 +319,22 @@ Engine::Graphics::Texture2D *ParticleRenderer::GetTexture() {
 }
 
 glm::vec2 ParticleRenderer::ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) {
-    // TODO: implement
-    return glm::vec2();
+    auto rel = glm::vec2((float) pixelX, (float) pixelY) /
+               glm::vec2((float) renderTargetWidth,
+                         -(float) renderTargetHeight); // TODO: check if that minus is correct
+    rel *= 2.0f;
+    rel += glm::vec2(-1.0f, 1.0f);
+    auto unprojectedTMP = glm::inverse(projectionMatrix) * glm::vec4(rel.x, rel.y, 0.0f, 1.0f);
+
+    auto clip = glm::vec2(unprojectedTMP.x, -unprojectedTMP.y);
+    clip *= 2.0;
+    clip += glm::vec2(-1.0f, 1.0f);
+
+
+    auto unprojected = glm::inverse(projectionMatrix) * glm::vec4(clip.x, clip.y, 0.0f, 1.0f);
+
+    // pos is the position in particle space
+    glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
+    return pos;
 }
 
