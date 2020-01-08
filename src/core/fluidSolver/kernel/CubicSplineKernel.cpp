@@ -4,6 +4,7 @@
 
 #include <core/interface/Constants.hpp>
 #include "CubicSplineKernel.hpp"
+#include <limits>
 
 float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position, float kernelSupport) {
     float h = kernelSupport / 2.0f;
@@ -29,7 +30,7 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
     float q = glm::length(position) / h;
 
     glm::vec2 pre = glm::vec2(0.0f);
-    if (glm::length(position) != 0.0)
+    if (glm::length(position) > std::numeric_limits<float>::epsilon())
         pre = h * position / glm::length(position);
 
 
