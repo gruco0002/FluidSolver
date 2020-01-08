@@ -318,3 +318,8 @@ Engine::Graphics::Texture2D *ParticleRenderer::GetTexture() {
     return fboColorTex;
 }
 
+glm::vec2 ParticleRenderer::ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) {
+    // TODO: implement
+    return glm::vec2();
+}
+

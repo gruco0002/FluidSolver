@@ -193,6 +193,19 @@ void FluidSolver::ContinousVisualizer::recalculateViewportData() {
     this->viewport = this->FitViewportToAspectRation(port);
 }
 
+glm::vec2 FluidSolver::ContinousVisualizer::ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) {
+    float xCoord = (float) pixelX;
+    float yCoord = (float) pixelY;
+    xCoord -= viewport.Left;
+    yCoord -= viewport.Top;
+    yCoord *= -1.0f;
+
+    xCoord = xCoord * (float) Width / viewport.Width;
+    yCoord = yCoord * (float) Height / viewport.Height;
+
+    return glm::vec2(xCoord, yCoord);
+}
+
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}
 
 FluidSolver::ContinousVisualizer::Color::Color() {

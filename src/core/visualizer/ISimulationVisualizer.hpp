@@ -44,6 +44,8 @@ namespace FluidSolver {
 
         virtual ~ISimulationVisualizer() = default;
 
+        virtual glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) = 0;
+
     };
 }
 

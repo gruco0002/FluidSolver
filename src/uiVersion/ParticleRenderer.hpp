@@ -56,6 +56,8 @@ public:
 
     void setParticleSize(float particleSize) override;
 
+    glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) override;
+
     float getParticleSize() override;
 
     float getRestDensity() override;

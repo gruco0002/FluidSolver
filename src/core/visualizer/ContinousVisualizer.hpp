@@ -62,6 +62,8 @@ namespace FluidSolver {
         glm::vec3 ClearColor = glm::vec3(1.0f, 1.0f, 1.0f);
         float MinimumRenderDensity = 0.0f;
 
+        glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) override;
+
     private:
 
         SimulationViewArea viewArea;
