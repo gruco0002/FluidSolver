@@ -88,8 +88,8 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
     }
 
     // particles
-    for (int x = 0; x <= 0; x++) {
-        for (int y = 7; y >= -0; y--) {
+    for (int x = 0; x <= 4; x++) {
+        for (int y = 0; y >= -x; y--) {
             // normal particle
             FluidSolver::SimpleParticleCollection::FluidParticle p;
 
