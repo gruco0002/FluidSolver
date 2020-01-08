@@ -20,6 +20,15 @@ namespace FluidSolver {
 
         float zeroHeight = -500.0f;
 
+        /**
+         * The calculated statistics only apply to the selected particles. Particles that are not selected are excluded
+         * from the statistics. The results are stored in their respective `calculated...` fields and can be retrieved
+         * via their getter functions.
+         *
+         * @remarks Density is only considered for particles of normal type whose density is larger or equal to the rest
+         *          density.
+         * @remarks Velocity, CFL number and energies are calculated for particles whose type is normal or boundary.
+         */
         virtual void CalculateData();
 
         virtual ~StatisticCollector();
@@ -56,14 +65,13 @@ namespace FluidSolver {
 
     private:
 
-        IParticleSelection* particleSelection = new AllParticleSelection();
+        IParticleSelection *particleSelection = new AllParticleSelection();
     public:
         IParticleSelection *getParticleSelection() const;
 
         void setParticleSelection(IParticleSelection *particleSelection);
 
     private:
-
 
 
         IParticleCollection *particleCollection = nullptr;
