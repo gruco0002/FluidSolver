@@ -9,13 +9,15 @@
 #include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
 #include <core/selection/IParticleSelection.hpp>
 #include <core/selection/AllParticleSelection.hpp>
+#include <vector>
+#include "StatValue.hpp"
 
 namespace FluidSolver {
 
     class StatisticCollector {
     public:
 
-        StatisticCollector() = default;
+        StatisticCollector();
 
 
         float zeroHeight = -500.0f;
@@ -25,45 +27,40 @@ namespace FluidSolver {
          * from the statistics. The results are stored in their respective `calculated...` fields and can be retrieved
          * via their getter functions.
          *
-         * @remarks Density is only considered for particles of normal type whose density is larger or equal to the rest
-         *          density.
          * @remarks Velocity, CFL number and energies are calculated for particles whose type is normal or boundary.
          */
         virtual void CalculateData();
 
         virtual ~StatisticCollector();
 
-    private:
 
-        float calculatedAverageDensity = 0.0f;
-        float calculatedEnergy = 0.0f;
-        float calculatedMaximumVelocity = 0.0f;
-        uint32_t calculatedDeadParticleCount = 0;
-        float calculatedKineticEnergy = 0.0f;
-        float calculatedPotentialEnergy = 0.0f;
-        uint32_t calculatedBoundaryParticleCount = 0;
-        uint32_t calculatedNormalParticleCount = 0;
-        float calculatedCFLNumber = 0.0f;
-    public:
-        float getCalculatedAverageDensity() const;
+        const std::vector<StatValue *> &getStats() const;
 
-        float getCalculatedEnergy() const;
+    protected:
+        void RefreshFieldVector();
 
-        float getCalculatedMaximumVelocity() const;
+        StatValue* calculatedAverageDensity = nullptr;
+        StatValue* calculatedEnergy = nullptr;
+        StatValue* calculatedMaximumVelocity = nullptr;
+        StatValue* calculatedDeadParticleCount = nullptr;
+        StatValue* calculatedKineticEnergy = nullptr;
+        StatValue* calculatedPotentialEnergy = nullptr;
+        StatValue* calculatedBoundaryParticleCount = nullptr;
+        StatValue* calculatedNormalParticleCount = nullptr;
+        StatValue* calculatedCFLNumber = nullptr;
 
-        uint32_t getCalculatedDeadParticleCount() const;
-
-        float getCalculatedKineticEnergy() const;
-
-        float getCalculatedPotentialEnergy() const;
-
-        uint32_t getCalculatedBoundaryParticleCount() const;
-
-        uint32_t getCalculatedNormalParticleCount() const;
-
-        float getCalculatedCflNumber() const;
+        std::vector<StatValue*> Stats;
 
     private:
+
+
+
+        void SetupFields();
+
+        void CleanUpFields();
+
+
+
 
         IParticleSelection *particleSelection = nullptr;
     public:

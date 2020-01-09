@@ -55,11 +55,11 @@ namespace FluidUI {
 
         float Statistics_ScaleMin = 0.0f;
         float Statistics_ScaleMax = 2.0f;
-        bool Statistics_GraphSelection[100]{false};
+        std::vector<uint8_t> Statistics_GraphSelection;
+        std::vector<std::string> Statistics_Names;
         std::vector<const float *> Statistics_yData;
 
         void Statistics();
-
 
 
         void Selection();

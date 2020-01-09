@@ -11,7 +11,11 @@ void DataLogger::StartLogging() {
     // open file
     myFile.open(fileName);
 
-    std::string header = "Time(s);Average Density;Relative Energy;Kinetic Energy;Potential Energy;Maximal Velocity;CFL Number;Dead Particles";
+    std::string header = "Time(s)";
+
+    for (auto val: StatisticCollector->getStats()) {
+        header.append(";" + val->Name);
+    }
 
     if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {
         auto solver = dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver);
@@ -27,7 +31,6 @@ void DataLogger::StartLogging() {
     // reset data
     currentTime = 0;
     StatisticCollector->CalculateData();
-    startEnergy = StatisticCollector->getCalculatedEnergy();
 
     // initial log
     calculateAndLogData();
@@ -47,24 +50,13 @@ void DataLogger::FinishLogging() {
 
 void DataLogger::calculateAndLogData() {
 
-    // get values
-    float currentKineticEnergy = StatisticCollector->getCalculatedKineticEnergy();
-    float currentPotentialEnergy = StatisticCollector->getCalculatedPotentialEnergy();
-    float averageDensity = StatisticCollector->getCalculatedAverageDensity();
-    float totalEnergy = StatisticCollector->getCalculatedEnergy();
-    float maxVelocity = StatisticCollector->getCalculatedMaximumVelocity();
-    float cflNumber = StatisticCollector->getCalculatedCflNumber();
-    uint32_t deadParticles = StatisticCollector->getCalculatedDeadParticleCount();
+    // get values of statistics collector
+    std::string data = std::to_string(currentTime);
 
-    // calculate relative energy
-    float relativeEnergy = totalEnergy - startEnergy;
+    for (auto val: StatisticCollector->getStats()) {
+        data.append(";" + val->ToString());
+    }
 
-    // create basic data
-    std::string data = std::to_string(currentTime) + ";" + std::to_string(averageDensity) + ";"
-                       + std::to_string(relativeEnergy) + ";"
-                       + std::to_string(currentKineticEnergy) + ";" + std::to_string(currentPotentialEnergy) + ";"
-                       + std::to_string(maxVelocity) + ";" + std::to_string(cflNumber) + ";"
-                       + std::to_string(deadParticles);
 
     // append data based on solver type
     if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {

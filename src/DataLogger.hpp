@@ -49,8 +49,6 @@ private:
 
     std::ofstream myFile;
 
-    float startEnergy = 0.0f;
-
     float currentTime = 0.0f;
 
     void calculateAndLogData();

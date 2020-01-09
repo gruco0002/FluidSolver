@@ -50,15 +50,15 @@ void StatisticCollector::setRestDensity(float restDensity) {
 
 void StatisticCollector::CalculateData() {
 
-    calculatedPotentialEnergy = 0.0f;
-    calculatedKineticEnergy = 0.0f;
-    calculatedAverageDensity = 0.0f;
-    calculatedMaximumVelocity = 0.0f;
-    calculatedAverageDensity = 0.0f;
+    calculatedPotentialEnergy->Set(0.0f);
+    calculatedKineticEnergy->Set(0.0f);
+    calculatedAverageDensity->Set(0.0f);
+    calculatedMaximumVelocity->Set(0.0f);
+    calculatedAverageDensity->Set(0.0f);
     uint32_t calculatedAverageDensityCounter = 0;
-    calculatedNormalParticleCount = 0;
-    calculatedBoundaryParticleCount = 0;
-    calculatedDeadParticleCount = 0;
+    calculatedNormalParticleCount->Set(0u);
+    calculatedBoundaryParticleCount->Set(0u);
+    calculatedDeadParticleCount->Set(0u);
 
     for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
         if (!particleSelection->IsParticleSelected(i, particleCollection)) {
@@ -74,80 +74,45 @@ void StatisticCollector::CalculateData() {
 
         if (type != IParticleCollection::ParticleTypeDead) {
             // potential energy
-            calculatedPotentialEnergy += (position.y - zeroHeight) * mass * Gravity;
+            *calculatedPotentialEnergy += (position.y - zeroHeight) * mass * Gravity;
 
             // kinetic energy
-            calculatedKineticEnergy += 0.5f * mass * particleVelocity * particleVelocity;
+            *calculatedKineticEnergy += 0.5f * mass * particleVelocity * particleVelocity;
 
             // velocity
-            calculatedMaximumVelocity = std::max(calculatedMaximumVelocity, glm::length(velocity));
+            calculatedMaximumVelocity->Max(glm::length(velocity));
         }
 
         if (type == IParticleCollection::ParticleTypeNormal) {
             // density
             if (density >= RestDensity) {
-                calculatedAverageDensity += density;
+                *calculatedAverageDensity += density;
                 calculatedAverageDensityCounter++;
             }
         }
 
         // counter
         if (type == IParticleCollection::ParticleTypeNormal) {
-            calculatedNormalParticleCount++;
+            *calculatedNormalParticleCount += 1u;
         } else if (type == IParticleCollection::ParticleTypeBoundary) {
-            calculatedBoundaryParticleCount++;
+            *calculatedBoundaryParticleCount += 1u;
         } else if (type == IParticleCollection::ParticleTypeDead) {
-            calculatedDeadParticleCount++;
+            *calculatedDeadParticleCount += 1u;
         }
 
     }
 
-    calculatedCFLNumber = calculatedMaximumVelocity * Timestep / ParticleSize;
-    calculatedEnergy = calculatedKineticEnergy + calculatedPotentialEnergy;
+    calculatedCFLNumber->Set(calculatedMaximumVelocity->FloatValue * Timestep / ParticleSize);
+    calculatedEnergy->Set(calculatedKineticEnergy->FloatValue + calculatedPotentialEnergy->FloatValue);
 
     if (calculatedAverageDensityCounter > 0)
-        calculatedAverageDensity = calculatedAverageDensity / (float) calculatedAverageDensityCounter;
+        *calculatedAverageDensity /= (float) calculatedAverageDensityCounter;
 
 }
 
-float StatisticCollector::getCalculatedAverageDensity() const {
-    return calculatedAverageDensity;
-}
-
-float StatisticCollector::getCalculatedEnergy() const {
-    return calculatedEnergy;
-}
-
-float StatisticCollector::getCalculatedMaximumVelocity() const {
-    return calculatedMaximumVelocity;
-}
-
-uint32_t StatisticCollector::getCalculatedDeadParticleCount() const {
-    return calculatedDeadParticleCount;
-}
-
-float StatisticCollector::getCalculatedKineticEnergy() const {
-    return calculatedKineticEnergy;
-}
-
-float StatisticCollector::getCalculatedPotentialEnergy() const {
-    return calculatedPotentialEnergy;
-}
-
-uint32_t StatisticCollector::getCalculatedBoundaryParticleCount() const {
-    return calculatedBoundaryParticleCount;
-}
-
-uint32_t StatisticCollector::getCalculatedNormalParticleCount() const {
-    return calculatedNormalParticleCount;
-}
-
-float StatisticCollector::getCalculatedCflNumber() const {
-    return calculatedCFLNumber;
-}
 
 StatisticCollector::~StatisticCollector() {
-
+    CleanUpFields();
 }
 
 IParticleSelection *StatisticCollector::getParticleSelection() const {
@@ -156,4 +121,55 @@ IParticleSelection *StatisticCollector::getParticleSelection() const {
 
 void StatisticCollector::setParticleSelection(IParticleSelection *particleSelection) {
     this->particleSelection = particleSelection;
+}
+
+void StatisticCollector::SetupFields() {
+    CleanUpFields();
+
+    calculatedAverageDensity = new StatValue("Average Density",
+                                             "Average Density is only considered for particles of normal type whose density is larger or equal to the rest density.",
+                                             StatValue::StatValueTypeFloat);
+    calculatedEnergy = new StatValue("Energy", "", StatValue::StatValueTypeFloat);
+    calculatedMaximumVelocity = new StatValue("Max Velocity", "", StatValue::StatValueTypeFloat);
+    calculatedDeadParticleCount = new StatValue("Dead Particles", "", StatValue::StatValueTypeUInt);
+    calculatedKineticEnergy = new StatValue("Kinetic Energy", "", StatValue::StatValueTypeFloat);
+    calculatedPotentialEnergy = new StatValue("Potential Energy", "", StatValue::StatValueTypeFloat);
+    calculatedBoundaryParticleCount = new StatValue("Boundary Particles", "", StatValue::StatValueTypeUInt);
+    calculatedNormalParticleCount = new StatValue("Normal Particles", "", StatValue::StatValueTypeUInt);
+    calculatedCFLNumber = new StatValue("CFL Number", "", StatValue::StatValueTypeFloat);
+
+    RefreshFieldVector();
+}
+
+StatisticCollector::StatisticCollector() {
+    SetupFields();
+}
+
+const std::vector<StatValue *> &StatisticCollector::getStats() const {
+    return Stats;
+}
+
+void StatisticCollector::RefreshFieldVector() {
+    Stats.clear();
+    Stats.push_back(calculatedAverageDensity);
+    Stats.push_back(calculatedEnergy);
+    Stats.push_back(calculatedMaximumVelocity);
+    Stats.push_back(calculatedDeadParticleCount);
+    Stats.push_back(calculatedKineticEnergy);
+    Stats.push_back(calculatedPotentialEnergy);
+    Stats.push_back(calculatedBoundaryParticleCount);
+    Stats.push_back(calculatedNormalParticleCount);
+    Stats.push_back(calculatedCFLNumber);
+}
+
+void StatisticCollector::CleanUpFields() {
+    delete calculatedAverageDensity;
+    delete calculatedEnergy;
+    delete calculatedMaximumVelocity;
+    delete calculatedDeadParticleCount;
+    delete calculatedKineticEnergy;
+    delete calculatedPotentialEnergy;
+    delete calculatedBoundaryParticleCount;
+    delete calculatedNormalParticleCount;
+    delete calculatedCFLNumber;
 }

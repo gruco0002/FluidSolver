@@ -299,51 +299,19 @@ void FluidUI::MainUi::VisualizerSettings() {
 void FluidUI::MainUi::Statistics() {
     ImGui::Begin("Statistics");
 
-    static const char *visSelection[]{"Average Density", "Energy", "Potential Energy", "Kinetic Energy",
-                                      "Max. Velocity", "CFL Number", "Dead Particles", "Boundary Particles",
-                                      "Normal Particles"};
 
     ImGui::Columns(2);
     auto cached = dynamic_cast<FluidSolver::CachedStatisticCollector *>(window->GetStatisticCollector());
 
     if (cached != nullptr) {
         Statistics_yData.clear();
-        for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
+        for (size_t i = 0; i < Statistics_GraphSelection.size() && i < cached->getStats().size(); i++) {
             if (!Statistics_GraphSelection[i])
                 continue;
 
-            switch (i) {
-                case 0:
-                    Statistics_yData.push_back(cached->getAverageDensityCache().data());
-                    break;
-                case 1:
-                    Statistics_yData.push_back(cached->getEnergyCache().data());
-                    break;
-                case 2:
-                    Statistics_yData.push_back(cached->getPotentialEnergyCache().data());
-                    break;
-                case 3:
-                    Statistics_yData.push_back(cached->getKineticEnergyCache().data());
-                    break;
-                case 4:
-                    Statistics_yData.push_back(cached->getMaximumVelocityCache().data());
-                    break;
-                case 5:
-                    Statistics_yData.push_back(cached->getCflNumberCache().data());
-                    break;
-                case 6:
-                    Statistics_yData.push_back(cached->getDeadParticleCountCache().data());
-                    break;
-                case 7:
-                    Statistics_yData.push_back(cached->getBoundaryParticleCountCache().data());
-                    break;
-                case 8:
-                    Statistics_yData.push_back(cached->getNormalParticleCountCache().data());
-                    break;
-                default:
-                    break;
-            }
-
+            auto tmp = dynamic_cast<FluidSolver::CachedStatValue *>(cached->getStats()[i]);
+            if (tmp != nullptr && tmp->ValueType == FluidSolver::CachedStatValue::StatValueTypeFloat)
+                Statistics_yData.push_back(tmp->FloatCache.data());
 
         }
 
@@ -376,11 +344,17 @@ void FluidUI::MainUi::Statistics() {
     ImGui::InputFloat("Scale Min", &Statistics_ScaleMin, 0, 0, "%.6f");
     ImGui::InputFloat("Scale Max", &Statistics_ScaleMax, 0, 0, "%.6f");
 
+    Statistics_Names.clear();
+    for (auto val: cached->getStats()) {
+        Statistics_Names.push_back(val->Name);
+    }
+    Statistics_GraphSelection.resize(Statistics_Names.size());
+
 
     if (ImGui::ListBoxHeader("Data")) {
 
-        for (size_t i = 0; i < IM_ARRAYSIZE(visSelection); i++) {
-            ImGui::Selectable(visSelection[i], &Statistics_GraphSelection[i]);
+        for (size_t i = 0; i < Statistics_Names.size(); i++) {
+            ImGui::Selectable(Statistics_Names[i].c_str(), (bool*)Statistics_GraphSelection.data() + i);
         }
 
         ImGui::ListBoxFooter();

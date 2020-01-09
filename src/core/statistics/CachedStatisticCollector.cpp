@@ -3,6 +3,7 @@
 //
 
 #include "CachedStatisticCollector.hpp"
+#include "CachedStatValue.hpp"
 
 void FluidSolver::CachedStatisticCollector::CalculateData() {
     StatisticCollector::CalculateData();
@@ -16,42 +17,40 @@ void FluidSolver::CachedStatisticCollector::ResetCache() {
 }
 
 FluidSolver::CachedStatisticCollector::CachedStatisticCollector() : FluidSolver::StatisticCollector() {
+    RemapStatValues();
+    RefreshFieldVector();
     ResizeVectors();
 }
 
 void FluidSolver::CachedStatisticCollector::ResizeVectors() {
-    TimestepCache.resize(CacheSize);
-    AverageDensityCache.resize(CacheSize);
-    EnergyCache.resize(CacheSize);
-    MaximumVelocityCache.resize(CacheSize);
-    DeadParticleCountCache.resize(CacheSize);
-    KineticEnergyCache.resize(CacheSize);
-    PotentialEnergyCache.resize(CacheSize);
-    BoundaryParticleCountCache.resize(CacheSize);
-    NormalParticleCountCache.resize(CacheSize);
-    CflNumberCache.resize(CacheSize);
+    for (auto tmp : Stats) {
+        auto casted = dynamic_cast<CachedStatValue *>(tmp);
+        if (casted != nullptr) {
+            casted->Resize(CacheSize);
+        }
+    }
+    Timesteps->Resize(CacheSize);
 }
 
 void FluidSolver::CachedStatisticCollector::CreateNewCacheEntry() {
 
     // timestep is added up if possible
     if (CurrentCacheDataSize == 0) {
-        TimestepCache[CurrentCacheDataPointer] = getTimestep();
+        Timesteps->Set(getTimestep());
+        Timesteps->SetValue(CurrentCacheDataPointer);
     } else {
         size_t wrapped = (CurrentCacheDataPointer + (CacheSize - 1)) % CacheSize;
-        TimestepCache[CurrentCacheDataPointer] = TimestepCache[wrapped] + getTimestep();
+        Timesteps->Set(Timesteps->FloatCache[wrapped] + getTimestep());
+        Timesteps->SetValue(CurrentCacheDataPointer);
     }
 
     // set normal data
-    AverageDensityCache[CurrentCacheDataPointer] = getCalculatedAverageDensity();
-    EnergyCache[CurrentCacheDataPointer] = getCalculatedEnergy();
-    MaximumVelocityCache[CurrentCacheDataPointer] = getCalculatedMaximumVelocity();
-    DeadParticleCountCache[CurrentCacheDataPointer] = getCalculatedDeadParticleCount();
-    KineticEnergyCache[CurrentCacheDataPointer] = getCalculatedKineticEnergy();
-    PotentialEnergyCache[CurrentCacheDataPointer] = getCalculatedPotentialEnergy();
-    BoundaryParticleCountCache[CurrentCacheDataPointer] = getCalculatedBoundaryParticleCount();
-    NormalParticleCountCache[CurrentCacheDataPointer] = getCalculatedNormalParticleCount();
-    CflNumberCache[CurrentCacheDataPointer] = getCalculatedCflNumber();
+    for (auto tmp : Stats) {
+        auto casted = dynamic_cast<CachedStatValue *>(tmp);
+        if (casted != nullptr) {
+            casted->SetValue(CurrentCacheDataPointer);
+        }
+    }
 
     // increase pointers and size
     if (CurrentCacheDataSize < CacheSize) {
@@ -66,41 +65,22 @@ size_t FluidSolver::CachedStatisticCollector::getCurrentCacheDataSize() const {
 }
 
 const std::vector<float> &FluidSolver::CachedStatisticCollector::getTimestepCache() const {
-    return TimestepCache;
+    return Timesteps->FloatCache;
 }
 
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getAverageDensityCache() const {
-    return AverageDensityCache;
+void FluidSolver::CachedStatisticCollector::RemapStatValues() {
+    calculatedAverageDensity = new CachedStatValue(calculatedAverageDensity);
+    calculatedEnergy = new CachedStatValue(calculatedEnergy);
+    calculatedMaximumVelocity = new CachedStatValue(calculatedMaximumVelocity);
+    calculatedDeadParticleCount = new CachedStatValue(calculatedDeadParticleCount);
+    calculatedKineticEnergy = new CachedStatValue(calculatedKineticEnergy);
+    calculatedPotentialEnergy = new CachedStatValue(calculatedPotentialEnergy);
+    calculatedBoundaryParticleCount = new CachedStatValue(calculatedBoundaryParticleCount);
+    calculatedNormalParticleCount = new CachedStatValue(calculatedNormalParticleCount);
+    calculatedCFLNumber = new CachedStatValue(calculatedCFLNumber);
 }
 
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getEnergyCache() const {
-    return EnergyCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getMaximumVelocityCache() const {
-    return MaximumVelocityCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getDeadParticleCountCache() const {
-    return DeadParticleCountCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getKineticEnergyCache() const {
-    return KineticEnergyCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getPotentialEnergyCache() const {
-    return PotentialEnergyCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getBoundaryParticleCountCache() const {
-    return BoundaryParticleCountCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getNormalParticleCountCache() const {
-    return NormalParticleCountCache;
-}
-
-const std::vector<float> &FluidSolver::CachedStatisticCollector::getCflNumberCache() const {
-    return CflNumberCache;
+FluidSolver::CachedStatisticCollector::~CachedStatisticCollector() {
+    delete Timesteps;
+    StatisticCollector::~StatisticCollector();
 }
