@@ -20,7 +20,7 @@ FluidSolverConsole::FluidSolverConsole(cxxopts::Options &options) {
 }
 
 void FluidSolverConsole::start(cxxopts::ParseResult &parseResult) {
-    verbose = parseResult["debug"].as<bool>();
+    verbose = parseResult["verbose"].as<bool>();
 
     setupSimulation(parseResult);
 
