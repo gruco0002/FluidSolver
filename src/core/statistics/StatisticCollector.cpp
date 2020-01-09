@@ -37,7 +37,7 @@ float StatisticCollector::getGravity() const {
 }
 
 void StatisticCollector::setGravity(float gravity) {
-    Gravity = gravity;
+    this->Gravity = gravity;
 }
 
 float StatisticCollector::getRestDensity() const {

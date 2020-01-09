@@ -104,6 +104,7 @@ void FluidSolver::Simulation::setStatisticCollector(FluidSolver::StatisticCollec
         statisticCollector->setParticleSize(particleSize);
         statisticCollector->setRestDensity(restDensity);
         statisticCollector->setParticleSelection(particleSelection);
+        statisticCollector->setGravity(gravity);
     }
 }
 
