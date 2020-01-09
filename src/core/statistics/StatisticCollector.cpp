@@ -59,6 +59,8 @@ void StatisticCollector::CalculateData() {
     calculatedNormalParticleCount->Set(0u);
     calculatedBoundaryParticleCount->Set(0u);
     calculatedDeadParticleCount->Set(0u);
+    diagonalElement->Set(0.0f);
+    uint32_t diagonalCounter = 0;
 
     for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
         if (!particleSelection->IsParticleSelected(i, particleCollection)) {
@@ -71,6 +73,7 @@ void StatisticCollector::CalculateData() {
         auto mass = particleCollection->GetMass(i);
         float particleVelocity = glm::length(velocity);
         auto density = particleCollection->GetDensity(i);
+        auto diagonal = particleCollection->GetDiagonalElement(i);
 
         if (type != IParticleCollection::ParticleTypeDead) {
             // potential energy
@@ -89,6 +92,10 @@ void StatisticCollector::CalculateData() {
                 *calculatedAverageDensity += density;
                 calculatedAverageDensityCounter++;
             }
+
+            // diagonal element
+            *diagonalElement += diagonal;
+            diagonalCounter++;
         }
 
         // counter
@@ -107,6 +114,9 @@ void StatisticCollector::CalculateData() {
 
     if (calculatedAverageDensityCounter > 0)
         *calculatedAverageDensity /= (float) calculatedAverageDensityCounter;
+
+    if (diagonalCounter > 0)
+        *diagonalElement /= (float) diagonalCounter;
 
 }
 
@@ -137,6 +147,8 @@ void StatisticCollector::SetupFields() {
     calculatedBoundaryParticleCount = new StatValue("Boundary Particles", "", StatValue::StatValueTypeUInt);
     calculatedNormalParticleCount = new StatValue("Normal Particles", "", StatValue::StatValueTypeUInt);
     calculatedCFLNumber = new StatValue("CFL Number", "", StatValue::StatValueTypeFloat);
+    diagonalElement = new StatValue("Diagonal Element", "Average diagonal element value of all normal particles.",
+                                    StatValue::StatValueTypeFloat);
 
     RefreshFieldVector();
 }
@@ -160,6 +172,7 @@ void StatisticCollector::RefreshFieldVector() {
     Stats.push_back(calculatedBoundaryParticleCount);
     Stats.push_back(calculatedNormalParticleCount);
     Stats.push_back(calculatedCFLNumber);
+    Stats.push_back(diagonalElement);
 }
 
 void StatisticCollector::CleanUpFields() {
@@ -172,4 +185,5 @@ void StatisticCollector::CleanUpFields() {
     delete calculatedBoundaryParticleCount;
     delete calculatedNormalParticleCount;
     delete calculatedCFLNumber;
+    delete diagonalElement;
 }

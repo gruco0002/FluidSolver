@@ -78,6 +78,7 @@ void FluidSolver::CachedStatisticCollector::RemapStatValues() {
     calculatedBoundaryParticleCount = new CachedStatValue(calculatedBoundaryParticleCount);
     calculatedNormalParticleCount = new CachedStatValue(calculatedNormalParticleCount);
     calculatedCFLNumber = new CachedStatValue(calculatedCFLNumber);
+    diagonalElement = new CachedStatValue(diagonalElement);
 }
 
 FluidSolver::CachedStatisticCollector::~CachedStatisticCollector() {

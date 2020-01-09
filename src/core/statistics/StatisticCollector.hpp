@@ -48,6 +48,7 @@ namespace FluidSolver {
         StatValue* calculatedBoundaryParticleCount = nullptr;
         StatValue* calculatedNormalParticleCount = nullptr;
         StatValue* calculatedCFLNumber = nullptr;
+        StatValue* diagonalElement = nullptr;
 
         std::vector<StatValue*> Stats;
 
