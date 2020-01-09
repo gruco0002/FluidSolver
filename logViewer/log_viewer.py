@@ -9,9 +9,9 @@ def main(filepaths, showLegend, showDens, showEner, showKinetic, showPotential, 
     style.use('ggplot')
 
     for filepath in filepaths:
-
-        timesteps, avgDensity, relEnergy, kineticEnergy, potentialEnergy, maxVelocity, cflNumber, deadParticles = np.loadtxt(
-            filepath, unpack=True, delimiter=";", skiprows=1, converters={7: lambda deadPartString: float(int(deadPartString))})
+        conv = lambda deadPartString: float(int(deadPartString))
+        timesteps, avgDensity, relEnergy, maxVelocity, deadParticles, kineticEnergy, potentialEnergy, boundaryParticles, normalParticles, cflNumber, diagonalElement, SolverIterations, PredictedDensityError = np.loadtxt(
+            filepath, unpack=True, delimiter=";", skiprows=1, converters={4: conv, 7: conv, 8:conv, 11:conv})
 
         if showDens:
             plt.plot(timesteps, avgDensity, label="Avg. Density " + filepath)
