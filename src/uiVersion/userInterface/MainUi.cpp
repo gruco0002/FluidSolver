@@ -311,7 +311,7 @@ void FluidUI::MainUi::Statistics() {
                 continue;
 
             auto tmp = dynamic_cast<FluidSolver::CachedStatValue *>(cached->getStats()[i]);
-            if (tmp != nullptr && tmp->ValueType == FluidSolver::CachedStatValue::StatValueTypeFloat)
+            if (tmp != nullptr)
                 Statistics_yData.push_back(tmp->FloatCache.data());
 
         }
