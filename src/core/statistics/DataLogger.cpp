@@ -8,8 +8,15 @@
 DataLogger::DataLogger(const std::string &fileName) : fileName(fileName) {}
 
 void DataLogger::StartLogging() {
+    if (logFinished)
+        return;
+
+    if (fileOpened)
+        return;
+
     // open file
     myFile.open(fileName);
+    fileOpened = true;
 
     std::string header = "Time(s)";
 
@@ -37,14 +44,30 @@ void DataLogger::StartLogging() {
 }
 
 void DataLogger::TimeStepPassed() {
+    if (logFinished)
+        return;
+    if (!fileOpened)
+        return;
+
     currentTime += Timestep;
 
     calculateAndLogData();
+
+    if (currentTime >= MaxLogLengthInSimulationSeconds) {
+        FinishLogging();
+    }
 }
 
 void DataLogger::FinishLogging() {
+    if (logFinished)
+        return;
+    if (!fileOpened)
+        return;
+
     // close file
     myFile.close();
+    fileOpened = false;
+    logFinished = true;
 }
 
 
@@ -98,5 +121,14 @@ FluidSolver::IFluidSolver *DataLogger::getFluidSolver() const {
 
 void DataLogger::setFluidSolver(FluidSolver::IFluidSolver *fluidSolver) {
     FluidSolver = fluidSolver;
+}
+
+void DataLogger::ResetLogger() {
+    FinishLogging();
+    logFinished = false;
+}
+
+bool DataLogger::isLogFinished() const {
+    return logFinished;
 }
 

@@ -21,6 +21,8 @@ public:
 
     bool alwaysFlush = true;
 
+    float MaxLogLengthInSimulationSeconds = std::numeric_limits<float>::infinity();
+
     void StartLogging();
 
     void TimeStepPassed();
@@ -39,7 +41,14 @@ public:
 
     void setStatisticCollector(FluidSolver::StatisticCollector *statisticCollector);
 
+    void ResetLogger();
+
+    bool isLogFinished() const;
+
 private:
+
+    bool logFinished = false;
+    bool fileOpened = false;
 
     FluidSolver::StatisticCollector *StatisticCollector = nullptr;
 
