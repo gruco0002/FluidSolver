@@ -68,6 +68,13 @@ Use CMake to compile the project:
   included in this repository
 - [imgui-plot](https://github.com/soulthreads/imgui-plot) (Version ce5f24e),
   included in this repository
+- [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) (Version 2f339cc),
+  included in this repository
+  
+#### Disclaimer
+The listed libraries are not my own and i take no responsibilities for their content.
+Some of those libraries are only included in the repository to provide an easy entry
+point for someone that wants to checkout the repository and this fluid solver.
 
 ### Using the Code on OSX (Mac)
 Since the project uses OpenMP (libomp) to parallelize the execution and the current
