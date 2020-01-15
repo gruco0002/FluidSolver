@@ -24,13 +24,6 @@ void DataLogger::StartLogging() {
         header.append(";" + val->Name);
     }
 
-    if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {
-        auto solver = dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver);
-        // nothing to do
-    } else if (dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver) != nullptr) {
-        auto solver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver);
-        header.append(";SolverIterations;PredictedDensityError");
-    }
 
     // write header
     myFile << header << std::endl;
@@ -78,17 +71,6 @@ void DataLogger::calculateAndLogData() {
 
     for (auto val: StatisticCollector->getStats()) {
         data.append(";" + val->ToString());
-    }
-
-
-    // append data based on solver type
-    if (dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver) != nullptr) {
-        auto solver = dynamic_cast<FluidSolver::SPHFluidSolver *>(FluidSolver);
-        // nothing to do
-    } else if (dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver) != nullptr) {
-        auto solver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(FluidSolver);
-        data.append(";" + std::to_string(solver->getLastIterationCount()));
-        data.append(";" + std::to_string(solver->getLastPredictedDensityError()));
     }
 
     // write data
