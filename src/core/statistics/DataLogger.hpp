@@ -19,7 +19,7 @@ public:
 
     std::string fileName = "data.csv";
 
-    bool alwaysFlush = true;
+    bool alwaysFlush = false;
 
     float MaxLogLengthInSimulationSeconds = std::numeric_limits<float>::infinity();
 
@@ -44,6 +44,8 @@ public:
     void ResetLogger();
 
     bool isLogFinished() const;
+
+    bool hasStarted();
 
 private:
 

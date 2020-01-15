@@ -25,6 +25,7 @@ void FluidUI::MainUi::Run() {
     VisualizerSettings();
     Statistics();
     Selection();
+    DataLogger();
 
 }
 
@@ -354,7 +355,7 @@ void FluidUI::MainUi::Statistics() {
     if (ImGui::ListBoxHeader("Data")) {
 
         for (size_t i = 0; i < Statistics_Names.size(); i++) {
-            ImGui::Selectable(Statistics_Names[i].c_str(), (bool*)Statistics_GraphSelection.data() + i);
+            ImGui::Selectable(Statistics_Names[i].c_str(), (bool *) Statistics_GraphSelection.data() + i);
         }
 
         ImGui::ListBoxFooter();
@@ -401,6 +402,51 @@ void FluidUI::MainUi::Selection() {
     } else if (custom != nullptr) {
         ImGui::Text("Selected: %zu Particles", custom->GetSize());
     }
+
+    ImGui::End();
+}
+
+void FluidUI::MainUi::DataLogger() {
+    ImGui::Begin("Data Logger");
+
+    auto logger = window->GetDataLogger();
+    if (logger->hasStarted()) {
+        ImGui::Text("Logger is running...");
+        if (ImGui::Button("Stop Logger")) {
+            logger->FinishLogging();
+        }
+    } else if (logger->isLogFinished()) {
+        ImGui::Text("Logger is finished");
+        if (ImGui::Button("Reset Logger")) {
+            logger->ResetLogger();
+        }
+    } else {
+        // logger is not finished and not started --> logger can be started
+        ImGui::Text("Logger is ready to be started");
+        if (ImGui::Button("Start Logger")) {
+            logger->StartLogging();
+        }
+    }
+
+    if (logger->isLogFinished() || !logger->hasStarted()) {
+        // draw ui stuff
+        ImGui::Separator();
+
+        if (ImGui::Button("Infty")) {
+            logger->MaxLogLengthInSimulationSeconds = std::numeric_limits<float>::infinity();
+        }
+        ImGui::SameLine();
+        ImGui::InputFloat("Log length in seconds", &logger->MaxLogLengthInSimulationSeconds);
+
+
+
+
+
+        ImGui::Checkbox("Always Flush", &logger->alwaysFlush);
+
+
+    }
+
 
     ImGui::End();
 }

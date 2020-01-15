@@ -132,3 +132,7 @@ bool DataLogger::isLogFinished() const {
     return logFinished;
 }
 
+bool DataLogger::hasStarted() {
+    return fileOpened;
+}
+

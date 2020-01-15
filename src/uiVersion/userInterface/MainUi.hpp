@@ -64,6 +64,8 @@ namespace FluidUI {
 
         void Selection();
 
+        void DataLogger();
+
     };
 }
 

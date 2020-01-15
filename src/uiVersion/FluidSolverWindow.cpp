@@ -224,11 +224,8 @@ void FluidSolverWindow::setupSimulation() {
     // set statistics collection
     simulation->setStatisticCollector(new FluidSolver::CachedStatisticCollector());
 
-
-    // setup dataLogger
-    auto dataLogger = new DataLogger("log.csv");
-    simulation->setDataLogger(dataLogger);
-    dataLogger->StartLogging();
+    // set datalogger but don't start it
+    simulation->setDataLogger(new DataLogger("data.csv"));
 
 }
 
@@ -550,6 +547,14 @@ FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, Flu
     }
 
 
+}
+
+DataLogger *FluidSolverWindow::GetDataLogger() {
+    return simulation->getDataLogger();
+}
+
+void FluidSolverWindow::SetDataLogger(DataLogger *dataLogger) {
+    simulation->setDataLogger(dataLogger);
 }
 
 

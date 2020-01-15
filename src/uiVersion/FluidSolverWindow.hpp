@@ -94,6 +94,10 @@ public:
 
     void SetParticleSelection(FluidSolver::IParticleSelection *particleSelection);
 
+    DataLogger* GetDataLogger();
+
+    void SetDataLogger(DataLogger* dataLogger);
+
 private:
 
     FluidSolver::Simulation *simulation = nullptr;
