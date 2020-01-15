@@ -5,7 +5,7 @@
 #ifndef FLUIDSOLVER_SIMULATION_HPP
 #define FLUIDSOLVER_SIMULATION_HPP
 
-#include <DataLogger.hpp>
+#include <core/statistics/DataLogger.hpp>
 #include <core/interface/IExternalForce.hpp>
 #include <core/visualizer/ISimulationVisualizer.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>

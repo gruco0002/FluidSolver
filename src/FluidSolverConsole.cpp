@@ -3,7 +3,7 @@
 //
 
 #include "FluidSolverConsole.hpp"
-#include "DataLogger.hpp"
+#include "core/statistics/DataLogger.hpp"
 #include <iostream>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>

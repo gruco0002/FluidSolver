@@ -15,7 +15,7 @@
 
 
 #include <core/fluidSolver/SPHFluidSolver.hpp>
-#include "DataLogger.hpp"
+#include "core/statistics/DataLogger.hpp"
 #include "ContinousVisualizerOpenGL.hpp"
 
 
