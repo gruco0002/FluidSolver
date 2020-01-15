@@ -231,8 +231,12 @@ void FluidSolverWindow::setupSimulation() {
 
 
 void FluidSolverWindow::resetData() {
-    if (simulation->getDataLogger())
-        simulation->getDataLogger()->FinishLogging();
+
+    if(simulation->getDataLogger() != nullptr){
+        auto logger = simulation->getDataLogger();
+        logger->FinishLogging();
+        logger->ResetLogger();
+    }
 
     // set particle size
     simulation->setParticleSize(scenario->GetParticleSize());
@@ -262,8 +266,6 @@ void FluidSolverWindow::resetData() {
 
     UpdateVisualizerViewport();
 
-    if (simulation->getDataLogger())
-        simulation->getDataLogger()->StartLogging();
 
     /* this->imageCounter = 0;
      this->currentSaveFrameTime = 1.0f / this->saveFramesPerSecond;*/
