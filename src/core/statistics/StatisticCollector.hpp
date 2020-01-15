@@ -41,6 +41,7 @@ namespace FluidSolver {
         void RefreshFieldVector();
 
         StatValue *calculatedAverageDensity = nullptr;
+        StatValue *calculatedAverageDensityError = nullptr;
         StatValue *calculatedEnergy = nullptr;
         StatValue *calculatedMaximumVelocity = nullptr;
         StatValue *calculatedDeadParticleCount = nullptr;
@@ -51,6 +52,7 @@ namespace FluidSolver {
         StatValue *calculatedCFLNumber = nullptr;
         StatValue *diagonalElement = nullptr;
         StatValue *iterationCount = nullptr;
+        StatValue *predictedDensityError = nullptr;
 
         std::vector<StatValue *> Stats;
 

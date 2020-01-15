@@ -80,6 +80,8 @@ void FluidSolver::CachedStatisticCollector::RemapStatValues() {
     calculatedCFLNumber = new CachedStatValue(calculatedCFLNumber);
     diagonalElement = new CachedStatValue(diagonalElement);
     iterationCount = new CachedStatValue(iterationCount);
+    predictedDensityError = new CachedStatValue(predictedDensityError);
+    calculatedAverageDensityError = new CachedStatValue(calculatedAverageDensityError);
 }
 
 FluidSolver::CachedStatisticCollector::~CachedStatisticCollector() {

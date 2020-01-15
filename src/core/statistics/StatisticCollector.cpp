@@ -62,8 +62,10 @@ void StatisticCollector::CalculateData() {
     calculatedBoundaryParticleCount->Set(0u);
     calculatedDeadParticleCount->Set(0u);
     diagonalElement->Set(0.0f);
-    iterationCount->Set(0u);
     uint32_t diagonalCounter = 0;
+    iterationCount->Set(0u);
+    predictedDensityError->Set(0.0f);
+    calculatedAverageDensityError->Set(0.0f);
 
     for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
         if (!particleSelection->IsParticleSelected(i, particleCollection)) {
@@ -115,8 +117,10 @@ void StatisticCollector::CalculateData() {
     calculatedCFLNumber->Set(calculatedMaximumVelocity->FloatValue * Timestep / ParticleSize);
     calculatedEnergy->Set(calculatedKineticEnergy->FloatValue + calculatedPotentialEnergy->FloatValue);
 
-    if (calculatedAverageDensityCounter > 0)
+    if (calculatedAverageDensityCounter > 0) {
         *calculatedAverageDensity /= (float) calculatedAverageDensityCounter;
+        calculatedAverageDensityError->Set(calculatedAverageDensity->FloatValue - RestDensity);
+    }
 
     if (diagonalCounter > 0)
         *diagonalElement /= (float) diagonalCounter;
@@ -124,6 +128,7 @@ void StatisticCollector::CalculateData() {
     auto iisphSolver = dynamic_cast<IISPHFluidSolver *>(fluidSolver);
     if (iisphSolver != nullptr) {
         iterationCount->Set((uint32_t) iisphSolver->getLastIterationCount());
+        predictedDensityError->Set(iisphSolver->getLastPredictedDensityError());
     }
 
 }
@@ -160,6 +165,12 @@ void StatisticCollector::SetupFields() {
     iterationCount = new StatValue("Iteration Count",
                                    "Number of iterations the IISPH Fluid Solver needed to calculate this timestep.",
                                    StatValue::StatValueTypeUInt);
+    predictedDensityError = new StatValue("Predicted Density Error",
+                                          "The last predicted density error of the IISPH Fluid Solver.",
+                                          StatValue::StatValueTypeFloat);
+    calculatedAverageDensityError = new StatValue("Average Density Error",
+                                                  "Average Density Error is only considered for particles of normal type whose density is larger or equal to the rest density. The error is calculated by substracting the Rest Density from the Average Density.",
+                                                  StatValue::StatValueTypeFloat);
 
     RefreshFieldVector();
 }
@@ -185,20 +196,14 @@ void StatisticCollector::RefreshFieldVector() {
     Stats.push_back(calculatedCFLNumber);
     Stats.push_back(diagonalElement);
     Stats.push_back(iterationCount);
+    Stats.push_back(predictedDensityError);
+    Stats.push_back(calculatedAverageDensityError);
 }
 
 void StatisticCollector::CleanUpFields() {
-    delete calculatedAverageDensity;
-    delete calculatedEnergy;
-    delete calculatedMaximumVelocity;
-    delete calculatedDeadParticleCount;
-    delete calculatedKineticEnergy;
-    delete calculatedPotentialEnergy;
-    delete calculatedBoundaryParticleCount;
-    delete calculatedNormalParticleCount;
-    delete calculatedCFLNumber;
-    delete diagonalElement;
-    delete iterationCount;
+    for (StatValue *tmp: Stats) {
+        delete tmp;
+    }
 }
 
 FluidSolver::IFluidSolver *StatisticCollector::getFluidSolver() const {
