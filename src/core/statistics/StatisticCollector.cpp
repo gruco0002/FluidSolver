@@ -3,6 +3,8 @@
 //
 
 #include <algorithm>
+#include <core/fluidSolver/IFluidSolver.hpp>
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include "StatisticCollector.hpp"
 
 using namespace FluidSolver;
@@ -60,6 +62,7 @@ void StatisticCollector::CalculateData() {
     calculatedBoundaryParticleCount->Set(0u);
     calculatedDeadParticleCount->Set(0u);
     diagonalElement->Set(0.0f);
+    iterationCount->Set(0u);
     uint32_t diagonalCounter = 0;
 
     for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
@@ -118,6 +121,11 @@ void StatisticCollector::CalculateData() {
     if (diagonalCounter > 0)
         *diagonalElement /= (float) diagonalCounter;
 
+    auto iisphSolver = dynamic_cast<IISPHFluidSolver *>(fluidSolver);
+    if (iisphSolver != nullptr) {
+        iterationCount->Set((uint32_t) iisphSolver->getLastIterationCount());
+    }
+
 }
 
 
@@ -149,6 +157,9 @@ void StatisticCollector::SetupFields() {
     calculatedCFLNumber = new StatValue("CFL Number", "", StatValue::StatValueTypeFloat);
     diagonalElement = new StatValue("Diagonal Element", "Average diagonal element value of all normal particles.",
                                     StatValue::StatValueTypeFloat);
+    iterationCount = new StatValue("Iteration Count",
+                                   "Number of iterations the IISPH Fluid Solver needed to calculate this timestep.",
+                                   StatValue::StatValueTypeUInt);
 
     RefreshFieldVector();
 }
@@ -173,6 +184,7 @@ void StatisticCollector::RefreshFieldVector() {
     Stats.push_back(calculatedNormalParticleCount);
     Stats.push_back(calculatedCFLNumber);
     Stats.push_back(diagonalElement);
+    Stats.push_back(iterationCount);
 }
 
 void StatisticCollector::CleanUpFields() {
@@ -186,4 +198,13 @@ void StatisticCollector::CleanUpFields() {
     delete calculatedNormalParticleCount;
     delete calculatedCFLNumber;
     delete diagonalElement;
+    delete iterationCount;
+}
+
+FluidSolver::IFluidSolver *StatisticCollector::getFluidSolver() const {
+    return fluidSolver;
+}
+
+void StatisticCollector::setFluidSolver(FluidSolver::IFluidSolver *fluidSolver) {
+    StatisticCollector::fluidSolver = fluidSolver;
 }

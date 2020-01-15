@@ -79,9 +79,9 @@ void FluidSolver::CachedStatisticCollector::RemapStatValues() {
     calculatedNormalParticleCount = new CachedStatValue(calculatedNormalParticleCount);
     calculatedCFLNumber = new CachedStatValue(calculatedCFLNumber);
     diagonalElement = new CachedStatValue(diagonalElement);
+    iterationCount = new CachedStatValue(iterationCount);
 }
 
 FluidSolver::CachedStatisticCollector::~CachedStatisticCollector() {
     delete Timesteps;
-    StatisticCollector::~StatisticCollector();
 }

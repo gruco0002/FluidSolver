@@ -88,6 +88,8 @@ void FluidSolver::Simulation::setFluidSolver(FluidSolver::IFluidSolver *fluidSol
 
     if (dataLogger != nullptr)
         dataLogger->setFluidSolver(fluidSolver);
+    if (statisticCollector != nullptr)
+        statisticCollector->setFluidSolver(fluidSolver);
 }
 
 FluidSolver::StatisticCollector *FluidSolver::Simulation::getStatisticCollector() {
@@ -105,6 +107,7 @@ void FluidSolver::Simulation::setStatisticCollector(FluidSolver::StatisticCollec
         statisticCollector->setRestDensity(restDensity);
         statisticCollector->setParticleSelection(particleSelection);
         statisticCollector->setGravity(gravity);
+        statisticCollector->setFluidSolver(fluidSolver);
     }
 }
 

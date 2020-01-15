@@ -11,6 +11,7 @@
 #include <core/selection/AllParticleSelection.hpp>
 #include <vector>
 #include "StatValue.hpp"
+#include <core/fluidSolver/IFluidSolver.hpp>
 
 namespace FluidSolver {
 
@@ -39,28 +40,26 @@ namespace FluidSolver {
     protected:
         void RefreshFieldVector();
 
-        StatValue* calculatedAverageDensity = nullptr;
-        StatValue* calculatedEnergy = nullptr;
-        StatValue* calculatedMaximumVelocity = nullptr;
-        StatValue* calculatedDeadParticleCount = nullptr;
-        StatValue* calculatedKineticEnergy = nullptr;
-        StatValue* calculatedPotentialEnergy = nullptr;
-        StatValue* calculatedBoundaryParticleCount = nullptr;
-        StatValue* calculatedNormalParticleCount = nullptr;
-        StatValue* calculatedCFLNumber = nullptr;
-        StatValue* diagonalElement = nullptr;
+        StatValue *calculatedAverageDensity = nullptr;
+        StatValue *calculatedEnergy = nullptr;
+        StatValue *calculatedMaximumVelocity = nullptr;
+        StatValue *calculatedDeadParticleCount = nullptr;
+        StatValue *calculatedKineticEnergy = nullptr;
+        StatValue *calculatedPotentialEnergy = nullptr;
+        StatValue *calculatedBoundaryParticleCount = nullptr;
+        StatValue *calculatedNormalParticleCount = nullptr;
+        StatValue *calculatedCFLNumber = nullptr;
+        StatValue *diagonalElement = nullptr;
+        StatValue *iterationCount = nullptr;
 
-        std::vector<StatValue*> Stats;
+        std::vector<StatValue *> Stats;
 
     private:
-
 
 
         void SetupFields();
 
         void CleanUpFields();
-
-
 
 
         IParticleSelection *particleSelection = nullptr;
@@ -79,13 +78,18 @@ namespace FluidSolver {
         float Gravity = 0.0f;
         float RestDensity = 1.0f;
 
-
+        IFluidSolver *fluidSolver = nullptr;
     public:
+        IFluidSolver *getFluidSolver() const;
+
+        void setFluidSolver(IFluidSolver *fluidSolver);
+
+
         float getRestDensity() const;
 
         void setRestDensity(float restDensity);
 
-    public:
+
         IParticleCollection *getParticleCollection() const;
 
         void setParticleCollection(IParticleCollection *particleCollection);

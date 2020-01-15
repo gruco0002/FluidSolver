@@ -17,28 +17,21 @@ FluidSolver::CachedStatValue::CachedStatValue(FluidSolver::StatValue *statValue)
 }
 
 void FluidSolver::CachedStatValue::Resize(size_t newCacheSize) {
-    if (ValueType == StatValueTypeFloat) {
-        FloatCache.resize(newCacheSize);
-        UIntCache.resize(0);
-    } else {
-        FloatCache.resize(0);
-        UIntCache.resize(newCacheSize);
-    }
+    FloatCache.resize(newCacheSize);
+    UIntCache.resize(newCacheSize);
 }
 
 size_t FluidSolver::CachedStatValue::GetSize() {
-    if (ValueType == StatValueTypeFloat) {
-        return FloatCache.size();
-    } else {
-        return UIntCache.size();
-    }
+    return FloatCache.size();
 }
 
 void FluidSolver::CachedStatValue::SetValue(size_t i) {
     if (ValueType == StatValueTypeFloat) {
         FloatCache[i] = FloatValue;
+        UIntCache[i] = (uint32_t) FloatValue;
     } else {
         UIntCache[i] = UIntValue;
+        FloatCache[i] = (float) UIntValue;
     }
 }
 
