@@ -415,6 +415,10 @@ void FluidUI::MainUi::DataLogger() {
         if (ImGui::Button("Stop Logger")) {
             logger->FinishLogging();
         }
+        ImGui::Separator();
+        ImGui::Text("Saving to:");
+        ImGui::InputText("Log File", const_cast<char *>(logger->fileName.c_str()), logger->fileName.size(),
+                         ImGuiInputTextFlags_ReadOnly);
     } else if (logger->isLogFinished()) {
         ImGui::Text("Logger is finished");
         if (ImGui::Button("Reset Logger")) {
@@ -439,10 +443,29 @@ void FluidUI::MainUi::DataLogger() {
         ImGui::InputFloat("Log length in seconds", &logger->MaxLogLengthInSimulationSeconds);
 
 
-
-
-
         ImGui::Checkbox("Always Flush", &logger->alwaysFlush);
+
+        ImGui::InputText("Log File", const_cast<char *>(logger->fileName.c_str()), logger->fileName.size(),
+                         ImGuiInputTextFlags_ReadOnly);
+
+        if (ImGui::Button("Choose Location")) {
+            ImGuiFileDialog::Instance()->OpenDialog("LogLocationKey", "Log Location", ".csv\0.txt\0\0", ".", "log");
+            ImGuiFileDialog::Instance()->SetFilterColor(".csv", ImVec4(0, 0, 1, 1.0));
+            ImGuiFileDialog::Instance()->SetFilterColor(".txt", ImVec4(1, 0, 1, 1.0));
+        }
+
+        // display and action if ok
+        if (ImGuiFileDialog::Instance()->FileDialog("LogLocationKey")) {
+            if (ImGuiFileDialog::Instance()->IsOk) {
+                std::string filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+                // action
+                logger->fileName = filePathName;
+            }
+            // close
+            ImGuiFileDialog::Instance()->CloseDialog("LogLocationKey");
+        }
 
 
     }
