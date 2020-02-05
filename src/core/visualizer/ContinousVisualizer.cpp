@@ -82,7 +82,10 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
     float maxBoundaryDensityContribution = 0.0f;
     bool maxBoundaryDensityContributerIsSelected = false;
 
-    auto neighbors = neighborhoodSearch->GetParticleNeighborsByPosition(position, KernelSupport, ParticleCollection);
+    std::vector<uint32_t> neighbors;
+    neighbors.reserve(40);
+
+    neighborhoodSearch->GetParticleNeighborsByPosition(neighbors, position, KernelSupport, ParticleCollection);
 
     for (uint32_t neighbor : neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);

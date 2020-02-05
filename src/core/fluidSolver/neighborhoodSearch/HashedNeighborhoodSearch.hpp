@@ -30,7 +30,7 @@ namespace FluidSolver {
 
         void SetupForPositionNeighborSearch(IParticleCollection *particleCollection);
 
-        std::vector<uint32_t> GetParticleNeighborsByPosition(glm::vec2 position, float radius, IParticleCollection* particleCollection);
+        void GetParticleNeighborsByPosition(std::vector<uint32_t> &out, glm::vec2 position, float radius, IParticleCollection* particleCollection);
 
 
     protected:
