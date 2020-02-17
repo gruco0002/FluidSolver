@@ -449,7 +449,17 @@ void FluidUI::MainUi::DataLogger() {
                          ImGuiInputTextFlags_ReadOnly);
 
         if (ImGui::Button("Choose Location")) {
-            ImGuiFileDialog::Instance()->OpenDialog("LogLocationKey", "Log Location", ".csv\0.txt\0\0", ".", "log");
+
+            std::string path = logger->fileName;
+            if (path.empty()) path = ".";
+            if (path.find('\\') != std::string::npos) {
+                path = path.substr(0, path.find_last_of('\\'));
+            } else if (path.find('/') != std::string::npos) {
+                path = path.substr(0, path.find_last_of('/'));
+            }
+
+            ImGuiFileDialog::Instance()->OpenDialog("LogLocationKey", "Log Location", ".csv\0.txt\0\0",
+                                                    path, "log");
             ImGuiFileDialog::Instance()->SetFilterColor(".csv", ImVec4(0, 0, 1, 1.0));
             ImGuiFileDialog::Instance()->SetFilterColor(".txt", ImVec4(1, 0, 1, 1.0));
         }
