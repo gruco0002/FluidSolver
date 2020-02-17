@@ -53,6 +53,8 @@ namespace FluidSolver {
         StatValue *diagonalElement = nullptr;
         StatValue *iterationCount = nullptr;
         StatValue *predictedDensityError = nullptr;
+        StatValue *computationTimePerTimestep = nullptr;
+        StatValue *pressureSolverComputationTimePerTimestep = nullptr;
 
         std::vector<StatValue *> Stats;
 

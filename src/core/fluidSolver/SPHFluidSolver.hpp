@@ -18,6 +18,12 @@ namespace FluidSolver {
 
     private:
         float Gravity = 9.81f;
+    public:
+        uint32_t GetComputationTimeLastTimestepInMicroseconds() override;
+
+        uint32_t GetComputationTimePressureSolverLastTimestepInMicroseconds() override;
+
+    private:
         float TimeStep = 0.001f;
         float ParticleSize = 1.0f;
         float RestDensity = 1.0f;
@@ -25,6 +31,9 @@ namespace FluidSolver {
 
         float NeighborhoodRadius = 5.0f;
         float KernelSupport = 2.0f;
+
+        uint32_t compTimeTotalMicroseconds = 0;
+        uint32_t compTimePressureSolverMicroseconds = 0;
 
         IParticleCollection *particleCollection = nullptr;
 

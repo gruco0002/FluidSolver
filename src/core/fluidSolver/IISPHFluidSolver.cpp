@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <chrono>
 #include "IISPHFluidSolver.hpp"
 
 
@@ -59,6 +60,7 @@ void FluidSolver::IISPHFluidSolver::setGravity(float gravity) {
 }
 
 void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
+    auto t1 = std::chrono::high_resolution_clock::now();
 
     // find neighbors for all particles
     neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
@@ -90,8 +92,10 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     }
 
 
+    auto p1 = std::chrono::high_resolution_clock::now();
     // compute pressure
     ComputePressure();
+    auto p2 = std::chrono::high_resolution_clock::now();
 
 
     // update velocity and position of all particles
@@ -100,6 +104,9 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
         IntegrateParticle(i);
     }
 
+    auto t2 = std::chrono::high_resolution_clock::now();
+    this->compTimeTotalMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+    this->compTimePressureSolverMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(p2 - p1).count();
 }
 
 
@@ -454,5 +461,13 @@ size_t FluidSolver::IISPHFluidSolver::getLastIterationCount() const {
 
 float FluidSolver::IISPHFluidSolver::getMaxPredictedDensityErrorReached() const {
     return maxPredictedDensityErrorReached;
+}
+
+uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {
+    return compTimeTotalMicroseconds;
+}
+
+uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
+    return compTimePressureSolverMicroseconds;
 }
 

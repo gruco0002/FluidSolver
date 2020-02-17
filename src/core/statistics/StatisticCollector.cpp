@@ -131,6 +131,10 @@ void StatisticCollector::CalculateData() {
         predictedDensityError->Set(iisphSolver->getLastPredictedDensityError());
     }
 
+    pressureSolverComputationTimePerTimestep->Set(
+            fluidSolver->GetComputationTimePressureSolverLastTimestepInMicroseconds());
+    computationTimePerTimestep->Set(fluidSolver->GetComputationTimeLastTimestepInMicroseconds());
+
 }
 
 
@@ -171,6 +175,12 @@ void StatisticCollector::SetupFields() {
     calculatedAverageDensityError = new StatValue("Average Density Error",
                                                   "Average Density Error is only considered for particles of normal type whose density is larger or equal to the rest density. The error is calculated by substracting the Rest Density from the Average Density.",
                                                   StatValue::StatValueTypeFloat);
+    computationTimePerTimestep = new StatValue("Computation Time",
+                                               "Time in microseconds needed to compute one timestep of the simulation.",
+                                               StatValue::StatValueTypeUInt);
+    pressureSolverComputationTimePerTimestep = new StatValue("Pressure Solver Time",
+                                                             "Time in microseconds needed to execute the pressure solver in a timestep.",
+                                                             StatValue::StatValueTypeUInt);
 
     RefreshFieldVector();
 }
@@ -198,6 +208,8 @@ void StatisticCollector::RefreshFieldVector() {
     Stats.push_back(iterationCount);
     Stats.push_back(predictedDensityError);
     Stats.push_back(calculatedAverageDensityError);
+    Stats.push_back(computationTimePerTimestep);
+    Stats.push_back(pressureSolverComputationTimePerTimestep);
 }
 
 void StatisticCollector::CleanUpFields() {

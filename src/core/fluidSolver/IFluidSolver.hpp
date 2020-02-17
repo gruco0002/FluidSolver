@@ -35,6 +35,9 @@ namespace FluidSolver {
 
         virtual ~IFluidSolver() = default;
 
+        virtual uint32_t GetComputationTimeLastTimestepInMicroseconds() = 0;
+
+        virtual uint32_t GetComputationTimePressureSolverLastTimestepInMicroseconds() = 0;
 
     };
 

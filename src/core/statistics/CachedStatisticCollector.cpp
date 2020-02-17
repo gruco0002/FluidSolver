@@ -82,6 +82,8 @@ void FluidSolver::CachedStatisticCollector::RemapStatValues() {
     iterationCount = new CachedStatValue(iterationCount);
     predictedDensityError = new CachedStatValue(predictedDensityError);
     calculatedAverageDensityError = new CachedStatValue(calculatedAverageDensityError);
+    computationTimePerTimestep = new CachedStatValue(computationTimePerTimestep);
+    pressureSolverComputationTimePerTimestep = new CachedStatValue(pressureSolverComputationTimePerTimestep);
 }
 
 FluidSolver::CachedStatisticCollector::~CachedStatisticCollector() {

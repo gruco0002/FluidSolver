@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <algorithm>
+#include <chrono>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include "SPHFluidSolver.hpp"
 
@@ -11,12 +12,15 @@ namespace FluidSolver {
 
 
     void SPHFluidSolver::ExecuteSimulationStep() {
+        auto t1 = std::chrono::high_resolution_clock::now();
+
 
         // find neighbors for all particles
         neighborhoodSearch->SetParticleCount(particleCollection->GetSize());
         neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
 
 
+        auto p1 = std::chrono::high_resolution_clock::now();
         // calculate density and pressure for all particles
 #pragma omp parallel for
         for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
@@ -34,6 +38,7 @@ namespace FluidSolver {
             float pressure = ComputePressure(i);
             particleCollection->SetPressure(i, pressure);
         }
+        auto p2 = std::chrono::high_resolution_clock::now();
 
         // compute non pressure accelerations and pressure accelerations for all particles
 #pragma omp parallel for
@@ -72,6 +77,10 @@ namespace FluidSolver {
             particleCollection->SetPosition(i, position);
         }
 
+        auto t2 = std::chrono::high_resolution_clock::now();
+        this->compTimeTotalMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+        this->compTimePressureSolverMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(
+                p2 - p1).count();
     }
 
     float SPHFluidSolver::ComputePressure(uint32_t particleIndex) {
@@ -238,5 +247,13 @@ namespace FluidSolver {
 
     SPHFluidSolver::SPHFluidSolver() {
 
+    }
+
+    uint32_t SPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {
+        return compTimeTotalMicroseconds;
+    }
+
+    uint32_t SPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
+        return compTimePressureSolverMicroseconds;
     }
 }

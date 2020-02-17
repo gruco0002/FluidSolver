@@ -14,6 +14,12 @@ namespace FluidSolver {
     class IISPHFluidSolver : public IFluidSolver {
 
     private:
+    public:
+        uint32_t GetComputationTimeLastTimestepInMicroseconds() override;
+
+        uint32_t GetComputationTimePressureSolverLastTimestepInMicroseconds() override;
+
+    private:
         float Timestep = 0.0f;
         float RestDensity = 0.0f;
         float ParticleSize = 0.0f;
@@ -24,6 +30,10 @@ namespace FluidSolver {
 
         float lastPredictedDensityError = 0.0f;
         float maxPredictedDensityErrorReached = 0.0f;
+
+        uint32_t compTimeTotalMicroseconds = 0;
+        uint32_t compTimePressureSolverMicroseconds = 0;
+
     public:
         float getMaxPredictedDensityErrorReached() const;
 
