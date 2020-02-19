@@ -232,7 +232,7 @@ void FluidSolverWindow::setupSimulation() {
 
 void FluidSolverWindow::resetData() {
 
-    if(simulation->getDataLogger() != nullptr){
+    if (simulation->getDataLogger() != nullptr) {
         auto logger = simulation->getDataLogger();
         logger->FinishLogging();
         logger->ResetLogger();
@@ -338,14 +338,35 @@ void FluidSolverWindow::onMouseUp(float x, float y, Engine::Window::MouseButton 
 
 
 void FluidSolverWindow::saveAsImage() {
-    /*if (!saveFrames)
+    if (!saveFrames)
         return;
-    if (currentSaveFrameTime < 1.0f / saveFramesPerSecond)
-        return;
-    currentSaveFrameTime -= 1.0f / saveFramesPerSecond;
-    imageCounter++;
 
-    fboColorTex->SaveAsPNG(imagePath + "image_" + std::to_string(imageCounter) + ".png");*/
+    if (saveFramesForSeconds <= 0.0f) {
+        stopRecordingAndresetImageSettings();
+        return;
+    }
+
+    if (simulation == nullptr)
+        return;
+    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->getSimulationVisualizer());
+    if (glRenderer == nullptr)
+        return;
+
+    auto tex = glRenderer->GetTexture();
+    if (tex == nullptr)
+        return;
+
+    if (simulation->getTimestep() == nullptr)
+        return;
+
+    float timestep = simulation->getTimestep()->getCurrentTimestep();
+    saveFramesForSeconds -= timestep;
+
+    std::string newFilepath =
+            imageFilepath.substr(0, imageFilepath.length() - 4) + std::to_string(imageCounter) + ".png";
+    tex->SaveAsPNG(newFilepath);
+
+    imageCounter++;
 
 }
 
@@ -557,6 +578,18 @@ DataLogger *FluidSolverWindow::GetDataLogger() {
 
 void FluidSolverWindow::SetDataLogger(DataLogger *dataLogger) {
     simulation->setDataLogger(dataLogger);
+}
+
+void FluidSolverWindow::stopRecordingAndresetImageSettings() {
+    saveFrames = false;
+    saveFramesForSeconds = saveFramesForSecondsInitalValue;
+    imageCounter = 0;
+}
+
+void FluidSolverWindow::startRecording() {
+    saveFramesForSecondsInitalValue = saveFramesForSeconds;
+    saveFrames = true;
+    imageCounter = 0;
 }
 
 

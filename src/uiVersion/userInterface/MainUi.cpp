@@ -26,6 +26,7 @@ void FluidUI::MainUi::Run() {
     Statistics();
     Selection();
     DataLogger();
+    ImageRecorder();
 
 }
 
@@ -459,7 +460,7 @@ void FluidUI::MainUi::DataLogger() {
             }
 
             ImGuiFileDialog::Instance()->OpenDialog("LogLocationKey", "Log Location", ".csv\0.txt\0\0",
-                                                    path, "log");
+                                                    path, "log.csv");
             ImGuiFileDialog::Instance()->SetFilterColor(".csv", ImVec4(0, 0, 1, 1.0));
             ImGuiFileDialog::Instance()->SetFilterColor(".txt", ImVec4(1, 0, 1, 1.0));
         }
@@ -480,6 +481,60 @@ void FluidUI::MainUi::DataLogger() {
 
     }
 
+
+    ImGui::End();
+}
+
+void FluidUI::MainUi::ImageRecorder() {
+    ImGui::Begin("Image Recorder");
+
+    if (ImGui::Button(window->saveFrames ? "Stop Recording" : "Start Recording")) {
+        if (window->saveFrames) {
+            window->stopRecordingAndresetImageSettings();
+        } else {
+            window->startRecording();
+        }
+    }
+
+    if (window->saveFrames) {
+        ImGui::Text("Recording in Progress...");
+    }
+    ImGui::Separator();
+
+    ImGui::InputFloat("Recording Time", &window->saveFramesForSeconds, 0, 0, "%.3f",
+                      window->saveFrames ? ImGuiInputTextFlags_ReadOnly : 0);
+
+    ImGui::InputText("Image File", const_cast<char *>(window->imageFilepath.c_str()), window->imageFilepath.size(),
+                     ImGuiInputTextFlags_ReadOnly);
+
+
+    if (!window->saveFrames && ImGui::Button("Choose Location")) {
+
+        std::string path = window->imageFilepath;
+        if (path.empty()) path = ".";
+        if (path.find('\\') != std::string::npos) {
+            path = path.substr(0, path.find_last_of('\\'));
+        } else if (path.find('/') != std::string::npos) {
+            path = path.substr(0, path.find_last_of('/'));
+        }
+
+        ImGuiFileDialog::Instance()->OpenDialog("ImgLocationKey", "Image Location", ".png\0.PNG\0\0",
+                                                path, "image.png");
+        ImGuiFileDialog::Instance()->SetFilterColor(".png", ImVec4(0, 0, 1, 1.0));
+    }
+
+    // display and action if ok
+    if (ImGuiFileDialog::Instance()->FileDialog("ImgLocationKey")) {
+        if (ImGuiFileDialog::Instance()->IsOk) {
+            std::string filePathName = ImGuiFileDialog::Instance()->GetFilepathName();
+            std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+            // action
+            window->imageFilepath = filePathName;
+        }
+        // close
+        ImGuiFileDialog::Instance()->CloseDialog("ImgLocationKey");
+    }
 
     ImGui::End();
 }

@@ -49,11 +49,16 @@ public:
 
     float RealTimeSpeed = 1.0f;
 
-    /*bool saveFrames = false;
-    float saveFramesPerSecond = 60.0f;
-    float currentSaveFrameTime = 1.0f / saveFramesPerSecond;
-    std::string imagePath = "./images/";
-    unsigned int imageCounter = 0;*/
+    bool saveFrames = false;
+    float saveFramesForSecondsInitalValue = 30.0f;
+    float saveFramesForSeconds = 30.0f;
+    std::string imageFilepath = "./image.png";
+    unsigned int imageCounter = 0;
+
+    void stopRecordingAndresetImageSettings();
+
+    void startRecording();
+
 
     std::vector<FluidSolver::Scenario *> Scenarios = std::vector<FluidSolver::Scenario *>({
                                                                                                   new FluidSolver::SimpleBoxScenario(),
@@ -94,9 +99,9 @@ public:
 
     void SetParticleSelection(FluidSolver::IParticleSelection *particleSelection);
 
-    DataLogger* GetDataLogger();
+    DataLogger *GetDataLogger();
 
-    void SetDataLogger(DataLogger* dataLogger);
+    void SetDataLogger(DataLogger *dataLogger);
 
 private:
 

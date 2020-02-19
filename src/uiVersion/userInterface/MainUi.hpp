@@ -66,6 +66,8 @@ namespace FluidUI {
 
         void DataLogger();
 
+        void ImageRecorder();
+
     };
 }
 
