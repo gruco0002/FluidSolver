@@ -15,10 +15,10 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
     // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (int y = -5; y >= -7; y--) {
         for (int x = -10; x <= 10; x++) {
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            FluidSolver::FluidParticle p;
             p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);
@@ -31,7 +31,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
     }
 
     // normal particle
-    FluidSolver::SimpleParticleCollection::FluidParticle p;
+    FluidSolver::FluidParticle p;
     p.Position = glm::vec2(0.0f);
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);

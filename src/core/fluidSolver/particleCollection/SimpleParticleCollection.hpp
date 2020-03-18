@@ -15,27 +15,7 @@ namespace FluidSolver {
 
     public:
 
-        struct FluidParticle {
-            glm::vec2 Position;
-            glm::vec2 Velocity;
-            glm::vec2 Acceleration;
 
-            float Mass;
-            float Pressure;
-            float Density;
-
-            uint8_t Type;
-            glm::vec2 PredictedVelocity = glm::vec2(0.0f);
-            glm::vec2 NonPressureAcceleration = glm::vec2(0.0f);
-            float SourceTerm = 0.0f;
-            float DiagonalElement = 0.0f;
-
-            bool operator==(const FluidParticle &rhs) const;
-
-            bool operator!=(const FluidParticle &rhs) const;
-
-
-        };
 
         SimpleParticleCollection(std::vector<FluidParticle> &input);
 

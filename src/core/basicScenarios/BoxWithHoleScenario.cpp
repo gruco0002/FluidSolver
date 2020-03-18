@@ -17,7 +17,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
 
 
     // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
 
     for (int x = -23; x <= 12; x++) {
 
@@ -26,7 +26,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
             continue;
         }
 
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -45,7 +45,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
 
     // left boundary
     for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -64,7 +64,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
 
     // right boundary
     for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
@@ -85,7 +85,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
     for (int x = -20; x <= 0; x++) {
         for (int y = 7; y >= -13; y--) {
             // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            FluidSolver::FluidParticle p;
             p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);

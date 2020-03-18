@@ -6,7 +6,7 @@
 
 
 FluidSolver::IParticleCollection *FluidSolver::Scenario::GenerateScenario(float restDensity) {
-    auto tmp = std::vector<FluidSolver::SimpleParticleCollection::FluidParticle>();
+    auto tmp = std::vector<FluidSolver::FluidParticle>();
     auto particleCollection = new FluidSolver::SimpleParticleCollection(tmp);
 
     this->ResetData(particleCollection, restDensity);

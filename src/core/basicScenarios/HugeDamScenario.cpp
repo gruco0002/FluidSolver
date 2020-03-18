@@ -13,10 +13,10 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
     // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
 
     for (int x = -53; x <= 53; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -35,7 +35,7 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
 
     // left boundary
     for (int y = 20; y > -50; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -54,7 +54,7 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
 
     // right boundary
     for (int y = 20; y > -50; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
@@ -75,7 +75,7 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
     for (int x = -20; x <= 0; x++) {
         for (int y = 20; y >= 0; y--) {
             // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            FluidSolver::FluidParticle p;
             p.Position = glm::vec2((float) x, (float) y);
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);

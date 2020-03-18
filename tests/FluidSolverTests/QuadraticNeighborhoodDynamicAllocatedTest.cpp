@@ -23,9 +23,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, NeighborhoodCount1) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos;
         particles.push_back(p);
     }
@@ -50,9 +50,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, NeighborhoodCount2) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos;
         particles.push_back(p);
     }
@@ -78,9 +78,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, NeighborhoodCorrect1) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos;
         particles.push_back(p);
     }
@@ -122,9 +122,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, NeighborhoodCorrect2) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos;
         particles.push_back(p);
     }
@@ -174,9 +174,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, ShiftedNeighborhoodCount1) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos + glm::vec2(10.333f);
         particles.push_back(p);
     }
@@ -201,9 +201,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, ShiftedNeighborhoodCount2) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos - glm::vec2(50.856f);
         particles.push_back(p);
     }
@@ -229,9 +229,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, ShiftedNeighborhoodCorrect1) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos + glm::vec2(10.3333f, -46.8453f);
         particles.push_back(p);
     }
@@ -272,9 +272,9 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, ShiftedNeighborhoodCorrect2) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Position = pos + glm::vec2(10000.0f, -1000000.0f);
         particles.push_back(p);
     }
@@ -323,10 +323,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedNeighborhoodCount1) {
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
     float rotation = 138.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::mat3(1.0f), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -353,10 +353,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedNeighborhoodCount2) {
 
 
     float rotation = 67.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::mat3(1.0f), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -384,10 +384,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedNeighborhoodCorrect1) {
 
 
     float rotation = 35.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::mat3(1.0f), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -430,10 +430,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedNeighborhoodCorrect2) {
 
 
     float rotation = 246.56f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::mat3(1.0f), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -483,10 +483,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedShiftedNeighborhoodCount1
     auto positions = GetSampleGrid(-2.0f, 1.0f, 2.0f);
 
     float rotation = 138.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::translate(glm::mat3(1.0f), glm::vec2(25.4f, 18.2f)), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -513,10 +513,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedShiftedNeighborhoodCount2
 
 
     float rotation = 67.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::translate(glm::mat3(1.0f), glm::vec2(25.4f, -58.3f)), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -544,11 +544,11 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedShiftedNeighborhoodCorrec
 
 
     float rotation = 35.0f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::translate(glm::mat3(1.0f), glm::vec2(-180.456f, -123.0f)),
                                 FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);
@@ -591,10 +591,10 @@ TEST(QuadraticNeighborhoodDynamicAllocatedTest, RotatedShiftedNeighborhoodCorrec
 
 
     float rotation = 246.56f; // degrees
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
     glm::mat3 rot = glm::rotate(glm::translate(glm::mat3(1.0f), glm::vec2(25.4f, 5618.2f)), FS_PI / 180.0f * rotation);
     for (auto pos : positions) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         glm::vec3 rotated = glm::vec3(pos, 1.0f) * rot;
         p.Position = glm::vec2(rotated.x, rotated.y);
         particles.push_back(p);

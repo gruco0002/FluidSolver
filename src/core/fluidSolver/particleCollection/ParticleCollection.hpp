@@ -45,8 +45,8 @@ namespace FluidSolver {
         void InsertionSort(const sortKeyFunction_t &sortKeyFunction);
         void MergeSort(const sortKeyFunction_t &sortKeyFunction);
 
-        void AddParticles(const std::vector<SimpleParticleCollection::FluidParticle> &particles);
-        size_t AddParticle(const SimpleParticleCollection::FluidParticle &fluidParticle);
+        void AddParticles(const std::vector<FluidParticle> &particles);
+        size_t AddParticle(const FluidParticle &fluidParticle);
 
         size_t AddEmptyParticle();
 

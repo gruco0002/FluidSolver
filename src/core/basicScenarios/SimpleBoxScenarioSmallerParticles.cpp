@@ -16,10 +16,10 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
     // generate a simple boundary
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
 
     for (int x = -23; x <= 12; x++) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -42,7 +42,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
 
     // left boundary
     for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
 
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
@@ -65,7 +65,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
 
     // right boundary
     for (int y = 20; y >= -13; y--) {
-        FluidSolver::SimpleParticleCollection::FluidParticle p;
+        FluidSolver::FluidParticle p;
         p.Velocity = glm::vec2(0.0f);
         p.Acceleration = glm::vec2(0.0f);
         p.Pressure = 0.0f;
@@ -91,7 +91,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
     for (int x = 0; x <= 4; x++) {
         for (int y = 0; y >= -x; y--) {
             // normal particle
-            FluidSolver::SimpleParticleCollection::FluidParticle p;
+            FluidSolver::FluidParticle p;
 
             p.Velocity = glm::vec2(0.0f);
             p.Acceleration = glm::vec2(0.0f);

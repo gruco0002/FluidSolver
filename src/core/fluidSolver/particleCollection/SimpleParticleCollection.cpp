@@ -46,7 +46,7 @@ namespace FluidSolver {
         particles[index].Acceleration = value;
     }
 
-    SimpleParticleCollection::SimpleParticleCollection(std::vector<SimpleParticleCollection::FluidParticle> &input) {
+    SimpleParticleCollection::SimpleParticleCollection(std::vector<FluidParticle> &input) {
         SetParticles(input);
     }
 
@@ -62,7 +62,7 @@ namespace FluidSolver {
         particles[index].Density = value;
     }
 
-    std::vector<SimpleParticleCollection::FluidParticle> &SimpleParticleCollection::GetParticles() {
+    std::vector<FluidParticle> &SimpleParticleCollection::GetParticles() {
         return particles;
     }
 
@@ -112,21 +112,5 @@ namespace FluidSolver {
     }
 
 
-    bool SimpleParticleCollection::FluidParticle::operator==(const SimpleParticleCollection::FluidParticle &rhs) const {
-        return Position == rhs.Position &&
-               Velocity == rhs.Velocity &&
-               Acceleration == rhs.Acceleration &&
-               Mass == rhs.Mass &&
-               Pressure == rhs.Pressure &&
-               Density == rhs.Density &&
-               Type == rhs.Type &&
-               PredictedVelocity == rhs.PredictedVelocity &&
-               NonPressureAcceleration == rhs.NonPressureAcceleration &&
-               SourceTerm == rhs.SourceTerm &&
-               DiagonalElement == rhs.DiagonalElement;
-    }
 
-    bool SimpleParticleCollection::FluidParticle::operator!=(const SimpleParticleCollection::FluidParticle &rhs) const {
-        return !(rhs == *this);
-    }
 }

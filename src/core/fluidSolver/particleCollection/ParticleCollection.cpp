@@ -2,7 +2,7 @@
 #include "ParticleCollection.hpp"
 
 size_t FluidSolver::ParticleCollection::AddParticle(
-        const FluidSolver::SimpleParticleCollection::FluidParticle &fluidParticle) {
+        const FluidSolver::FluidParticle &fluidParticle) {
 
     // Create and add an empty particle
     auto index = AddEmptyParticle();
@@ -151,7 +151,7 @@ void FluidSolver::ParticleCollection::PrecalculateSortKeys(
 }
 
 void
-FluidSolver::ParticleCollection::AddParticles(const std::vector<SimpleParticleCollection::FluidParticle> &particles) {
+FluidSolver::ParticleCollection::AddParticles(const std::vector<FluidParticle> &particles) {
     for (auto particle: particles)
         AddParticle(particle);
 }

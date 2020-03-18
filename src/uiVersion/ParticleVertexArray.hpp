@@ -50,7 +50,7 @@ private:
     void Generate();
 
 
-    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::SimpleParticleCollection::FluidParticle> *vertexBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle> *vertexBuffer = nullptr;
     Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
     Engine::Graphics::Buffer::VertexArray *vao = nullptr;
 

@@ -47,7 +47,7 @@ void ParticleVertexArray::Draw() {
 void ParticleVertexArray::Generate() {
     this->particleCount = simpleParticleCollection->GetSize();
 
-    vertexBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::SimpleParticleCollection::FluidParticle>(
+    vertexBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle>(
             simpleParticleCollection->GetParticles(), Engine::Graphics::Buffer::Buffer::DataModeDynamic);
     std::vector<uint32_t> indices(this->particleCount);
     for (uint32_t i = 0; i < this->particleCount; i++) {
@@ -68,18 +68,18 @@ void ParticleVertexArray::Generate() {
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     0, 2, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Position),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     1, 2, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Velocity),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
@@ -87,9 +87,9 @@ void ParticleVertexArray::Generate() {
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     2, 2, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Acceleration),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
@@ -97,36 +97,36 @@ void ParticleVertexArray::Generate() {
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     3, 1, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Mass),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     4, 1, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Pressure),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     5, 1, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Density),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeFloat
 
                                                             ),
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                     vertexBuffer,
                                                                     6, 1, offsetof(
-                                                                            FluidSolver::SimpleParticleCollection::FluidParticle,
+                                                                            FluidSolver::FluidParticle,
                                                                             Type),
-                                                                    sizeof(FluidSolver::SimpleParticleCollection::FluidParticle),
+                                                                    sizeof(FluidSolver::FluidParticle),
                                                                     Engine::ComponentTypeUnsignedByte
                                                             ),
                                                             Engine::Graphics::Buffer::VertexArray::BufferBinding(

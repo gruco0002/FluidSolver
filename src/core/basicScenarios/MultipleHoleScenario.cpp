@@ -14,7 +14,7 @@ FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *p
     const int xOffset = -96 / 2;
     const int yOffset = -32 / 2;
 
-    std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> particles;
+    std::vector<FluidSolver::FluidParticle> particles;
 
     // boundaries
     for (int x = 1; x <= 3; x++) {
@@ -169,12 +169,12 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::MultipleHoleScenari
 }
 
 void
-FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> *particles,
+FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::FluidParticle> *particles,
                                        float restDensity, float x, float y) {
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
-    FluidSolver::SimpleParticleCollection::FluidParticle p;
+    FluidSolver::FluidParticle p;
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);
     p.Pressure = 0.0f;
@@ -196,11 +196,11 @@ FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::SimpleParticleCo
 }
 
 void FluidSolver::MultipleHoleScenario::addBoundary(
-        std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> *particles, float restDensity, float x,
+        std::vector<FluidSolver::FluidParticle> *particles, float restDensity, float x,
         float y) {
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
-    FluidSolver::SimpleParticleCollection::FluidParticle p;
+    FluidSolver::FluidParticle p;
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);
     p.Pressure = 0.0f;
@@ -224,11 +224,11 @@ void FluidSolver::MultipleHoleScenario::addBoundary(
 }
 
 void
-FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> *particles,
+FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::FluidParticle> *particles,
                                            float restDensity) {
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
-    FluidSolver::SimpleParticleCollection::FluidParticle p;
+    FluidSolver::FluidParticle p;
     p.Position = glm::vec2(0.0f, 0.0f) * (float) factor;
     p.Velocity = glm::vec2(0.0f);
     p.Acceleration = glm::vec2(0.0f);

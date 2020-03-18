@@ -29,9 +29,9 @@ namespace FluidSolver {
 
         const int factor = 4;
 
-		void add(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle> *particles, float restDensity, float x, float y);
-		void addBoundary(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle>* particles, float restDensity, float x, float y);
-		void addDead(std::vector<FluidSolver::SimpleParticleCollection::FluidParticle>* particles, float restDensity);
+		void add(std::vector<FluidSolver::FluidParticle> *particles, float restDensity, float x, float y);
+		void addBoundary(std::vector<FluidSolver::FluidParticle>* particles, float restDensity, float x, float y);
+		void addDead(std::vector<FluidSolver::FluidParticle>* particles, float restDensity);
 
     };
 }
