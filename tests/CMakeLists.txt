@@ -1,4 +1,5 @@
 project(FluidSolver_tests)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(GOOGLETEST_VERSION 1.8.1)
 add_subdirectory(dependencies/googletest)
 add_subdirectory(FluidSolverTests)
