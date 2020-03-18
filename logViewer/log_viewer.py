@@ -23,7 +23,8 @@ class Names:
 
 def main(filepaths: list, showLegend: bool, plotData: list):
 
-    style.use('ggplot')
+    # style.use('ggplot')
+    style.use('seaborn-whitegrid')
 
     for filepath in filepaths:
         def conv(deadPartString): return float(int(deadPartString))
@@ -69,8 +70,15 @@ def main(filepaths: list, showLegend: bool, plotData: list):
             plt.plot(timesteps, predicted_density_error,
                      label="Predicted Density Error " + filepath)
         if Names.AVERAGE_DENSITY_ERROR in plotData:
+            plt.xlabel("Zeit $t$")
+            plt.ylabel("Durchschnittlicher Dichtefehler")
+            label = "Avg. Density Error " + filepath
+            if "iisph" in label:
+                label = "IISPH"
+            else:
+                label = "SESPH"
             plt.plot(timesteps, avg_density_error,
-                     label="Avg. Density Error " + filepath)
+                     label=label)
 
     if showLegend:
         plt.legend()
