@@ -52,6 +52,8 @@ namespace FluidSolver {
 
         size_t AddEmptyParticle() override ;
 
+        void Clear() override;
+
     public:
 
          uint8_t * TypeData();

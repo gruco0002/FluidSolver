@@ -141,6 +141,11 @@ namespace FluidSolver {
          */
         virtual size_t AddEmptyParticle() = 0;
 
+        /**
+         * Deletes all particles such that the container does not contain them anymore. Hence reduces the size of the
+         * container to zero.
+         */
+        virtual void Clear() = 0;
 
     public:
 

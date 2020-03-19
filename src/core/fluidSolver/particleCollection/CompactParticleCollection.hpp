@@ -30,6 +30,8 @@ namespace FluidSolver {
 
         size_t AddEmptyParticle() override;
 
+        void Clear() override;
+
         float GetMass(uint32_t index) override;
 
         void SetMass(uint32_t index, float value) override;

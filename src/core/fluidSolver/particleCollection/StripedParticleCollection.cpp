@@ -221,3 +221,23 @@ size_t FluidSolver::StripedParticleCollection::GetParticleID(size_t index) {
 size_t FluidSolver::StripedParticleCollection::GetIndex(size_t particleID) {
     return particleIDToParticleIndexMap[particleID];
 }
+
+void FluidSolver::StripedParticleCollection::Clear() {
+    this->size = 0;
+
+    particleIDToParticleIndexMap.clear();
+    particleIndexToParticleIDMap.clear();
+    sortKeys.clear();
+
+    typeData.clear();
+    positionData.clear();
+    velocityData.clear();
+    accelerationData.clear();
+    massData.clear();
+    pressureData.clear();
+    densityData.clear();
+    nonPressureAccelerationData.clear();
+    predictedVelocityData.clear();
+    sourceTermData.clear();
+    diagonalElementData.clear();
+}

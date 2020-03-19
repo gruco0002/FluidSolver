@@ -148,3 +148,10 @@ void FluidSolver::CompactParticleCollection::SwapElements(size_t i, size_t j) {
 FluidSolver::FluidParticle *FluidSolver::CompactParticleCollection::GetData() {
     return particleData.data();
 }
+
+void FluidSolver::CompactParticleCollection::Clear() {
+    this->sortKeys.clear();
+    this->particleIDToParticleIndexMap.clear();
+    this->particleIndexToParticleIDMap.clear();
+    this->particleData.clear();
+}
