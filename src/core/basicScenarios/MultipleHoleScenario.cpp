@@ -5,7 +5,8 @@
 
 void
 FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *particleCollection, float restDensity) {
-    if (!this->ParticleCollectionTypeSupported(particleCollection))return;
+
+    particleCollection->Clear();
 
     const int xOffset = -96 / 2;
     const int yOffset = -32 / 2;
@@ -129,8 +130,7 @@ FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *p
     }
 
     // set particles
-    auto coll = dynamic_cast<FluidSolver::StripedParticleCollection *>(particleCollection);
-    coll->AddParticles(particles);
+    particleCollection->AddParticles(particles);
 }
 
 int FluidSolver::MultipleHoleScenario::GetParticleCountX() {

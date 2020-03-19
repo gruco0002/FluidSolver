@@ -8,6 +8,9 @@
 
 namespace FluidSolver {
     class Scenario {
+    protected:
+        virtual IParticleCollection *CreateEmptyParticleCollection();
+
     public:
         virtual void ResetData(IParticleCollection *particleCollection, float restDensity) = 0;
 
@@ -15,13 +18,11 @@ namespace FluidSolver {
 
         virtual float GetParticleSize();
 
-        virtual bool ParticleCollectionTypeSupported(IParticleCollection *particleCollection);
-
         virtual int GetParticleCountX() = 0;
 
         virtual int GetParticleCountY() = 0;
 
-        virtual std::vector<ISimulationModifier*> GetSimulationModifiers();
+        virtual std::vector<ISimulationModifier *> GetSimulationModifiers();
 
         virtual std::string GetName() = 0;
     };

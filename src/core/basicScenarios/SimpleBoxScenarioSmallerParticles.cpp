@@ -4,10 +4,7 @@
 
 void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IParticleCollection *particleCollection,
                                                                float restDensity) {
-    if (!this->ParticleCollectionTypeSupported(particleCollection))
-        return;
-
-    auto coll = dynamic_cast<FluidSolver::StripedParticleCollection *>(particleCollection);
+    particleCollection->Clear();
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
@@ -105,7 +102,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
         }
     }
 
-    coll->AddParticles(particles);
+    particleCollection->AddParticles(particles);
 }
 
 int FluidSolver::SimpleBoxScenarioSmallerParticles::GetParticleCountX() {
