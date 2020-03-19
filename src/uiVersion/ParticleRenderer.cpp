@@ -222,8 +222,7 @@ void ParticleRenderer::setParticleCollection(FluidSolver::IParticleCollection *p
     this->ParticleCollection = particleCollection;
     // delete old and create new vertex array
     delete particleVertexArray;
-    particleVertexArray = new ParticleVertexArray(
-            dynamic_cast<FluidSolver::StripedParticleCollection *>(particleCollection));
+    particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(particleCollection);
 }
 
 FluidSolver::IParticleCollection *ParticleRenderer::getParticleCollection() {
