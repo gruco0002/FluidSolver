@@ -1,7 +1,3 @@
-//
-// Created by corbi on 24.04.2019.
-//
-
 #ifndef FLUIDSOLVER_IKERNEL_HPP
 #define FLUIDSOLVER_IKERNEL_HPP
 

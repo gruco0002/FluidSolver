@@ -1,7 +1,3 @@
-//
-// Created by corbi on 09.07.2019.
-//
-
 #include "MultipleHoleScenario.hpp"
 #include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>

@@ -1,7 +1,3 @@
-//
-// Created by Corbinian Gruber on 19.12.19.
-//
-
 #include "ContinousVisualizerOpenGL.hpp"
 
 void ContinousVisualizerOpenGL::AfterRender(std::vector<Color> &data) {

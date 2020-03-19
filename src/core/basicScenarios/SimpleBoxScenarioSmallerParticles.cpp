@@ -1,7 +1,3 @@
-//
-// Created by corbi on 25.11.2019.
-//
-
 #include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include "SimpleBoxScenarioSmallerParticles.hpp"

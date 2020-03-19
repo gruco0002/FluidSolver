@@ -1,8 +1,4 @@
 #include "Window.hpp"
-//
-// Created by corbi on 16.04.2019.
-//
-
 #include "Window.hpp"
 #include "EngineException.hpp"
 

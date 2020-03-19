@@ -1,7 +1,3 @@
-//
-// Created by corbi on 04.01.2020.
-//
-
 #ifndef FLUIDSOLVER_IOPENGLVISUALIZER_HPP
 #define FLUIDSOLVER_IOPENGLVISUALIZER_HPP
 

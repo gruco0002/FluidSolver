@@ -1,7 +1,3 @@
-//
-// Created by corbi on 24.04.2019.
-//
-
 #ifndef FLUIDSOLVER_PARTICLERENDERER_HPP
 #define FLUIDSOLVER_PARTICLERENDERER_HPP
 

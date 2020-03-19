@@ -1,7 +1,3 @@
-//
-// Created by corbi on 17.04.2019.
-//
-
 #ifndef FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP
 #define FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP
 

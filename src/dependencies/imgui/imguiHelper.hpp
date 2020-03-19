@@ -1,7 +1,3 @@
-//
-// Created by corbi on 03.01.2020.
-//
-
 #ifndef IMGUI_IMGUIHELPER_HPP
 #define IMGUI_IMGUIHELPER_HPP
 

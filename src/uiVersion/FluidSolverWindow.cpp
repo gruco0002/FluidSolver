@@ -1,9 +1,5 @@
 #include "FluidSolverWindow.hpp"
 #include "FluidSolverWindow.hpp"
-//
-// Created by corbi on 17.04.2019.
-//
-
 #include "FluidSolverWindow.hpp"
 
 #include <glad/glad.h>

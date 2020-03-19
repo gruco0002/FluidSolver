@@ -1,7 +1,3 @@
-//
-// Created by corbi on 20.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_TEXTRENDERER_HPP
 #define CPPGUI_DEMO_TEXTRENDERER_HPP
 

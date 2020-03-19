@@ -1,7 +1,3 @@
-//
-// Created by corbi on 25.04.2019.
-//
-
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include "gtest/gtest.h"
 

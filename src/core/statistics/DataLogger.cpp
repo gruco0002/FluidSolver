@@ -1,7 +1,3 @@
-//
-// Created by corbi on 28.05.2019.
-//
-
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include "DataLogger.hpp"
 

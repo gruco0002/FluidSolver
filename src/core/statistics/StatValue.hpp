@@ -1,7 +1,3 @@
-//
-// Created by corbi on 08.01.2020.
-//
-
 #ifndef FLUIDSOLVER_STATVALUE_HPP
 #define FLUIDSOLVER_STATVALUE_HPP
 

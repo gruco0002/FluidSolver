@@ -1,7 +1,3 @@
-//
-// Created by corbi on 09.01.2020.
-//
-
 #include "CachedStatValue.hpp"
 
 FluidSolver::CachedStatValue::CachedStatValue(FluidSolver::StatValue *statValue) {

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 24.04.2019.
-//
-
 #include <cstdint>
 #include <algorithm>
 #include <chrono>

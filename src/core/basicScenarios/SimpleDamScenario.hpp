@@ -1,7 +1,3 @@
-//
-// Created by corbi on 28.05.2019.
-//
-
 #ifndef FLUIDSOLVER_SIMPLEDAMSCENARIO_HPP
 #define FLUIDSOLVER_SIMPLEDAMSCENARIO_HPP
 

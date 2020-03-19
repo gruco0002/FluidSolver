@@ -1,8 +1,3 @@
-//
-// Created by corbi on 18.12.2019.
-//
-
-
 #include "ContinousVisualizer.hpp"
 
 void FluidSolver::ContinousVisualizer::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {

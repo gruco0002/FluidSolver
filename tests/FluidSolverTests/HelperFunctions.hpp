@@ -1,7 +1,3 @@
-//
-// Created by gruberc on 20.05.19.
-//
-
 #ifndef FLUIDSOLVER_HELPERFUNCTIONS_HPP
 #define FLUIDSOLVER_HELPERFUNCTIONS_HPP
 

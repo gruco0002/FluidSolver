@@ -1,7 +1,3 @@
-//
-// Created by corbi on 19.04.2019.
-//
-
 #include "../EngineException.hpp"
 #include "Enums.hpp"
 

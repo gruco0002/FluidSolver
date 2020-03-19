@@ -1,7 +1,3 @@
-//
-// Created by corbi on 06.06.2019.
-//
-
 #ifndef FLUIDSOLVER_DEATHBOX_HPP
 #define FLUIDSOLVER_DEATHBOX_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 19.11.2019.
-//
-
 #ifndef CPPGUI_UNIFORMBUFFER_HPP
 #define CPPGUI_UNIFORMBUFFER_HPP
 

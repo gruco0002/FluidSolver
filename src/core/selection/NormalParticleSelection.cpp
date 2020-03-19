@@ -1,7 +1,3 @@
-//
-// Created by corbi on 08.01.2020.
-//
-
 #include "NormalParticleSelection.hpp"
 
 bool FluidSolver::NormalParticleSelection::IsParticleSelected(uint32_t particleIndex,

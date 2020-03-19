@@ -1,7 +1,3 @@
-//
-// Created by corbi on 05.01.2020.
-//
-
 #include "CachedStatisticCollector.hpp"
 #include "CachedStatValue.hpp"
 

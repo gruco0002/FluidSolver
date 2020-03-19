@@ -1,7 +1,3 @@
-//
-// Created by corbi on 20.11.2019.
-//
-
 #include <iostream>
 #include <algorithm>
 #include <chrono>

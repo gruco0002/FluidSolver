@@ -1,7 +1,3 @@
-//
-// Created by corbi on 06.06.2019.
-//
-
 #include "SpawnArea.hpp"
 
 void FluidSolver::SpawnArea::ModifySimulation(FluidSolver::IParticleCollection *collection, SimulationInfo &info) {

@@ -1,7 +1,3 @@
-//
-// Created by gruberc on 24.04.19.
-//
-
 #ifndef FLUIDSOLVER_IPARTICLECOLLECTION_HPP
 #define FLUIDSOLVER_IPARTICLECOLLECTION_HPP
 

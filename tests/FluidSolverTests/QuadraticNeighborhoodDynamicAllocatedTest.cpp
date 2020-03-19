@@ -1,7 +1,3 @@
-//
-// Created by gruberc on 20.05.19.
-//
-
 #include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 #include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
 #include <libraries/glm/gtx/matrix_transform_2d.hpp>

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 17.04.2019.
-//
-
 #include "../EngineException.hpp"
 #include <fstream>
 #include <iostream>

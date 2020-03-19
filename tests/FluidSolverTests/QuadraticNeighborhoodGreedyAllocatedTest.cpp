@@ -1,7 +1,3 @@
-//
-// Created by Corbinian Gruber on 2019-04-29.
-//
-
 #include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
 #include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp>
 #include <libraries/glm/gtx/matrix_transform_2d.hpp>

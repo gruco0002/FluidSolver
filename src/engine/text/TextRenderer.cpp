@@ -1,7 +1,3 @@
-//
-// Created by corbi on 20.04.2019.
-//
-
 #include "../EngineException.hpp"
 #include "TextRenderer.hpp"
 #include <libraries/glm/gtc/matrix_transform.hpp>

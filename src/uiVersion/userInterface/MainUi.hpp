@@ -1,7 +1,3 @@
-//
-// Created by corbi on 03.01.2020.
-//
-
 #ifndef FLUIDSOLVER_MAINUI_HPP
 #define FLUIDSOLVER_MAINUI_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 19.04.2019.
-//
-
 #include "gtest/gtest.h"
 
 #include "uiVersion/FluidSolverWindow.hpp"

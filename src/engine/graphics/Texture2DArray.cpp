@@ -1,7 +1,3 @@
-//
-// Created by corbi on 19.11.2019.
-//
-
 #include <engine/EngineException.hpp>
 #include "Texture2DArray.hpp"
 

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 22.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_RECTANGLERENDERER_HPP
 #define CPPGUI_DEMO_RECTANGLERENDERER_HPP
 

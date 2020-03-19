@@ -1,8 +1,3 @@
-//
-// Created by gruberc on 20.05.19.
-//
-
-
 #include "HelperFunctions.hpp"
 
 std::vector<glm::vec2> GetSampleGrid(float start, float step, float stop) {

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 11.12.2019.
-//
-
 #include "SimpleBoxScenarioLargerParticles.hpp"
 
 #include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>

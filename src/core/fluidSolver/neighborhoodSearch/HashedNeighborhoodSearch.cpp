@@ -1,7 +1,3 @@
-//
-// Created by corbi on 21.05.2019.
-//
-
 #include <core/FluidSolverException.hpp>
 #include "HashedNeighborhoodSearch.hpp"
 

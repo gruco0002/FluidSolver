@@ -1,7 +1,3 @@
-//
-// Created by corbi on 22.04.2019.
-//
-
 #include "RectangleRenderer.hpp"
 #include <libraries/glm/gtc/matrix_transform.hpp>
 

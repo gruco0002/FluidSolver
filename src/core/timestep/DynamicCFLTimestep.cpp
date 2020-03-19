@@ -1,7 +1,3 @@
-//
-// Created by Corbinian Gruber on 12.12.19.
-//
-
 #include <algorithm>
 #include "DynamicCFLTimestep.hpp"
 

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 20.11.2019.
-//
-
 #ifndef FLUIDSOLVER_IEXTERNALFORCE_HPP
 #define FLUIDSOLVER_IEXTERNALFORCE_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by gruberc on 20.05.19.
-//
-
 #include "QuadraticNeighborhoodSearchDynamicAllocated.hpp"
 
 void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::FindNeighbors(uint32_t particleIndex,

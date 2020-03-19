@@ -1,7 +1,3 @@
-//
-// Created by corbi on 17.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_FRAMEBUFFER_HPP
 #define CPPGUI_DEMO_FRAMEBUFFER_HPP
 

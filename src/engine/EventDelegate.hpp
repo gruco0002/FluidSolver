@@ -1,7 +1,3 @@
-//
-// Created by corbi on 16.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_EVENTDELEGATE_HPP
 #define CPPGUI_DEMO_EVENTDELEGATE_HPP
 

@@ -1,7 +1,3 @@
-//
-// Created by corbi on 25.04.2019.
-//
-
 #include <core/interface/Constants.hpp>
 #include "CubicSplineKernel.hpp"
 #include <limits>

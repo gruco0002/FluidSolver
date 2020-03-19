@@ -1,7 +1,3 @@
-//
-// Created by gruberc on 17.05.19.
-//
-
 #include "QuadraticNeighborhoodSearchPreAllocated.hpp"
 #include "core/FluidSolverException.hpp"
 

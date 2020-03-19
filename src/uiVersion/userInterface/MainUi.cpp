@@ -1,7 +1,3 @@
-//
-// Created by corbi on 03.01.2020.
-//
-
 #include "MainUi.hpp"
 
 #include <uiVersion/FluidSolverWindow.hpp>

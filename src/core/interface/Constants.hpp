@@ -1,7 +1,3 @@
-//
-// Created by corbi on 25.04.2019.
-//
-
 #ifndef FLUIDSOLVER_CONSTANTS_HPP
 #define FLUIDSOLVER_CONSTANTS_HPP
 

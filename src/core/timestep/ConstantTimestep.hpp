@@ -1,7 +1,3 @@
-//
-// Created by Corbinian Gruber on 12.12.19.
-//
-
 #ifndef FLUIDSOLVER_CONSTANTTIMESTEP_HPP
 #define FLUIDSOLVER_CONSTANTTIMESTEP_HPP
 

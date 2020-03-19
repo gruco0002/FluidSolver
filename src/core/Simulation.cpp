@@ -1,7 +1,3 @@
-//
-// Created by corbi on 20.11.2019.
-//
-
 #include "Simulation.hpp"
 #include <algorithm>
 

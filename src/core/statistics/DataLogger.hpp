@@ -1,7 +1,3 @@
-//
-// Created by corbi on 28.05.2019.
-//
-
 #ifndef FLUIDSOLVER_DATALOGGER_HPP
 #define FLUIDSOLVER_DATALOGGER_HPP
 

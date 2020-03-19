@@ -1,7 +1,3 @@
-//
-// Created by corbi on 25.04.2019.
-//
-
 #ifndef FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 #define FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 

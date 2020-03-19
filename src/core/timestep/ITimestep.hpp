@@ -1,7 +1,3 @@
-//
-// Created by Corbinian Gruber on 12.12.19.
-//
-
 #ifndef FLUIDSOLVER_ITIMESTEP_HPP
 #define FLUIDSOLVER_ITIMESTEP_HPP
 

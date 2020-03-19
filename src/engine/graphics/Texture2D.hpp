@@ -1,7 +1,3 @@
-//
-// Created by corbi on 17.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_TEXTURE2D_HPP
 #define CPPGUI_DEMO_TEXTURE2D_HPP
 

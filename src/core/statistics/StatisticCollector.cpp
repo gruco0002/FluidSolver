@@ -1,7 +1,3 @@
-//
-// Created by corbi on 12.06.2019.
-//
-
 #include <algorithm>
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>

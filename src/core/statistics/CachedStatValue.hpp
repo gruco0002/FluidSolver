@@ -1,7 +1,3 @@
-//
-// Created by corbi on 09.01.2020.
-//
-
 #ifndef FLUIDSOLVER_CACHEDSTATVALUE_HPP
 #define FLUIDSOLVER_CACHEDSTATVALUE_HPP
 

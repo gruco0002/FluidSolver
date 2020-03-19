@@ -1,7 +1,3 @@
-//
-// Created by corbi on 06.06.2019.
-//
-
 #include "DeathBox.hpp"
 
 void FluidSolver::DeathBox::ModifySimulation(FluidSolver::IParticleCollection *collection, SimulationInfo &info) {

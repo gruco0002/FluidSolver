@@ -1,6 +1,3 @@
-//
-// Created by corbi on 28.05.2019.
-//
 #include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include "core/basicScenarios/Scenario.hpp"
 

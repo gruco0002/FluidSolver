@@ -1,7 +1,3 @@
-//
-// Created by corbi on 06.06.2019.
-//
-
 #include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include <core/simulationModifiers/SpawnArea.hpp>

@@ -1,7 +1,3 @@
-//
-// Created by gruco0002 on 28.10.2018.
-//
-
 #ifndef WORLDENGINE_FONT_HPP
 #define WORLDENGINE_FONT_HPP
 

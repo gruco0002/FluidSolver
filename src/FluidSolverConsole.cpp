@@ -1,7 +1,3 @@
-//
-// Created by corbi on 29.05.2019.
-//
-
 #include "FluidSolverConsole.hpp"
 #include "core/statistics/DataLogger.hpp"
 #include <iostream>

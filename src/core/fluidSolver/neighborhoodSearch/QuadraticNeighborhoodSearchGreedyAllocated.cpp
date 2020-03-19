@@ -1,7 +1,3 @@
-//
-// Created by corbi on 24.04.2019.
-//
-
 #include "QuadraticNeighborhoodSearchGreedyAllocated.hpp"
 
 void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::FindNeighbors(uint32_t particleIndex,

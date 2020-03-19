@@ -1,7 +1,3 @@
-//
-// Created by corbi on 19.04.2019.
-//
-
 #ifndef CPPGUI_DEMO_ENUMS_HPP
 #define CPPGUI_DEMO_ENUMS_HPP
 
