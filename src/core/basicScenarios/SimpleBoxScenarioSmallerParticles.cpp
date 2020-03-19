@@ -2,7 +2,7 @@
 // Created by corbi on 25.11.2019.
 //
 
-#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include "SimpleBoxScenarioSmallerParticles.hpp"
 
@@ -11,7 +11,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
     if (!this->ParticleCollectionTypeSupported(particleCollection))
         return;
 
-    auto coll = dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection);
+    auto coll = dynamic_cast<FluidSolver::ParticleCollection *>(particleCollection);
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
@@ -109,7 +109,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
         }
     }
 
-    coll->SetParticles(particles);
+    coll->AddParticles(particles);
 }
 
 int FluidSolver::SimpleBoxScenarioSmallerParticles::GetParticleCountX() {

@@ -248,3 +248,31 @@ float FluidSolver::ParticleCollection::GetDiagonalElement(uint32_t index) {
 void FluidSolver::ParticleCollection::SetDiagonalElement(uint32_t index, float value) {
     diagonalElementData[particleIndexToDataIndexMap[index]] = value;
 }
+
+ uint8_t *FluidSolver::ParticleCollection::TypeData() {
+    return typeData.data();
+}
+
+ glm::vec2 *FluidSolver::ParticleCollection::PositionData() {
+    return positionData.data();
+}
+
+ glm::vec2 *FluidSolver::ParticleCollection::VelocityData() {
+    return velocityData.data();
+}
+
+ glm::vec2 *FluidSolver::ParticleCollection::AccelerationData() {
+    return accelerationData.data();
+}
+
+ float *FluidSolver::ParticleCollection::MassData() {
+    return massData.data();
+}
+
+ float *FluidSolver::ParticleCollection::PressureData() {
+    return pressureData.data();
+}
+
+ float *FluidSolver::ParticleCollection::DensityData() {
+    return densityData.data();
+}

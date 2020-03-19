@@ -2,13 +2,13 @@
 // Created by corbi on 28.05.2019.
 //
 
-#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
 #include "HugeDamScenario.hpp"
 
 void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *particleCollection, float restDensity) {
     if (!this->ParticleCollectionTypeSupported(particleCollection))return;
 
-    auto coll = dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection);
+    auto coll = dynamic_cast<FluidSolver::ParticleCollection *>(particleCollection);
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
@@ -87,7 +87,7 @@ void FluidSolver::HugeDamScenario::ResetData(FluidSolver::IParticleCollection *p
         }
     }
 
-    coll->SetParticles(particles);
+    coll->AddParticles(particles);
 }
 
 int FluidSolver::HugeDamScenario::GetParticleCountX() {

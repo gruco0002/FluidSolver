@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
@@ -29,7 +29,7 @@ class ParticleVertexArray {
 
 public:
 
-    explicit ParticleVertexArray(FluidSolver::SimpleParticleCollection *simpleParticleCollection);
+    explicit ParticleVertexArray(FluidSolver::ParticleCollection *simpleParticleCollection);
 
     void Update(FluidSolver::IParticleSelection *particleSelection);
 
@@ -45,12 +45,19 @@ private:
 
     uint32_t particleCount = 0;
 
-    FluidSolver::SimpleParticleCollection *simpleParticleCollection = nullptr;
+    FluidSolver::ParticleCollection *simpleParticleCollection = nullptr;
 
     void Generate();
 
 
-    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle> *vertexBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *positionBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *velocityBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *accelerationBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<float> *massBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<float> *pressureBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<float> *densityBuffer = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<uint8_t> *typeBuffer = nullptr;
+
     Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
     Engine::Graphics::Buffer::VertexArray *vao = nullptr;
 

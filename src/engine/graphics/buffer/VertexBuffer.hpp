@@ -27,6 +27,8 @@ namespace Engine {
 
                 void UpdateData(T *data);
 
+                void UpdateData(T *data, size_t elementCount);
+
                 void SetData(std::vector<T> &data);
 
                 void SetData(T *data, size_t elementCount);
@@ -77,6 +79,13 @@ namespace Engine {
                 if (this->GetElementCount() != elementCount)
                     this->SetSize(elementCount);
                 UpdateData(data);
+            }
+
+            template<typename T>
+            void VertexBuffer<T>::UpdateData(T *data, size_t elementCount) {
+                if (this->GetElementCount() < elementCount)
+                    throw EngineException("Buffer Exception: Input size is too large correct");
+                Buffer::SetData((void *) data, 0, elementCount * GetElementSize());
             }
 
         }

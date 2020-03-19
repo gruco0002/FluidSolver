@@ -5,7 +5,6 @@
 #include <vector>
 #include <functional>
 #include "IParticleCollection.hpp"
-#include "SimpleParticleCollection.hpp"
 
 namespace FluidSolver {
     class ParticleCollection : public IParticleCollection {
@@ -50,6 +49,15 @@ namespace FluidSolver {
 
         size_t AddEmptyParticle();
 
+    public:
+
+         uint8_t * TypeData();
+         glm::vec2* PositionData();
+         glm::vec2* VelocityData();
+         glm::vec2* AccelerationData();
+         float * MassData();
+         float * PressureData();
+         float * DensityData();
 
     public:
 

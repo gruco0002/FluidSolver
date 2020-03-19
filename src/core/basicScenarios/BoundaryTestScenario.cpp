@@ -2,7 +2,7 @@
 // Created by corbi on 28.05.2019.
 //
 
-#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
 #include "BoundaryTestScenario.hpp"
 
 void
@@ -10,7 +10,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
 
     if (!this->ParticleCollectionTypeSupported(particleCollection))return;
 
-    auto coll = dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection);
+    auto coll = dynamic_cast<FluidSolver::ParticleCollection *>(particleCollection);
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
@@ -41,7 +41,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
     p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
     particles.push_back(p);
 
-    coll->SetParticles(particles);
+    coll->AddParticles(particles);
 
 }
 

@@ -2,7 +2,7 @@
 // Created by corbi on 06.06.2019.
 //
 
-#include <core/fluidSolver/particleCollection/SimpleParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include <core/simulationModifiers/SpawnArea.hpp>
 #include "BoxWithHoleScenario.hpp"
@@ -11,7 +11,7 @@ void
 FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *particleCollection, float restDensity) {
     if (!this->ParticleCollectionTypeSupported(particleCollection))return;
 
-    auto coll = dynamic_cast<FluidSolver::SimpleParticleCollection *>(particleCollection);
+    auto coll = dynamic_cast<FluidSolver::ParticleCollection *>(particleCollection);
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
@@ -97,7 +97,7 @@ FluidSolver::BoxWithHoleScenario::ResetData(FluidSolver::IParticleCollection *pa
         }
     }
 
-    coll->SetParticles(particles);
+    coll->AddParticles(particles);
 }
 
 int FluidSolver::BoxWithHoleScenario::GetParticleCountX() {
