@@ -214,7 +214,8 @@ void ParticleVertexArrayForStripedParticleCollection::OnUpdate() {
         // the buffer is too small, set the data to force a resize
         positionBuffer->SetData(stripedParticleCollection->PositionData(), stripedParticleCollection->GetSize());
         velocityBuffer->SetData(stripedParticleCollection->VelocityData(), stripedParticleCollection->GetSize());
-        accelerationBuffer->SetData(stripedParticleCollection->AccelerationData(), stripedParticleCollection->GetSize());
+        accelerationBuffer->SetData(stripedParticleCollection->AccelerationData(),
+                                    stripedParticleCollection->GetSize());
 
         massBuffer->SetData(stripedParticleCollection->MassData(), stripedParticleCollection->GetSize());
         densityBuffer->SetData(stripedParticleCollection->DensityData(), stripedParticleCollection->GetSize());
@@ -222,4 +223,109 @@ void ParticleVertexArrayForStripedParticleCollection::OnUpdate() {
 
         typeBuffer->SetData(stripedParticleCollection->TypeData(), stripedParticleCollection->GetSize());
     }
+}
+
+ParticleVertexArrayForCompactParticleCollection::~ParticleVertexArrayForCompactParticleCollection() {
+
+}
+
+void ParticleVertexArrayForCompactParticleCollection::OnUpdate() {
+    if (vertexBuffer->GetElementCount() >= this->GetVaoParticleCount()) {
+        // the size of the buffer is large enough for the particles: Update the data because it is faster
+        vertexBuffer->UpdateData(compactParticleCollection->GetData(), compactParticleCollection->GetSize());
+    } else {
+        // the buffer is too small, set the data to force a resize
+        vertexBuffer->SetData(compactParticleCollection->GetData(), compactParticleCollection->GetSize());
+    }
+}
+
+void ParticleVertexArrayForCompactParticleCollection::OnGenerate() {
+    // create particle buffer
+    vertexBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle>(
+            compactParticleCollection->GetData(), compactParticleCollection->GetSize(),
+            Engine::Graphics::Buffer::Buffer::DataModeDynamic);
+
+    // create vertex array object
+    vao = new Engine::Graphics::Buffer::VertexArray({
+
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    GetIndexBuffer()),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    0, 2, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Position),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    1, 2, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Velocity),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    2, 2, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Acceleration),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    3, 1, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Mass),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    4, 1, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Pressure),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    5, 1, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Density),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeFloat
+
+                                                            ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    vertexBuffer,
+                                                                    6, 1, offsetof(
+                                                                            FluidSolver::FluidParticle,
+                                                                            Type),
+                                                                    sizeof(FluidSolver::FluidParticle),
+                                                                    Engine::ComponentTypeUnsignedByte
+                                                            ),
+                                                            Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                    GetSelectionBuffer(),
+                                                                    7, 1, 0, sizeof(int8_t),
+                                                                    Engine::ComponentTypeByte
+                                                            )
+
+                                                    });
+
+}
+
+ParticleVertexArrayForCompactParticleCollection::ParticleVertexArrayForCompactParticleCollection(
+        FluidSolver::CompactParticleCollection *compactParticleCollection) : ParticleVertexArray(
+        compactParticleCollection) {
+    this->compactParticleCollection = compactParticleCollection;
 }

@@ -144,3 +144,7 @@ void FluidSolver::CompactParticleCollection::SwapElements(size_t i, size_t j) {
 
     std::swap(particleData[i], particleData[j]);
 }
+
+FluidSolver::FluidParticle *FluidSolver::CompactParticleCollection::GetData() {
+    return particleData.data();
+}

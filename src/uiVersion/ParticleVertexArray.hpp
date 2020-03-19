@@ -7,6 +7,7 @@
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
 #include <core/selection/IParticleSelection.hpp>
+#include <core/fluidSolver/particleCollection/CompactParticleCollection.hpp>
 
 /**
  * The particle vertex array creates a vertex array object (vao) of point sprites for rendering particles with opengl.
@@ -135,10 +136,24 @@ private:
 
 };
 
+/**
+ * A particle vertex array for the compact particle collection.
+ */
+class ParticleVertexArrayForCompactParticleCollection : public ParticleVertexArray {
 
-class ParticleVertexArrayForCompactParticleCollection {
+public:
+    explicit  ParticleVertexArrayForCompactParticleCollection(FluidSolver::CompactParticleCollection* compactParticleCollection);
 
+    ~ParticleVertexArrayForCompactParticleCollection() override;
 
+protected:
+    void OnUpdate() override;
+
+    void OnGenerate() override;
+
+private:
+    FluidSolver::CompactParticleCollection* compactParticleCollection = nullptr;
+    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle> *vertexBuffer = nullptr;
 };
 
 /**

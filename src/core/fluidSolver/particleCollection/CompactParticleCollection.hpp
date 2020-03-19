@@ -76,6 +76,8 @@ namespace FluidSolver {
 
         void SetDiagonalElement(uint32_t index, float value) override;
 
+        FluidParticle* GetData();
+
     protected:
         uint64_t GetSortKey(size_t index) override;
 
