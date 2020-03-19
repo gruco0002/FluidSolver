@@ -1,13 +1,13 @@
 
-#ifndef FLUIDSOLVER_PARTICLECOLLECTION_HPP
-#define FLUIDSOLVER_PARTICLECOLLECTION_HPP
+#ifndef FLUIDSOLVER_STRIPEDPARTICLECOLLECTION_HPP
+#define FLUIDSOLVER_STRIPEDPARTICLECOLLECTION_HPP
 
 #include <vector>
 #include <functional>
 #include "IParticleCollection.hpp"
 
 namespace FluidSolver {
-    class ParticleCollection : public IParticleCollection {
+    class StripedParticleCollection : public IParticleCollection {
 
     public:
         typedef std::function<uint64_t(const size_t)> sortKeyFunction_t;
@@ -91,4 +91,4 @@ namespace FluidSolver {
 }
 
 
-#endif //FLUIDSOLVER_PARTICLECOLLECTION_HPP
+#endif //FLUIDSOLVER_STRIPEDPARTICLECOLLECTION_HPP

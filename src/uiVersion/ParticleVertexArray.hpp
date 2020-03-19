@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
@@ -29,7 +29,7 @@ class ParticleVertexArray {
 
 public:
 
-    explicit ParticleVertexArray(FluidSolver::ParticleCollection *simpleParticleCollection);
+    explicit ParticleVertexArray(FluidSolver::StripedParticleCollection *simpleParticleCollection);
 
     void Update(FluidSolver::IParticleSelection *particleSelection);
 
@@ -45,7 +45,7 @@ private:
 
     uint32_t particleCount = 0;
 
-    FluidSolver::ParticleCollection *simpleParticleCollection = nullptr;
+    FluidSolver::StripedParticleCollection *simpleParticleCollection = nullptr;
 
     void Generate();
 

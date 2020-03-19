@@ -3,7 +3,7 @@
 //
 
 #include "MultipleHoleScenario.hpp"
-#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <core/simulationModifiers/DeathBox.hpp>
 #include <core/simulationModifiers/SpawnArea.hpp>
 
@@ -133,7 +133,7 @@ FluidSolver::MultipleHoleScenario::ResetData(FluidSolver::IParticleCollection *p
     }
 
     // set particles
-    auto coll = dynamic_cast<FluidSolver::ParticleCollection *>(particleCollection);
+    auto coll = dynamic_cast<FluidSolver::StripedParticleCollection *>(particleCollection);
     coll->AddParticles(particles);
 }
 

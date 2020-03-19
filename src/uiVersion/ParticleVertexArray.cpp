@@ -4,7 +4,7 @@
 
 #include "ParticleVertexArray.hpp"
 
-ParticleVertexArray::ParticleVertexArray(FluidSolver::ParticleCollection *simpleParticleCollection) {
+ParticleVertexArray::ParticleVertexArray(FluidSolver::StripedParticleCollection *simpleParticleCollection) {
     this->simpleParticleCollection = simpleParticleCollection;
     Generate();
 }

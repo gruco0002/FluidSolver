@@ -6,7 +6,7 @@
 #define FLUIDSOLVER_MULTIPLEHOLESCENARIO_HPP
 
 #include "Scenario.hpp"
-#include <core/fluidSolver/particleCollection/ParticleCollection.hpp>
+#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <string>
 
 namespace FluidSolver {
