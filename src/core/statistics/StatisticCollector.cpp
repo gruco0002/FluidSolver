@@ -80,7 +80,7 @@ void StatisticCollector::CalculateData() {
         auto density = particleCollection->GetDensity(i);
         auto diagonal = particleCollection->GetDiagonalElement(i);
 
-        if (type != IParticleCollection::ParticleTypeDead) {
+        if (type != ParticleTypeDead) {
             // potential energy
             *calculatedPotentialEnergy += (position.y - zeroHeight) * mass * Gravity;
 
@@ -91,7 +91,7 @@ void StatisticCollector::CalculateData() {
             calculatedMaximumVelocity->Max(glm::length(velocity));
         }
 
-        if (type == IParticleCollection::ParticleTypeNormal) {
+        if (type == ParticleTypeNormal) {
             // density
             if (density >= RestDensity) {
                 *calculatedAverageDensity += density;
@@ -104,11 +104,11 @@ void StatisticCollector::CalculateData() {
         }
 
         // counter
-        if (type == IParticleCollection::ParticleTypeNormal) {
+        if (type == ParticleTypeNormal) {
             *calculatedNormalParticleCount += 1u;
-        } else if (type == IParticleCollection::ParticleTypeBoundary) {
+        } else if (type == ParticleTypeBoundary) {
             *calculatedBoundaryParticleCount += 1u;
-        } else if (type == IParticleCollection::ParticleTypeDead) {
+        } else if (type == ParticleTypeDead) {
             *calculatedDeadParticleCount += 1u;
         }
 

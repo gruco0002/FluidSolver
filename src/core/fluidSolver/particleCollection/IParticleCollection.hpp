@@ -9,6 +9,13 @@
 
 namespace FluidSolver {
 
+    enum ParticleType {
+        ParticleTypeNormal = 0,
+        ParticleTypeBoundary = 1,
+        ParticleTypeDead = 2,
+    };
+
+
     struct FluidParticle {
         glm::vec2 Position;
         glm::vec2 Velocity;
@@ -31,15 +38,10 @@ namespace FluidSolver {
 
     };
 
-
     class IParticleCollection {
 
     public:
-        enum ParticleType {
-            ParticleTypeNormal = 0,
-            ParticleTypeBoundary = 1,
-            ParticleTypeDead = 2,
-        };
+
 
 
         virtual float GetMass(uint32_t index) = 0;

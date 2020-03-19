@@ -9,10 +9,10 @@ void FluidSolver::DeathBox::ModifySimulation(FluidSolver::IParticleCollection *c
     #pragma omp parallel for
     for (int64_t  i = 0; i < collection->GetSize(); i++) {
         auto type = collection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeBoundary) {
+        if (type == ParticleTypeBoundary) {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
-        if (type == IParticleCollection::ParticleTypeDead) {
+        if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
         }
 
@@ -21,12 +21,12 @@ void FluidSolver::DeathBox::ModifySimulation(FluidSolver::IParticleCollection *c
         if (position.y <= top && position.y >= bottom && position.x >= left && position.x <= right) {
             // inside
             if (!outside) {
-                collection->SetParticleType(i, IParticleCollection::ParticleTypeDead);
+                collection->SetParticleType(i, ParticleTypeDead);
             }
         } else {
             // outside
             if (outside) {
-                collection->SetParticleType(i, IParticleCollection::ParticleTypeDead);
+                collection->SetParticleType(i, ParticleTypeDead);
             }
         }
     }

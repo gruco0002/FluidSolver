@@ -25,7 +25,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
             p.Pressure = 0.0f;
             p.Density = restDensity;
             p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+            p.Type = FluidSolver::ParticleTypeBoundary;
             particles.push_back(p);
         }
     }
@@ -38,7 +38,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *p
     p.Pressure = 0.0f;
     p.Density = restDensity;
     p.Mass = mass;
-    p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+    p.Type = FluidSolver::ParticleTypeNormal;
     particles.push_back(p);
 
     coll->AddParticles(particles);

@@ -25,10 +25,10 @@ namespace FluidSolver {
 #pragma omp parallel for
         for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
-            if (type == IParticleCollection::ParticleTypeBoundary) {
+            if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
@@ -44,10 +44,10 @@ namespace FluidSolver {
 #pragma omp parallel for
         for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
-            if (type == IParticleCollection::ParticleTypeBoundary) {
+            if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
@@ -61,10 +61,10 @@ namespace FluidSolver {
 #pragma omp parallel for
         for (int64_t i = 0; i < particleCollection->GetSize(); i++) {
             auto type = particleCollection->GetParticleType(i);
-            if (type == IParticleCollection::ParticleTypeBoundary) {
+            if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
@@ -95,7 +95,7 @@ namespace FluidSolver {
         float density = 0.0f;
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
@@ -128,11 +128,11 @@ namespace FluidSolver {
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
-            if (type == IParticleCollection::ParticleTypeBoundary) {
+            if (type == ParticleTypeBoundary) {
                 // simple mirroring is used to calculate the pressure acceleration with a boundary particle
                 glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
                 pressureAcceleration +=
@@ -166,7 +166,7 @@ namespace FluidSolver {
         glm::vec2 tmp = glm::vec2(0.0f);
         for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
             auto type = particleCollection->GetParticleType(neighbor);
-            if (type == IParticleCollection::ParticleTypeDead) {
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 

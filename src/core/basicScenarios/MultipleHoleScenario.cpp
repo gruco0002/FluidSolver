@@ -180,7 +180,7 @@ FluidSolver::MultipleHoleScenario::add(std::vector<FluidSolver::FluidParticle> *
     p.Pressure = 0.0f;
     p.Density = restDensity;
     p.Mass = mass;
-    p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+    p.Type = FluidSolver::ParticleTypeNormal;
 
     for (int i = 0; i < factor; i++) {
         for (int j = 0; j < factor; j++) {
@@ -206,7 +206,7 @@ void FluidSolver::MultipleHoleScenario::addBoundary(
     p.Pressure = 0.0f;
     p.Density = restDensity;
     p.Mass = mass;
-    p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+    p.Type = FluidSolver::ParticleTypeBoundary;
 
 
     for (int i = 0; i < factor; i++) {
@@ -235,7 +235,7 @@ FluidSolver::MultipleHoleScenario::addDead(std::vector<FluidSolver::FluidParticl
     p.Pressure = 0.0f;
     p.Density = restDensity;
     p.Mass = mass;
-    p.Type = FluidSolver::IParticleCollection::ParticleTypeDead;
+    p.Type = FluidSolver::ParticleTypeDead;
 
     for (int i = 0; i < factor; i++) {
         particles->push_back(p);

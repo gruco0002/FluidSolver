@@ -495,7 +495,7 @@ void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::Se
     float dist = simulation->getParticleSize();
     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
         auto particleType = simulation->getParticleCollection()->GetParticleType(i);
-        if (particleType == FluidSolver::IParticleCollection::ParticleTypeDead)
+        if (particleType == FluidSolver::ParticleTypeDead)
             continue;
 
         if (custom != nullptr) {
@@ -541,7 +541,7 @@ FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, Flu
     std::vector<uint32_t> particles;
     for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
         auto particleType = simulation->getParticleCollection()->GetParticleType(i);
-        if (particleType == FluidSolver::IParticleCollection::ParticleTypeDead)
+        if (particleType == FluidSolver::ParticleTypeDead)
             continue;
 
 

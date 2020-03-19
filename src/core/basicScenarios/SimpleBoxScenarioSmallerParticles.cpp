@@ -26,7 +26,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
 
         for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
             for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
@@ -49,7 +49,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
         continue;
         for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
             for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {
@@ -71,7 +71,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
 
         continue;
         for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
@@ -98,7 +98,7 @@ void FluidSolver::SimpleBoxScenarioSmallerParticles::ResetData(FluidSolver::IPar
             p.Pressure = 0.0f;
             p.Density = restDensity;
             p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+            p.Type = FluidSolver::ParticleTypeNormal;
 
             // for (float offsetX = 0.0f; offsetX < 1.0f; offsetX += Size) {
             //   for (float offsetY = 0.0f; offsetY < 1.0f; offsetY += Size) {

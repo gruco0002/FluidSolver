@@ -11,7 +11,7 @@ FluidSolver::INeighborhoodSearch::FindNeighbors(FluidSolver::IParticleCollection
 #pragma omp parallel for
     for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
         auto type = particleCollection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeBoundary || type == IParticleCollection::ParticleTypeDead) {
+        if (type == ParticleTypeBoundary || type == ParticleTypeDead) {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
 

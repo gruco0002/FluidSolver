@@ -26,7 +26,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::IParticleCollection *part
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
 
         p.Position = glm::vec2((float) x, (float) -14);
         particles.push_back(p);
@@ -45,7 +45,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::IParticleCollection *part
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
 
         p.Position = glm::vec2((float) -21, (float) y);
         particles.push_back(p);
@@ -63,7 +63,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::IParticleCollection *part
         p.Pressure = 0.0f;
         p.Density = restDensity;
         p.Mass = mass;
-        p.Type = FluidSolver::IParticleCollection::ParticleTypeBoundary;
+        p.Type = FluidSolver::ParticleTypeBoundary;
 
         p.Position = glm::vec2((float) 10, (float) y);
         particles.push_back(p);
@@ -85,7 +85,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::IParticleCollection *part
             p.Pressure = 0.0f;
             p.Density = restDensity;
             p.Mass = mass;
-            p.Type = FluidSolver::IParticleCollection::ParticleTypeNormal;
+            p.Type = FluidSolver::ParticleTypeNormal;
             particles.push_back(p);
         }
     }

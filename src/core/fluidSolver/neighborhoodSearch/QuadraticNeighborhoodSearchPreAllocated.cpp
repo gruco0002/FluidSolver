@@ -20,7 +20,7 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
     #pragma omp parallel for
     for (int64_t  i = 0; i < particleCount; i++) {
 
-        if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary) {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
 
@@ -61,7 +61,7 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors(
     #pragma omp parallel for
     for (int64_t  i = 0; i < particleCount; i++) {
 
-        if (particleCollection->GetParticleType(i) == IParticleCollection::ParticleTypeBoundary) {
+        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary) {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
 

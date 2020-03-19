@@ -19,7 +19,7 @@ void FluidSolver::SpawnArea::ModifySimulation(FluidSolver::IParticleCollection *
     // no parallelisation, since we do not know if the random generator supports it
     for (uint32_t i = 0; i < collection->GetSize(); i++) {
         auto type = collection->GetParticleType(i);
-        if (type != IParticleCollection::ParticleTypeDead) {
+        if (type != ParticleTypeDead) {
             continue; // only dead particles should be processed
         }
 
@@ -37,7 +37,7 @@ void FluidSolver::SpawnArea::ModifySimulation(FluidSolver::IParticleCollection *
 
 
         // update data, reset stuff
-        collection->SetParticleType(i, IParticleCollection::ParticleTypeNormal);
+        collection->SetParticleType(i, ParticleTypeNormal);
         collection->SetPosition(i, position);
         collection->SetVelocity(i, initialVelocity);
         collection->SetAcceleration(i, glm::vec2(0.0f));
@@ -72,7 +72,7 @@ bool FluidSolver::SpawnArea::IsColliding(glm::vec2 position, IParticleCollection
     #pragma omp parallel for
     for (int64_t  i = 0; i < collection->GetSize(); i++) {
         auto type = collection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeDead) {
+        if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
         }
 

@@ -25,7 +25,7 @@ float FluidSolver::DynamicCFLTimestep::CalculateMaximumVelocity() {
 
     for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
         auto type = particleCollection->GetParticleType(i);
-        if (type == IParticleCollection::ParticleTypeDead)
+        if (type == ParticleTypeDead)
             continue;
         auto velocity = particleCollection->GetVelocity(i);
         maximum = std::max(maximum, (float)glm::length(velocity));

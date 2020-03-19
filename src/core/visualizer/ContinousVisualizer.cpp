@@ -89,21 +89,21 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
 
     for (uint32_t neighbor : neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);
-        if (type == IParticleCollection::ParticleTypeDead) {
+        if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
         }
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
         float neighborMass = ParticleCollection->GetMass(neighbor);
         float densityContribution = neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
 
-        if (type == IParticleCollection::ParticleTypeNormal) {
+        if (type == ParticleTypeNormal) {
             normalDensity += densityContribution;
             if (maxNormalDensityContribution <= densityContribution) {
                 maxNormalDensityContribution = densityContribution;
                 maxNormalDensityContributerIsSelected = particleSelection->IsParticleSelected(neighbor,
                                                                                               ParticleCollection);
             }
-        } else if (type == IParticleCollection::ParticleTypeBoundary) {
+        } else if (type == ParticleTypeBoundary) {
             boundaryDensity += densityContribution;
             if (maxBoundaryDensityContribution <= densityContribution) {
                 maxBoundaryDensityContribution = densityContribution;

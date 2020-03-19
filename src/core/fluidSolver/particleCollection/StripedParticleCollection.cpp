@@ -208,12 +208,12 @@ void FluidSolver::StripedParticleCollection::SetDensity(uint32_t index, float va
     densityData[particleIndexToDataIndexMap[index]] = value;
 }
 
-FluidSolver::IParticleCollection::ParticleType FluidSolver::StripedParticleCollection::GetParticleType(uint32_t index) {
-    return (FluidSolver::IParticleCollection::ParticleType) typeData[particleIndexToDataIndexMap[index]];
+FluidSolver::ParticleType FluidSolver::StripedParticleCollection::GetParticleType(uint32_t index) {
+    return (FluidSolver::ParticleType) typeData[particleIndexToDataIndexMap[index]];
 }
 
 void
-FluidSolver::StripedParticleCollection::SetParticleType(uint32_t index, FluidSolver::IParticleCollection::ParticleType value) {
+FluidSolver::StripedParticleCollection::SetParticleType(uint32_t index, FluidSolver::ParticleType value) {
     typeData[particleIndexToDataIndexMap[index]] = value;
 }
 
