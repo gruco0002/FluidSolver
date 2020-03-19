@@ -226,7 +226,7 @@ void ParticleVertexArrayForStripedParticleCollection::OnUpdate() {
 }
 
 ParticleVertexArrayForCompactParticleCollection::~ParticleVertexArrayForCompactParticleCollection() {
-
+    delete vertexBuffer;
 }
 
 void ParticleVertexArrayForCompactParticleCollection::OnUpdate() {
