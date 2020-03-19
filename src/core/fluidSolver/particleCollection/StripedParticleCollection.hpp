@@ -7,6 +7,12 @@
 #include "IParticleCollection.hpp"
 
 namespace FluidSolver {
+
+    /**
+     * The striped particle collection manages its data as separate arrays and is therefore called striped.
+     * Each particle attribute is organized in its own dynamic array.
+     * For more information see FluidSolver::IParticleCollection
+     */
     class StripedParticleCollection : public IParticleCollection {
 
     private:
