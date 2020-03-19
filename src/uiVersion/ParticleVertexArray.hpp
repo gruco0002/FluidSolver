@@ -15,6 +15,8 @@
  * This abstract class delivers a base construct for deriving special classes that can deal with different data layouts
  * of the particle collection for more performance.
  *
+ * The derived class has to call the Generate() function in its constructor!
+ *
  * ParticleVertexArray::OnGenerate is called once to allow the derived class to generate its own buffers and to generate
  * the vao with its buffer bindings. The index and selection buffer is created beforehand and can be used and bound to
  * the vao.
@@ -125,7 +127,7 @@ protected:
 
 private:
     uint32_t vaoParticleCount = 0;
-    FluidSolver::IParticleCollection *simpleParticleCollection = nullptr;
+    FluidSolver::IParticleCollection *particleCollection = nullptr;
 
     std::vector<int8_t> selectionData;
 
@@ -142,7 +144,8 @@ private:
 class ParticleVertexArrayForCompactParticleCollection : public ParticleVertexArray {
 
 public:
-    explicit  ParticleVertexArrayForCompactParticleCollection(FluidSolver::CompactParticleCollection* compactParticleCollection);
+    explicit ParticleVertexArrayForCompactParticleCollection(
+            FluidSolver::CompactParticleCollection *compactParticleCollection);
 
     ~ParticleVertexArrayForCompactParticleCollection() override;
 
@@ -152,7 +155,7 @@ protected:
     void OnGenerate() override;
 
 private:
-    FluidSolver::CompactParticleCollection* compactParticleCollection = nullptr;
+    FluidSolver::CompactParticleCollection *compactParticleCollection = nullptr;
     Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle> *vertexBuffer = nullptr;
 };
 

@@ -1,12 +1,13 @@
+#include <stdexcept>
 #include "ParticleVertexArray.hpp"
 
 ParticleVertexArray::ParticleVertexArray(FluidSolver::IParticleCollection *particleCollection) {
-    this->simpleParticleCollection = particleCollection;
+    this->particleCollection = particleCollection;
 }
 
 void ParticleVertexArray::Update(FluidSolver::IParticleSelection *particleSelection) {
     // update the internal particle count
-    this->vaoParticleCount = simpleParticleCollection->GetSize();
+    this->vaoParticleCount = particleCollection->GetSize();
 
     // first update the selection data, then update the buffer
     UpdateSelectionData(particleSelection);
@@ -37,7 +38,7 @@ void ParticleVertexArray::Draw() {
 
 void ParticleVertexArray::Generate() {
     // update the particle count variable
-    this->vaoParticleCount = simpleParticleCollection->GetSize();
+    this->vaoParticleCount = particleCollection->GetSize();
 
     // create indices
     std::vector<uint32_t> indices(this->vaoParticleCount);
@@ -65,12 +66,12 @@ ParticleVertexArray::~ParticleVertexArray() {
 }
 
 void ParticleVertexArray::UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection) {
-    size_t size = simpleParticleCollection->GetSize();
+    size_t size = particleCollection->GetSize();
     selectionData.resize(size);
 
 #pragma omp parallel for
     for (int64_t particleIndex = 0; particleIndex < size; particleIndex++) {
-        bool selected = particleSelection->IsParticleSelected(particleIndex, simpleParticleCollection);
+        bool selected = particleSelection->IsParticleSelected(particleIndex, particleCollection);
         selectionData[particleIndex] = selected ? 1 : 0;
     }
 }
@@ -94,9 +95,13 @@ ParticleVertexArray::CreateFromParticleCollection(FluidSolver::IParticleCollecti
         return new ParticleVertexArrayForStripedParticleCollection(striped);
     }
 
+    auto compact = dynamic_cast<FluidSolver::CompactParticleCollection *>(particleCollection);
+    if (compact != nullptr) {
+        return new ParticleVertexArrayForCompactParticleCollection(compact);
+    }
 
-    // TODO: throw an error since we have no fitting vertex array
-    return nullptr;
+    throw std::invalid_argument(
+            "Could not find a type of particle vertex array matching the given type of the particle collection!");
 }
 
 void ParticleVertexArrayForStripedParticleCollection::OnGenerate() {
@@ -328,4 +333,5 @@ ParticleVertexArrayForCompactParticleCollection::ParticleVertexArrayForCompactPa
         FluidSolver::CompactParticleCollection *compactParticleCollection) : ParticleVertexArray(
         compactParticleCollection) {
     this->compactParticleCollection = compactParticleCollection;
+    Generate();
 }
