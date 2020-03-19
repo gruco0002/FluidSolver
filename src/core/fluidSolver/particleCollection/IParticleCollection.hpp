@@ -49,22 +49,72 @@ namespace FluidSolver {
      * The getter and setter of the individual values of the particle use the index.
      * To obtain the index of a particle with a certain id, use the GetIndex(size_t particleID) method. Vice versa
      * there exists a GetParticleID(size_t index) function to obtain the particle id.
+     *
+     * It is recommended to iterate over the particle collection via the indices and not the ids since the data is
+     * contained compact in memory and always sorted by the index in an array like structure. Iterating over the indices
+     * is therefore more cache efficient.
+     *
+     * The particle collection can be sorted with a own custom search key that is calculated by a functional. There are
+     * two possibilities for sorting the collection: merge sort and insertion sort. Use merge sort for an initial sort
+     * or if you know, that the collection is very unsorted. However in most cases the particle collection stays roughly
+     * sorted due to temporal or spatial coherence of the particles in the system. Therefore using insertion sort on the
+     * nearly sorted collection can be quite more efficient.
+     *
+     * The GetSize() function returns the size of the collection. Particles with indices from (including) 0 to
+     * (excluding) size are contained in the collection and can be accessed. Access outside this range is, due to
+     * performance not checked and can result in memory corruption. Particle IDs exist in the same range.
      */
     class IParticleCollection {
     public:
+        /**
+         * Functional that should return a sort key value for the given particle index.
+         */
         typedef std::function<uint64_t(const size_t)> sortKeyFunction_t;
+
     protected:
 
+        /**
+         * Returns the sort key of a given particle.
+         * @param index Particle index
+         * @return Sort key.
+         */
         virtual uint64_t GetSortKey(size_t index) = 0;
 
+        /**
+         * This function is called by all sorting algorithms to precalculate the sort keys in order to save performance.
+         * @param sortKeyFunction Functional that should return a sort key value for the given particle index.
+         */
         virtual void PrecalculateSortKeys(const sortKeyFunction_t &sortKeyFunction) = 0;
 
+        /**
+         * Swaps the data of two given particles. This function is used by sort functions.
+         * @param i Index of the first particle
+         * @param j Index of the second particle
+         */
         virtual void SwapElements(size_t i, size_t j) = 0;
 
 
     public:
+
+        /**
+         * Executes an insertion sort for the particle collection. The collection is sorted by the sort key in ascending
+         * order. The sort key is calculated by the given functional.
+         * @param sortKeyFunction Functional that should return a sort key value for the given particle index.
+         * @remarks The functional can be executed in parallel and should therefore be thread safe. The sort keys could
+         * also be precalculated before the sorting itself happens.
+         * @note Insertion sort should be used if the collection is mostly sorted in regards to the given sort key.
+         */
         void InsertionSort(const sortKeyFunction_t &sortKeyFunction);
 
+        /**
+         * Executes a merge sort for the particle collection. The collection is sorted by the sort key in ascending
+         * order. The sort key is calculated by the given functional.
+         * @param sortKeyFunction Functional that should return a sort key value for the given particle index.
+         * @remarks The functional can be executed in parallel and should therefore be thread safe. The sort keys could
+         * also be precalculated before the sorting itself happens.
+         * @note Merge sort should be used if the collection is not mostly sorted or the sort state is unknown in
+         * regards to the given sort key.
+         */
         void MergeSort(const sortKeyFunction_t &sortKeyFunction);
 
     public:
@@ -74,10 +124,25 @@ namespace FluidSolver {
 
         virtual size_t GetIndex(size_t particleID) = 0;
 
+        /**
+         * Adds a vector of particles to the collection. The indices of the added particles are not returned.
+         * @param particles The particles that should be added to the particle collection.
+         * @note If the particle indices are needed for further calculations you should consider using the AddParticle
+         * function of the collection.
+         */
         virtual void AddParticles(const std::vector<FluidParticle> &particles);
 
+        /**
+         * Adds a particle with the given data and returns its index.
+         * @param fluidParticle The particle data that should be added to a new particle in the collection.
+         * @return Particle Index.
+         */
         virtual size_t AddParticle(const FluidParticle &fluidParticle) = 0;
 
+        /**
+         * Add a particle with no data to the collection and returns its index.
+         * @return Particle index.
+         */
         virtual size_t AddEmptyParticle() = 0;
 
 

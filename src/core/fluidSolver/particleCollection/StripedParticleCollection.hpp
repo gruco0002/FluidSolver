@@ -13,6 +13,7 @@ namespace FluidSolver {
 
         std::vector<uint64_t> sortKeys;
         std::vector<size_t> particleIDToParticleIndexMap;
+        std::vector<size_t> particleIndexToParticleIDMap;
 
         std::vector<uint8_t> typeData;
         std::vector<glm::vec2> positionData;

@@ -27,6 +27,7 @@ size_t FluidSolver::StripedParticleCollection::AddParticle(
 
 void FluidSolver::StripedParticleCollection::AddEntryToEachArray() {
     particleIDToParticleIndexMap.push_back(0);
+    particleIndexToParticleIDMap.push_back(0);
     sortKeys.push_back(0);
 
     typeData.push_back(0);
@@ -55,6 +56,7 @@ size_t FluidSolver::StripedParticleCollection::AddEmptyParticle() {
 
     // set the index mapping data
     this->particleIDToParticleIndexMap[index] = index;
+    this->particleIndexToParticleIDMap[index] = index;
 
     return index;
 }
@@ -62,6 +64,7 @@ size_t FluidSolver::StripedParticleCollection::AddEmptyParticle() {
 void FluidSolver::StripedParticleCollection::SwapElements(size_t i, size_t j) {
     std::swap(particleIDToParticleIndexMap[i], particleIDToParticleIndexMap[j]);
     std::swap(sortKeys[i], sortKeys[j]);
+    std::swap(particleIndexToParticleIDMap[i], particleIndexToParticleIDMap[j]);
 
     std::swap(typeData[i], typeData[j]);
     std::swap(positionData[i], positionData[j]);
@@ -212,7 +215,7 @@ uint64_t FluidSolver::StripedParticleCollection::GetSortKey(size_t index) {
 }
 
 size_t FluidSolver::StripedParticleCollection::GetParticleID(size_t index) {
-    return 0;
+    return particleIndexToParticleIDMap[index];
 }
 
 size_t FluidSolver::StripedParticleCollection::GetIndex(size_t particleID) {
