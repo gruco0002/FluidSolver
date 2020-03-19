@@ -5,7 +5,10 @@
 #ifndef FLUIDSOLVER_IPARTICLECOLLECTION_HPP
 #define FLUIDSOLVER_IPARTICLECOLLECTION_HPP
 
+#include <functional>
+#include <vector>
 #include "libraries/glm/glm.hpp"
+
 
 namespace FluidSolver {
 
@@ -38,11 +41,47 @@ namespace FluidSolver {
 
     };
 
+    /**
+     * Particle collections are data structures that contain the particle data.
+     * Each particle has an index. This index can change arbitrarily due to sorting or other things.
+     * Therefore a consistent particle id is introduced. The particle id is attached to the particle data and is not
+     * affected by sorting or other internal structure related data movement.
+     * The getter and setter of the individual values of the particle use the index.
+     * To obtain the index of a particle with a certain id, use the GetIndex(size_t particleID) method. Vice versa
+     * there exists a GetParticleID(size_t index) function to obtain the particle id.
+     */
     class IParticleCollection {
+    public:
+        typedef std::function<uint64_t(const size_t)> sortKeyFunction_t;
+    protected:
+
+        virtual uint64_t GetSortKey(size_t index) = 0;
+
+        virtual void PrecalculateSortKeys(const sortKeyFunction_t &sortKeyFunction) = 0;
+
+        virtual void SwapElements(size_t i, size_t j) = 0;
+
 
     public:
+        void InsertionSort(const sortKeyFunction_t &sortKeyFunction);
+
+        void MergeSort(const sortKeyFunction_t &sortKeyFunction);
+
+    public:
+        virtual ~IParticleCollection() = default;
+
+        virtual size_t GetParticleID(size_t index) = 0;
+
+        virtual size_t GetIndex(size_t particleID) = 0;
+
+        virtual void AddParticles(const std::vector<FluidParticle> &particles);
+
+        virtual size_t AddParticle(const FluidParticle &fluidParticle) = 0;
+
+        virtual size_t AddEmptyParticle() = 0;
 
 
+    public:
 
         virtual float GetMass(uint32_t index) = 0;
 
@@ -89,8 +128,6 @@ namespace FluidSolver {
         virtual float GetDiagonalElement(uint32_t index) = 0;
 
         virtual void SetDiagonalElement(uint32_t index, float value) = 0;
-
-        virtual ~IParticleCollection() = default;
 
 
     };

@@ -9,13 +9,10 @@
 namespace FluidSolver {
     class StripedParticleCollection : public IParticleCollection {
 
-    public:
-        typedef std::function<uint64_t(const size_t)> sortKeyFunction_t;
-
     private:
 
         std::vector<uint64_t> sortKeys;
-        std::vector<size_t> particleIndexToDataIndexMap;
+        std::vector<size_t> particleIDToParticleIndexMap;
 
         std::vector<uint8_t> typeData;
         std::vector<glm::vec2> positionData;
@@ -30,24 +27,23 @@ namespace FluidSolver {
         std::vector<float> diagonalElementData;
 
         size_t size = 0;
+    protected:
+        uint64_t GetSortKey(size_t index) override;
 
-
-
-        void PrecalculateSortKeys(const sortKeyFunction_t &sortKeyFunction);
+    private:
+        void PrecalculateSortKeys(const sortKeyFunction_t &sortKeyFunction) override;
 
     protected:
-        virtual void SwapElements(size_t i, size_t j);
-
+        void SwapElements(size_t i, size_t j) override;
         virtual void AddEntryToEachArray();
 
     public:
-        void InsertionSort(const sortKeyFunction_t &sortKeyFunction);
-        void MergeSort(const sortKeyFunction_t &sortKeyFunction);
 
-        void AddParticles(const std::vector<FluidParticle> &particles);
-        size_t AddParticle(const FluidParticle &fluidParticle);
 
-        size_t AddEmptyParticle();
+
+        size_t AddParticle(const FluidParticle &fluidParticle) override ;
+
+        size_t AddEmptyParticle() override ;
 
     public:
 
@@ -84,6 +80,10 @@ namespace FluidSolver {
         void SetSourceTerm(uint32_t index, float value) override;
         float GetDiagonalElement(uint32_t index) override;
         void SetDiagonalElement(uint32_t index, float value) override;
+
+        size_t GetParticleID(size_t index) override;
+
+        size_t GetIndex(size_t particleID) override;
 
 
     };
