@@ -4,21 +4,36 @@
 #include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 
 namespace FluidSolver {
+
+    /**
+     * A quadratic neighborhood search that allocates storage before saving the neighbors.
+     *
+     * The neighbors are stored in on continuous compact array without empty array cells. Furthermore the structure
+     * contains two arrays mapping the particle indices to either the start position in the large neighbor array or the
+     * amount of neighbors.
+     * The search behaves the following way: First of all the neighbors are searched by comparing all particles with
+     * each other and counted. These numbers are accumulated to reserve fixed ranges in the neighbor array and in order
+     * to resize the neighbor array if needed. Then a second search is executed which now saves the found neighbor
+     * indices inside the reserved array ranges.
+     *
+     * @note This neighborhood search is very inefficient and therefore not recommended to be used. However this
+     * implementation avoids, in contrast to FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated, new memory
+     * allocations.
+     */
     class QuadraticNeighborhoodSearchPreAllocated : public INeighborhoodSearch {
 
     public:
+        void FindNeighbors() override;
 
-        void FindNeighbors(IParticleCollection *particleCollection, float radius) override;
+        std::shared_ptr<Neighbors> GetNeighbors(particleIndex_t particleIndex) override;
 
-        void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;
-
-        Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
+        std::shared_ptr<Neighbors> GetNeighbors(glm::vec2 position) override;
 
     private:
 
-        std::vector<uint32_t> neighbors;
-        std::vector<uint32_t> neighborsCount;
-        std::vector<uint32_t> neighborsStart;
+        std::vector<particleIndex_t> neighbors;
+        std::vector<particleAmount_t> neighborsCount;
+        std::vector<particleAmount_t> neighborsStart;
 
     };
 }
