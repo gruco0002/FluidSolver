@@ -8,33 +8,20 @@
 
 namespace FluidSolver {
     class HashedNeighborhoodSearch : public INeighborhoodSearch {
+    public:
+
+        void FindNeighbors() override;
+
+        std::shared_ptr<Neighbors> GetNeighbors(particleIndex_t particleIndex) override;
+
+        void UpdateGrid();
+        std::shared_ptr<Neighbors> GetNeighbors(glm::vec2 position) override;
+
+        HashedNeighborhoodSearch(IParticleCollection *particleCollection, float radius);
 
 
     private:
         typedef std::pair<int32_t, int32_t> GridKey;
-
-
-    public:
-        void FindNeighbors(IParticleCollection *particleCollection, float radius) override;
-
-        Neighbors GetParticleNeighbors(uint32_t particleIndex) override;
-
-        void SetParticleCount(uint32_t particleCount) override;
-
-        explicit HashedNeighborhoodSearch(float gridCellSize);
-
-
-        void SetupForPositionNeighborSearch(IParticleCollection *particleCollection);
-
-        void GetParticleNeighborsByPosition(std::vector<uint32_t> &out, glm::vec2 position, float radius, IParticleCollection* particleCollection);
-
-
-    protected:
-        void FindNeighbors(uint32_t particleIndex, IParticleCollection *particleCollection, float radius) override;
-
-
-    private:
-
 
         struct GridKeyHash {
             //static_assert(sizeof(int32_t) * 2 == sizeof(size_t));
@@ -52,27 +39,27 @@ namespace FluidSolver {
         /**
          * Maps the Grid cell to its containing particles
          */
-        std::unordered_map<GridKey, std::list<uint32_t>, GridKeyHash> gridToParticles;
+        std::unordered_map<GridKey, std::list<particleIndex_t>, GridKeyHash> gridToParticles;
 
         /**
          * Contains the current status of each particle.
          */
-        std::unordered_map<uint32_t, GridKey> currentStatus;
+        std::unordered_map<particleIndex_t, GridKey> currentStatus;
 
         /**
          * Map containing the neighbor count and neighbors of a given particle
          */
-        std::unordered_map<uint32_t, std::pair<uint32_t, std::vector<uint32_t >>> neighbors;
+        std::unordered_map<particleIndex_t, std::pair<particleAmount_t, std::vector<particleIndex_t >>> neighbors;
 
-        uint32_t bucketsCreatedUntilIndex = 0;
+        particleIndex_t bucketsCreatedUntilIndex = 0;
 
-        GridKey GetGridCellByParticleID(uint32_t particleIndex, IParticleCollection *particleCollection);
+        GridKey GetGridCellByParticleID(particleIndex_t particleIndex);
 
         GridKey GetGridCellByPosition(glm::vec2 &position);
 
         void CreateGridEntryIfNecessary(GridKey &key);
 
-        void UpdateGrid(IParticleCollection *particleCollection);
+
 
 
     };

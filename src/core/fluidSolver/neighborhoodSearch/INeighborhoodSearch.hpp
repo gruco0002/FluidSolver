@@ -212,10 +212,27 @@ namespace FluidSolver {
 
         size_t GetBegin() override;
 
-    private:
         pointer firstNeighbor;
         particleAmount_t neighborCount;
 
+    };
+
+    /**
+     * A compact data based neighbors collection.
+     *
+     * This collection points to a contained compact block of particle indices thar correspond to the meant neighbors.
+     * Therefore it is initialized with a vector of neighbors. The contents of the given vector will be moved to this
+     * container.
+     *
+     * @note
+     * The contents of the given vector will be moved to this container.
+     */
+class NeighborsCompactData : public NeighborsCompact {
+    public:
+        explicit NeighborsCompactData(std::vector<particleIndex_t> &neighbors);
+
+    private:
+        std::vector<particleIndex_t> neighbors;
     };
 
 

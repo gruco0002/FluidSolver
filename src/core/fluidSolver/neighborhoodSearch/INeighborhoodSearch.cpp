@@ -74,7 +74,14 @@ size_t FluidSolver::NeighborsCompact::GetBegin() {
     return 0;
 }
 
-FluidSolver::NeighborsCompact::NeighborsCompact(FluidSolver::Neighbors::pointer firstNeighbor, particleAmount_t neighborCount) {
+FluidSolver::NeighborsCompact::NeighborsCompact(FluidSolver::Neighbors::pointer firstNeighbor,
+                                                particleAmount_t neighborCount) {
     this->firstNeighbor = firstNeighbor;
     this->neighborCount = neighborCount;
+}
+
+FluidSolver::NeighborsCompactData::NeighborsCompactData(std::vector<particleIndex_t> &neighbors) : NeighborsCompact(
+        this->neighbors.data(), this->neighbors.size()) {
+    this->neighbors = std::move(neighbors);
+    this->firstNeighbor = this->neighbors.data();
 }
