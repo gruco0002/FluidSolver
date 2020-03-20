@@ -62,6 +62,7 @@ void FluidSolver::HashedNeighborhoodSearch::FindNeighbors() {
     // First update the grid
     UpdateGrid();
 
+#pragma omp parallel for
     for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++) {
         // get position and grid cell
         glm::vec2 position = particleCollection->GetPosition(particleIndex);

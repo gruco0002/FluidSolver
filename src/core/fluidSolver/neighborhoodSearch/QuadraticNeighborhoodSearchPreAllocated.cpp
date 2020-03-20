@@ -82,6 +82,6 @@ FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(FluidSolver::
 std::shared_ptr<FluidSolver::Neighbors>
 FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 position) {
     // TODO: implement
-    throw std::exception("Not implemented");
+    throw std::logic_error("Not implemented");
     return std::shared_ptr<Neighbors>();
 }
