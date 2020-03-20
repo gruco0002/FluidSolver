@@ -198,13 +198,16 @@ namespace FluidSolver {
     }
 
     void SPHFluidSolver::setParticleSize(float particleSize) {
+        KernelSupport = 2.0f * particleSize;
+        NeighborhoodRadius = 2.0f * particleSize;
         if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
             delete neighborhoodSearch;
-            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(getParticleSize() * 3.0f);
+            neighborhoodSearch = nullptr;
+            if (particleCollection != nullptr)
+                neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
         }
         this->ParticleSize = particleSize;
-        KernelSupport = 2.0f * this->ParticleSize;
-        NeighborhoodRadius = 2.0f * this->ParticleSize;
+
     }
 
     float SPHFluidSolver::getRestDensity() {
@@ -226,8 +229,10 @@ namespace FluidSolver {
     void SPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
         if (neighborhoodSearch != nullptr) {
             delete neighborhoodSearch;
-            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(getParticleSize() * 3.0f);
+            neighborhoodSearch = nullptr;
         }
+        if (particleCollection != nullptr)
+            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
         this->particleCollection = particleCollection;
     }
 

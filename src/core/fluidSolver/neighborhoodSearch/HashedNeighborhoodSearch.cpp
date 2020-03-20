@@ -25,6 +25,15 @@ FluidSolver::HashedNeighborhoodSearch::GetGridCellByPosition(glm::vec2 &pos) {
 }
 
 void FluidSolver::HashedNeighborhoodSearch::UpdateGrid() {
+    // create buckets if not existing and / or clear it
+    while (bucketsCreatedUntilIndex < particleCollection->GetSize()) {
+        neighbors[bucketsCreatedUntilIndex] = std::pair<particleAmount_t, std::vector<particleIndex_t >>(0,
+                                                                                                         std::vector<particleIndex_t>());
+        currentStatus[bucketsCreatedUntilIndex] = {INT32_MAX, INT32_MAX};
+        bucketsCreatedUntilIndex++;
+    }
+
+
     particleAmount_t particleCount = particleCollection->GetSize();
     // set every particle to the correct grid cell
     for (particleIndex_t i = 0; i < particleCount; i++) {
@@ -50,15 +59,6 @@ void FluidSolver::HashedNeighborhoodSearch::UpdateGrid() {
 }
 
 void FluidSolver::HashedNeighborhoodSearch::FindNeighbors() {
-    // create buckets if not existing and / or clear it
-    while (bucketsCreatedUntilIndex < particleCollection->GetSize()) {
-        neighbors[bucketsCreatedUntilIndex] = std::pair<particleIndex_t, std::vector<particleAmount_t >>(0,
-                                                                                                         std::vector<particleIndex_t>());
-        currentStatus[bucketsCreatedUntilIndex] = {INT32_MAX, INT32_MAX};
-        bucketsCreatedUntilIndex++;
-    }
-
-
     // First update the grid
     UpdateGrid();
 

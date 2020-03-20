@@ -9,13 +9,16 @@ float FluidSolver::IISPHFluidSolver::getParticleSize() {
 }
 
 void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
-    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
-        delete neighborhoodSearch;
-        neighborhoodSearch = new HashedNeighborhoodSearch(particleSize * 3);
-    }
-    this->ParticleSize = particleSize;
     this->KernelSupport = 2.0f * particleSize;
     this->NeighborhoodRadius = 2.0f * particleSize;
+
+    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
+        delete neighborhoodSearch;
+        neighborhoodSearch = nullptr;
+        if (ParticleCollection != nullptr)
+            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
+    }
+    this->ParticleSize = particleSize;
 }
 
 float FluidSolver::IISPHFluidSolver::getRestDensity() {
@@ -37,8 +40,10 @@ void FluidSolver::IISPHFluidSolver::setTimestep(float timestep) {
 void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticleCollection *ParticleCollection) {
     if (neighborhoodSearch != nullptr) {
         delete neighborhoodSearch;
-        neighborhoodSearch = new HashedNeighborhoodSearch(this->getParticleSize() * 3);
+        neighborhoodSearch = nullptr;
     }
+    if (ParticleCollection != nullptr)
+        neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     this->ParticleCollection = ParticleCollection;
     this->maxPredictedDensityErrorReached = 0.0f;
 }

@@ -4,7 +4,9 @@ void FluidSolver::ContinousVisualizer::setParticleCollection(FluidSolver::IParti
     ParticleCollection = particleCollection;
     if (neighborhoodSearch != nullptr) {
         delete neighborhoodSearch;
-        neighborhoodSearch = new HashedNeighborhoodSearch(this->getParticleSize() * 3);
+        neighborhoodSearch = nullptr;
+        if (ParticleCollection != nullptr)
+            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, KernelSupport);
     }
 }
 
@@ -13,12 +15,15 @@ FluidSolver::IParticleCollection *FluidSolver::ContinousVisualizer::getParticleC
 }
 
 void FluidSolver::ContinousVisualizer::setParticleSize(float particleSize) {
+    this->KernelSupport = 2.0f * particleSize;
     if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
         delete neighborhoodSearch;
-        neighborhoodSearch = new HashedNeighborhoodSearch(particleSize * 3);
+        neighborhoodSearch = nullptr;
+        if (ParticleCollection != nullptr)
+            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, KernelSupport);
     }
     ParticleSize = particleSize;
-    this->KernelSupport = 2.0f * particleSize;
+
 }
 
 float FluidSolver::ContinousVisualizer::getParticleSize() {
@@ -28,8 +33,7 @@ float FluidSolver::ContinousVisualizer::getParticleSize() {
 void FluidSolver::ContinousVisualizer::Render() {
 
     // find neighbors for all particles
-    neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
-    neighborhoodSearch->SetupForPositionNeighborSearch(ParticleCollection);
+    neighborhoodSearch->UpdateGrid();
 
     // clear data (set everything to clear color) --> clearing is not needed, since we set each pixel value in the loop
     //std::fill(data.begin(), data.end(), ClearColor);
@@ -77,12 +81,9 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
     float maxBoundaryDensityContribution = 0.0f;
     bool maxBoundaryDensityContributerIsSelected = false;
 
-    std::vector<uint32_t> neighbors;
-    neighbors.reserve(40);
+    auto neighbors = neighborhoodSearch->GetNeighbors(position);
 
-    neighborhoodSearch->GetParticleNeighborsByPosition(neighbors, position, KernelSupport, ParticleCollection);
-
-    for (uint32_t neighbor : neighbors) {
+    for (uint32_t neighbor : *neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.

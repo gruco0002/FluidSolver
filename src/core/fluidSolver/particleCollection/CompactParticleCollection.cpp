@@ -126,7 +126,7 @@ void FluidSolver::CompactParticleCollection::SetDiagonalElement(particleIndex_t 
     particleData[index].DiagonalElement = value;
 }
 
-uint64_t FluidSolver::CompactParticleCollection::GetSortKey(size_t index) {
+uint64_t FluidSolver::CompactParticleCollection::GetSortKey(particleIndex_t index) {
     return sortKeys[index];
 }
 
