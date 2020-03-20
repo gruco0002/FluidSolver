@@ -33,7 +33,7 @@ namespace FluidSolver {
         std::vector<float> sourceTermData;
         std::vector<float> diagonalElementData;
 
-        size_t size = 0;
+        particleAmount_t size = 0;
     protected:
         uint64_t GetSortKey(particleIndex_t index) override;
 
@@ -92,7 +92,7 @@ namespace FluidSolver {
 
         void SetAcceleration(particleIndex_t index, glm::vec2 value) override;
 
-        size_t GetSize() override;
+        particleAmount_t GetSize() override;
 
         float GetDensity(particleIndex_t index) override;
 

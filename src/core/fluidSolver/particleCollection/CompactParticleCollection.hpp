@@ -52,7 +52,7 @@ namespace FluidSolver {
 
         void SetAcceleration(particleIndex_t index, glm::vec2 value) override;
 
-        size_t GetSize() override;
+        particleAmount_t GetSize() override;
 
         float GetDensity(particleIndex_t index) override;
 

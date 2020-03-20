@@ -132,7 +132,7 @@ void FluidSolver::StripedParticleCollection::SetAcceleration(particleIndex_t ind
     accelerationData[index] = value;
 }
 
-size_t FluidSolver::StripedParticleCollection::GetSize() {
+FluidSolver::particleAmount_t FluidSolver::StripedParticleCollection::GetSize() {
     return size;
 }
 

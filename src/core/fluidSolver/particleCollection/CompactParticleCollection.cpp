@@ -74,7 +74,7 @@ void FluidSolver::CompactParticleCollection::SetAcceleration(particleIndex_t ind
     particleData[index].Acceleration = value;
 }
 
-size_t FluidSolver::CompactParticleCollection::GetSize() {
+FluidSolver::particleAmount_t FluidSolver::CompactParticleCollection::GetSize() {
     return particleData.size();
 }
 

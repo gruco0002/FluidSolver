@@ -1,42 +1,48 @@
 #include "QuadraticNeighborhoodSearchGreedyAllocated.hpp"
 
-void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::FindNeighbors(uint32_t particleIndex,
-                                                             FluidSolver::IParticleCollection *particleCollection,
-                                                             float radius) {
+void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::FindNeighbors() {
 
-    uint32_t neighborCount = 0;
-    // calculate neighbors
-    glm::vec2 position = particleCollection->GetPosition(particleIndex);
-    for (uint32_t i = 0; i < particleCollection->GetSize(); i++) {
-
-
-        glm::vec2 distVec = position - particleCollection->GetPosition(i);
-        if (glm::length(distVec) <= radius) {
-            // this is a neighbor, add it
-
-            if (neighbors[particleIndex].second.size() <= neighborCount) {
-                neighbors[particleIndex].second.push_back(i);
-            } else {
-                neighbors[particleIndex].second[neighborCount] = i;
-            }
-            neighborCount++;
-        }
-
-    }
-    neighbors[particleIndex].first = neighborCount;
-
-}
-
-FluidSolver::Neighbors
-FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::GetParticleNeighbors(uint32_t particleIndex) {
-    return FluidSolver::Neighbors(&(neighbors[particleIndex].second[0]), neighbors[particleIndex].first);
-}
-
-void FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::SetParticleCount(uint32_t particleCount) {
-    // create buckets if not existing and / or clear it
-    while (bucketsCreatedUntilIndex < particleCount) {
-        neighbors[bucketsCreatedUntilIndex] = std::pair<uint32_t, std::vector<uint32_t >>(0, std::vector<uint32_t>());
+    // for each particle: create a bucket if not existing
+    while (bucketsCreatedUntilIndex < particleCollection->GetSize()) {
+        neighbors[bucketsCreatedUntilIndex] = std::pair<particleAmount_t, std::vector<particleIndex_t >>(0,
+                                                                                                         std::vector<particleIndex_t>());
         bucketsCreatedUntilIndex++;
     }
 
+    // execute the actual neighborhood search
+#pragma omp parallel for
+    for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++) {
+        particleAmount_t neighborCount = 0;
+
+        // calculate neighbors
+        glm::vec2 position = particleCollection->GetPosition(particleIndex);
+        for (particleIndex_t i = 0; i < particleCollection->GetSize(); i++) {
+            glm::vec2 distVec = position - particleCollection->GetPosition(i);
+            if (glm::length(distVec) <= radius) {
+                // this is a neighbor, add it
+                if (neighbors[particleIndex].second.size() <= neighborCount) {
+                    neighbors[particleIndex].second.push_back(i);
+                } else {
+                    neighbors[particleIndex].second[neighborCount] = i;
+                }
+                neighborCount++;
+            }
+        }
+        neighbors[particleIndex].first = neighborCount;
+
+    }
+
+}
+
+std::shared_ptr<FluidSolver::Neighbors>
+FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::GetNeighbors(FluidSolver::particleIndex_t particleIndex) {
+    return std::shared_ptr<Neighbors>(
+            new NeighborsCompact(neighbors[particleIndex].second.data(), neighbors[particleIndex].first));
+}
+
+std::shared_ptr<FluidSolver::Neighbors>
+FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::GetNeighbors(glm::vec2 position) {
+    // TODO: implement
+    throw std::exception("Not implemented");
+    return std::shared_ptr<Neighbors>();
 }

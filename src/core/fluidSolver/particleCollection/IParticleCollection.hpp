@@ -184,7 +184,7 @@ namespace FluidSolver {
 
         virtual void SetAcceleration(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual size_t GetSize() = 0;
+        virtual particleAmount_t GetSize() = 0;
 
         virtual float GetDensity(particleIndex_t index) = 0;
 

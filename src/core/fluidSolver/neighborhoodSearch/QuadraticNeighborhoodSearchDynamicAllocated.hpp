@@ -26,13 +26,13 @@ namespace FluidSolver {
     public:
         void FindNeighbors() override;
 
-        std::shared_ptr<Neighbors> GetNeighbors(uint32_t particleIndex) override;
+        std::shared_ptr<Neighbors> GetNeighbors(particleIndex_t particleIndex) override;
 
         std::shared_ptr<Neighbors> GetNeighbors(glm::vec2 position) override;
 
 
     private:
-        std::unordered_map<uint32_t, std::vector<uint32_t >> neighbors;
+        std::unordered_map<particleIndex_t, std::vector<particleIndex_t >> neighbors;
 
     };
 

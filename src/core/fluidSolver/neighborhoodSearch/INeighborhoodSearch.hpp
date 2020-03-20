@@ -17,7 +17,7 @@ namespace FluidSolver {
      * define a suitable way of allowing access to their results.
      *
      * There a only a few virtual methods that need to be implemented: GetPointer(iteratorPosition), GetBegin() and
-     * GetEnd(). The GetBegin function returns an iteratorPosition that represents the beginning of the neighbor list.
+* GetEnd(). The GetBegin function returns an iteratorPosition that represents the beginning of the neighbor list.
      * GetEnd however returns an iterator position that represents the end() of the neighbor list pointing behind the
      * last element. These functions can be understood like the default stl begin() and end() functions. The GetPointer
      * function returns a pointer to the corresponding value representing the particle index of a neighbor for the given
@@ -203,7 +203,7 @@ namespace FluidSolver {
      */
     class NeighborsCompact : public Neighbors {
     public:
-        NeighborsCompact(pointer firstNeighbor, size_t neighborCount);
+        NeighborsCompact(pointer firstNeighbor, particleAmount_t neighborCount);
 
     protected:
         pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) override;
@@ -214,7 +214,7 @@ namespace FluidSolver {
 
     private:
         pointer firstNeighbor;
-        size_t neighborCount;
+        particleAmount_t neighborCount;
 
     };
 
