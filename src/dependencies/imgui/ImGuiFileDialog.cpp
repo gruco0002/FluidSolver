@@ -10,7 +10,7 @@
 #ifndef PATH_MAX
 #define PATH_MAX 260
 #endif
-#elif defined(LINUX) or defined(APPLE)
+#elif defined(LINUX) or defined(__APPLE__)
 #include <sys/types.h>
 #include <dirent.h>
 #define PATH_SEP '/'
@@ -112,7 +112,7 @@ inline bool CreateDirectoryIfNotExist(const std::string& name)
 
 #ifdef WIN32
 			CreateDirectory(name.c_str(), NULL);
-#elif defined(LINUX) or defined(APPLE)
+#elif defined(LINUX) or defined(__APPLE__)
 			char buffer[PATH_MAX] = {};
 			snprintf(buffer, PATH_MAX, "mkdir -p %s", name.c_str());
 			const int dir_err = std::system(buffer);
@@ -234,7 +234,7 @@ static int alphaSort(const void *a, const void *b)
 {
 	return strcoll(((dirent*)a)->d_name, ((dirent*)b)->d_name);
 }
-#elif defined(LINUX) or defined(APPLE)*/
+#elif defined(LINUX) or defined(__APPLE__)*/
 static int alphaSort(const struct dirent **a, const struct dirent **b)
 {
 	return strcoll((*a)->d_name, (*b)->d_name);
@@ -256,7 +256,7 @@ void ImGuiFileDialog::ScanDir(const std::string& vPath)
     int             n                   = 0;
 	std::string		path				= vPath;
 
-#if defined(LINUX) or defined(APPLE)
+#if defined(LINUX) or defined(__APPLE__)
     if (path.size()>0)
     {
         if (path[0] != PATH_SEP)
@@ -344,7 +344,7 @@ void ImGuiFileDialog::SetCurrentDir(const std::string& vPath)
     {
 #ifdef WIN32
 		size_t numchar = GetFullPathName(path.c_str(), PATH_MAX-1, real_path, 0);
-#elif defined(LINUX) or defined(APPLE)
+#elif defined(LINUX) or defined(__APPLE__)
 		char *numchar = realpath(path.c_str(), real_path);
 #endif
 		if (numchar != 0)
@@ -355,7 +355,7 @@ void ImGuiFileDialog::SetCurrentDir(const std::string& vPath)
 				m_CurrentPath = m_CurrentPath.substr(0, m_CurrentPath.size() - 1);
 			}
 			m_CurrentPath_Decomposition = splitStringToVector(m_CurrentPath, PATH_SEP, false);
-#if defined(LINUX) or defined(APPLE)
+#if defined(LINUX) or defined(__APPLE__)
 			m_CurrentPath_Decomposition.insert(m_CurrentPath_Decomposition.begin(), std::string(1u, PATH_SEP));
 #endif
 			if (m_CurrentPath_Decomposition.size()>0)
@@ -394,7 +394,7 @@ void ImGuiFileDialog::ComposeNewPath(std::vector<std::string>::iterator vIter)
 		{
 #ifdef WIN32
 			m_CurrentPath = *vIter + PATH_SEP + m_CurrentPath;
-#elif defined(LINUX) or defined(APPLE)
+#elif defined(LINUX) or defined(__APPLE__)
 			if (*vIter == s_fs_root)
 			{
 				m_CurrentPath = *vIter + m_CurrentPath;
@@ -412,7 +412,7 @@ void ImGuiFileDialog::ComposeNewPath(std::vector<std::string>::iterator vIter)
 
         if (vIter == m_CurrentPath_Decomposition.begin())
         {
-#if defined(LINUX) or defined(APPLE)
+#if defined(LINUX) or defined(__APPLE__)
             if (m_CurrentPath[0] != PATH_SEP)
                 m_CurrentPath = PATH_SEP + m_CurrentPath;
 #endif
