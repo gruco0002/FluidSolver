@@ -1,7 +1,7 @@
 
 #include "StripedParticleCollection.hpp"
 
-size_t FluidSolver::StripedParticleCollection::AddParticle(
+FluidSolver::particleIndex_t FluidSolver::StripedParticleCollection::AddParticle(
         const FluidSolver::FluidParticle &fluidParticle) {
 
     // Create and add an empty particle
@@ -43,7 +43,7 @@ void FluidSolver::StripedParticleCollection::AddEntryToEachArray() {
     diagonalElementData.push_back(0.0f);
 }
 
-size_t FluidSolver::StripedParticleCollection::AddEmptyParticle() {
+FluidSolver::particleIndex_t FluidSolver::StripedParticleCollection::AddEmptyParticle() {
     // get an index for the particle
     auto index = this->size;
     this->size++;
@@ -61,7 +61,7 @@ size_t FluidSolver::StripedParticleCollection::AddEmptyParticle() {
     return index;
 }
 
-void FluidSolver::StripedParticleCollection::SwapElements(size_t i, size_t j) {
+void FluidSolver::StripedParticleCollection::SwapElements(particleIndex_t i, particleIndex_t j) {
     std::swap(particleIDToParticleIndexMap[i], particleIDToParticleIndexMap[j]);
     std::swap(sortKeys[i], sortKeys[j]);
     std::swap(particleIndexToParticleIDMap[i], particleIndexToParticleIDMap[j]);
@@ -77,6 +77,9 @@ void FluidSolver::StripedParticleCollection::SwapElements(size_t i, size_t j) {
     std::swap(predictedVelocityData[i], predictedVelocityData[j]);
     std::swap(sourceTermData[i], sourceTermData[j]);
     std::swap(diagonalElementData[i], diagonalElementData[j]);
+
+    // increase the index change counter since indices of particles have been changed
+    this->indicesChangedCounter++;
 }
 
 
@@ -89,96 +92,96 @@ void FluidSolver::StripedParticleCollection::PrecalculateSortKeys(
 }
 
 
-float FluidSolver::StripedParticleCollection::GetMass(uint32_t index) {
+float FluidSolver::StripedParticleCollection::GetMass(particleIndex_t index) {
     return massData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetMass(uint32_t index, float value) {
+void FluidSolver::StripedParticleCollection::SetMass(particleIndex_t index, float value) {
     massData[index] = value;
 }
 
-float FluidSolver::StripedParticleCollection::GetPressure(uint32_t index) {
+float FluidSolver::StripedParticleCollection::GetPressure(particleIndex_t index) {
     return pressureData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetPressure(uint32_t index, float value) {
+void FluidSolver::StripedParticleCollection::SetPressure(particleIndex_t index, float value) {
     pressureData[index] = value;
 }
 
-glm::vec2 FluidSolver::StripedParticleCollection::GetPosition(uint32_t index) {
+glm::vec2 FluidSolver::StripedParticleCollection::GetPosition(particleIndex_t index) {
     return positionData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetPosition(uint32_t index, glm::vec2 value) {
+void FluidSolver::StripedParticleCollection::SetPosition(particleIndex_t index, glm::vec2 value) {
     positionData[index] = value;
 }
 
-glm::vec2 FluidSolver::StripedParticleCollection::GetVelocity(uint32_t index) {
+glm::vec2 FluidSolver::StripedParticleCollection::GetVelocity(particleIndex_t index) {
     return velocityData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetVelocity(uint32_t index, glm::vec2 value) {
+void FluidSolver::StripedParticleCollection::SetVelocity(particleIndex_t index, glm::vec2 value) {
     velocityData[index] = value;
 }
 
-glm::vec2 FluidSolver::StripedParticleCollection::GetAcceleration(uint32_t index) {
+glm::vec2 FluidSolver::StripedParticleCollection::GetAcceleration(particleIndex_t index) {
     return accelerationData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetAcceleration(uint32_t index, glm::vec2 value) {
+void FluidSolver::StripedParticleCollection::SetAcceleration(particleIndex_t index, glm::vec2 value) {
     accelerationData[index] = value;
 }
 
-uint32_t FluidSolver::StripedParticleCollection::GetSize() {
+size_t FluidSolver::StripedParticleCollection::GetSize() {
     return size;
 }
 
-float FluidSolver::StripedParticleCollection::GetDensity(uint32_t index) {
+float FluidSolver::StripedParticleCollection::GetDensity(particleIndex_t index) {
     return densityData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetDensity(uint32_t index, float value) {
+void FluidSolver::StripedParticleCollection::SetDensity(particleIndex_t index, float value) {
     densityData[index] = value;
 }
 
-FluidSolver::ParticleType FluidSolver::StripedParticleCollection::GetParticleType(uint32_t index) {
+FluidSolver::ParticleType FluidSolver::StripedParticleCollection::GetParticleType(particleIndex_t index) {
     return (FluidSolver::ParticleType) typeData[index];
 }
 
 void
-FluidSolver::StripedParticleCollection::SetParticleType(uint32_t index, FluidSolver::ParticleType value) {
+FluidSolver::StripedParticleCollection::SetParticleType(particleIndex_t index, FluidSolver::ParticleType value) {
     typeData[index] = value;
 }
 
-glm::vec2 FluidSolver::StripedParticleCollection::GetNonPressureAcceleration(uint32_t index) {
+glm::vec2 FluidSolver::StripedParticleCollection::GetNonPressureAcceleration(particleIndex_t index) {
     return nonPressureAccelerationData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetNonPressureAcceleration(uint32_t index, glm::vec2 value) {
+void FluidSolver::StripedParticleCollection::SetNonPressureAcceleration(particleIndex_t index, glm::vec2 value) {
     nonPressureAccelerationData[index] = value;
 }
 
-glm::vec2 FluidSolver::StripedParticleCollection::GetPredictedVelocity(uint32_t index) {
+glm::vec2 FluidSolver::StripedParticleCollection::GetPredictedVelocity(particleIndex_t index) {
     return predictedVelocityData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetPredictedVelocity(uint32_t index, glm::vec2 value) {
+void FluidSolver::StripedParticleCollection::SetPredictedVelocity(particleIndex_t index, glm::vec2 value) {
     predictedVelocityData[index] = value;
 }
 
-float FluidSolver::StripedParticleCollection::GetSourceTerm(uint32_t index) {
+float FluidSolver::StripedParticleCollection::GetSourceTerm(particleIndex_t index) {
     return sourceTermData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetSourceTerm(uint32_t index, float value) {
+void FluidSolver::StripedParticleCollection::SetSourceTerm(particleIndex_t index, float value) {
     sourceTermData[index] = value;
 }
 
-float FluidSolver::StripedParticleCollection::GetDiagonalElement(uint32_t index) {
+float FluidSolver::StripedParticleCollection::GetDiagonalElement(particleIndex_t index) {
     return diagonalElementData[index];
 }
 
-void FluidSolver::StripedParticleCollection::SetDiagonalElement(uint32_t index, float value) {
+void FluidSolver::StripedParticleCollection::SetDiagonalElement(particleIndex_t index, float value) {
     diagonalElementData[index] = value;
 }
 
@@ -210,15 +213,15 @@ float *FluidSolver::StripedParticleCollection::DensityData() {
     return densityData.data();
 }
 
-uint64_t FluidSolver::StripedParticleCollection::GetSortKey(size_t index) {
+uint64_t FluidSolver::StripedParticleCollection::GetSortKey(particleIndex_t index) {
     return sortKeys[index];
 }
 
-size_t FluidSolver::StripedParticleCollection::GetParticleID(size_t index) {
+FluidSolver::particleID_t FluidSolver::StripedParticleCollection::GetParticleID(particleIndex_t index) {
     return particleIndexToParticleIDMap[index];
 }
 
-size_t FluidSolver::StripedParticleCollection::GetIndex(size_t particleID) {
+FluidSolver::particleIndex_t FluidSolver::StripedParticleCollection::GetIndex(particleID_t particleID) {
     return particleIDToParticleIndexMap[particleID];
 }
 

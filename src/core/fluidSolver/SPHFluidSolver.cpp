@@ -12,8 +12,7 @@ namespace FluidSolver {
 
 
         // find neighbors for all particles
-        neighborhoodSearch->SetParticleCount(particleCollection->GetSize());
-        neighborhoodSearch->FindNeighbors(particleCollection, NeighborhoodRadius);
+        neighborhoodSearch->FindNeighbors();
 
 
         auto p1 = std::chrono::high_resolution_clock::now();
@@ -89,7 +88,8 @@ namespace FluidSolver {
         glm::vec2 position = particleCollection->GetPosition(particleIndex);
 
         float density = 0.0f;
-        for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+        for (uint32_t neighbor: *neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
@@ -122,7 +122,8 @@ namespace FluidSolver {
         float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / std::pow(density, 2.0f);
 
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
-        for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+        for (uint32_t neighbor: *neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
@@ -160,7 +161,8 @@ namespace FluidSolver {
 
 
         glm::vec2 tmp = glm::vec2(0.0f);
-        for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+        auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+        for (uint32_t neighbor: *neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.

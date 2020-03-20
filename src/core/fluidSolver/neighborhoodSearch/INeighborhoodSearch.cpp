@@ -1,66 +1,80 @@
 #include "INeighborhoodSearch.hpp"
 #include <core/FluidSolverException.hpp>
 
-void
-FluidSolver::INeighborhoodSearch::FindNeighbors(FluidSolver::IParticleCollection *particleCollection, float radius) {
-
-#pragma omp parallel for
-    for (int64_t  i = 0; i < particleCollection->GetSize(); i++) {
-        auto type = particleCollection->GetParticleType(i);
-        if (type == ParticleTypeBoundary || type == ParticleTypeDead) {
-            continue; // don't calculate unnecessary values for the boundary particles.
-        }
-
-        this->FindNeighbors(i, particleCollection, radius);
-    }
-}
-
-
-void FluidSolver::INeighborhoodSearch::SetParticleCount(uint32_t particleCount) {
-    // Do nothing
-}
-
 
 FluidSolver::Neighbors::iterator FluidSolver::Neighbors::begin() {
-    return FluidSolver::Neighbors::iterator(*this, 0);
+    return FluidSolver::Neighbors::iterator(this, GetBegin());
 }
 
 FluidSolver::Neighbors::iterator FluidSolver::Neighbors::end() {
-    return FluidSolver::Neighbors::iterator(*this, _size);
-}
-
-FluidSolver::NeighborsIterator::NeighborsIterator(FluidSolver::Neighbors &nb, size_t position) : neighbors(nb),
-                                                                                                 position(position) {
-
-}
-
-bool FluidSolver::NeighborsIterator::operator==(const FluidSolver::NeighborsIterator &other) const {
-    return position == other.position && &neighbors == &other.neighbors;
-}
-
-bool FluidSolver::NeighborsIterator::operator!=(const FluidSolver::NeighborsIterator &other) const {
-    return !(*this == other);
-}
-
-FluidSolver::Neighbors::T &FluidSolver::NeighborsIterator::operator*() {
-    return neighbors.start[position];
-}
-
-FluidSolver::NeighborsIterator &FluidSolver::NeighborsIterator::operator++() {
-    ++position;
-    return *this;
-}
-
-const FluidSolver::NeighborsIterator FluidSolver::NeighborsIterator::operator++(int) {
-    FluidSolver::NeighborsIterator clone(*this);
-    ++position;
-    return clone;
-}
-
-FluidSolver::Neighbors::Neighbors(FluidSolver::Neighbors::T *start, size_t size) : start(start), _size(size) {
-
+    return FluidSolver::Neighbors::iterator(this, GetEnd());
 }
 
 size_t FluidSolver::Neighbors::size() {
-    return _size;
+    return GetEnd() - GetBegin();
+}
+
+FluidSolver::INeighborhoodSearch::INeighborhoodSearch(FluidSolver::IParticleCollection *particleCollection,
+                                                      float radius) {
+    this->particleCollection = particleCollection;
+    this->radius = radius;
+}
+
+FluidSolver::Neighbors::NeighborsIterator::NeighborsIterator(FluidSolver::Neighbors *nb,
+                                                             NeighborsIterator::iteratorPosition_t iteratorPosition) {
+    this->iteratorPosition = iteratorPosition;
+    this->neighbors = nb;
+
+    // fetch the current pointer
+    this->currentPointer = this->neighbors->GetPointer(this->iteratorPosition);
+}
+
+bool
+FluidSolver::Neighbors::NeighborsIterator::operator==(const FluidSolver::Neighbors::NeighborsIterator &other) const {
+    return iteratorPosition == other.iteratorPosition && neighbors == other.neighbors;
+}
+
+bool
+FluidSolver::Neighbors::NeighborsIterator::operator!=(const FluidSolver::Neighbors::NeighborsIterator &other) const {
+    return !(*this == other);
+}
+
+FluidSolver::Neighbors::T &FluidSolver::Neighbors::NeighborsIterator::operator*() {
+    return *currentPointer;
+}
+
+FluidSolver::Neighbors::NeighborsIterator &FluidSolver::Neighbors::NeighborsIterator::operator++() {
+    ++iteratorPosition;
+    this->currentPointer = neighbors->GetPointer(iteratorPosition);
+    return *this;
+}
+
+const FluidSolver::Neighbors::NeighborsIterator FluidSolver::Neighbors::NeighborsIterator::operator++(int) {
+    // create a copy of the current iterator for return purposes
+    FluidSolver::Neighbors::NeighborsIterator clone(*this);
+
+    // increment this instance of the iterator
+    ++iteratorPosition;
+    this->currentPointer = neighbors->GetPointer(iteratorPosition);
+
+    // return the clone representing the old state
+    return clone;
+}
+
+FluidSolver::Neighbors::pointer FluidSolver::NeighborsCompact::GetPointer(
+        FluidSolver::Neighbors::NeighborsIterator::iteratorPosition_t iteratorPosition) {
+    return firstNeighbor + iteratorPosition;
+}
+
+size_t FluidSolver::NeighborsCompact::GetEnd() {
+    return neighborCount;
+}
+
+size_t FluidSolver::NeighborsCompact::GetBegin() {
+    return 0;
+}
+
+FluidSolver::NeighborsCompact::NeighborsCompact(FluidSolver::Neighbors::pointer firstNeighbor, size_t neighborCount) {
+    this->firstNeighbor = firstNeighbor;
+    this->neighborCount = neighborCount;
 }

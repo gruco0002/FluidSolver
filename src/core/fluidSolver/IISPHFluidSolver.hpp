@@ -9,7 +9,6 @@
 namespace FluidSolver {
     class IISPHFluidSolver : public IFluidSolver {
 
-    private:
     public:
         uint32_t GetComputationTimeLastTimestepInMicroseconds() override;
 
@@ -42,18 +41,25 @@ namespace FluidSolver {
 
     private:
 
-        IParticleCollection* ParticleCollection = nullptr;
+        IParticleCollection *ParticleCollection = nullptr;
 
-        HashedNeighborhoodSearch* neighborhoodSearch = nullptr;
-        IKernel* kernel = new CubicSplineKernel();
+        INeighborhoodSearch *neighborhoodSearch = nullptr;
+        IKernel *kernel = new CubicSplineKernel();
 
         void CalculateDensity(uint32_t particleIndex);
+
         void CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex);
+
         glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
+
         void ComputeSourceTerm(uint32_t particleIndex);
+
         void ComputeDiagonalElement(uint32_t particleIndex);
+
         void InitializePressure(uint32_t particleIndex);
+
         void IntegrateParticle(uint32_t particleIndex);
+
         void ComputePressure();
 
     public:

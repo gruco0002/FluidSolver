@@ -16,76 +16,76 @@ namespace FluidSolver {
     private:
 
         std::vector<uint64_t> sortKeys;
-        std::vector<size_t> particleIDToParticleIndexMap;
-        std::vector<size_t> particleIndexToParticleIDMap;
+        std::vector<particleIndex_t> particleIDToParticleIndexMap;
+        std::vector<particleID_t> particleIndexToParticleIDMap;
 
         std::vector<FluidParticle> particleData;
 
     public:
-        size_t GetParticleID(size_t index) override;
+        particleID_t GetParticleID(particleIndex_t index) override;
 
-        size_t GetIndex(size_t particleID) override;
+        particleIndex_t GetIndex(particleID_t particleID) override;
 
-        size_t AddParticle(const FluidParticle &fluidParticle) override;
+        particleIndex_t AddParticle(const FluidParticle &fluidParticle) override;
 
-        size_t AddEmptyParticle() override;
+        particleIndex_t AddEmptyParticle() override;
 
         void Clear() override;
 
-        float GetMass(uint32_t index) override;
+        float GetMass(particleIndex_t index) override;
 
-        void SetMass(uint32_t index, float value) override;
+        void SetMass(particleIndex_t index, float value) override;
 
-        float GetPressure(uint32_t index) override;
+        float GetPressure(particleIndex_t index) override;
 
-        void SetPressure(uint32_t index, float value) override;
+        void SetPressure(particleIndex_t index, float value) override;
 
-        glm::vec2 GetPosition(uint32_t index) override;
+        glm::vec2 GetPosition(particleIndex_t index) override;
 
-        void SetPosition(uint32_t index, glm::vec2 value) override;
+        void SetPosition(particleIndex_t index, glm::vec2 value) override;
 
-        glm::vec2 GetVelocity(uint32_t index) override;
+        glm::vec2 GetVelocity(particleIndex_t index) override;
 
-        void SetVelocity(uint32_t index, glm::vec2 value) override;
+        void SetVelocity(particleIndex_t index, glm::vec2 value) override;
 
-        glm::vec2 GetAcceleration(uint32_t index) override;
+        glm::vec2 GetAcceleration(particleIndex_t index) override;
 
-        void SetAcceleration(uint32_t index, glm::vec2 value) override;
+        void SetAcceleration(particleIndex_t index, glm::vec2 value) override;
 
-        uint32_t GetSize() override;
+        size_t GetSize() override;
 
-        float GetDensity(uint32_t index) override;
+        float GetDensity(particleIndex_t index) override;
 
-        void SetDensity(uint32_t index, float value) override;
+        void SetDensity(particleIndex_t index, float value) override;
 
-        ParticleType GetParticleType(uint32_t index) override;
+        ParticleType GetParticleType(particleIndex_t index) override;
 
-        void SetParticleType(uint32_t index, ParticleType value) override;
+        void SetParticleType(particleIndex_t index, ParticleType value) override;
 
-        glm::vec2 GetNonPressureAcceleration(uint32_t index) override;
+        glm::vec2 GetNonPressureAcceleration(particleIndex_t index) override;
 
-        void SetNonPressureAcceleration(uint32_t index, glm::vec2 value) override;
+        void SetNonPressureAcceleration(particleIndex_t index, glm::vec2 value) override;
 
-        glm::vec2 GetPredictedVelocity(uint32_t index) override;
+        glm::vec2 GetPredictedVelocity(particleIndex_t index) override;
 
-        void SetPredictedVelocity(uint32_t index, glm::vec2 value) override;
+        void SetPredictedVelocity(particleIndex_t index, glm::vec2 value) override;
 
-        float GetSourceTerm(uint32_t index) override;
+        float GetSourceTerm(particleIndex_t index) override;
 
-        void SetSourceTerm(uint32_t index, float value) override;
+        void SetSourceTerm(particleIndex_t index, float value) override;
 
-        float GetDiagonalElement(uint32_t index) override;
+        float GetDiagonalElement(particleIndex_t index) override;
 
-        void SetDiagonalElement(uint32_t index, float value) override;
+        void SetDiagonalElement(particleIndex_t index, float value) override;
 
-        FluidParticle* GetData();
+        FluidParticle *GetData();
 
     protected:
-        uint64_t GetSortKey(size_t index) override;
+        uint64_t GetSortKey(particleIndex_t index) override;
 
         void PrecalculateSortKeys(const sortKeyFunction_t &sortKeyFunction) override;
 
-        void SwapElements(size_t i, size_t j) override;
+        void SwapElements(particleIndex_t i, particleIndex_t j) override;
 
     };
 }

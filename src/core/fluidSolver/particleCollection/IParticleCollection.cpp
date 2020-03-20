@@ -92,3 +92,7 @@ void FluidSolver::IParticleCollection::AddParticles(const std::vector<FluidParti
     for (auto particle: particles)
         AddParticle(particle);
 }
+
+size_t FluidSolver::IParticleCollection::GetIndicesChangedCounter() {
+    return this->indicesChangedCounter;
+}

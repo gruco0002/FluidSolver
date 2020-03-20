@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <vector>
+#include <core/interface/TypeDefinitions.hpp>
 #include "libraries/glm/glm.hpp"
 
 
@@ -59,22 +60,29 @@ namespace FluidSolver {
      * The GetSize() function returns the size of the collection. Particles with indices from (including) 0 to
      * (excluding) size are contained in the collection and can be accessed. Access outside this range is, due to
      * performance not checked and can result in memory corruption. Particle IDs exist in the same range.
+     *
+     * The GetIndicesChangedCounter() function returns how often particle indices have changed, e.g. due to swapping
+     * items in the data structure related to sorting. This can be used by other data structures that do not want to use
+     * the particle ID but rely on the continuity of the indices. The derived class has to increase the protected
+     * IParticleCollection::indicesChangedCounter whenever a corresponding change occurs.     *
      */
     class IParticleCollection {
     public:
         /**
          * Functional that should return a sort key value for the given particle index.
          */
-        typedef std::function<uint64_t(const size_t)> sortKeyFunction_t;
+        typedef std::function<uint64_t(const particleIndex_t)> sortKeyFunction_t;
 
     protected:
+
+        size_t indicesChangedCounter = 0;
 
         /**
          * Returns the sort key of a given particle.
          * @param index Particle index
          * @return Sort key.
          */
-        virtual uint64_t GetSortKey(size_t index) = 0;
+        virtual uint64_t GetSortKey(particleIndex_t index) = 0;
 
         /**
          * This function is called by all sorting algorithms to precalculate the sort keys in order to save performance.
@@ -87,7 +95,7 @@ namespace FluidSolver {
          * @param i Index of the first particle
          * @param j Index of the second particle
          */
-        virtual void SwapElements(size_t i, size_t j) = 0;
+        virtual void SwapElements(particleIndex_t i, particleIndex_t j) = 0;
 
 
     public:
@@ -113,12 +121,19 @@ namespace FluidSolver {
          */
         void MergeSort(const sortKeyFunction_t &sortKeyFunction);
 
+        /**
+         * Returns the indices changed counter. A counter that states how often particle indices have changed, e.g. due
+         * to swapping items in the data structure related to sorting.
+         * @return Indices changed counter.
+         */
+        size_t GetIndicesChangedCounter();
+
     public:
         virtual ~IParticleCollection() = default;
 
-        virtual size_t GetParticleID(size_t index) = 0;
+        virtual particleID_t GetParticleID(particleIndex_t index) = 0;
 
-        virtual size_t GetIndex(size_t particleID) = 0;
+        virtual particleIndex_t GetIndex(particleID_t particleID) = 0;
 
         /**
          * Adds a vector of particles to the collection. The indices of the added particles are not returned.
@@ -133,13 +148,13 @@ namespace FluidSolver {
          * @param fluidParticle The particle data that should be added to a new particle in the collection.
          * @return Particle Index.
          */
-        virtual size_t AddParticle(const FluidParticle &fluidParticle) = 0;
+        virtual particleIndex_t AddParticle(const FluidParticle &fluidParticle) = 0;
 
         /**
          * Add a particle with no data to the collection and returns its index.
          * @return Particle index.
          */
-        virtual size_t AddEmptyParticle() = 0;
+        virtual particleIndex_t AddEmptyParticle() = 0;
 
         /**
          * Deletes all particles such that the container does not contain them anymore. Hence reduces the size of the
@@ -149,51 +164,51 @@ namespace FluidSolver {
 
     public:
 
-        virtual float GetMass(uint32_t index) = 0;
+        virtual float GetMass(particleIndex_t index) = 0;
 
-        virtual void SetMass(uint32_t index, float value) = 0;
+        virtual void SetMass(particleIndex_t index, float value) = 0;
 
-        virtual float GetPressure(uint32_t index) = 0;
+        virtual float GetPressure(particleIndex_t index) = 0;
 
-        virtual void SetPressure(uint32_t index, float value) = 0;
+        virtual void SetPressure(particleIndex_t index, float value) = 0;
 
-        virtual glm::vec2 GetPosition(uint32_t index) = 0;
+        virtual glm::vec2 GetPosition(particleIndex_t index) = 0;
 
-        virtual void SetPosition(uint32_t index, glm::vec2 value) = 0;
+        virtual void SetPosition(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual glm::vec2 GetVelocity(uint32_t index) = 0;
+        virtual glm::vec2 GetVelocity(particleIndex_t index) = 0;
 
-        virtual void SetVelocity(uint32_t index, glm::vec2 value) = 0;
+        virtual void SetVelocity(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual glm::vec2 GetAcceleration(uint32_t index) = 0;
+        virtual glm::vec2 GetAcceleration(particleIndex_t index) = 0;
 
-        virtual void SetAcceleration(uint32_t index, glm::vec2 value) = 0;
+        virtual void SetAcceleration(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual uint32_t GetSize() = 0;
+        virtual size_t GetSize() = 0;
 
-        virtual float GetDensity(uint32_t index) = 0;
+        virtual float GetDensity(particleIndex_t index) = 0;
 
-        virtual void SetDensity(uint32_t index, float value) = 0;
+        virtual void SetDensity(particleIndex_t index, float value) = 0;
 
-        virtual ParticleType GetParticleType(uint32_t index) = 0;
+        virtual ParticleType GetParticleType(particleIndex_t index) = 0;
 
-        virtual void SetParticleType(uint32_t index, ParticleType value) = 0;
+        virtual void SetParticleType(particleIndex_t index, ParticleType value) = 0;
 
-        virtual glm::vec2 GetNonPressureAcceleration(uint32_t index) = 0;
+        virtual glm::vec2 GetNonPressureAcceleration(particleIndex_t index) = 0;
 
-        virtual void SetNonPressureAcceleration(uint32_t index, glm::vec2 value) = 0;
+        virtual void SetNonPressureAcceleration(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual glm::vec2 GetPredictedVelocity(uint32_t index) = 0;
+        virtual glm::vec2 GetPredictedVelocity(particleIndex_t index) = 0;
 
-        virtual void SetPredictedVelocity(uint32_t index, glm::vec2 value) = 0;
+        virtual void SetPredictedVelocity(particleIndex_t index, glm::vec2 value) = 0;
 
-        virtual float GetSourceTerm(uint32_t index) = 0;
+        virtual float GetSourceTerm(particleIndex_t index) = 0;
 
-        virtual void SetSourceTerm(uint32_t index, float value) = 0;
+        virtual void SetSourceTerm(particleIndex_t index, float value) = 0;
 
-        virtual float GetDiagonalElement(uint32_t index) = 0;
+        virtual float GetDiagonalElement(particleIndex_t index) = 0;
 
-        virtual void SetDiagonalElement(uint32_t index, float value) = 0;
+        virtual void SetDiagonalElement(particleIndex_t index, float value) = 0;
 
 
     };

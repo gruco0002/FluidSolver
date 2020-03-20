@@ -59,8 +59,7 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     auto t1 = std::chrono::high_resolution_clock::now();
 
     // find neighbors for all particles
-    neighborhoodSearch->SetParticleCount(ParticleCollection->GetSize());
-    neighborhoodSearch->FindNeighbors(ParticleCollection, NeighborhoodRadius);
+    neighborhoodSearch->FindNeighbors();
 
     // calculating density and non pressure accelerations
 #pragma omp parallel for
@@ -114,7 +113,8 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
     glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
 
     float density = 0.0f;
-    for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    for (uint32_t neighbor: *neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
@@ -152,7 +152,8 @@ glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t p
 
 
     glm::vec2 tmp = glm::vec2(0.0f);
-    for (uint32_t neighbor: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    for (uint32_t neighbor: *neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
@@ -188,7 +189,8 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
     glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
     float sum = 0.0f;
-    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    for (uint32_t neighborIndex: *neighbors) {
         auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
@@ -217,7 +219,8 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
     float particleMass = ParticleCollection->GetMass(particleIndex);
 
     // first and third part of the sum (since we sum over normal particles and boundary particles)
-    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    for (uint32_t neighborIndex: *neighbors) {
         auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
@@ -226,8 +229,8 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
 
         glm::vec2 internalSum = glm::vec2(0.0f);
-        for (uint32_t internalNeighbor: neighborhoodSearch->GetParticleNeighbors(
-                particleIndex)) {
+        auto neighborsInternal = neighborhoodSearch->GetNeighbors(particleIndex);
+        for (uint32_t internalNeighbor: *neighborsInternal) {
             auto internalNeighborType = ParticleCollection->GetParticleType(internalNeighbor);
             if (internalNeighborType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
@@ -257,7 +260,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
     }
 
     // second part of the sum
-    for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+    for (uint32_t neighborIndex: *neighbors) {
         auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
@@ -329,7 +332,8 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
             glm::vec2 sum = glm::vec2(0.0f);
-            for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+            auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+            for (uint32_t neighborIndex: *neighbors) {
                 auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
                 if (neighborType == ParticleTypeDead)
                     continue; // we do not want to process dead particles
@@ -369,7 +373,8 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
 
             float sum = 0.0f;
-            for (uint32_t neighborIndex: neighborhoodSearch->GetParticleNeighbors(particleIndex)) {
+            auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+            for (uint32_t neighborIndex: *neighbors) {
                 auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
                 if (neighborType == ParticleTypeDead)
                     continue; // we do not want to process dead particles
