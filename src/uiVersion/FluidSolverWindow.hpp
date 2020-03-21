@@ -10,7 +10,7 @@
 #include "ParticleRenderer.hpp"
 
 
-#include <core/fluidSolver/SPHFluidSolver.hpp>
+#include <core/fluidSolver/SESPHFluidSolver.hpp>
 #include "core/statistics/DataLogger.hpp"
 #include "ContinousVisualizerOpenGL.hpp"
 

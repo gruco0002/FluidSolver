@@ -239,7 +239,7 @@ void FluidSolverWindow::resetData() {
 
 
     // set up values
-    auto fluidSolver = dynamic_cast<FluidSolver::SPHFluidSolver *>(simulation->getFluidSolver());
+    auto fluidSolver = dynamic_cast<FluidSolver::SESPHFluidSolver *>(simulation->getFluidSolver());
     if (fluidSolver != nullptr) {
 
     }

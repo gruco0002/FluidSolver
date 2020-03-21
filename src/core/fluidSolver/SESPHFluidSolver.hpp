@@ -1,5 +1,5 @@
-#ifndef FLUIDSOLVER_SPHFLUIDSOLVER_HPP
-#define FLUIDSOLVER_SPHFLUIDSOLVER_HPP
+#ifndef FLUIDSOLVER_SESPHFLUIDSOLVER_HPP
+#define FLUIDSOLVER_SESPHFLUIDSOLVER_HPP
 
 #include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 #include <core/fluidSolver/kernel/IKernel.hpp>
@@ -10,7 +10,7 @@
 #include "core/statistics/StatisticCollector.hpp"
 
 namespace FluidSolver {
-    class SPHFluidSolver : public IFluidSolver {
+    class SESPHFluidSolver : public IFluidSolver {
 
     private:
         float Gravity = 9.81f;
@@ -47,7 +47,7 @@ namespace FluidSolver {
         glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
 
     public:
-        SPHFluidSolver();
+        SESPHFluidSolver();
 
 
     public:
@@ -78,9 +78,9 @@ namespace FluidSolver {
 
         void ExecuteSimulationStep() override;
 
-        virtual ~SPHFluidSolver();
+        virtual ~SESPHFluidSolver();
     };
 }
 
 
-#endif //FLUIDSOLVER_SPHFLUIDSOLVER_HPP
+#endif //FLUIDSOLVER_SESPHFLUIDSOLVER_HPP

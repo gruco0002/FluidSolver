@@ -3,7 +3,7 @@
 #include <iostream>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
-#include <core/fluidSolver/SPHFluidSolver.hpp>
+#include <core/fluidSolver/SESPHFluidSolver.hpp>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/Simulation.hpp>
@@ -93,7 +93,7 @@ void FluidSolverConsole::setupSimulation(cxxopts::ParseResult &parseResult) {
     std::string solverName = parseResult["fluidsolver"].as<std::string>();
     if (solverName == "SimpleSPH") {
         // simple sph
-        auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
+        auto sphFluidSolver = new FluidSolver::SESPHFluidSolver();
 
         // get values
         float viscosity = parseResult["viscosity"].as<float>();

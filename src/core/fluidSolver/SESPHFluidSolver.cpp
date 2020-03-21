@@ -2,12 +2,12 @@
 #include <algorithm>
 #include <chrono>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include "SPHFluidSolver.hpp"
+#include "SESPHFluidSolver.hpp"
 
 namespace FluidSolver {
 
 
-    void SPHFluidSolver::ExecuteSimulationStep() {
+    void SESPHFluidSolver::ExecuteSimulationStep() {
         auto t1 = std::chrono::high_resolution_clock::now();
 
 
@@ -78,13 +78,13 @@ namespace FluidSolver {
                 p2 - p1).count();
     }
 
-    float SPHFluidSolver::ComputePressure(uint32_t particleIndex) {
+    float SESPHFluidSolver::ComputePressure(uint32_t particleIndex) {
         float density = particleCollection->GetDensity(particleIndex);
         float pressure = StiffnessK * (density / RestDensity - 1.0f);
         return std::max(pressure, 0.0f);
     }
 
-    float SPHFluidSolver::ComputeDensity(uint32_t particleIndex) {
+    float SESPHFluidSolver::ComputeDensity(uint32_t particleIndex) {
         glm::vec2 position = particleCollection->GetPosition(particleIndex);
 
         float density = 0.0f;
@@ -101,7 +101,7 @@ namespace FluidSolver {
         return density;
     }
 
-    glm::vec2 SPHFluidSolver::ComputeNonPressureAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputeNonPressureAcceleration(uint32_t particleIndex) {
         glm::vec2 nonPressureAcceleration = glm::vec2(0.0f);
 
         // Gravity
@@ -113,7 +113,7 @@ namespace FluidSolver {
         return nonPressureAcceleration;
     }
 
-    glm::vec2 SPHFluidSolver::ComputePressureAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputePressureAcceleration(uint32_t particleIndex) {
         glm::vec2 position = particleCollection->GetPosition(particleIndex);
         float density = particleCollection->GetDensity(particleIndex);
         float pressure = particleCollection->GetPressure(particleIndex);
@@ -155,7 +155,7 @@ namespace FluidSolver {
         return pressureAcceleration;
     }
 
-    glm::vec2 SPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
         glm::vec2 position = particleCollection->GetPosition(particleIndex);
         glm::vec2 velocity = particleCollection->GetVelocity(particleIndex);
 
@@ -189,15 +189,15 @@ namespace FluidSolver {
         return 2.0f * Viscosity * tmp;
     }
 
-    SPHFluidSolver::~SPHFluidSolver() {
+    SESPHFluidSolver::~SESPHFluidSolver() {
 
     }
 
-    float SPHFluidSolver::getParticleSize() {
+    float SESPHFluidSolver::getParticleSize() {
         return ParticleSize;
     }
 
-    void SPHFluidSolver::setParticleSize(float particleSize) {
+    void SESPHFluidSolver::setParticleSize(float particleSize) {
         KernelSupport = 2.0f * particleSize;
         NeighborhoodRadius = 2.0f * particleSize;
         if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
@@ -210,23 +210,23 @@ namespace FluidSolver {
 
     }
 
-    float SPHFluidSolver::getRestDensity() {
+    float SESPHFluidSolver::getRestDensity() {
         return RestDensity;
     }
 
-    void SPHFluidSolver::setRestDensity(float restDensity) {
+    void SESPHFluidSolver::setRestDensity(float restDensity) {
         this->RestDensity = restDensity;
     }
 
-    float SPHFluidSolver::getTimestep() {
+    float SESPHFluidSolver::getTimestep() {
         return TimeStep;
     }
 
-    void SPHFluidSolver::setTimestep(float timestep) {
+    void SESPHFluidSolver::setTimestep(float timestep) {
         this->TimeStep = timestep;
     }
 
-    void SPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
+    void SESPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
         if (neighborhoodSearch != nullptr) {
             delete neighborhoodSearch;
             neighborhoodSearch = nullptr;
@@ -236,27 +236,27 @@ namespace FluidSolver {
         this->particleCollection = particleCollection;
     }
 
-    IParticleCollection *SPHFluidSolver::getParticleCollection() {
+    IParticleCollection *SESPHFluidSolver::getParticleCollection() {
         return particleCollection;
     }
 
-    float SPHFluidSolver::getGravity() {
+    float SESPHFluidSolver::getGravity() {
         return Gravity;
     }
 
-    void SPHFluidSolver::setGravity(float gravity) {
+    void SESPHFluidSolver::setGravity(float gravity) {
         this->Gravity = gravity;
     }
 
-    SPHFluidSolver::SPHFluidSolver() {
+    SESPHFluidSolver::SESPHFluidSolver() {
 
     }
 
-    uint32_t SPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {
+    uint32_t SESPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {
         return compTimeTotalMicroseconds;
     }
 
-    uint32_t SPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
+    uint32_t SESPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
         return compTimePressureSolverMicroseconds;
     }
 }

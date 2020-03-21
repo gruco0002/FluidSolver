@@ -6,7 +6,7 @@
 #include <core/visualizer/ISimulationVisualizer.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
-#include "core/fluidSolver/SPHFluidSolver.hpp"
+#include "core/fluidSolver/SESPHFluidSolver.hpp"
 
 namespace FluidSolver {
     class Simulation {

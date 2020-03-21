@@ -3,7 +3,7 @@
 
 #include <string>
 #include <iostream>
-#include <core/fluidSolver/SPHFluidSolver.hpp>
+#include <core/fluidSolver/SESPHFluidSolver.hpp>
 #include <fstream>
 
 class DataLogger {

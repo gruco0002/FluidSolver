@@ -1,8 +1,8 @@
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the source code and call cmake from there")
 endif ()
-
-project(FluidSolver)
+cmake_policy(SET CMP0048 NEW)
+project(FluidSolver VERSION 1)
 cmake_minimum_required(VERSION 3.13)
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)

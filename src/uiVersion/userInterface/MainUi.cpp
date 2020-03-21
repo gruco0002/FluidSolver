@@ -145,7 +145,7 @@ void FluidUI::MainUi::Simulation() {
 
 void FluidUI::MainUi::FluidSolver() {
 
-    auto simple = dynamic_cast<FluidSolver::SPHFluidSolver *>(window->GetFluidSolver());
+    auto simple = dynamic_cast<FluidSolver::SESPHFluidSolver *>(window->GetFluidSolver());
     auto iisph = dynamic_cast<FluidSolver::IISPHFluidSolver *>(window->GetFluidSolver());
 
     if (!FluidSolver_Init) {
@@ -163,7 +163,7 @@ void FluidUI::MainUi::FluidSolver() {
 
     static const char *selection[]{"Simple SPH Fluid Solver", "IISPH Fluid Solver"};
     if (FluidSolver_SelectedSolver == 0 && simple == nullptr) {
-        auto tmp = new FluidSolver::SPHFluidSolver();
+        auto tmp = new FluidSolver::SESPHFluidSolver();
         delete window->GetFluidSolver();
         window->SetFluidSolver(tmp);
         simple = tmp;
