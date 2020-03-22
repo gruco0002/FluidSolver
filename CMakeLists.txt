@@ -9,7 +9,7 @@ if (CMAKE_SIZEOF_VOID_P EQUAL 4)
     message(FATAL_ERROR "32 bit isn't supported")
 endif ()
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 if (MINGW)
     set(CMKAE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -pthread")

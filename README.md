@@ -37,7 +37,7 @@ For Windows an updated version of `PowerShell` and `git` should be sufficient fo
 Make sure that `git` is contained within your environment variables / path.
 
 ### Compiling
-Only 64-bit compilation with the C++14 standard is supported. The project may work under other conditions but this is not tested.
+Only 64-bit compilation with the C++17 standard is supported. The project may work under other conditions but this is not tested.
 Use CMake to compile the project:
 - `FluidSolver_run` for an runnable executable
 - `FluidSolver` for just the core code
