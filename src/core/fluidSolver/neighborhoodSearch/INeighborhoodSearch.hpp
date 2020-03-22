@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <variant>
 #include <core/interface/TypeDefinitions.hpp>
 
 #include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
@@ -107,42 +108,85 @@ namespace FluidSolver {
 
     };
 
+    /**
+    * A compact pointer based neighbors collection.
+    *
+    * This collection points to a compact block of particle indices thar correspond to the meant neighbors. Therefore
+    * it is initialized with a pointer to the first neighbor and the total amount of neighbors in this list.
+    *
+    * @note
+    * The collection only acts as a reference to the given data and does not copy nor store it inside itself.
+    */
+    class NeighborsCompact : public Neighbors {
+    public:
+        NeighborsCompact(pointer firstNeighbor, particleAmount_t neighborCount);
+
+    protected:
+        pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) override;
+
+        size_t GetEnd() override;
+
+        size_t GetBegin() override;
+
+        pointer firstNeighbor;
+        particleAmount_t neighborCount;
+
+    };
 
     /**
-     * The neighborhood search is responsible for finding the neighboring particles for each particle.
+     * A compact data based neighbors collection.
      *
-     * Therefore it is responsible for not only finding the neighbors in an efficient way but storing the result in such
-     * a way, that fast access to the data is ensured.
+     * This collection points to a contained compact block of particle indices thar correspond to the meant neighbors.
+     * Therefore it is initialized with a vector of neighbors. The contents of the given vector will be moved to this
+     * container.
      *
-     * While initialization the search obtains a particle collection and a search radius. All particles within this
-     * radius are considered neighbors of a particle. This definition of neighbors can also be applied to arbitrary
-     * positions, that do not represent a particle. Furthermore the definition includes that particles are always
-     * neighbors of themselves.
-     *
-     * The neighborhood search will be executed by the call to the FindNeighbors() function.
-     *
-     * The results have to be provided by the GetNeighbors(particleIndex) function as an iterable object. Results for
-     * finding neighbors of arbitrary points should be returned by GetNeighbors(position) function.
-     *
-     * It is often not possible to precalculate neighbors for arbitrary positions. Therefore GetNeighbors(position) can
-     * be slightly inefficient.
-     *
-     * As mentioned in the definition of FluidSolver::IParticleCollection the particle indices can change without
-     * notice. If the neighborhood search relies on the indices consistency it should consider using the particle ID.
-     * However using this approach can result in a performance loss since further data lookups are required. If the case
-     * lets you assume that particle indices change only very seldom, it could be easier to determine if the indices
-     * have changed and completely regenerate the underlying data structure of the neighborhood search. This could seem
-     * to be inefficient, but the additional computation time can amortize itself, since this event would only occur
-     * every n steps and would prevent the use of the particle ID. Determining if the indices have changed since the
-     * last call is possible due to IParticleCollection::GetIndicesChangedCounter.
-     *
-     * It is also possible that the size of the particle collection has changed. The neighborhood search must account
-     * for that if needed.
-     *
-     * Neighbors for particles of type FluidSolver::ParticleType::ParticleTypeDead should not be calculated. Accessing
-     * the neighbors of a dead particle however has to be safe and must not result in memory access errors or memory
-     * corruptions. However the set of neighbors for a particle of such type has to be empty.
+     * @note
+     * The contents of the given vector will be moved to this container.
      */
+    class NeighborsCompactData : public NeighborsCompact {
+    public:
+        explicit NeighborsCompactData(std::vector<particleIndex_t> &neighbors);
+
+    private:
+        std::vector<particleIndex_t> neighbors;
+    };
+
+
+/**
+ * The neighborhood search is responsible for finding the neighboring particles for each particle.
+ *
+ * Therefore it is responsible for not only finding the neighbors in an efficient way but storing the result in such
+ * a way, that fast access to the data is ensured.
+ *
+ * While initialization the search obtains a particle collection and a search radius. All particles within this
+ * radius are considered neighbors of a particle. This definition of neighbors can also be applied to arbitrary
+ * positions, that do not represent a particle. Furthermore the definition includes that particles are always
+ * neighbors of themselves.
+ *
+ * The neighborhood search will be executed by the call to the FindNeighbors() function.
+ *
+ * The results have to be provided by the GetNeighbors(particleIndex) function as an iterable object. Results for
+ * finding neighbors of arbitrary points should be returned by GetNeighbors(position) function.
+ *
+ * It is often not possible to precalculate neighbors for arbitrary positions. Therefore GetNeighbors(position) can
+ * be slightly inefficient.
+ *
+ * As mentioned in the definition of FluidSolver::IParticleCollection the particle indices can change without
+ * notice. If the neighborhood search relies on the indices consistency it should consider using the particle ID.
+ * However using this approach can result in a performance loss since further data lookups are required. If the case
+ * lets you assume that particle indices change only very seldom, it could be easier to determine if the indices
+ * have changed and completely regenerate the underlying data structure of the neighborhood search. This could seem
+ * to be inefficient, but the additional computation time can amortize itself, since this event would only occur
+ * every n steps and would prevent the use of the particle ID. Determining if the indices have changed since the
+ * last call is possible due to IParticleCollection::GetIndicesChangedCounter.
+ *
+ * It is also possible that the size of the particle collection has changed. The neighborhood search must account
+ * for that if needed.
+ *
+ * Neighbors for particles of type FluidSolver::ParticleType::ParticleTypeDead should not be calculated. Accessing
+ * the neighbors of a dead particle however has to be safe and must not result in memory access errors or memory
+ * corruptions. However the set of neighbors for a particle of such type has to be empty.
+ */
     class INeighborhoodSearch {
 
     public:
@@ -170,7 +214,7 @@ namespace FluidSolver {
          * @param particleIndex Particle index of the particle
          * @return Returns Neighbor object
          */
-        virtual std::shared_ptr<Neighbors> GetNeighbors(particleIndex_t particleIndex) = 0;
+        virtual NeighborsCompact GetNeighbors(particleIndex_t particleIndex) = 0;
 
         /**
          * Returns the neighboring particles for a given position.
@@ -179,7 +223,7 @@ namespace FluidSolver {
          * @param position The position
          * @return Neighbor object
          */
-        virtual std::shared_ptr<Neighbors> GetNeighbors(glm::vec2 position) = 0;
+        virtual NeighborsCompactData GetNeighbors(glm::vec2 position) = 0;
 
 
     protected:
@@ -192,51 +236,5 @@ namespace FluidSolver {
     };
 
 
-    /**
-     * A compact pointer based neighbors collection.
-     *
-     * This collection points to a compact block of particle indices thar correspond to the meant neighbors. Therefore
-     * it is initialized with a pointer to the first neighbor and the total amount of neighbors in this list.
-     *
-     * @note
-     * The collection only acts as a reference to the given data and does not copy nor store it inside itself.
-     */
-    class NeighborsCompact : public Neighbors {
-    public:
-        NeighborsCompact(pointer firstNeighbor, particleAmount_t neighborCount);
-
-    protected:
-        pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) override;
-
-        size_t GetEnd() override;
-
-        size_t GetBegin() override;
-
-        pointer firstNeighbor;
-        particleAmount_t neighborCount;
-
-    };
-
-    /**
-     * A compact data based neighbors collection.
-     *
-     * This collection points to a contained compact block of particle indices thar correspond to the meant neighbors.
-     * Therefore it is initialized with a vector of neighbors. The contents of the given vector will be moved to this
-     * container.
-     *
-     * @note
-     * The contents of the given vector will be moved to this container.
-     */
-class NeighborsCompactData : public NeighborsCompact {
-    public:
-        explicit NeighborsCompactData(std::vector<particleIndex_t> &neighbors);
-
-    private:
-        std::vector<particleIndex_t> neighbors;
-    };
-
-
 }
-
-
 #endif //FLUIDSOLVER_INEIGHBORHOODSEARCH_HPP

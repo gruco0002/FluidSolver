@@ -89,7 +89,7 @@ namespace FluidSolver {
 
         float density = 0.0f;
         auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
-        for (uint32_t neighbor: *neighbors) {
+        for (uint32_t neighbor: neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
@@ -123,7 +123,7 @@ namespace FluidSolver {
 
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
         auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
-        for (uint32_t neighbor: *neighbors) {
+        for (uint32_t neighbor: neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
@@ -162,7 +162,7 @@ namespace FluidSolver {
 
         glm::vec2 tmp = glm::vec2(0.0f);
         auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
-        for (uint32_t neighbor: *neighbors) {
+        for (uint32_t neighbor: neighbors) {
             auto type = particleCollection->GetParticleType(neighbor);
             if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
@@ -190,7 +190,8 @@ namespace FluidSolver {
     }
 
     SESPHFluidSolver::~SESPHFluidSolver() {
-
+        delete neighborhoodSearch;
+        neighborhoodSearch = nullptr;
     }
 
     float SESPHFluidSolver::getParticleSize() {
@@ -246,10 +247,6 @@ namespace FluidSolver {
 
     void SESPHFluidSolver::setGravity(float gravity) {
         this->Gravity = gravity;
-    }
-
-    SESPHFluidSolver::SESPHFluidSolver() {
-
     }
 
     uint32_t SESPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {

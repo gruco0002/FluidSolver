@@ -83,7 +83,7 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
 
     auto neighbors = neighborhoodSearch->GetNeighbors(position);
 
-    for (uint32_t neighbor : *neighbors) {
+    for (uint32_t neighbor : neighbors) {
         auto type = ParticleCollection->GetParticleType(neighbor);
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.

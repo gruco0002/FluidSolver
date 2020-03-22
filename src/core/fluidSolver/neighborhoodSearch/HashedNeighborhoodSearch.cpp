@@ -108,16 +108,16 @@ void FluidSolver::HashedNeighborhoodSearch::FindNeighbors() {
 
 }
 
-std::shared_ptr<FluidSolver::Neighbors>
+FluidSolver::NeighborsCompact
 FluidSolver::HashedNeighborhoodSearch::GetNeighbors(FluidSolver::particleIndex_t particleIndex) {
     auto count = neighbors[particleIndex].first;
     if (count == 0) {
-        return std::shared_ptr<Neighbors>(new NeighborsCompact(nullptr, 0));
+        return NeighborsCompact(nullptr, 0);
     }
-    return std::shared_ptr<Neighbors>(new NeighborsCompact(&(neighbors[particleIndex].second.front()), count));
+    return NeighborsCompact(&(neighbors[particleIndex].second.front()), count);
 }
 
-std::shared_ptr<FluidSolver::Neighbors> FluidSolver::HashedNeighborhoodSearch::GetNeighbors(glm::vec2 position) {
+FluidSolver::NeighborsCompactData FluidSolver::HashedNeighborhoodSearch::GetNeighbors(glm::vec2 position) {
 
     // get grid cell
     GridKey gridCell = GetGridCellByPosition(position);
@@ -153,7 +153,7 @@ std::shared_ptr<FluidSolver::Neighbors> FluidSolver::HashedNeighborhoodSearch::G
         }
     }
 
-    return std::shared_ptr<Neighbors>(new NeighborsCompactData(out));
+    return NeighborsCompactData(out);
 }
 
 FluidSolver::HashedNeighborhoodSearch::HashedNeighborhoodSearch(FluidSolver::IParticleCollection *particleCollection,

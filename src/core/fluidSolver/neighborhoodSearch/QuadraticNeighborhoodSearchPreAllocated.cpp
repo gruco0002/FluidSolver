@@ -73,15 +73,13 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
     }
 }
 
-std::shared_ptr<FluidSolver::Neighbors>
+FluidSolver::NeighborsCompact
 FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(FluidSolver::particleIndex_t particleIndex) {
-    return std::shared_ptr<Neighbors>(
-            new NeighborsCompact(&neighbors[neighborsStart[particleIndex]], neighborsCount[particleIndex]));
+    return NeighborsCompact(&neighbors[neighborsStart[particleIndex]], neighborsCount[particleIndex]);
 }
 
-std::shared_ptr<FluidSolver::Neighbors>
+FluidSolver::NeighborsCompactData
 FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 position) {
     // TODO: implement
     throw std::logic_error("Not implemented");
-    return std::shared_ptr<Neighbors>();
 }

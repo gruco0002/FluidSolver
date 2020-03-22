@@ -12,10 +12,10 @@ namespace FluidSolver {
 
         void FindNeighbors() override;
 
-        std::shared_ptr<Neighbors> GetNeighbors(particleIndex_t particleIndex) override;
+        NeighborsCompact GetNeighbors(particleIndex_t particleIndex) override;
 
         void UpdateGrid();
-        std::shared_ptr<Neighbors> GetNeighbors(glm::vec2 position) override;
+        NeighborsCompactData GetNeighbors(glm::vec2 position) override;
 
         HashedNeighborhoodSearch(IParticleCollection *particleCollection, float radius);
 

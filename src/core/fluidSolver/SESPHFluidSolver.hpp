@@ -47,7 +47,7 @@ namespace FluidSolver {
         glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
 
     public:
-        SESPHFluidSolver();
+        SESPHFluidSolver() = default;
 
 
     public:
@@ -78,7 +78,7 @@ namespace FluidSolver {
 
         void ExecuteSimulationStep() override;
 
-        virtual ~SESPHFluidSolver();
+        ~SESPHFluidSolver() override;
     };
 }
 
