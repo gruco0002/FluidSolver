@@ -1,9 +1,11 @@
 #include "CompactHashingNeighborhoodSearch.hpp"
 
 FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
-        FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
-                                                                                                  radius), storage(40,
-                                                                                                                   particleCollection->GetSize()) {
+        FluidSolver::IParticleCollection *particleCollection, float radius) :
+        INeighborhoodSearch(particleCollection, radius),
+        storage(40, particleCollection->GetSize()),
+        cellStorage(CellStorage(40)),
+        hashTable(HashTable(particleCollection->GetSize() * 2)) {
     cellSize = radius;
     particleCollectionIndicesChangedCounter = particleCollection->GetIndicesChangedCounter();
     initStructure = true;
@@ -61,42 +63,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighbors() {
 
 }
 
-size_t FluidSolver::CompactHashingNeighborhoodSearch::GetOrAquireStorageCell(size_t hash, const GridCell &cell) {
-
-
-    if (hashTable[hash].info.attributes.hasAValue == 0) {
-        // the hash value is not used at the moment, set it to used and note the cell
-        hashTable[hash].info.attributes.hasAValue = 1;
-        hashTable[hash].gridCellUsingThis = cell;
-
-        auto storageSection = AquireNewCellStorageSection();
-        hashTable[hash].storageSectionMappedTo = storageSection;
-        // write grid cell coordinates to storage section header
-        cellStorage[storageSection * storageSectionSize].particleGridCell = cell;
-        return storageSection;
-
-    } else {
-        // the hash value is already in use, now testing which cell uses this
-        if (hashTable[hash].gridCellUsingThis == cell) {
-            // no problem found
-            return hashTable[hash].storageSectionMappedTo;
-        } else {
-            // this particle is in another cell than the hashTable hence a hash collision occured
-            hashTable[hash].info.attributes.hashCollisionHappened = 1;
-            // resolve the hash collision
-            size_t newHash = (hash + 1) % hashTableSize;
-            while (hashTable[newHash].gridCellUsingThis != cell && hashTable[newHash].info.attributes.hasAValue == 1) {
-                newHash = (newHash + 1) % hashTableSize;
-                if (newHash == hash) {
-                    throw std::logic_error("No free hash map entry was found!");
-                }
-            }
-            // we resolved the hash collision by finding a cell that is either free to use or already reserved for this cell
-            return GetOrAquireStorageCell(newHash, cell);
-        }
-    }
-}
-
 FluidSolver::NeighborsCompact
 FluidSolver::CompactHashingNeighborhoodSearch::GetNeighbors(FluidSolver::particleIndex_t particleIndex) {
     return NeighborsCompact(storage.GetDataPtr(particleIndex), storage.GetCount(particleIndex));
@@ -108,9 +74,6 @@ FluidSolver::NeighborsCompactData FluidSolver::CompactHashingNeighborhoodSearch:
     return NeighborsCompactData(t);
 }
 
-size_t FluidSolver::CompactHashingNeighborhoodSearch::CalculateHashValue(const GridCell &gridCell) {
-    return ((uint64_t) (gridCell.x * primeOne) ^ (uint64_t) (gridCell.y * primeTwo)) % hashTableSize;
-}
 
 FluidSolver::CompactHashingNeighborhoodSearch::GridCell
 FluidSolver::CompactHashingNeighborhoodSearch::CalculateCellCoordinates(FluidSolver::particleIndex_t particleIndex) {
@@ -121,64 +84,21 @@ FluidSolver::CompactHashingNeighborhoodSearch::CalculateCellCoordinates(FluidSol
     return cell;
 }
 
-void FluidSolver::CompactHashingNeighborhoodSearch::AddParticleToStorageSection(size_t storageSection,
-                                                                                FluidSolver::particleIndex_t particleIndex) {
 
-    auto realIndexOfSection = storageSection * storageSectionSize;
-    // the first field of the storage section states how many particle indices are stored within this section
-
-    cellStorage[realIndexOfSection].particleIndex = cellStorage[realIndexOfSection].particleIndex + 1;
-    auto count = cellStorage[realIndexOfSection].particleIndex;
-
-    if (count >= storageSectionSize)
-        throw std::logic_error("Tried to add a particle to a cell storage, but the cell storage was already full.");
-
-    auto storageIndex = realIndexOfSection + count; // this is correct since the first index is
-    cellStorage[storageIndex].particleIndex = particleIndex;
-}
-
-size_t FluidSolver::CompactHashingNeighborhoodSearch::AquireNewCellStorageSection() {
-    // search for empty cells
-    for (size_t i = 0; i < cellStorage.size() / storageSectionSize; i++) {
-        auto index = i * storageSectionSize;
-        if (cellStorage[index].particleIndex == 0)
-            return i; // cell storage section i is empty
-    }
-
-    // there was no empty storage section: resize the array to fit more section
-    auto index = cellStorage.size() / storageSectionSize;
-    cellStorage.resize(cellStorage.size() + storageSectionSize, GridCellParticleHandle());
-    return index;
-}
-
-void FluidSolver::CompactHashingNeighborhoodSearch::TotalResetSearch() {
-    // reset and resize the hash table as needed
-    hashTableSize = 2 * particleCollection->GetSize();
-    if (this->hashTable.size() != hashTableSize) {
-        hashTable.resize(hashTableSize);
-    }
-
+void FluidSolver::CompactHashingNeighborhoodSearch::RegenerateAllDataStructures() {
     // reset data
-    // reset hash table
-    for (size_t i = 0; i < hashTable.size(); i++) {
-        // resetting the hash table
-        hashTable[i].info.value = 0;
-    }
-    // reset the cell storage
-    for (size_t i = 0; i < cellStorage.size() / storageSectionSize; i++) {
-        auto index = i * storageSectionSize;
-        cellStorage[index].particleIndex = 0; // reset the cell storage counts, but this is only valid of the cellStorageSize did not change
-    }
+    hashTable = CompactHashingNeighborhoodSearch::HashTable(particleCollection->GetSize() * 2);
+    cellStorage.ClearStorage();
 
     // insert all particles
     for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++) {
-        if (particleCollection->GetParticleType(particleIndex) == ParticleType::ParticleTypeDead)
-            continue;
         auto cell = CalculateCellCoordinates(particleIndex);
-        auto hash = CalculateHashValue(cell);
-        auto storageSection = GetOrAquireStorageCell(hash, cell);
-        AddParticleToStorageSection(storageSection, particleIndex);
-
+        size_t storageSection;
+        if (!hashTable.GetValueByKey(cell, storageSection)) {
+            storageSection = cellStorage.GetEmptyStorageSection();
+            hashTable.SetValueByKey(cell, storageSection);
+        }
+        cellStorage.AddParticleToStorageSection(storageSection, particleIndex, cell);
     }
 }
 
@@ -186,61 +106,43 @@ void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
     // this function exploits temporal coherence
 
     // 1. calculate new cell coordinates of each particle
-    // 1.1 if the cell coordinate has changed, add particle to a moving list (or mark the particle)
+    // 1.1 if the cell coordinate has changed, add particle to a remove and add list
     //     this is realised by then comparing the newly calculated grid cell coordinates against the storage header grid coordinates
-    size_t toMoveCount = 0;
-    for (size_t i = 0; i < cellStorage.size(); i++) {
-        if (i % storageSectionSize == 0)
-            continue; // this entry would be a cell header -> do not process it
-        auto headerIndex = i - (i % storageSectionSize);
 
-        cellStorage[i].particleGridCell = CalculateCellCoordinates(cellStorage[i].particleIndex);
-        if (cellStorage[headerIndex].particleGridCell != cellStorage[i].particleGridCell)
-            toMoveCount++;
-    }
+    std::vector<std::pair<size_t, CellStorage::GridCellParticleHandle>> removeList;
 
-    // 2. remove the marked particles from the cell storage, add the others to the moving list
-    std::vector<GridCellParticleHandle> toMove(toMoveCount);
-    toMoveCount = 0;
-    for (size_t i = 0; i < cellStorage.size() / storageSectionSize; i++) {
-        auto headerIndex = i * storageSectionSize;
-        auto storageCellCount = cellStorage[headerIndex].particleIndex;
-
-        for (size_t c = storageCellCount ; c >= 1; c--) {
-            auto particleHandleIndex = headerIndex  + c;
-            if (cellStorage[particleHandleIndex].particleGridCell == cellStorage[headerIndex].particleGridCell)
-                continue; // the particle handle is in the correct cell storage
-
-            // the particle is in the wrong cell, remove it from the storage section, add it to the toMove vector and ensure that the storage stays compact
-            toMove[toMoveCount] = cellStorage[particleHandleIndex];
-            toMoveCount++;
-            storageCellCount--;
-            cellStorage[headerIndex].particleIndex = storageCellCount;
-
-            if (c - 1 < storageCellCount) {
-                // there are handles after the one that we deleted, move the handles after this one up such that the storage cell stays compact
-                for (size_t reorder = c - 1; reorder < storageCellCount; reorder++) {
-                    auto reorderHandleIndex = headerIndex + 1 + reorder;
-                    cellStorage[reorder] = cellStorage[reorder + 1];
-                }
-            }
-
+    auto begin = hashTable.begin();
+    auto end = hashTable.end();
+    for (auto current = begin; current != end; current++) {
+        auto cell = (*current);
+        size_t storageSection;
+        if (!hashTable.GetValueByKey(cell, storageSection)) {
+            continue;
         }
 
+        auto sectionBegin = cellStorage.GetStorageSectionDataBegin(storageSection);
+        auto sectionEnd = cellStorage.GetStorageSectionDataEnd(storageSection);
+        auto sectionGridCell = cellStorage.GetStorageSectionGridCell(storageSection);
+
+        for (auto currentSection = sectionBegin; currentSection != sectionEnd; currentSection++) {
+            auto &handle = *currentSection;
+            handle.particleGridCell = CalculateCellCoordinates(handle.particleIndex.value);
+            if (handle.particleGridCell != sectionGridCell) {
+                removeList.push_back({storageSection, handle});
+            }
+        }
     }
 
-    // 3. insert the particles back into the storage at the correct location
-    for (size_t i = 0; i < toMove.size(); i++) {
-        // insert by handle
-        auto hash = CalculateHashValue(toMove[i].particleGridCell);
-        auto storageSection = GetOrAquireStorageCell(hash, toMove[i].particleGridCell);
-        AddParticleToStorageSection(storageSection, toMove[i].particleIndex);
-    }
+
+    // 2. remove the particles from the list and add it again
+    // TODO: implement
+
+
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::UpdateDataStructure() {
     if (initStructure || particleCollectionIndicesChangedCounter != particleCollection->GetIndicesChangedCounter()) {
-        TotalResetSearch(); // use this on init and if particle collection size changed or indices of particles in the collection changed (due to sorting).
+        RegenerateAllDataStructures(); // use this on init and if particle collection size changed or indices of particles in the collection changed (due to sorting).
         initStructure = false;
         particleCollectionIndicesChangedCounter = particleCollection->GetIndicesChangedCounter();
     } else {
@@ -253,26 +155,16 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
         const FluidSolver::CompactHashingNeighborhoodSearch::GridCell &gridCell,
         FluidSolver::particleAmount_t &neighborCount, FluidSolver::particleIndex_t *data) {
 
-    // checking if a table entry exists
-    auto hash = CalculateHashValue(gridCell);
-    if (hashTable[hash].info.attributes.hasAValue == 0)
-        return; // grid cell is empty
-
-    // checking for correct hash table entry
-    auto newHash = hash;
-    while ((hashTable[newHash].gridCellUsingThis != gridCell || hashTable[newHash].info.attributes.hasAValue == 0) &&
-           hashTable[hash].info.attributes.hashCollisionHappened == 1) {
-        newHash = (newHash + 1) % hashTableSize;
-        if (newHash == hash)
-            return; // there is no hash table entry corresponding to the grid cell
+    size_t storageSection;
+    if (!hashTable.GetValueByKey(gridCell, storageSection)) {
+        return; // no entry in the hash map for this key
     }
-    hash = newHash;
 
-    auto handle = hashTable[hash];
-    for (size_t i = 0; i < cellStorage[handle.storageSectionMappedTo * storageSectionSize].particleIndex; i++) {
-        auto index = handle.storageSectionMappedTo * storageSectionSize + 1 + i;
-        auto neighborIndex = cellStorage[index].particleIndex;
+    auto begin = cellStorage.GetStorageSectionDataBegin(storageSection);
+    auto end = cellStorage.GetStorageSectionDataEnd(storageSection);
+    for (auto current = begin; current != end; current++) {
 
+        auto neighborIndex = (*current).particleIndex.value;
         // check for neighborhood
         auto neighborPos = particleCollection->GetPosition(neighborIndex);
         if (glm::length(particlePosition - neighborPos) <= radius) {
@@ -283,10 +175,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
             *(data + neighborCount) = neighborIndex;
             neighborCount++;
         }
-
     }
-
-
 }
 
 
@@ -352,4 +241,386 @@ void FluidSolver::CompactHashingNeighborhoodSearch::NeighborStorage::setTotalPar
 FluidSolver::particleAmount_t
 FluidSolver::CompactHashingNeighborhoodSearch::NeighborStorage::GetCount(FluidSolver::particleIndex_t particleIndex) {
     return neighbors[particleIndex * (neighborStorageSizePerParticle + 1)];
+}
+
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::hash_t
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::CalculateHashValue(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell) {
+    const int32_t primeOne = 73856093;
+    const int32_t primeTwo = 19349663;
+    // const size_t primeThree = 83492791; // only needed for 3d
+    return ((uint64_t) (gridCell.x * primeOne) ^ (uint64_t) (gridCell.y * primeTwo)) % hashTableSize;
+}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::HashTable::GetValueByKey(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell,
+        FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t &value) {
+    auto hash = CalculateHashValue(gridCell);
+    return GetValueByKeyInternal(hash, gridCell, value);
+}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::HashTable::GetValueByKeyInternal(
+        FluidSolver::CompactHashingNeighborhoodSearch::HashTable::hash_t hashValue,
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell,
+        FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t &value) {
+    auto handle = hashTable[hashValue];
+    if (handle.info.attributes.hasAValue == 1) {
+        // check if this is the correct hash handle
+        if (handle.gridCellUsingThis == gridCell) {
+            value = handle.storageSectionMappedTo;
+            return true;
+        } else {
+            // check if there was a hash collision
+            if (handle.info.attributes.hashCollisionHappened == 0) {
+                // there was no collision, hence there is no entry for the given key
+                return false;
+            } else {
+                // there was a collision, check further
+                hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
+                return GetValueByKeyInternal(hashValue, gridCell, value);
+            }
+        }
+    }
+    return false;
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::SetValueByKey(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell,
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t value) {
+    auto hash = CalculateHashValue(gridCell);
+    SetValueByKeyInternal(hash, gridCell, value);
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::SetValueByKeyInternal(
+        FluidSolver::CompactHashingNeighborhoodSearch::HashTable::hash_t hashValue,
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell,
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t value) {
+    auto &handle = hashTable[hashValue];
+    if (handle.info.attributes.hasAValue == 0) {
+        // handle is empty, reserve it and set the value
+        handle.info.attributes.hasAValue = 1;
+        handle.gridCellUsingThis = gridCell;
+        handle.storageSectionMappedTo = value;
+    } else {
+        // handle is already in use
+        if (handle.gridCellUsingThis == gridCell) {
+            // the handle is used by this key, set the value
+            handle.storageSectionMappedTo = value;
+        } else {
+            // the handle is used by another key, check if there was a hash collision
+            if (handle.info.attributes.hashCollisionHappened == 1) {
+                // there was a hash collision, check the next handle
+                hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
+                SetValueByKeyInternal(hashValue, gridCell, value);
+            } else {
+                // there was no hash collision, but this entry created one
+                // find a new empty cell
+                bool foundEmptyCell = false;
+                handle.info.attributes.relativeHashCollisionNextEntry = -1; // setting it to maximum possible value
+                for (size_t i = 1; i <= handle.info.attributes.relativeHashCollisionNextEntry; i++) {
+                    hashValue = (hashValue + i) % hashTableSize;
+                    auto &newHandle = hashTable[hashValue];
+                    if (newHandle.info.attributes.hasAValue == 0) {
+                        // we found a empty cell at index i, populate it with our data
+                        SetValueByKeyInternal(hashValue, gridCell, value);
+                        handle.info.attributes.relativeHashCollisionNextEntry = i; // set the appropriate hash collision flags
+                        handle.info.attributes.hashCollisionHappened = 1;
+                        foundEmptyCell = true;
+                        break;
+                    }
+
+                }
+                if (!foundEmptyCell)
+                    throw std::logic_error("Could not find a empty hash table cell!");
+            }
+        }
+    }
+
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTable(size_t hashTableSize) : hashTableSize(
+        hashTableSize) {
+    auto emptyHashTableEntry = HashTableHandle();
+    emptyHashTableEntry.info.value = 0;
+    hashTable.resize(hashTableSize, emptyHashTableEntry);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::end() {
+    return FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator(this->hashTable.size(), this);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::begin() {
+    size_t firstIndex = 0;
+    while (firstIndex < hashTable.size() && hashTable[firstIndex].info.attributes.hasAValue == 0) {
+        firstIndex++;
+    }
+    return FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator(firstIndex, this);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::CellStorageIterator(
+        FluidSolver::CompactHashingNeighborhoodSearch::CellStorage *storage, size_t originalStorageSection,
+        size_t currentStorageSection, uint8_t currentStorageSectionElement) : internalCellStorage(storage),
+                                                                              originalStorageSection(
+                                                                                      originalStorageSection),
+                                                                              currentStorageSection(
+                                                                                      currentStorageSection),
+                                                                              currentStorageSectionElement(
+                                                                                      currentStorageSectionElement) {}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator==(
+        const FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator &other) const {
+    return internalCellStorage == other.internalCellStorage && other.currentStorageSection == currentStorageSection &&
+           other.originalStorageSection == originalStorageSection &&
+           other.currentStorageSectionElement == currentStorageSectionElement;
+}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator!=(
+        const FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator &other) const {
+    return !(*this == other);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle &
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator*() {
+    return *(internalCellStorage->GetStorageSectionElementsDataPtr(currentStorageSection) +
+             currentStorageSectionElement);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator &
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator++() {
+    currentStorageSectionElement++;
+    auto &header = internalCellStorage->GetStorageSectionHeader(currentStorageSection);
+    if (currentStorageSectionElement >= header.particleIndex.internal.count &&
+        header.particleIndex.internal.relativeLink != 0) {
+        // we went over the end of the current storage section, but there is a linked one -> jump to the linked one
+        currentStorageSectionElement = 0;
+        currentStorageSection = currentStorageSection + header.particleIndex.internal.relativeLink;
+    }
+    return *this;
+}
+
+const FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator++(int) {
+    CellStorageIterator clone(*this);
+    (*this)++;
+    return clone;
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle *
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionElementsDataPtr(size_t storageSection) {
+    return &data[storageSection * oneSectionTotalSize + 1];
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle &
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionHeader(size_t storageSection) {
+    return data[storageSection * oneSectionTotalSize];
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ClearStorage() {
+
+    auto resetData = GridCellParticleHandle();
+    resetData.particleIndex.internal.relativeLink = 0;
+    resetData.particleIndex.internal.count = 0;
+
+    for (size_t i = 0; i < data.size() / oneSectionTotalSize; i++) {
+        data[i * oneSectionTotalSize] = resetData;
+    }
+}
+
+size_t FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSection() {
+    return GetEmptyStorageSection(0);
+}
+
+FluidSolver::particleAmount_t
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionElementCount(size_t storageSection) {
+
+    auto &header = GetStorageSectionHeader(storageSection);
+    if (header.particleIndex.internal.relativeLink != 0) {
+        return header.particleIndex.internal.count +
+               GetStorageSectionElementCount(storageSection + header.particleIndex.internal.relativeLink);
+    }
+    return header.particleIndex.internal.count;
+
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::GridCell
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionGridCell(size_t storageSection) {
+    auto &header = GetStorageSectionHeader(storageSection);
+    return header.particleGridCell;
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionDataBegin(size_t storageSection) {
+    return FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator(this, storageSection,
+                                                                                           storageSection, 0);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionDataEnd(size_t storageSection) {
+
+    auto endStorageSection = storageSection;
+    uint8_t endStorageSectionCount = 0;
+
+    auto &header = GetStorageSectionHeader(endStorageSection);
+    while (header.particleIndex.internal.relativeLink != 0) {
+        // go through the linked storage section until we find the end
+        endStorageSection = endStorageSection + header.particleIndex.internal.relativeLink;
+        header = GetStorageSectionHeader(endStorageSection);
+    }
+
+    endStorageSectionCount = header.particleIndex.internal.count;
+    return FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator(this, storageSection,
+                                                                                           endStorageSection,
+                                                                                           endStorageSectionCount);
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToStorageSection(size_t storageSection,
+                                                                                             FluidSolver::particleIndex_t particleIndex,
+                                                                                             const GridCell &gridCell) {
+    auto &header = GetStorageSectionHeader(storageSection);
+    if (header.particleIndex.internal.count < oneSectionParticleSize) {
+        // the particle can be put into this storage cell
+        auto particleData = GridCellParticleHandle();
+        particleData.particleIndex.value = particleIndex;
+        particleData.particleGridCell = gridCell;
+
+        data[storageSection * oneSectionTotalSize + 1 + header.particleIndex.internal.count] = particleData;
+        header.particleIndex.internal.count = header.particleIndex.internal.count + 1;
+    } else {
+        // this section is already filled up
+        if (header.particleIndex.internal.relativeLink != 0) {
+            // there exists already a link to another storage cell, insert the particle there
+            AddParticleToStorageSection(storageSection + header.particleIndex.internal.relativeLink, particleIndex,
+                                        gridCell);
+        } else {
+            // there is no linked storage cell existing, find an empty one after this one and use it
+            auto newEmptyStorageSection = GetEmptyStorageSection(storageSection + 1);
+            auto &newHeader = GetStorageSectionHeader(newEmptyStorageSection);
+            newHeader.particleGridCell = gridCell;
+            AddParticleToStorageSection(newEmptyStorageSection, particleIndex, gridCell);
+        }
+    }
+}
+
+size_t
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSection(size_t minimumStorageSectionValue) {
+    for (size_t i = minimumStorageSectionValue; i < data.size() / oneSectionTotalSize; i++) {
+        if (data[i].particleIndex.internal.count == 0) {
+            return i;
+        }
+    }
+
+    auto resetData = GridCellParticleHandle();
+    resetData.particleIndex.internal.relativeLink = 0;
+    resetData.particleIndex.internal.count = 0;
+
+    auto newStorageSection = data.size() / oneSectionTotalSize;
+    data.resize(data.size() + oneSectionTotalSize, resetData);
+    return newStorageSection;
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleFromStorageSection(size_t storageSection,
+                                                                                                  FluidSolver::particleIndex_t particleIndex) {
+    RemoveParticleFromStorageSectionInternal(storageSection, storageSection, particleIndex);
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleFromStorageSectionInternal(
+        size_t storageSection, size_t storageSectionBefore, FluidSolver::particleIndex_t particleIndex) {
+
+    auto &header = GetStorageSectionHeader(storageSection);
+
+    if (header.particleIndex.internal.relativeLink != 0) {
+        RemoveParticleFromStorageSectionInternal(storageSection + header.particleIndex.internal.relativeLink,
+                                                 storageSection, particleIndex);
+    }
+
+    for (size_t i = header.particleIndex.internal.count; i >= 1; i--) {
+        auto index = storageSection * oneSectionTotalSize + i;
+        if (data[index].particleIndex.value == particleIndex) {
+            // delete this one by either moving the last entry here (or if this is the last entry, reducing the count of this section by one)
+            if (i == header.particleIndex.internal.count) {
+                // this is the last element
+                if (header.particleIndex.internal.relativeLink != 0) {
+                    // there exists a link, so we can replace the last one with an extracted one from the link
+                    data[index] = ExtractLastOne(storageSection + header.particleIndex.internal.relativeLink,
+                                                 storageSection);
+                } else {
+                    // there is nothing to replace this entry, simply delete it by reducing the count
+                    header.particleIndex.internal.count -= 1;
+                }
+            } else {
+                // the particle is somewhere in the middle, just take the last particle and replace the particle with that
+                data[index] = ExtractLastOne(storageSection, storageSectionBefore);
+            }
+
+        }
+    }
+
+
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ExtractLastOne(size_t storageSection,
+                                                                           size_t storageSectionBefore) {
+    auto &header = GetStorageSectionHeader(storageSection);
+    if (header.particleIndex.internal.relativeLink != 0) {
+        return ExtractLastOne(storageSection + header.particleIndex.internal.count, storageSection);
+    } else {
+        GridCellParticleHandle extracted = data[storageSection * oneSectionTotalSize +
+                                                header.particleIndex.internal.count];
+        header.particleIndex.internal.count = header.particleIndex.internal.count - 1;
+        if (header.particleIndex.internal.count == 0) {
+            // the storage section became empty, remove the link to this section in the previous storage section
+            if (storageSection != storageSectionBefore) {
+                // but only if the storage sections are different
+                auto &prevHeader = GetStorageSectionHeader(storageSectionBefore);
+                prevHeader.particleIndex.internal.relativeLink = 0;
+            }
+        }
+        return extracted;
+    }
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorage(uint8_t oneSectionParticleSize)
+        : oneSectionParticleSize(oneSectionParticleSize) {
+    oneSectionTotalSize = oneSectionParticleSize + 1;
+}
+
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::HashTableIterator(size_t currentIndex,
+                                                                                               FluidSolver::CompactHashingNeighborhoodSearch::HashTable *table)
+        : currentIndex(currentIndex), table(table) {}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator==(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator &other) const {
+    return this->table == other.table && this->currentIndex == other.currentIndex;
+}
+
+bool FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator!=(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator &other) const {
+    return !(*this == other);
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator*() {
+    return table->hashTable[this->currentIndex].gridCellUsingThis;
+}
+
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator &
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator++() {
+    this->currentIndex++;
+    while (this->currentIndex < table->hashTable.size() &&
+           table->hashTable[currentIndex].info.attributes.hasAValue == 0) {
+        this->currentIndex++;
+    }
+    return *this;
+}
+
+const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator
+FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator++(int) {
+    HashTableIterator clone(*this);
+    (*this)++;
+    return clone;
 }

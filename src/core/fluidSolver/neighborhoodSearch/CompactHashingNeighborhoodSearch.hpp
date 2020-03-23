@@ -22,24 +22,12 @@ namespace FluidSolver {
 
         void UpdateDataStructure();
 
-        void TotalResetSearch();
+        void RegenerateAllDataStructures();
 
         void SearchByDifference();
 
         size_t particleCollectionIndicesChangedCounter;
         bool initStructure;
-
-
-        /**
-         * Should be two times the amount of particles.
-         */
-        size_t hashTableSize = 0;
-        float cellSize;
-        size_t storageSectionSize = 51;
-
-        const int32_t primeOne = 73856093;
-        const int32_t primeTwo = 19349663;
-        // const size_t primeThree = 83492791; // only needed for 3d
 
         struct GridCell {
             int32_t x = 0;
@@ -54,51 +42,173 @@ namespace FluidSolver {
             GridCell(int32_t x, int32_t y);
         };
 
-        struct HashTableHandle {
-            size_t storageSectionMappedTo = 0;
-            GridCell gridCellUsingThis;
-            union {
-                struct {
-                    unsigned hashCollisionHappened : 1;
-                    unsigned hasAValue : 1;
-                    unsigned UNUSED_UNION_BITS : 6;
-                } attributes;
-                uint8_t value = 0;
-            } info;
+
+        class HashTable {
+        public:
+
+            typedef size_t mappedTo_t;
+            typedef GridCell key_t;
+            typedef size_t hash_t;
+
+            class HashTableIterator {
+            public:
+                HashTableIterator(size_t currentIndex, HashTable *table);
+
+                bool operator==(const HashTableIterator &other) const;
+
+                bool operator!=(const HashTableIterator &other) const;
+
+                key_t &operator*();
+
+                HashTableIterator &operator++();
+
+                const HashTableIterator operator++(int);
+
+            private:
+                size_t currentIndex;
+                HashTable *table;
+            };
+
+
+            explicit HashTable(size_t hashTableSize);
+
+            bool GetValueByKey(const key_t &gridCell, mappedTo_t &value);
+
+            // void RemoveKey(const key_t &gridCell); // TODO: implement later
+
+            void SetValueByKey(const key_t &gridCell, mappedTo_t value);
+
+            HashTableIterator begin();
+            HashTableIterator end();
+
+        private:
+
+
+            size_t hashTableSize = 0;
+
+            struct HashTableHandle {
+                mappedTo_t storageSectionMappedTo = 0;
+                key_t gridCellUsingThis;
+                union {
+                    struct {
+                        unsigned hashCollisionHappened : 1;
+                        unsigned hasAValue : 1;
+                        unsigned relativeHashCollisionNextEntry : 6;
+                    } attributes;
+                    uint8_t value = 0;
+                } info;
+            };
+
+            std::vector<HashTableHandle> hashTable;
+
+            hash_t CalculateHashValue(const key_t &gridCell);
+
+
+            bool GetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, mappedTo_t &value);
+
+            void SetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, const mappedTo_t value);
+
         };
 
-        struct GridCellParticleHandle {
-            particleIndex_t particleIndex = 0;
-            GridCell particleGridCell;
+        float cellSize;
+        HashTable hashTable;
+
+        class CellStorage {
+
+        public:
+            struct GridCellParticleHandle {
+                union {
+                    particleIndex_t value = 0;
+                    struct {
+                        unsigned count : 8;
+                        unsigned relativeLink : 24;
+                    } internal;
+                } particleIndex;
+
+                GridCell particleGridCell;
+            };
+
+            class CellStorageIterator {
+
+            public:
+
+                CellStorageIterator(CellStorage *storage, size_t originalStorageSection, size_t currentStorageSection,
+                                    uint8_t currentStorageSectionElement);
+
+                bool operator==(const CellStorageIterator &other) const;
+
+                bool operator!=(const CellStorageIterator &other) const;
+
+                GridCellParticleHandle &operator*();
+
+                CellStorageIterator &operator++();
+
+                const CellStorageIterator operator++(int);
+
+            private:
+
+                CellStorage *internalCellStorage;
+                size_t originalStorageSection;
+                size_t currentStorageSection;
+                uint8_t currentStorageSectionElement;
+
+            };
+
+
+            void
+            AddParticleToStorageSection(size_t storageSection, particleIndex_t particleIndex, const GridCell &gridCell);
+
+            void RemoveParticleFromStorageSection(size_t storageSection, particleIndex_t particleIndex);
+
+            size_t GetEmptyStorageSection();
+
+            particleAmount_t GetStorageSectionElementCount(size_t storageSection);
+
+            GridCell GetStorageSectionGridCell(size_t storageSection);
+
+            CellStorageIterator GetStorageSectionDataBegin(size_t storageSection);
+
+            CellStorageIterator GetStorageSectionDataEnd(size_t storageSection);
+
+            void ClearStorage();
+
+            CellStorage(uint8_t oneSectionParticleSize);
+
+        private:
+
+            size_t GetEmptyStorageSection(size_t minimumStorageSectionValue);
+
+            // points towards the first element (not the header) of the storage section
+            GridCellParticleHandle *GetStorageSectionElementsDataPtr(size_t storageSection);
+
+            GridCellParticleHandle &GetStorageSectionHeader(size_t storageSection);
+
+            void RemoveParticleFromStorageSectionInternal(size_t storageSection, size_t storageSectionBefore,
+                                                          particleIndex_t particleIndex);
+
+            GridCellParticleHandle ExtractLastOne(size_t storageSection, size_t storageSectionBefore);
+
+            uint8_t oneSectionParticleSize;
+            uint8_t oneSectionTotalSize;
+
+            /**
+             * The size of the storage is always a multiple of oneSectionTotalSize.
+             * The section storage is divided into sections of the oneSectionTotalSize size.
+             * The first element of each section is called the header and its particle index represents the internal data like the count and the link to another section.
+             * The particleGridCell of the header represents the grid cell this storage is responsible for.
+             * The remaining oneSectionParticleSize entries represent the actual particles of this storage cell, but only
+             * as many as the header count variable states. The particleGridCell variable of these particles is used whilst
+             * updating the structure. At any other times this fields data should not be read as it would eventually
+             * represent wrong data.
+             */
+            std::vector<GridCellParticleHandle> data;
+
+
         };
 
-        /**
-         * The size of the cell storage is always a multiple of storageSectionSize.
-         * The cell storage is divided into cells of the storageSectionSize size.
-         * The first element of each cell is called the header and its particle index represents the number of elements
-         * contained in the storage section (zero if empty). The particleGridCell of the header represents the grid cell
-         * this storage is responsible for.
-         * The remaining storageSectionSize - 1 entries represent the actual particles of this storage cell, but only
-         * as many as the header count variable states. The particleGridCell variable of these particles is used whilst
-         * updating the structure. At any other times this fields data should not be read as it would eventually
-         * represent wrong data.
-         */
-        std::vector<GridCellParticleHandle> cellStorage;
-
-
-        std::vector<HashTableHandle> hashTable;
-
-        size_t CalculateHashValue(const GridCell &gridCell);
+        CellStorage cellStorage;
 
         GridCell CalculateCellCoordinates(particleIndex_t particleIndex);
-
-
-        size_t GetOrAquireStorageCell(size_t hash, const GridCell &cell);
-
-        void AddParticleToStorageSection(size_t storageSection, particleIndex_t particleIndex);
-
-        size_t AquireNewCellStorageSection();
-
 
         class NeighborStorage {
 
