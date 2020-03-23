@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <chrono>
+#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 #include "IISPHFluidSolver.hpp"
 
 
@@ -16,7 +17,7 @@ void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
         delete neighborhoodSearch;
         neighborhoodSearch = nullptr;
         if (ParticleCollection != nullptr)
-            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
+            neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     }
     this->ParticleSize = particleSize;
 }
@@ -43,7 +44,7 @@ void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticle
         neighborhoodSearch = nullptr;
     }
     if (ParticleCollection != nullptr)
-        neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
+        neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     this->ParticleCollection = ParticleCollection;
     this->maxPredictedDensityErrorReached = 0.0f;
 }

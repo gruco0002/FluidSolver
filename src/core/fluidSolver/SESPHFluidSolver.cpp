@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <chrono>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 #include "SESPHFluidSolver.hpp"
 
 namespace FluidSolver {
@@ -205,7 +206,7 @@ namespace FluidSolver {
             delete neighborhoodSearch;
             neighborhoodSearch = nullptr;
             if (particleCollection != nullptr)
-                neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
+                neighborhoodSearch = new FluidSolver::CompactHashingNeighborhoodSearch(particleCollection, NeighborhoodRadius);
         }
         this->ParticleSize = particleSize;
 
@@ -233,7 +234,7 @@ namespace FluidSolver {
             neighborhoodSearch = nullptr;
         }
         if (particleCollection != nullptr)
-            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
+            neighborhoodSearch = new FluidSolver::CompactHashingNeighborhoodSearch(particleCollection, NeighborhoodRadius);
         this->particleCollection = particleCollection;
     }
 
