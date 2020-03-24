@@ -3,8 +3,8 @@
 FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
         FluidSolver::IParticleCollection *particleCollection, float radius) :
         INeighborhoodSearch(particleCollection, radius),
-        storage(100, particleCollection->GetSize()),
-        cellStorage(CellStorage(40)),
+        storage(40, particleCollection->GetSize()),
+        cellStorage(CellStorage(10)),
         hashTable(HashTable(particleCollection->GetSize() * 2)) {
     cellSize = radius;
     particleCollectionIndicesChangedCounter = particleCollection->GetIndicesChangedCounter();
