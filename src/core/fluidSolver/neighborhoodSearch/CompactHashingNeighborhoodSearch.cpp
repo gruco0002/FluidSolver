@@ -3,7 +3,7 @@
 FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
         FluidSolver::IParticleCollection *particleCollection, float radius) :
         INeighborhoodSearch(particleCollection, radius),
-        storage(40, particleCollection->GetSize()),
+        storage(100, particleCollection->GetSize()),
         cellStorage(CellStorage(40)),
         hashTable(HashTable(particleCollection->GetSize() * 2)) {
     cellSize = radius;
@@ -22,6 +22,9 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighbors() {
 
     // searching neighbors
     for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++) {
+        if (particleCollection->GetParticleType(particleIndex) == ParticleType::ParticleTypeDead) {
+            continue;
+        }
 
         particleAmount_t neighborCount = 0;
         particleIndex_t *data = storage.GetDataPtr(particleIndex);
@@ -128,14 +131,31 @@ void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
             auto &handle = *currentSection;
             handle.particleGridCell = CalculateCellCoordinates(handle.particleIndex.value);
             if (handle.particleGridCell != sectionGridCell) {
-                removeList.push_back({storageSection, handle});
+                removeList.push_back({storageSection, CellStorage::GridCellParticleHandle(handle)});
             }
         }
     }
 
 
     // 2. remove the particles from the list and add it again
-    // TODO: implement
+    for (auto ele: removeList) {
+        cellStorage.RemoveParticleFromStorageSection(ele.first, ele.second.particleIndex.value);
+
+        if (cellStorage.GetStorageSectionElementCount(ele.first)) {
+            // the cell storage became empty and hence the mapping has to be removed since empty storage sections do not belong to anyone
+            auto oldGridKey = cellStorage.GetStorageSectionGridCell(ele.first);
+            hashTable.RemoveKey(oldGridKey);
+        }
+
+        size_t storageSection;
+        if (!hashTable.GetValueByKey(ele.second.particleGridCell, storageSection)) {
+            storageSection = cellStorage.GetEmptyStorageSection();
+            hashTable.SetValueByKey(ele.second.particleGridCell, storageSection);
+        }
+
+        cellStorage.AddParticleToStorageSection(storageSection, ele.second.particleIndex.value,
+                                                ele.second.particleGridCell);
+    }
 
 
 }
@@ -360,6 +380,53 @@ FluidSolver::CompactHashingNeighborhoodSearch::HashTable::begin() {
     return FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator(firstIndex, this);
 }
 
+void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKey(
+        const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell) {
+    auto hash = CalculateHashValue(gridCell);
+    RemoveKeyInternal(hash, gridCell);
+}
+
+void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal(hash_t hashValue,
+                                                                                 const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell) {
+    auto &handle = hashTable[hashValue];
+    if (handle.info.attributes.hasAValue == 0)
+        return; // this key does not exist
+
+    // the key is eventually existing, find it
+    if (handle.gridCellUsingThis == gridCell) {
+        // this is the handle to delete, before deleting, check if there are linked handles
+        if (handle.info.attributes.hashCollisionHappened == 1) {
+            // there is a link, move every link one step to us, replacing this one to 'delete' it
+            auto hashOfHandleToReplace = hashValue;
+            auto hashOfReplacement =
+                    (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
+            auto previousDiff = handle.info.attributes.relativeHashCollisionNextEntry;
+            hashTable[hashOfHandleToReplace] = hashTable[hashOfReplacement];
+            hashTable[hashOfHandleToReplace].info.attributes.relativeHashCollisionNextEntry = previousDiff;
+            while (hashTable[hashOfReplacement].info.attributes.hashCollisionHappened == 1) {
+                hashOfHandleToReplace = hashOfReplacement;
+                hashOfReplacement = (hashOfReplacement +
+                                     hashTable[hashOfReplacement].info.attributes.relativeHashCollisionNextEntry) %
+                                    hashTableSize;
+                auto previousDiff = hashTable[hashOfHandleToReplace].info.attributes.relativeHashCollisionNextEntry;
+                hashTable[hashOfHandleToReplace] = hashTable[hashOfReplacement];
+                hashTable[hashOfHandleToReplace].info.attributes.relativeHashCollisionNextEntry = previousDiff;
+            }
+
+            // the last cell was moved and its place is not used anymore
+            hashTable[hashOfReplacement].info.attributes.hasAValue = 0;
+        } else {
+            // there is nothing linked to the handle, so simply setting the hasAValue flag to zero deletes it
+            handle.info.attributes.hasAValue = 0;
+        }
+    } else {
+        // this handle is responsible for another key, check if there are linked handles
+        hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
+        RemoveKeyInternal(hashValue, gridCell);
+    }
+}
+
+
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::CellStorageIterator(
         FluidSolver::CompactHashingNeighborhoodSearch::CellStorage *storage, size_t originalStorageSection,
         size_t currentStorageSection, uint8_t currentStorageSectionElement) : internalCellStorage(storage),
@@ -404,7 +471,7 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator:
 const FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator++(int) {
     CellStorageIterator clone(*this);
-    (*this)++;
+    ++(*this);
     return clone;
 }
 
@@ -621,6 +688,6 @@ FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::ope
 const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator
 FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::operator++(int) {
     HashTableIterator clone(*this);
-    (*this)++;
+    ++(*this);
     return clone;
 }

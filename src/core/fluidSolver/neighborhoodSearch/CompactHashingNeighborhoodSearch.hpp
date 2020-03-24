@@ -74,7 +74,7 @@ namespace FluidSolver {
 
             bool GetValueByKey(const key_t &gridCell, mappedTo_t &value);
 
-            // void RemoveKey(const key_t &gridCell); // TODO: implement later
+            void RemoveKey(const key_t &gridCell);
 
             void SetValueByKey(const key_t &gridCell, mappedTo_t value);
 
@@ -107,6 +107,8 @@ namespace FluidSolver {
             bool GetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, mappedTo_t &value);
 
             void SetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, const mappedTo_t value);
+
+            void RemoveKeyInternal(hash_t hashValue, const key_t &gridCell);
 
         };
 
