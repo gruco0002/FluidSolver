@@ -8,6 +8,12 @@
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 
+using ::testing::UnorderedElementsAre;
+using ::testing::SizeIs;
+using ::testing::Each;
+using ::testing::Not;
+using ::testing::AnyOf;
+
 /**
  * Generates points from start (including) to end(including) with step distance as a grid in both axis directions.
  * The points are ordered by x axis first then y axis, for example:
@@ -42,17 +48,6 @@ std::vector<FluidSolver::FluidParticle> TurnPositionsIntoParticles(const std::ve
     }
     return ret;
 }
-
-bool IsParticleIndexInsideNeighborhood(FluidSolver::Neighbors *val, FluidSolver::particleIndex_t search) {
-    auto begin = val->begin();
-    auto end = val->end();
-    for (auto current = begin; current != end; current++) {
-        if ((*current) == search)
-            return true;
-    }
-    return false;
-}
-
 
 template<typename T>
 class NeighborhoodSearchTest : public ::testing::Test {
@@ -98,40 +93,15 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledRegion) {
 
     // Neighbors of particle zero
     FluidSolver::NeighborsCompact neighborsParticle0 = container.GetNeighbors(0);
-    EXPECT_EQ(6, neighborsParticle0.size());
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 0));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 1));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 2));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 11));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 12));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 22));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 13));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 23));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 33));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 35));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 3));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle0, 60));
+    EXPECT_THAT(neighborsParticle0, SizeIs(6));
+    EXPECT_THAT(neighborsParticle0, UnorderedElementsAre(0, 1, 2, 11, 12, 22));
+    EXPECT_THAT(neighborsParticle0, Each(Not(AnyOf(13, 23, 33, 35, 3, 60))));
 
     // Neighbors of particle 38
     FluidSolver::NeighborsCompact neighborsParticle38 = container.GetNeighbors(38);
-
-
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 29));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 25));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 47));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 59));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 61));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 71));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 5));
-    EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 2));
-
-    using ::testing::UnorderedElementsAre;
-    using ::testing::SizeIs;
-
-    EXPECT_EQ(13, neighborsParticle38.size());
     EXPECT_THAT(neighborsParticle38, SizeIs(13));
     EXPECT_THAT(neighborsParticle38, UnorderedElementsAre(16, 26, 27, 28, 36, 37, 38, 39, 40, 48, 49, 50, 60));
-    EXPECT_THAT(neighborsParticle38, UnorderedElementsAre(16, 26, 27, 28, 36, 37, 38, 39, 40, 48, 49, 50, 60));
+    EXPECT_THAT(neighborsParticle38, Each(Not(AnyOf(29, 25, 47, 59, 61, 71, 5, 2))));
 
 
     delete particleCollection;
@@ -149,6 +119,6 @@ typedef ::testing::Types<
         FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated,
         FluidSolver::QuadraticNeighborhoodSearchPreAllocated,
         FluidSolver::HashedNeighborhoodSearch
-       // , FluidSolver::CompactHashingNeighborhoodSearch
+        , FluidSolver::CompactHashingNeighborhoodSearch
 > NeighborhoodSearchTypes;
 INSTANTIATE_TYPED_TEST_SUITE_P(NeighborhoodSearchTypesInstantiation, NeighborhoodSearchTest, NeighborhoodSearchTypes);
