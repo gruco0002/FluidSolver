@@ -15,18 +15,18 @@ size_t FluidSolver::Neighbors::size() const {
 }
 
 size_t FluidSolver::Neighbors::GetEnd() {
-    const auto test = this;
+    const FluidSolver::Neighbors *test = this;
     return test->GetEnd();
 }
 
 size_t FluidSolver::Neighbors::GetBegin() {
-    const auto test = this;
+    const FluidSolver::Neighbors *test = this;
     return test->GetBegin();
 }
 
 FluidSolver::Neighbors::pointer
 FluidSolver::Neighbors::GetPointer(FluidSolver::Neighbors::NeighborsIterator::iteratorPosition_t iteratorPosition) {
-    const auto test = this;
+    const FluidSolver::Neighbors *test = this;
     return test->GetPointer(iteratorPosition);
 }
 
