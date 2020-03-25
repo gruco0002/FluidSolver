@@ -27,6 +27,8 @@ namespace FluidSolver {
     class QuadraticNeighborhoodSearchGreedyAllocated : public INeighborhoodSearch {
 
     public:
+        QuadraticNeighborhoodSearchGreedyAllocated(IParticleCollection *particleCollection, float radius);
+
         void FindNeighbors() override;
 
         NeighborsCompact GetNeighbors(particleIndex_t particleIndex) override;

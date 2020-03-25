@@ -83,3 +83,7 @@ FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 pos
     // TODO: implement
     throw std::logic_error("Not implemented");
 }
+
+FluidSolver::QuadraticNeighborhoodSearchPreAllocated::QuadraticNeighborhoodSearchPreAllocated(
+        FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
+                                                                                                  radius) {}

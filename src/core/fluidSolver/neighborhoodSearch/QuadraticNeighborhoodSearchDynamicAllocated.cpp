@@ -42,3 +42,7 @@ FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::GetNeighbors(glm::vec2
     throw std::logic_error("Not implemented");
 }
 
+FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::QuadraticNeighborhoodSearchDynamicAllocated(
+        FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
+                                                                                                  radius) {}
+
