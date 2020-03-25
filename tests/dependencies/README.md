@@ -10,11 +10,11 @@ This folder should contain the googletest code in a subdirectory called `googlet
 The directory structure should be the following:
 ```$xslt
 dependencies
-    googletest
-        include
-        src
+    googletest-1.10.0
+        googlemock
+        googletest
         ...
 ```
 
-Please download googletest v1.8.1 from https://github.com/google/googletest/releases
+Please download googletest v1.10.0 from https://github.com/google/googletest/releases
 or use the automated dependency download

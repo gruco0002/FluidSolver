@@ -47,7 +47,7 @@ Use CMake to compile the project:
 
 - [GLFW](https://www.glfw.org/) (Version 3.3),
   *needs to be downloaded*
-- [googletest](https://github.com/google/googletest) (Version 1.8.1),
+- [googletest](https://github.com/google/googletest) (Version 1.10.0),
   *needs to be downloaded*
 - [GLAD](https://github.com/Dav1dde/glad) (Version 0.1.29),
   included in this repository
