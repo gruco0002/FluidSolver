@@ -114,20 +114,8 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledRegion) {
 
     // Neighbors of particle 38
     FluidSolver::NeighborsCompact neighborsParticle38 = container.GetNeighbors(38);
-    EXPECT_EQ(13, neighborsParticle38.size());
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 16));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 26));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 27));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 28));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 36));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 37));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 38));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 39));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 40));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 48));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 49));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 50));
-    EXPECT_TRUE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 60));
+
+
     EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 29));
     EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 25));
     EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 47));
@@ -138,16 +126,20 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledRegion) {
     EXPECT_FALSE(IsParticleIndexInsideNeighborhood(&neighborsParticle38, 2));
 
     using ::testing::UnorderedElementsAre;
+    using ::testing::SizeIs;
 
-    EXPECT_THAT(neighborsParticle38, UnorderedElementsAre(16,26,27,28,36,37,38,39,40,48,49,50,60));
+    EXPECT_EQ(13, neighborsParticle38.size());
+    EXPECT_THAT(neighborsParticle38, SizeIs(13));
+    EXPECT_THAT(neighborsParticle38, UnorderedElementsAre(16, 26, 27, 28, 36, 37, 38, 39, 40, 48, 49, 50, 60));
+    EXPECT_THAT(neighborsParticle38, UnorderedElementsAre(16, 26, 27, 28, 36, 37, 38, 39, 40, 48, 49, 50, 60));
 
 
     delete particleCollection;
 }
 
 REGISTER_TYPED_TEST_SUITE_P(NeighborhoodSearchTest,
-                           ShouldWorkForSingleParticle,
-                           UniformSampledRegion
+                            ShouldWorkForSingleParticle,
+                            UniformSampledRegion
 );
 
 
@@ -156,7 +148,7 @@ typedef ::testing::Types<
         FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated,
         FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated,
         FluidSolver::QuadraticNeighborhoodSearchPreAllocated,
-        FluidSolver::HashedNeighborhoodSearch,
-        FluidSolver::CompactHashingNeighborhoodSearch
+        FluidSolver::HashedNeighborhoodSearch
+       // , FluidSolver::CompactHashingNeighborhoodSearch
 > NeighborhoodSearchTypes;
 INSTANTIATE_TYPED_TEST_SUITE_P(NeighborhoodSearchTypesInstantiation, NeighborhoodSearchTest, NeighborhoodSearchTypes);
