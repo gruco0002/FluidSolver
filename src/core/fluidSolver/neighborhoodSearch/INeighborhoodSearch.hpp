@@ -18,7 +18,7 @@ namespace FluidSolver {
      * define a suitable way of allowing access to their results.
      *
      * There a only a few virtual methods that need to be implemented: GetPointer(iteratorPosition), GetBegin() and
-* GetEnd(). The GetBegin function returns an iteratorPosition that represents the beginning of the neighbor list.
+     * GetEnd(). The GetBegin function returns an iteratorPosition that represents the beginning of the neighbor list.
      * GetEnd however returns an iterator position that represents the end() of the neighbor list pointing behind the
      * last element. These functions can be understood like the default stl begin() and end() functions. The GetPointer
      * function returns a pointer to the corresponding value representing the particle index of a neighbor for the given
@@ -38,12 +38,16 @@ namespace FluidSolver {
     public:
         class NeighborsIterator;
 
+        class ConstNeighborsIterator;
+
         typedef particleIndex_t T;
         typedef NeighborsIterator iterator;
+        typedef ConstNeighborsIterator const_iterator;
         typedef ptrdiff_t difference_type;
         typedef size_t size_type;
         typedef T value_type;
         typedef T *pointer;
+        typedef const T *const_pointer;
         typedef T &reference;
 
 
@@ -76,13 +80,45 @@ namespace FluidSolver {
             const NeighborsIterator operator++(int);
         };
 
+        /**
+         * Const iterator for the neighbors collection. More information regarding the iterating process or the Neighbors
+         * container see FluidSolver::Neighbors
+         */
+        class ConstNeighborsIterator {
+        public:
+            typedef size_t iteratorPosition_t;
+
+        private:
+            const Neighbors *neighbors;
+
+            iteratorPosition_t iteratorPosition;
+            const_pointer currentPointer;
+
+        public:
+            ConstNeighborsIterator(const Neighbors *nb, iteratorPosition_t iteratorPosition);
+
+            bool operator==(const ConstNeighborsIterator &other) const;
+
+            bool operator!=(const ConstNeighborsIterator &other) const;
+
+            const Neighbors::T &operator*();
+
+            ConstNeighborsIterator &operator++();
+
+            const ConstNeighborsIterator operator++(int);
+        };
+
     public:
 
         iterator begin();
 
+        const_iterator begin() const;
+
         iterator end();
 
-        size_t size();
+        const_iterator end() const;
+
+        size_t size() const;
 
     protected:
 
@@ -91,19 +127,26 @@ namespace FluidSolver {
          * @param iteratorPosition Iterator position between the beginning position and the ending position.
          * @return Pointer to the particle index of a neighbor.
          */
-        virtual pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) = 0;
+        virtual pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) const = 0;
+
+        virtual pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition);
 
         /**
          * Returns the ending iterator position (exclusive) for the neighbor list.
          * @return Iterator position
          */
-        virtual size_t GetEnd() = 0;
+        virtual size_t GetEnd() const = 0;
+
+        virtual size_t GetEnd();
+
 
         /**
          * Returns the beginning iterator position (inclusive) for the neighbor list.
          * @return Iterator position
          */
-        virtual size_t GetBegin() = 0;
+        virtual size_t GetBegin() const = 0;
+
+        virtual size_t GetBegin();
 
 
     };
@@ -122,11 +165,11 @@ namespace FluidSolver {
         NeighborsCompact(pointer firstNeighbor, particleAmount_t neighborCount);
 
     protected:
-        pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) override;
+        pointer GetPointer(NeighborsIterator::iteratorPosition_t iteratorPosition) const override;
 
-        size_t GetEnd() override;
+        size_t GetEnd() const override;
 
-        size_t GetBegin() override;
+        size_t GetBegin() const override;
 
         pointer firstNeighbor;
         particleAmount_t neighborCount;
@@ -186,6 +229,10 @@ namespace FluidSolver {
  * Neighbors for particles of type FluidSolver::ParticleType::ParticleTypeDead should not be calculated. Accessing
  * the neighbors of a dead particle however has to be safe and must not result in memory access errors or memory
  * corruptions. However the set of neighbors for a particle of such type has to be empty.
+ *
+ * Every neighborhood search should have a constructor like this interface that only requires the two arguments
+ * (particleCollection and radius) to be set in order to work correctly. Other arguments should be default arguments
+ * or (better) parameters that can be set as field or via getters and setters.
  */
     class INeighborhoodSearch {
 
