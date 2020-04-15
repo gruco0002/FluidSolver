@@ -64,6 +64,11 @@ void FluidSolver::HashedNeighborhoodSearch::FindNeighbors() {
 
 #pragma omp parallel for
     for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++) {
+        auto type = particleCollection->GetParticleType(particleIndex);
+        if (type == ParticleType::ParticleTypeBoundary || type == ParticleType::ParticleTypeDead) {
+            continue; // don't calculate unnecessary values for the boundary particles.
+        }
+
         // get position and grid cell
         glm::vec2 position = particleCollection->GetPosition(particleIndex);
         GridKey gridCell = GetGridCellByParticleID(particleIndex);

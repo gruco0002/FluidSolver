@@ -22,5 +22,5 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::Scenario::GetSimula
 }
 
 FluidSolver::IParticleCollection *FluidSolver::Scenario::CreateEmptyParticleCollection() {
-    return new FluidSolver::StripedParticleCollection();
+    return new FluidSolver::CompactParticleCollection();
 }
