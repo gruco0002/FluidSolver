@@ -68,12 +68,12 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
     // find neighbors for all particles
     neighborhoodSearch->FindNeighbors();
 
-    auto tmp = dynamic_cast<CompactHashingNeighborhoodSearch*>(neighborhoodSearch);
+  /*  auto tmp = dynamic_cast<CompactHashingNeighborhoodSearch*>(neighborhoodSearch);
     if(tmp){
         auto &search = *tmp;
         std::cout << search << std::endl;
         return;
-    }
+    }*/
 
 
     // calculating density and non pressure accelerations
