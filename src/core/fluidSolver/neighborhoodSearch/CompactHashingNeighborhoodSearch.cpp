@@ -598,8 +598,10 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
 
 size_t
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSection(size_t minimumStorageSectionValue) {
+    // TODO: this returns only 1
     for (size_t i = minimumStorageSectionValue; i < data.size() / oneSectionTotalSize; i++) {
-        if (data[i].particleIndex.internal.count == 0) {
+        auto &header = GetStorageSectionHeader(i);
+        if (header.particleIndex.internal.count == 0) {
             return i;
         }
     }
