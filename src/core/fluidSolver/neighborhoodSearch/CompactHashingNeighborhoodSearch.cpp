@@ -433,8 +433,11 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal
         }
     } else {
         // this handle is responsible for another key, check if there are linked handles
-        hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
-        RemoveKeyInternal(hashValue, gridCell);
+        if(handle.info.attributes.hashCollisionHappened == 1) {
+            // a hash collision happened aka there exists a linked handle, try to remove the key in the linked handle
+            hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
+            RemoveKeyInternal(hashValue, gridCell);
+        }
     }
 }
 
