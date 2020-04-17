@@ -3,7 +3,7 @@
 FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
         FluidSolver::IParticleCollection *particleCollection, float radius) :
         INeighborhoodSearch(particleCollection, radius),
-        storage(40, particleCollection->GetSize()),
+        storage(150, particleCollection->GetSize()),
         cellStorage(CellStorage(10)),
         hashTable(HashTable(particleCollection->GetSize() * 2)) {
     cellSize = radius;
@@ -196,6 +196,18 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
             neighborCount++;
         }
     }
+}
+
+std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::PrintToStream(std::ostream &os) const {
+
+    os << "Compact Hashing Neighborhood Search - Current State" << std::endl
+       << std::endl
+       << "Hash Table:" << std::endl
+       << hashTable << std::endl
+       << "Cell Storage:" <<  std::endl
+       << cellStorage << std::endl;
+
+    return os;
 }
 
 
@@ -424,6 +436,19 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal
         hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
         RemoveKeyInternal(hashValue, gridCell);
     }
+}
+
+std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::HashTable::PrintToStream(std::ostream &os) const {
+
+    os << "Key\t" << "Value\t" << "Collision\t" << "Rel. Collision Next Entry" << std::endl;
+    for (auto handle : hashTable) {
+        if (handle.info.attributes.hasAValue == 1u) {
+            os << handle.gridCellUsingThis << "\t" << handle.storageSectionMappedTo << "\t"
+               << handle.info.attributes.hashCollisionHappened << "\t"
+               << handle.info.attributes.relativeHashCollisionNextEntry << std::endl;
+        }
+    }
+    return os;
 }
 
 
@@ -655,6 +680,10 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorage(uint8_t 
     oneSectionTotalSize = oneSectionParticleSize + 1;
 }
 
+std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::PrintToStream(std::ostream &os) const {
+    return os;
+}
+
 
 FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::HashTableIterator(size_t currentIndex,
                                                                                                FluidSolver::CompactHashingNeighborhoodSearch::HashTable *table)
@@ -690,4 +719,22 @@ FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTableIterator::ope
     HashTableIterator clone(*this);
     ++(*this);
     return clone;
+}
+
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::HashTable const &m) {
+    return m.PrintToStream(os);
+}
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::CellStorage const &m) {
+    return m.PrintToStream(os);
+}
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch const &m) {
+    return m.PrintToStream(os);
+}
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::GridCell const &m) {
+    os << "{ x=" << m.x << ", y=" << m.y << " }";
+    return os;
 }

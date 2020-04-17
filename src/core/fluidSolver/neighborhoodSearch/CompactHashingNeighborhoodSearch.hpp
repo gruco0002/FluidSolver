@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_COMPACTHASHINGNEIGHBORHOODSEARCH_HPP
 
 #include "INeighborhoodSearch.hpp"
+#include <iostream>
 
 namespace FluidSolver {
 
@@ -18,6 +19,8 @@ namespace FluidSolver {
 
         NeighborsCompactData GetNeighbors(glm::vec2 position) override;
 
+        std::ostream& PrintToStream(std::ostream &os) const;
+
     private:
 
         void UpdateDataStructure();
@@ -28,6 +31,8 @@ namespace FluidSolver {
 
         size_t particleCollectionIndicesChangedCounter;
         bool initStructure;
+
+    public:
 
         struct GridCell {
             int32_t x = 0;
@@ -81,6 +86,10 @@ namespace FluidSolver {
             HashTableIterator begin();
             HashTableIterator end();
 
+            
+            std::ostream& PrintToStream(std::ostream &os) const;
+
+
         private:
 
 
@@ -111,10 +120,11 @@ namespace FluidSolver {
             void RemoveKeyInternal(hash_t hashValue, const key_t &gridCell);
 
         };
-
+private:
         float cellSize;
         HashTable hashTable;
 
+public:
         class CellStorage {
 
         public:
@@ -176,6 +186,8 @@ namespace FluidSolver {
 
             CellStorage(uint8_t oneSectionParticleSize);
 
+            std::ostream& PrintToStream(std::ostream &os) const;
+
         private:
 
             size_t GetEmptyStorageSection(size_t minimumStorageSectionValue);
@@ -207,6 +219,8 @@ namespace FluidSolver {
 
 
         };
+
+private:
 
         CellStorage cellStorage;
 
@@ -249,7 +263,20 @@ namespace FluidSolver {
 
     };
 
+
+
+
 }
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::HashTable const &m);
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::CellStorage const &m) ;
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch const &m) ;
+
+std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::GridCell const &m);
+
+
 
 
 #endif //FLUIDSOLVER_COMPACTHASHINGNEIGHBORHOODSEARCH_HPP

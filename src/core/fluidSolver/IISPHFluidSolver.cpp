@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <chrono>
 #include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 #include "IISPHFluidSolver.hpp"
 
 
@@ -17,7 +18,7 @@ void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
         delete neighborhoodSearch;
         neighborhoodSearch = nullptr;
         if (ParticleCollection != nullptr)
-            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
+            neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     }
     this->ParticleSize = particleSize;
 }
@@ -44,7 +45,7 @@ void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticle
         neighborhoodSearch = nullptr;
     }
     if (ParticleCollection != nullptr)
-        neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
+        neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     this->ParticleCollection = ParticleCollection;
     this->maxPredictedDensityErrorReached = 0.0f;
 }
@@ -66,6 +67,14 @@ void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
 
     // find neighbors for all particles
     neighborhoodSearch->FindNeighbors();
+
+    auto tmp = dynamic_cast<CompactHashingNeighborhoodSearch*>(neighborhoodSearch);
+    if(tmp){
+        auto &search = *tmp;
+        std::cout << search << std::endl;
+        return;
+    }
+
 
     // calculating density and non pressure accelerations
 #pragma omp parallel for
