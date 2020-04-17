@@ -142,7 +142,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
     for (auto ele: removeList) {
         cellStorage.RemoveParticleFromStorageSection(ele.first, ele.second.particleIndex.value);
 
-        if (cellStorage.GetStorageSectionElementCount(ele.first)) {
+        if (cellStorage.GetStorageSectionElementCount(ele.first) == 0) {
             // the cell storage became empty and hence the mapping has to be removed since empty storage sections do not belong to anyone
             auto oldGridKey = cellStorage.GetStorageSectionGridCell(ele.first);
             hashTable.RemoveKey(oldGridKey);
@@ -595,6 +595,12 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
             auto newEmptyStorageSection = GetEmptyStorageSection(storageSection + 1);
             auto &newHeader = GetStorageSectionHeader(newEmptyStorageSection);
             newHeader.particleGridCell = gridCell;
+            newHeader.particleIndex.internal.relativeLink = 0;
+            newHeader.particleIndex.internal.count = 0;
+
+            // set this storage cell as link in the current one
+            header.particleIndex.internal.relativeLink = newEmptyStorageSection - storageSection;
+
             AddParticleToStorageSection(newEmptyStorageSection, particleIndex, gridCell);
         }
     }
@@ -663,7 +669,7 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ExtractLastOne(size_
                                                                            size_t storageSectionBefore) {
     auto &header = GetStorageSectionHeader(storageSection);
     if (header.particleIndex.internal.relativeLink != 0) {
-        return ExtractLastOne(storageSection + header.particleIndex.internal.count, storageSection);
+        return ExtractLastOne(storageSection + header.particleIndex.internal.relativeLink, storageSection);
     } else {
         GridCellParticleHandle extracted = data[storageSection * oneSectionTotalSize +
                                                 header.particleIndex.internal.count];
