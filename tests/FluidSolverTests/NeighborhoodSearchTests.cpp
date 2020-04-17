@@ -170,12 +170,50 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesRotated) {
 
 }
 
+TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving) {
+    auto particleCollection = FluidSolver::CompactParticleCollection();
+    const float radius = 2.01f; // since the particles are perfectly distributed and move perfectly along, floating
+                                // point precision problems cause particles exactly on the border of the neighborhood to
+                                // fall out, hence the radius is selected a little bit larger, to allow some error margin
+
+    // set up uniform sampled region
+    auto part = TurnPositionsIntoParticles(GetSampleGrid(-5, 1, 5));
+    particleCollection.AddParticles(part);
+
+    // set up neighborhood search
+    TypeParam container(&particleCollection, radius);
+
+    for(size_t i = 0; i < 32; i++) {
+        // move the particles
+        for(FluidSolver::particleIndex_t particleIndex = 0; particleIndex < particleCollection.GetSize(); particleIndex++){
+            particleCollection.SetPosition(particleIndex, particleCollection.GetPosition(particleIndex) + glm::vec2(0.34f, -0.5f));
+        }
+
+        // Execute the neighborhood search
+        container.FindNeighbors();
+
+        // Neighbors of particle zero
+        FluidSolver::NeighborsCompact neighborsParticle0 = container.GetNeighbors(0);
+        ASSERT_THAT(neighborsParticle0, SizeIs(6));
+        ASSERT_THAT(neighborsParticle0, UnorderedElementsAre(0, 1, 2, 11, 12, 22));
+        ASSERT_THAT(neighborsParticle0, Each(Not(AnyOf(13, 23, 33, 35, 3, 60))));
+
+        // Neighbors of particle 38
+        FluidSolver::NeighborsCompact neighborsParticle38 = container.GetNeighbors(38);
+        ASSERT_THAT(neighborsParticle38, SizeIs(13));
+        ASSERT_THAT(neighborsParticle38, UnorderedElementsAre(16, 26, 27, 28, 36, 37, 38, 39, 40, 48, 49, 50, 60));
+        ASSERT_THAT(neighborsParticle38, Each(Not(AnyOf(29, 25, 47, 59, 61, 71, 5, 2))));
+    }
+
+}
+
 
 REGISTER_TYPED_TEST_SUITE_P(NeighborhoodSearchTest,
                             ShouldWorkForSingleParticle,
                             UniformSampledParticles,
                             UniformSampledParticlesScaled,
-                            UniformSampledParticlesRotated
+                            UniformSampledParticlesRotated,
+                            UniformSampledParticlesMoving
 );
 
 

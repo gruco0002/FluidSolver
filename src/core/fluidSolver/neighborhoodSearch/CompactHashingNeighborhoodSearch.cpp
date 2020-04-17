@@ -106,6 +106,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::RegenerateAllDataStructures(
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
+    // TODO: this function does not work correctly
     // this function exploits temporal coherence
 
     // 1. calculate new cell coordinates of each particle
@@ -601,7 +602,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
 
 size_t
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSection(size_t minimumStorageSectionValue) {
-    // TODO: this returns only 1
     for (size_t i = minimumStorageSectionValue; i < data.size() / oneSectionTotalSize; i++) {
         auto &header = GetStorageSectionHeader(i);
         if (header.particleIndex.internal.count == 0) {
