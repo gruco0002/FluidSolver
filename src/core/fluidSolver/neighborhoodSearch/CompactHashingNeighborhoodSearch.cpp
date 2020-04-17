@@ -618,6 +618,9 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSecti
     auto resetData = GridCellParticleHandle();
     resetData.particleIndex.internal.relativeLink = 0;
     resetData.particleIndex.internal.count = 0;
+    resetData.particleIndex.value = 0;
+    resetData.particleGridCell.x = 0;
+    resetData.particleGridCell.y = 0;
 
     auto newStorageSection = data.size() / oneSectionTotalSize;
     data.resize(data.size() + oneSectionTotalSize, resetData);
