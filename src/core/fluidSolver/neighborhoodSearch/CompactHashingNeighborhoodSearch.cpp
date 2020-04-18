@@ -205,7 +205,7 @@ std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::PrintToStream(std::
        << std::endl
        << "Hash Table:" << std::endl
        << hashTable << std::endl
-       << "Cell Storage:" <<  std::endl
+       << "Cell Storage:" << std::endl
        << cellStorage << std::endl;
 
     return os;
@@ -435,7 +435,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal
         }
     } else {
         // this handle is responsible for another key, check if there are linked handles
-        if(handle.info.attributes.hashCollisionHappened == 1) {
+        if (handle.info.attributes.hashCollisionHappened == 1) {
             // a hash collision happened aka there exists a linked handle, try to remove the key in the linked handle
             hashValue = (hashValue + handle.info.attributes.relativeHashCollisionNextEntry) % hashTableSize;
             RemoveKeyInternal(hashValue, gridCell);
@@ -604,7 +604,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
             size_t relLink = newEmptyStorageSection - storageSection;
             uint32_t relLinkSmal = relLink;
             // 2^24 = 16777216
-            if(relLink >= 16777216)
+            if (relLink >= 16777216)
                 throw std::logic_error("Cell Storage relative link became too large to be stored");
 
             header->particleIndex.internal.relativeLink = relLinkSmal;
@@ -663,6 +663,14 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleF
                 } else {
                     // there is nothing to replace this entry, simply delete it by reducing the count
                     header->particleIndex.internal.count -= 1;
+                    if (header->particleIndex.internal.count == 0) {
+                        // the storage cell became empty, check if it was linked to by the cell storage before
+                        if (storageSection != storageSectionBefore) {
+                            // remove the link to this storage cell, since it is now empty
+                            auto headerBefore = GetStorageSectionHeader(storageSectionBefore);
+                            headerBefore->particleIndex.internal.relativeLink = 0;
+                        }
+                    }
                 }
             } else {
                 // the particle is somewhere in the middle, just take the last particle and replace the particle with that
@@ -682,6 +690,10 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ExtractLastOne(size_
     if (header->particleIndex.internal.relativeLink != 0) {
         return ExtractLastOne(storageSection + header->particleIndex.internal.relativeLink, storageSection);
     } else {
+        if (header->particleIndex.internal.count == 0)
+            throw std::logic_error(
+                    "Could not extract last item of storage cell, because the storage cell is already empty!");
+
         GridCellParticleHandle extracted = data[storageSection * oneSectionTotalSize +
                                                 header->particleIndex.internal.count];
         header->particleIndex.internal.count = header->particleIndex.internal.count - 1;
