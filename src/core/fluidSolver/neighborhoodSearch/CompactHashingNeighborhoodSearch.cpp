@@ -186,6 +186,11 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
     for (auto current = begin; current != end; current++) {
 
         auto neighborIndex = (*current).particleIndex.value;
+        // check if the neighbor is dead and skip iff so
+        if (particleCollection->GetParticleType(neighborIndex) == ParticleType::ParticleTypeDead) {
+            continue;
+        }
+
         // check for neighborhood
         auto neighborPos = particleCollection->GetPosition(neighborIndex);
         if (glm::length(particlePosition - neighborPos) <= radius) {
