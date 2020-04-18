@@ -206,3 +206,44 @@ TEST(CompactHashingHashTableTest, InsertMultipleRemoveMultiple) {
 
 }
 
+TEST(CompactHashingHashTableTest, InsertRemoveInsertAgain) {
+
+    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(25);
+    auto gridKey1 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
+    auto gridKey2 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, -2);
+    auto gridKey3 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, 56);
+    auto gridKey4 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(-51, -2);
+
+    hashTable.SetValueByKey(gridKey1, 42);
+    hashTable.SetValueByKey(gridKey2, 45);
+    hashTable.SetValueByKey(gridKey3, 54);
+    hashTable.SetValueByKey(gridKey4, 13);
+
+    hashTable.RemoveKey(gridKey3);
+
+
+    auto begin = hashTable.begin();
+    auto end = hashTable.end();
+    ASSERT_NE(begin, end);
+    std::vector<FluidSolver::CompactHashingNeighborhoodSearch::GridCell> keys;
+    for (auto current = begin; current != end; current++) {
+        auto val = *current;
+        keys.push_back(val);
+    }
+
+    ASSERT_EQ(3, keys.size());
+    ASSERT_THAT(keys, UnorderedElementsAre(gridKey1, gridKey2, gridKey4));
+
+
+    hashTable.SetValueByKey(gridKey2, 56);
+
+    FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t mappedTo;
+    bool found = hashTable.GetValueByKey(gridKey2, mappedTo);
+    ASSERT_TRUE(found);
+    ASSERT_EQ(56, mappedTo);
+
+
+}
+
+
+
