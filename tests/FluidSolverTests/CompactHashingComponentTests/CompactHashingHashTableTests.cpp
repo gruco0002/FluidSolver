@@ -124,7 +124,7 @@ TEST(CompactHashingHashTableTest, IterateMultipleElements) {
 
 TEST(CompactHashingHashTableTest, InsertOverride) {
 
-    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(25);
+    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(9);
     auto gridKey = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
 
     hashTable.SetValueByKey(gridKey, 12);
@@ -167,7 +167,7 @@ TEST(CompactHashingHashTableTest, InsertRemove) {
 
 TEST(CompactHashingHashTableTest, InsertMultipleRemoveMultiple) {
 
-    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(25);
+    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(12);
     auto gridKey1 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
     auto gridKey2 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, -2);
     auto gridKey3 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, 56);
@@ -208,7 +208,7 @@ TEST(CompactHashingHashTableTest, InsertMultipleRemoveMultiple) {
 
 TEST(CompactHashingHashTableTest, InsertRemoveInsertAgain) {
 
-    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(25);
+    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(6);
     auto gridKey1 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
     auto gridKey2 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, -2);
     auto gridKey3 = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(1, 56);
@@ -242,6 +242,66 @@ TEST(CompactHashingHashTableTest, InsertRemoveInsertAgain) {
     ASSERT_TRUE(found);
     ASSERT_EQ(56, mappedTo);
 
+
+}
+
+TEST(CompactHashingHashTableTest, InsertUntilFull) {
+
+    typedef FluidSolver::CompactHashingNeighborhoodSearch::GridCell GridCell;
+
+    auto hashTable = FluidSolver::CompactHashingNeighborhoodSearch::HashTable(10);
+
+    for(size_t i = 0; i < 10; i++){
+        hashTable.SetValueByKey(GridCell(i, 0), i);
+    }
+
+    auto begin = hashTable.begin();
+    auto end = hashTable.end();
+    ASSERT_NE(begin, end);
+    std::vector<FluidSolver::CompactHashingNeighborhoodSearch::GridCell> keys;
+    for (auto current = begin; current != end; current++) {
+        auto val = *current;
+        keys.push_back(val);
+    }
+
+    ASSERT_EQ(10, keys.size());
+    ASSERT_THAT(keys, UnorderedElementsAre(GridCell(0,0), GridCell(1,0),GridCell(2,0),GridCell(3,0),GridCell(4,0),GridCell(5,0),GridCell(6,0),GridCell(7,0),GridCell(8,0),GridCell(9,0)));
+
+
+    hashTable.RemoveKey(GridCell(2,0));
+    hashTable.RemoveKey(GridCell(9,0));
+
+
+    keys.clear();
+    for (auto current = begin; current != end; current++) {
+        auto val = *current;
+        keys.push_back(val);
+    }
+
+    ASSERT_EQ(8, keys.size());
+    ASSERT_THAT(keys, UnorderedElementsAre(GridCell(0,0), GridCell(1,0),GridCell(3,0),GridCell(4,0),GridCell(5,0),GridCell(6,0),GridCell(7,0),GridCell(8,0)));
+
+    hashTable.SetValueByKey(GridCell(91, 2), 56);
+
+    hashTable.SetValueByKey(GridCell(92, 8), 12);
+
+    keys.clear();
+    for (auto current = begin; current != end; current++) {
+        auto val = *current;
+        keys.push_back(val);
+    }
+
+    ASSERT_EQ(10, keys.size());
+    ASSERT_THAT(keys, UnorderedElementsAre(GridCell(0,0), GridCell(1,0),GridCell(3,0),GridCell(4,0),GridCell(5,0),GridCell(6,0),GridCell(7,0),GridCell(8,0), GridCell(91, 2), GridCell(92, 8)) );
+
+    FluidSolver::CompactHashingNeighborhoodSearch::HashTable::mappedTo_t  mappedTo;
+    bool found = hashTable.GetValueByKey(GridCell(91, 2), mappedTo);
+    ASSERT_TRUE(found);
+    ASSERT_EQ(56, mappedTo);
+
+    found = hashTable.GetValueByKey(GridCell(92, 8), mappedTo);
+    ASSERT_TRUE(found);
+    ASSERT_EQ(12, mappedTo);
 
 }
 
