@@ -106,7 +106,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::RegenerateAllDataStructures(
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
-    // TODO: this function does not work correctly
+    // TODO: this function does not work correctly, double occurences after search existing
     // this function exploits temporal coherence
 
     // 1. calculate new cell coordinates of each particle

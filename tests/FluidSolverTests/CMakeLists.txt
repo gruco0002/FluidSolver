@@ -2,7 +2,7 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${gmock_SOUR
 
 set(FluidSolverTests_SOURCE_FILES
         basic_check.cpp
-        CubicSplineKernelTest.cpp NeighborhoodSearchTests.cpp CompactHashingComponentTests/CompactHashingCellStorageTests.cpp)
+        CubicSplineKernelTest.cpp NeighborhoodSearchTests.cpp CompactHashingComponentTests/CompactHashingCellStorageTests.cpp CompactHashingComponentTests/CompactHashingHashTableTests.cpp)
 
 add_executable(runFluidSolverTests ${FluidSolverTests_SOURCE_FILES})
 
