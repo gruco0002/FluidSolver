@@ -332,6 +332,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::SetValueByKeyInte
     auto &handle = hashTable[hashValue];
     if (handle.info.attributes.hasAValue == 0) {
         // handle is empty, reserve it and set the value
+        handle.info.value = 0; // reset every attribute
         handle.info.attributes.hasAValue = 1;
         handle.gridCellUsingThis = gridCell;
         handle.storageSectionMappedTo = value;
@@ -352,11 +353,11 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::SetValueByKeyInte
                 bool foundEmptyCell = false;
                 handle.info.attributes.relativeHashCollisionNextEntry = -1; // setting it to maximum possible value
                 for (size_t i = 1; i <= handle.info.attributes.relativeHashCollisionNextEntry; i++) {
-                    hashValue = (hashValue + i) % hashTableSize;
-                    auto &newHandle = hashTable[hashValue];
+                    auto newHashValue = (hashValue + i) % hashTableSize;
+                    auto &newHandle = hashTable[newHashValue];
                     if (newHandle.info.attributes.hasAValue == 0) {
                         // we found a empty cell at index i, populate it with our data
-                        SetValueByKeyInternal(hashValue, gridCell, value);
+                        SetValueByKeyInternal(newHashValue, gridCell, value);
                         handle.info.attributes.relativeHashCollisionNextEntry = i; // set the appropriate hash collision flags
                         handle.info.attributes.hashCollisionHappened = 1;
                         foundEmptyCell = true;
