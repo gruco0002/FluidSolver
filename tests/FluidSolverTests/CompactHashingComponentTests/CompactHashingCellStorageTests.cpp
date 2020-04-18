@@ -232,7 +232,7 @@ TEST(CompactHashingCellStorageTest, InsertOverfill) {
 
 
     ASSERT_EQ(15, storage.GetStorageSectionElementCount(storageSection));
-    EXPECT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
+    ASSERT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
 
     auto begin = storage.GetStorageSectionDataBegin(storageSection);
     auto end = storage.GetStorageSectionDataEnd(storageSection);

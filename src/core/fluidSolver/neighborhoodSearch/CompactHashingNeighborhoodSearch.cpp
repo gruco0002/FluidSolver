@@ -487,12 +487,12 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator:
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator &
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator::operator++() {
     currentStorageSectionElement++;
-    auto &header = internalCellStorage->GetStorageSectionHeader(currentStorageSection);
-    if (currentStorageSectionElement >= header.particleIndex.internal.count &&
-        header.particleIndex.internal.relativeLink != 0) {
+    auto header = internalCellStorage->GetStorageSectionHeader(currentStorageSection);
+    if (currentStorageSectionElement >= header->particleIndex.internal.count &&
+        header->particleIndex.internal.relativeLink != 0) {
         // we went over the end of the current storage section, but there is a linked one -> jump to the linked one
         currentStorageSectionElement = 0;
-        currentStorageSection = currentStorageSection + header.particleIndex.internal.relativeLink;
+        currentStorageSection = currentStorageSection + header->particleIndex.internal.relativeLink;
     }
     return *this;
 }
@@ -509,9 +509,9 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionEle
     return &data[storageSection * oneSectionTotalSize + 1];
 }
 
-FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle &
+FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle *
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionHeader(size_t storageSection) {
-    return data[storageSection * oneSectionTotalSize];
+    return &data[storageSection * oneSectionTotalSize];
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ClearStorage() {
@@ -532,19 +532,19 @@ size_t FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStora
 FluidSolver::particleAmount_t
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionElementCount(size_t storageSection) {
 
-    auto &header = GetStorageSectionHeader(storageSection);
-    if (header.particleIndex.internal.relativeLink != 0) {
-        return header.particleIndex.internal.count +
-               GetStorageSectionElementCount(storageSection + header.particleIndex.internal.relativeLink);
+    auto header = GetStorageSectionHeader(storageSection);
+    if (header->particleIndex.internal.relativeLink != 0) {
+        return header->particleIndex.internal.count +
+               GetStorageSectionElementCount(storageSection + header->particleIndex.internal.relativeLink);
     }
-    return header.particleIndex.internal.count;
+    return header->particleIndex.internal.count;
 
 }
 
 FluidSolver::CompactHashingNeighborhoodSearch::GridCell
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionGridCell(size_t storageSection) {
-    auto &header = GetStorageSectionHeader(storageSection);
-    return header.particleGridCell;
+    auto header = GetStorageSectionHeader(storageSection);
+    return header->particleGridCell;
 }
 
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator
@@ -559,14 +559,14 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionDat
     auto endStorageSection = storageSection;
     uint8_t endStorageSectionCount = 0;
 
-    auto &header = GetStorageSectionHeader(endStorageSection);
-    while (header.particleIndex.internal.relativeLink != 0) {
+    auto header = GetStorageSectionHeader(endStorageSection);
+    while (header->particleIndex.internal.relativeLink != 0) {
         // go through the linked storage section until we find the end
-        endStorageSection = endStorageSection + header.particleIndex.internal.relativeLink;
+        endStorageSection = endStorageSection + header->particleIndex.internal.relativeLink;
         header = GetStorageSectionHeader(endStorageSection);
     }
 
-    endStorageSectionCount = header.particleIndex.internal.count;
+    endStorageSectionCount = header->particleIndex.internal.count;
     return FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorageIterator(this, storageSection,
                                                                                            endStorageSection,
                                                                                            endStorageSectionCount);
@@ -575,31 +575,38 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionDat
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToStorageSection(size_t storageSection,
                                                                                              FluidSolver::particleIndex_t particleIndex,
                                                                                              const GridCell &gridCell) {
-    auto &header = GetStorageSectionHeader(storageSection);
-    if (header.particleIndex.internal.count < oneSectionParticleSize) {
+    auto header = GetStorageSectionHeader(storageSection);
+    if (header->particleIndex.internal.count < oneSectionParticleSize) {
         // the particle can be put into this storage cell
         auto particleData = GridCellParticleHandle();
         particleData.particleIndex.value = particleIndex;
         particleData.particleGridCell = gridCell;
 
-        data[storageSection * oneSectionTotalSize + 1 + header.particleIndex.internal.count] = particleData;
-        header.particleIndex.internal.count = header.particleIndex.internal.count + 1;
+        data[storageSection * oneSectionTotalSize + 1 + header->particleIndex.internal.count] = particleData;
+        header->particleIndex.internal.count = header->particleIndex.internal.count + 1;
     } else {
         // this section is already filled up
-        if (header.particleIndex.internal.relativeLink != 0) {
+        if (header->particleIndex.internal.relativeLink != 0) {
             // there exists already a link to another storage cell, insert the particle there
-            AddParticleToStorageSection(storageSection + header.particleIndex.internal.relativeLink, particleIndex,
+            AddParticleToStorageSection(storageSection + header->particleIndex.internal.relativeLink, particleIndex,
                                         gridCell);
         } else {
             // there is no linked storage cell existing, find an empty one after this one and use it
             auto newEmptyStorageSection = GetEmptyStorageSection(storageSection + 1);
-            auto &newHeader = GetStorageSectionHeader(newEmptyStorageSection);
-            newHeader.particleGridCell = gridCell;
-            newHeader.particleIndex.internal.relativeLink = 0;
-            newHeader.particleIndex.internal.count = 0;
+            header = GetStorageSectionHeader(storageSection);
+            auto newHeader = GetStorageSectionHeader(newEmptyStorageSection);
+            newHeader->particleGridCell = gridCell;
+            newHeader->particleIndex.internal.relativeLink = 0;
+            newHeader->particleIndex.internal.count = 0;
 
             // set this storage cell as link in the current one
-            header.particleIndex.internal.relativeLink = newEmptyStorageSection - storageSection;
+            size_t relLink = newEmptyStorageSection - storageSection;
+            uint32_t relLinkSmal = relLink;
+            // 2^24 = 16777216
+            if(relLink >= 16777216)
+                throw std::logic_error("Cell Storage relative link became too large to be stored");
+
+            header->particleIndex.internal.relativeLink = relLinkSmal;
 
             AddParticleToStorageSection(newEmptyStorageSection, particleIndex, gridCell);
         }
@@ -609,8 +616,8 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
 size_t
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSection(size_t minimumStorageSectionValue) {
     for (size_t i = minimumStorageSectionValue; i < data.size() / oneSectionTotalSize; i++) {
-        auto &header = GetStorageSectionHeader(i);
-        if (header.particleIndex.internal.count == 0) {
+        auto header = GetStorageSectionHeader(i);
+        if (header->particleIndex.internal.count == 0) {
             return i;
         }
     }
@@ -635,26 +642,26 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleF
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleFromStorageSectionInternal(
         size_t storageSection, size_t storageSectionBefore, FluidSolver::particleIndex_t particleIndex) {
 
-    auto &header = GetStorageSectionHeader(storageSection);
+    auto header = GetStorageSectionHeader(storageSection);
 
-    if (header.particleIndex.internal.relativeLink != 0) {
-        RemoveParticleFromStorageSectionInternal(storageSection + header.particleIndex.internal.relativeLink,
+    if (header->particleIndex.internal.relativeLink != 0) {
+        RemoveParticleFromStorageSectionInternal(storageSection + header->particleIndex.internal.relativeLink,
                                                  storageSection, particleIndex);
     }
 
-    for (size_t i = header.particleIndex.internal.count; i >= 1; i--) {
+    for (size_t i = header->particleIndex.internal.count; i >= 1; i--) {
         auto index = storageSection * oneSectionTotalSize + i;
         if (data[index].particleIndex.value == particleIndex) {
             // delete this one by either moving the last entry here (or if this is the last entry, reducing the count of this section by one)
-            if (i == header.particleIndex.internal.count) {
+            if (i == header->particleIndex.internal.count) {
                 // this is the last element
-                if (header.particleIndex.internal.relativeLink != 0) {
+                if (header->particleIndex.internal.relativeLink != 0) {
                     // there exists a link, so we can replace the last one with an extracted one from the link
-                    data[index] = ExtractLastOne(storageSection + header.particleIndex.internal.relativeLink,
+                    data[index] = ExtractLastOne(storageSection + header->particleIndex.internal.relativeLink,
                                                  storageSection);
                 } else {
                     // there is nothing to replace this entry, simply delete it by reducing the count
-                    header.particleIndex.internal.count -= 1;
+                    header->particleIndex.internal.count -= 1;
                 }
             } else {
                 // the particle is somewhere in the middle, just take the last particle and replace the particle with that
@@ -670,19 +677,19 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleF
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GridCellParticleHandle
 FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::ExtractLastOne(size_t storageSection,
                                                                            size_t storageSectionBefore) {
-    auto &header = GetStorageSectionHeader(storageSection);
-    if (header.particleIndex.internal.relativeLink != 0) {
-        return ExtractLastOne(storageSection + header.particleIndex.internal.relativeLink, storageSection);
+    auto header = GetStorageSectionHeader(storageSection);
+    if (header->particleIndex.internal.relativeLink != 0) {
+        return ExtractLastOne(storageSection + header->particleIndex.internal.relativeLink, storageSection);
     } else {
         GridCellParticleHandle extracted = data[storageSection * oneSectionTotalSize +
-                                                header.particleIndex.internal.count];
-        header.particleIndex.internal.count = header.particleIndex.internal.count - 1;
-        if (header.particleIndex.internal.count == 0) {
+                                                header->particleIndex.internal.count];
+        header->particleIndex.internal.count = header->particleIndex.internal.count - 1;
+        if (header->particleIndex.internal.count == 0) {
             // the storage section became empty, remove the link to this section in the previous storage section
             if (storageSection != storageSectionBefore) {
                 // but only if the storage sections are different
-                auto &prevHeader = GetStorageSectionHeader(storageSectionBefore);
-                prevHeader.particleIndex.internal.relativeLink = 0;
+                auto prevHeader = GetStorageSectionHeader(storageSectionBefore);
+                prevHeader->particleIndex.internal.relativeLink = 0;
             }
         }
         return extracted;

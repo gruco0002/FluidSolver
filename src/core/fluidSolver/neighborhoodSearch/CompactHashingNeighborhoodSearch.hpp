@@ -172,6 +172,8 @@ public:
 
             void RemoveParticleFromStorageSection(size_t storageSection, particleIndex_t particleIndex);
 
+            // This function can cause a resize of the arrays. Be sure to refresh reference objects and pointers to the
+            // data after using this function as memory corruptions could be happening otherwise.
             size_t GetEmptyStorageSection();
 
             particleAmount_t GetStorageSectionElementCount(size_t storageSection);
@@ -190,12 +192,14 @@ public:
 
         private:
 
+            // This function can cause a resize of the arrays. Be sure to refresh reference objects and pointers to the
+            // data after using this function as memory corruptions could be happening otherwise.
             size_t GetEmptyStorageSection(size_t minimumStorageSectionValue);
 
             // points towards the first element (not the header) of the storage section
             GridCellParticleHandle *GetStorageSectionElementsDataPtr(size_t storageSection);
 
-            GridCellParticleHandle &GetStorageSectionHeader(size_t storageSection);
+            GridCellParticleHandle *GetStorageSectionHeader(size_t storageSection);
 
             void RemoveParticleFromStorageSectionInternal(size_t storageSection, size_t storageSectionBefore,
                                                           particleIndex_t particleIndex);
