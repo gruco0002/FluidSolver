@@ -193,6 +193,15 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
             if (neighborCount >= storage.GetNeighborStorageSizePerParticle())
                 throw std::logic_error(
                         "Trying to add a new neighbor to the storage but the memory space allocated would be exceeded!");
+
+            // TODO: remove this debug check: CHecking if already inside the list
+            for (size_t i = 0; i < neighborCount; i++) {
+                if (data[i] == neighborIndex) {
+                    std::cout << cellStorage << std::endl;
+                    throw std::logic_error("Particle index is already in the neighbor list!");
+                }
+            }
+
             *(data + neighborCount) = neighborIndex;
             neighborCount++;
         }
@@ -579,12 +588,19 @@ void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToSt
     auto header = GetStorageSectionHeader(storageSection);
     if (header->particleIndex.internal.count < oneSectionParticleSize) {
         // the particle can be put into this storage cell
+
+        // set the gridcell of the header if the storage cell was empty to the grid cell of the added particle
+        if(header->particleIndex.internal.count == 0) {
+            header->particleGridCell = gridCell;
+        }
+
         auto particleData = GridCellParticleHandle();
         particleData.particleIndex.value = particleIndex;
         particleData.particleGridCell = gridCell;
 
         data[storageSection * oneSectionTotalSize + 1 + header->particleIndex.internal.count] = particleData;
         header->particleIndex.internal.count = header->particleIndex.internal.count + 1;
+
     } else {
         // this section is already filled up
         if (header->particleIndex.internal.relativeLink != 0) {
@@ -715,6 +731,21 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::CellStorage(uint8_t 
 }
 
 std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::PrintToStream(std::ostream &os) const {
+
+    os << "Cell Storage" << std::endl << "Particles per storage section: " << (uint32_t )this->oneSectionParticleSize << std::endl;
+    os << "Raw Data:" ;
+    for (size_t i = 0; i < data.size(); i++) {
+        auto isHeader = i % oneSectionTotalSize == 0;
+        if (isHeader) {
+            os << std::endl;
+            os << "Header\t" << (i / oneSectionTotalSize) << "\tElements: " << (uint32_t )data[i].particleIndex.internal.count
+               << "\tLinked to (Relative): " << (uint32_t )data[i].particleIndex.internal.relativeLink << std::endl;
+            os << "Grid Cell\t" << data[i].particleGridCell << std::endl;
+        } else {
+            os << data[i].particleIndex.value  << "\t" << data[i].particleGridCell << std::endl;
+        }
+    }
+
     return os;
 }
 
