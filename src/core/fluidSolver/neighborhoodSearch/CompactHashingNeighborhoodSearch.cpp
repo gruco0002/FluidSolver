@@ -199,14 +199,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
                 throw std::logic_error(
                         "Trying to add a new neighbor to the storage but the memory space allocated would be exceeded!");
 
-            // TODO: remove this debug check: CHecking if already inside the list
-            for (size_t i = 0; i < neighborCount; i++) {
-                if (data[i] == neighborIndex) {
-                    std::cout << cellStorage << std::endl;
-                    throw std::logic_error("Particle index is already in the neighbor list!");
-                }
-            }
-
             *(data + neighborCount) = neighborIndex;
             neighborCount++;
         }
