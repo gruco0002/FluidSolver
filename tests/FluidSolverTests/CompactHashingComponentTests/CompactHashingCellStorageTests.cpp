@@ -166,7 +166,7 @@ TEST(CompactHashingCellStorageTest, RemoveDouble) {
     }
 
     EXPECT_EQ(8, data2.size());
-    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 4, 5, 6, 7,8));
+    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 4, 5, 6, 7, 8));
 
 
 }
@@ -212,11 +212,10 @@ TEST(CompactHashingCellStorageTest, RemoveNonExistant) {
     }
 
     EXPECT_EQ(9, data2.size());
-    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 3,  4, 5, 6, 7,8));
+    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8));
 
 
 }
-
 
 
 TEST(CompactHashingCellStorageTest, InsertOverfill) {
@@ -289,7 +288,101 @@ TEST(CompactHashingCellStorageTest, RemoveMultipleOccurencesOfTheSameValue) {
     }
 
     EXPECT_EQ(8, data2.size());
-    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 3, 5, 6, 7,8));
+    EXPECT_THAT(data2, UnorderedElementsAre(0, 1, 2, 3, 5, 6, 7, 8));
+
+
+}
+
+TEST(CompactHashingCellStorageTest, InsertOverfillRemove) {
+
+    auto storage = FluidSolver::CompactHashingNeighborhoodSearch::CellStorage(6);
+    auto storageSection = storage.GetEmptyStorageSection();
+    auto gridKey = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
+
+
+    for (FluidSolver::particleIndex_t index = 0; index < 15; index++) {
+        storage.AddParticleToStorageSection(storageSection, index, gridKey);
+    }
+
+
+    ASSERT_EQ(15, storage.GetStorageSectionElementCount(storageSection));
+    ASSERT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
+
+    auto begin = storage.GetStorageSectionDataBegin(storageSection);
+    auto end = storage.GetStorageSectionDataEnd(storageSection);
+    std::vector<FluidSolver::particleIndex_t> data;
+    for (auto current = begin; current != end; current++) {
+        data.push_back((*current).particleIndex.value);
+    }
+
+    EXPECT_EQ(15, data.size());
+    EXPECT_THAT(data, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14));
+
+    // now remove content
+    storage.RemoveParticleFromStorageSection(storageSection, 9);
+
+    ASSERT_EQ(14, storage.GetStorageSectionElementCount(storageSection));
+    ASSERT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
+
+    begin = storage.GetStorageSectionDataBegin(storageSection);
+    end = storage.GetStorageSectionDataEnd(storageSection);
+    data.clear();
+    for (auto current = begin; current != end; current++) {
+        data.push_back((*current).particleIndex.value);
+    }
+
+    EXPECT_EQ(14, data.size());
+    EXPECT_THAT(data, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14));
+
+
+}
+
+TEST(CompactHashingCellStorageTest, InsertOverfillRemoveOverfill) {
+
+    auto storage = FluidSolver::CompactHashingNeighborhoodSearch::CellStorage(10);
+    auto storageSection = storage.GetEmptyStorageSection();
+    auto gridKey = FluidSolver::CompactHashingNeighborhoodSearch::GridCell(0, 0);
+
+
+    for (FluidSolver::particleIndex_t index = 0; index < 15; index++) {
+        storage.AddParticleToStorageSection(storageSection, index, gridKey);
+    }
+
+
+    ASSERT_EQ(15, storage.GetStorageSectionElementCount(storageSection));
+    ASSERT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
+
+    auto begin = storage.GetStorageSectionDataBegin(storageSection);
+    auto end = storage.GetStorageSectionDataEnd(storageSection);
+    std::vector<FluidSolver::particleIndex_t> data;
+    for (auto current = begin; current != end; current++) {
+        data.push_back((*current).particleIndex.value);
+    }
+
+    EXPECT_EQ(15, data.size());
+    EXPECT_THAT(data, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14));
+
+    // now remove content
+    storage.RemoveParticleFromStorageSection(storageSection, 9);
+    storage.RemoveParticleFromStorageSection(storageSection, 14);
+    storage.RemoveParticleFromStorageSection(storageSection, 12);
+    storage.RemoveParticleFromStorageSection(storageSection, 5);
+    storage.RemoveParticleFromStorageSection(storageSection, 11);
+    storage.RemoveParticleFromStorageSection(storageSection, 13);
+    storage.RemoveParticleFromStorageSection(storageSection, 12); // double remove should not matter
+
+    ASSERT_EQ(9, storage.GetStorageSectionElementCount(storageSection));
+    ASSERT_EQ(gridKey, storage.GetStorageSectionGridCell(storageSection));
+
+    begin = storage.GetStorageSectionDataBegin(storageSection);
+    end = storage.GetStorageSectionDataEnd(storageSection);
+    data.clear();
+    for (auto current = begin; current != end; current++) {
+        data.push_back((*current).particleIndex.value);
+    }
+
+    EXPECT_EQ(9, data.size());
+    EXPECT_THAT(data, UnorderedElementsAre(0, 1, 2, 3, 4, 6, 7, 8, 10));
 
 
 }

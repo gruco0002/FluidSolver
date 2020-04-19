@@ -184,7 +184,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving) {
     TypeParam container(&particleCollection, radius);
 
     glm::vec2 totalMovement = glm::vec2(0.0f);
-    for (size_t i = 0; i < 32; i++) {
+    for (size_t i = 0; i < 1024; i++) {
         const glm::vec2 movement = glm::vec2(0.34f, -0.5f);
 
         // move the particles
