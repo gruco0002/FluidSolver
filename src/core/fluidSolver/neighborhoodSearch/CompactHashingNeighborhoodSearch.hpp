@@ -117,7 +117,7 @@ namespace FluidSolver {
 
             void SetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, const mappedTo_t value);
 
-            void RemoveKeyInternal(hash_t hashValue, const key_t &gridCell);
+            void RemoveKeyInternal(hash_t hashValue, const key_t &gridCell, hash_t previousHashValue);
 
         };
 private:
