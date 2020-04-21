@@ -104,7 +104,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::RegenerateAllDataStructures(
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::SearchByDifference() {
-    // TODO: this function does not work correctly, double occurences after search existing
     // this function exploits temporal coherence
 
     // 1. calculate new cell coordinates of each particle
@@ -404,7 +403,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKey(
 void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal(hash_t hashValue,
                                                                                  const FluidSolver::CompactHashingNeighborhoodSearch::HashTable::key_t &gridCell,
                                                                                  hash_t previousHashValue) {
-    // TODO: deleting chains of multiple collisions of multiple keys inside one chain causes invalid table states!
     auto handle = &hashTable[hashValue];
     if (handle->info.attributes.hasAValue == 0)
         return; // this key does not exist
