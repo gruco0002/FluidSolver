@@ -3,7 +3,7 @@
 FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
         FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
                                                                                                   radius),
-                                                                              storage(150,
+                                                                              storage(40,
                                                                                       particleCollection->GetSize()),
                                                                               cellStorage(CellStorage(10)),
                                                                               hashTable(HashTable(
