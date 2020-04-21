@@ -21,6 +21,8 @@ void ParticleRenderer::Render() {
     particleShader->SetValue("topValue", topValue);
     particleShader->SetValue("boundaryColor", boundaryParticleColor);
     particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
+    particleShader->SetValue("numberOfParticles", (float) this->particleVertexArray->GetVaoParticleCount());
+    particleShader->SetValue("showParticleMemoryLocation", (int) showMemoryLocation);
 
 
     glDisable(GL_DEPTH_TEST);
@@ -74,6 +76,8 @@ uniform float bottomValue;
 uniform float topValue;
 uniform vec4 boundaryColor;
 uniform int showParticleSelection;
+uniform float numberOfParticles;
+uniform int showParticleMemoryLocation;
 
 
 out VS_OUT {
@@ -115,6 +119,15 @@ void main()
         vs_out.discarded = 1;
     } else if(aType == PARTICLE_TYPE_BOUNDARY) {
         vs_out.color = boundaryColor;
+    }
+
+    if(showParticleMemoryLocation == 1){
+        float vertID = float(gl_VertexID);
+        float third = vertID / (numberOfParticles / 3.0);
+        vs_out.color.r = clamp(third, 0.0, 1.0);
+        vs_out.color.g = clamp(third - 1.0f, 0.0, 1.0);
+        vs_out.color.b = clamp(third - 2.0f, 0.0, 1.0);
+        vs_out.color.a = 1.0;
     }
 
     gl_Position =  vec4(aPosition, 0.0, 1.0);

@@ -49,6 +49,8 @@ public:
 
     glm::vec4 backgroundClearColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
+    bool showMemoryLocation = false;
+
 
     void setParticleSize(float particleSize) override;
 

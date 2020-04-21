@@ -78,6 +78,14 @@ public:
 
     virtual ~ParticleVertexArray();
 
+    /**
+     * Returns the vao particle count.
+     * @return Vao particle count.
+     * @note The particle count does not reflect the real buffer sizes (in terms of elements) of the index or selection
+     * buffer.
+     */
+    uint32_t GetVaoParticleCount();
+
 protected:
     void Generate();
 
@@ -111,13 +119,6 @@ protected:
      */
     Engine::Graphics::Buffer::VertexBuffer<int8_t> *GetSelectionBuffer();
 
-    /**
-     * Returns the vao particle count.
-     * @return Vao particle count.
-     * @note The particle count does not reflect the real buffer sizes (in terms of elements) of the index or selection
-     * buffer.
-     */
-    uint32_t GetVaoParticleCount();
 
     /**
      * The underlying opengl vao object. This object should be created by the derived class in the OnGenerate function.

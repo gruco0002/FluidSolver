@@ -283,6 +283,7 @@ void FluidUI::MainUi::VisualizerSettings() {
         ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&pr->backgroundClearColor));
 
         ImGui::Checkbox("Show Selection", &pr->showParticleSelection);
+        ImGui::Checkbox("Show Memory Location", &pr->showMemoryLocation);
 
     } else if (cv != nullptr) {
         ImGui::Text("Continuous Visualizer");
