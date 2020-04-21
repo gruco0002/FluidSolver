@@ -3,6 +3,7 @@
 
 #include "INeighborhoodSearch.hpp"
 #include <iostream>
+#include <core/fluidSolver/particleCollection/ZIndexGridSorter.hpp>
 
 namespace FluidSolver {
 
@@ -10,6 +11,8 @@ namespace FluidSolver {
 
     public:
 
+        int sinceLargeSort = -1;
+        ZIndexGridSorter sorter;
 
         CompactHashingNeighborhoodSearch(IParticleCollection *particleCollection, float radius);
 

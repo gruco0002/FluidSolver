@@ -8,13 +8,26 @@ FluidSolver::CompactHashingNeighborhoodSearch::CompactHashingNeighborhoodSearch(
                                                                               cellStorage(CellStorage(10)),
                                                                               hashTable(HashTable(
                                                                                       particleCollection->GetSize() *
-                                                                                      2)) {
+                                                                                      2)), sorter(ZIndexGridSorter(radius, particleCollection)) {
     cellSize = radius;
     particleCollectionIndicesChangedCounter = particleCollection->GetIndicesChangedCounter();
     initStructure = true;
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighbors() {
+    // sort particles every x steps
+    const int sortEvery = 100;
+    if(sinceLargeSort == -1){
+        sinceLargeSort = 0;
+        sorter.SortInitially();
+    }else if(sinceLargeSort >= sortEvery){
+        sinceLargeSort = 0;
+        sorter.Sort();
+    }
+
+    sinceLargeSort++;
+
+
     // update the underlying data structure
     UpdateDataStructure();
 

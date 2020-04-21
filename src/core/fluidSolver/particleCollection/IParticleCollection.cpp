@@ -73,7 +73,7 @@ FluidSolver::IParticleCollection::MergeSort(
 
 
     // define merge sort, left index is inclusive, right index is exclusive
-    std::function<void(size_t, size_t)> mergesort = [=](size_t left, size_t right) {
+    std::function<void(size_t, size_t)> mergesort = [=, &mergesort](size_t left, size_t right) {
         if (right - left <= 1)
             return;
 
