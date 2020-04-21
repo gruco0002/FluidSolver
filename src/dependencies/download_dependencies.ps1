@@ -25,6 +25,20 @@ $destination = (new-object -com shell.application).namespace("$location")
 $items = $zip_file.items()
 $destination.Copyhere($items)
 rename-item "glfw-3.3" "GLFW"
-
-
 remove-item GLFW.zip
+
+# Download libmorton v0.2.2
+$file = "v0.2.2.zip"
+
+Invoke-WebRequest -Uri "https://github.com/Forceflow/libmorton/archive/v0.2.2.zip" -OutFile $file -TimeoutSec 5
+
+# Unzip the file to specified location
+$location = Get-Location
+$zip_file = (new-object -com shell.application).namespace("$location\$file")
+$destination = (new-object -com shell.application).namespace("$location")
+$items = $zip_file.items()
+$destination.Copyhere($items)
+rename-item "libmorton-0.2.2" "libmorton"
+
+
+remove-item "v0.2.2.zip"

@@ -8,7 +8,7 @@ Since GLAD is very small, it is already contained in the repo. Dear imgui is als
 in the repo.
 
 This folder should contain glad in a subdirectory called `Glad`, GLFW-3.3 in a
-subdirectory called `GLFW`.
+subdirectory called `GLFW`. Libmorton should be in a subdirectory called `libmorton`.
 The directory structure should be the following:
 ```$xslt
 dependencies
@@ -24,5 +24,9 @@ dependencies
         tests
         ...
     imgui
+        ...
+    libmorton
+        libmorton
+        test
         ...
 ```
