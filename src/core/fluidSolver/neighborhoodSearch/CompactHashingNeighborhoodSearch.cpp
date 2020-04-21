@@ -196,15 +196,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
                 throw std::logic_error(
                         "Trying to add a new neighbor to the storage but the memory space allocated would be exceeded!");
 
-            // TODO: remove this debug check: Checking if already inside the list
-            {
-                for (size_t i = 0; i < neighborCount; i++) {
-                    if (data[i] == neighborIndex) {
-                        //std::cout << cellStorage << std::endl;
-                        throw std::logic_error("Particle index is already in the neighbor list!");
-                    }
-                }
-            }
 
             *(data + neighborCount) = neighborIndex;
             neighborCount++;
@@ -381,20 +372,6 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::SetValueByKeyInte
         }
     }
 
-    // TODO: remove this debug code checking if the key was removed
-    {
-        std::vector<GridCell> keys;
-        for (size_t i = 0; i < hashTable.size(); i++) {
-            auto &ele = hashTable[i];
-            if (ele.info.attributes.hasAValue == 1) {
-                if (std::find(keys.begin(), keys.end(), ele.gridCellUsingThis) != keys.end()) {
-                    throw std::logic_error("Key entry exists more than once in the table!");
-                }
-
-                keys.push_back(ele.gridCellUsingThis);
-            }
-        }
-    }
 }
 
 FluidSolver::CompactHashingNeighborhoodSearch::HashTable::HashTable(size_t hashTableSize) : hashTableSize(
@@ -481,17 +458,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::HashTable::RemoveKeyInternal
         }
     }
 
-    // TODO: remove this debug code checking if the key was removed
-    {
-        auto begin = this->begin();
-        auto end = this->end();
-        for (auto current = begin; current != end; current++) {
-            auto value = *current;
-            if (value == gridCell) {
-                throw std::logic_error("Error removing a key from the hash table.");
-            }
-        }
-    }
+
 }
 
 std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::HashTable::PrintToStream(std::ostream &os) const {
@@ -628,20 +595,6 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetStorageSectionDat
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::AddParticleToStorageSection(size_t storageSection,
                                                                                              FluidSolver::particleIndex_t particleIndex,
                                                                                              const GridCell &gridCell) {
-    // TODO: remove this debug stuff
-    {
-        auto begin = GetStorageSectionDataBegin(storageSection);
-        auto end = GetStorageSectionDataEnd(storageSection);
-        for (auto current = begin; current != end; current++) {
-            auto &handle = *current;
-            if (handle.particleIndex.value == particleIndex) {
-                return;
-                throw std::logic_error(
-                        "Error trying to add a particle to the cell storage storage section, but it was already in there!");
-            }
-        }
-    }
-
     auto header = GetStorageSectionHeader(storageSection);
     if (header->particleIndex.internal.count < oneSectionParticleSize) {
         // the particle can be put into this storage cell
@@ -710,18 +663,6 @@ FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::GetEmptyStorageSecti
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleFromStorageSection(size_t storageSection,
                                                                                                   FluidSolver::particleIndex_t particleIndex) {
     RemoveParticleFromStorageSectionInternal(storageSection, storageSection, particleIndex);
-
-    // TODO: remove this debug feature checking if removal was successful
-    {
-        auto begin = GetStorageSectionDataBegin(storageSection);
-        auto end = GetStorageSectionDataBegin(storageSection);
-        for (auto current = begin; current != end; current++) {
-            auto data = *current;
-            if (data.particleIndex.value == particleIndex) {
-                throw std::logic_error("Error in the cell storage, removal was not successful!");
-            }
-        }
-    }
 }
 
 void FluidSolver::CompactHashingNeighborhoodSearch::CellStorage::RemoveParticleFromStorageSectionInternal(
