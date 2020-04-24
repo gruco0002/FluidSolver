@@ -1,6 +1,7 @@
 #include <engine/EngineException.hpp>
 #include <libraries/stb/stb_truetype.h>
 #include <fstream>
+#include <cstring>
 #include "Font.hpp"
 
 

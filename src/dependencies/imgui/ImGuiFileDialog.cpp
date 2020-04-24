@@ -4,6 +4,10 @@
 #include "ImGuiFileDialog.h"
 #include "imgui.h"
 
+#ifdef __linux__
+#define LINUX
+#endif
+
 #ifdef WIN32
 #include <include/dirent.h>
 #define PATH_SEP '\\'

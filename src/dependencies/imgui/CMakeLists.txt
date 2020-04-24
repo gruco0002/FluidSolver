@@ -23,7 +23,6 @@ endif ()
 
 if (UNIX AND NOT APPLE)
     # TODO: check if this is correct
-    set(ADDITIONAL_SOURCES imgui_impl_osx.mm imgui_impl_osx.h)
 endif ()
 
 

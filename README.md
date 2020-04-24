@@ -90,3 +90,41 @@ To install those tools execute `xcode-select --install`.
 After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
 Below `if (APPLE)` are paths that have to be adapted to your llvm location. (Normally they should be `/usr/local/opt/llvm/`)
 Please be sure that these paths behind the variable names `CMAKE_PREFIX_PATH`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER` and `openmpDylibPath` are set correctly.
+
+### Using the Code on Linux (Debian / Ubuntu)
+The project uses OpenGL for its visualization. Therefore you have to install required
+libraries in order to compile this project:
+```shell script
+sudo apt install mesa-utils
+sudo apt install libgl1-mesa-dev
+sudo apt install xorg-dev
+```
+*Important:* The packages could have other names for your distibution of linux. Also the
+package manager (here `apt`) is not the same for every linux system.
+
+The mesa packages are required for OpenGL support. The xorg-dev is required in order to
+create a window in which OpenGL can render its stuff.
+Also make sure to have a decent c++ and c compiler like gcc available on your system.
+I recommend installing the build-essential package, since it contains the compiler and
+other important stuff:
+```shell script
+sudo apt-get install build-essential
+```
+To create a CMake config you need to have CMake installed. You can obtain cmake by installing
+it with your package manager. A good tool to set up the project would be VS Code
+(by Microsoft) with the CMake extension (by Microsoft) and C/C++ extension (by Microsoft)
+installed. VS Code requires CMake to be installed on the system. 
+An alternative would be to use tools like CLion that automatically create the CMake
+config for you. Clion ships with its own version of CMake but requires compilers and
+libraries to be installed on the system by you.
+
+*Important:* Make sure your compiler supports a decent version of OpenMP. (Most modern
+compilers for linux (like gcc) have that built in)
+
+*Important:* GLM is a library that is included in the repository. With some compilers
+it creates errors, since it does not recognize the compiler version.
+If a cryptic glm error occurs while compiling the project, head to the
+`src/libraries/glm/simd/platform.h` file. In this file you will find compiler version
+checks from line `150` and onwards. It could be the case, that your compiler has a
+version that is not explicitly captured by the checks. Check your compiler type, name
+and version and add a line that defines the appropriate value for `GLM_COMPILER`.
