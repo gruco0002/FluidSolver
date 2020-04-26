@@ -1,13 +1,14 @@
 #include <cstdint>
 #include <algorithm>
 #include <chrono>
-#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include "SESPHFluidSolver.hpp"
 
 namespace FluidSolver {
 
 
     void SESPHFluidSolver::ExecuteSimulationStep() {
+        CheckSolverIntegrity();
+
         auto t1 = std::chrono::high_resolution_clock::now();
 
 
@@ -96,7 +97,7 @@ namespace FluidSolver {
             }
             glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
             float neighborMass = particleCollection->GetMass(neighbor);
-            density += neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
+            density += neighborMass * kernel->GetKernelValue(neighborPosition, position);
         }
         return density;
     }
@@ -134,7 +135,7 @@ namespace FluidSolver {
                 glm::vec2 neighborPosition = particleCollection->GetPosition(neighbor);
                 pressureAcceleration +=
                         -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
-                        kernel->GetKernelDerivativeReversedValue(neighborPosition, position, KernelSupport);
+                        kernel->GetKernelDerivativeReversedValue(neighborPosition, position);
 
             } else {
                 // normal particles
@@ -148,7 +149,7 @@ namespace FluidSolver {
 
                 pressureAcceleration +=
                         -neighborMass * (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
-                        kernel->GetKernelDerivativeReversedValue(neighborPosition, position, KernelSupport);
+                        kernel->GetKernelDerivativeReversedValue(neighborPosition, position);
             }
 
         }
@@ -181,7 +182,7 @@ namespace FluidSolver {
 
             tmp += (neighborMass / neighborDensity) *
                    (glm::dot(vij, xij) / (glm::dot(xij, xij) + 0.01f * ParticleSize * ParticleSize)) *
-                   kernel->GetKernelDerivativeReversedValue(neighborPosition, position, KernelSupport);
+                   kernel->GetKernelDerivativeReversedValue(neighborPosition, position);
 
 
         }
@@ -199,16 +200,7 @@ namespace FluidSolver {
     }
 
     void SESPHFluidSolver::setParticleSize(float particleSize) {
-        KernelSupport = 2.0f * particleSize;
-        NeighborhoodRadius = 2.0f * particleSize;
-        if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
-            delete neighborhoodSearch;
-            neighborhoodSearch = nullptr;
-            if (particleCollection != nullptr)
-                neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
-        }
         this->ParticleSize = particleSize;
-
     }
 
     float SESPHFluidSolver::getRestDensity() {
@@ -228,12 +220,6 @@ namespace FluidSolver {
     }
 
     void SESPHFluidSolver::setParticleCollection(IParticleCollection *particleCollection) {
-        if (neighborhoodSearch != nullptr) {
-            delete neighborhoodSearch;
-            neighborhoodSearch = nullptr;
-        }
-        if (particleCollection != nullptr)
-            neighborhoodSearch = new FluidSolver::HashedNeighborhoodSearch(particleCollection, NeighborhoodRadius);
         this->particleCollection = particleCollection;
     }
 
@@ -255,5 +241,21 @@ namespace FluidSolver {
 
     uint32_t SESPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
         return compTimePressureSolverMicroseconds;
+    }
+
+    void SESPHFluidSolver::SetKernel(IKernel *kernel) {
+        this->kernel = kernel;
+    }
+
+    IKernel *SESPHFluidSolver::GetKernel() {
+        return this->kernel;
+    }
+
+    void SESPHFluidSolver::SetNeighborhoodSearch(INeighborhoodSearch *neighborhoodSearch) {
+        this->neighborhoodSearch = neighborhoodSearch;
+    }
+
+    INeighborhoodSearch *SESPHFluidSolver::GetNeighborhoodSearch() {
+        return this->neighborhoodSearch;
     }
 }

@@ -2,9 +2,7 @@
 #define FLUIDSOLVER_IISPHFLUIDSOLVER_HPP
 
 #include <core/fluidSolver/IFluidSolver.hpp>
-
-#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+#include <core/fluidSolver/kernel/IKernel.hpp>
 
 namespace FluidSolver {
     class IISPHFluidSolver : public IFluidSolver {
@@ -19,9 +17,6 @@ namespace FluidSolver {
         float RestDensity = 0.0f;
         float ParticleSize = 0.0f;
         float Gravity = 0.0f;
-
-        float KernelSupport = 0.0f;
-        float NeighborhoodRadius = 0.0f;
 
         float lastPredictedDensityError = 0.0f;
         float maxPredictedDensityErrorReached = 0.0f;
@@ -44,7 +39,7 @@ namespace FluidSolver {
         IParticleCollection *ParticleCollection = nullptr;
 
         INeighborhoodSearch *neighborhoodSearch = nullptr;
-        IKernel *kernel = new CubicSplineKernel();
+        IKernel *kernel = nullptr;
 
         void CalculateDensity(uint32_t particleIndex);
 
@@ -94,6 +89,14 @@ namespace FluidSolver {
         void setParticleCollection(IParticleCollection *particleCollection) override;
 
         IParticleCollection *getParticleCollection() override;
+
+        void SetKernel(IKernel *kernel) override;
+
+        IKernel *GetKernel() override;
+
+        void SetNeighborhoodSearch(INeighborhoodSearch *neighborhoodSearch) override;
+
+        INeighborhoodSearch *GetNeighborhoodSearch() override;
     };
 }
 

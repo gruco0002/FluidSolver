@@ -5,7 +5,6 @@
 #include <core/fluidSolver/kernel/IKernel.hpp>
 #include <core/interface/ISimulationModifier.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
-#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 #include "core/statistics/StatisticCollector.hpp"
 
@@ -25,8 +24,6 @@ namespace FluidSolver {
         float RestDensity = 1.0f;
 
 
-        float NeighborhoodRadius = 5.0f;
-        float KernelSupport = 2.0f;
 
         uint32_t compTimeTotalMicroseconds = 0;
         uint32_t compTimePressureSolverMicroseconds = 0;
@@ -34,7 +31,7 @@ namespace FluidSolver {
         IParticleCollection *particleCollection = nullptr;
 
         INeighborhoodSearch *neighborhoodSearch = nullptr;
-        IKernel *kernel = new FluidSolver::CubicSplineKernel();
+        IKernel *kernel = nullptr;
 
         float ComputePressure(uint32_t particleIndex);
 
@@ -79,6 +76,14 @@ namespace FluidSolver {
         void ExecuteSimulationStep() override;
 
         ~SESPHFluidSolver() override;
+
+        void SetKernel(IKernel *kernel) override;
+
+        IKernel *GetKernel() override;
+
+        void SetNeighborhoodSearch(INeighborhoodSearch *neighborhoodSearch) override;
+
+        INeighborhoodSearch *GetNeighborhoodSearch() override;
     };
 }
 

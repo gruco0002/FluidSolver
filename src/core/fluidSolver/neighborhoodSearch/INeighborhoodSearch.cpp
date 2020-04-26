@@ -44,6 +44,14 @@ FluidSolver::INeighborhoodSearch::INeighborhoodSearch(FluidSolver::IParticleColl
     this->radius = radius;
 }
 
+FluidSolver::IParticleCollection *FluidSolver::INeighborhoodSearch::GetParticleCollection() {
+    return particleCollection;
+}
+
+float FluidSolver::INeighborhoodSearch::GetRadius() {
+    return radius;
+}
+
 FluidSolver::Neighbors::NeighborsIterator::NeighborsIterator(FluidSolver::Neighbors *nb,
                                                              NeighborsIterator::iteratorPosition_t iteratorPosition) {
     this->iteratorPosition = iteratorPosition;

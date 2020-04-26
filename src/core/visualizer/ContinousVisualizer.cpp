@@ -15,7 +15,6 @@ FluidSolver::IParticleCollection *FluidSolver::ContinousVisualizer::getParticleC
 }
 
 void FluidSolver::ContinousVisualizer::setParticleSize(float particleSize) {
-    this->KernelSupport = 2.0f * particleSize;
     if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
         delete neighborhoodSearch;
         neighborhoodSearch = nullptr;
@@ -31,6 +30,7 @@ float FluidSolver::ContinousVisualizer::getParticleSize() {
 }
 
 void FluidSolver::ContinousVisualizer::Render() {
+
 
     // find neighbors for all particles
     neighborhoodSearch->UpdateGrid();
@@ -90,7 +90,7 @@ FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::Calcul
         }
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
         float neighborMass = ParticleCollection->GetMass(neighbor);
-        float densityContribution = neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
+        float densityContribution = neighborMass * kernel->GetKernelValue(neighborPosition, position);
 
         if (type == ParticleTypeNormal) {
             normalDensity += densityContribution;
@@ -222,6 +222,14 @@ void FluidSolver::ContinousVisualizer::setParticleSelection(FluidSolver::IPartic
 
 FluidSolver::IParticleSelection *FluidSolver::ContinousVisualizer::getParticleSelection() {
     return particleSelection;
+}
+
+FluidSolver::IKernel *FluidSolver::ContinousVisualizer::getKernel() const {
+    return kernel;
+}
+
+void FluidSolver::ContinousVisualizer::setKernel(FluidSolver::IKernel *kernel) {
+    ContinousVisualizer::kernel = kernel;
 }
 
 FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}

@@ -7,9 +7,11 @@ namespace  FluidSolver {
     class CubicSplineKernel : public IKernel{
 
     public:
-        float GetKernelValue(glm::vec2 position, float kernelSupport) override;
+        CubicSplineKernel(float kernelSupport);
 
-        glm::vec2 GetKernelDerivativeValue(glm::vec2 position, float kernelSupport) override;
+        float GetKernelValue(glm::vec2 position) const override;
+
+        glm::vec2 GetKernelDerivativeValue(glm::vec2 position) const override;
 
     };
 }

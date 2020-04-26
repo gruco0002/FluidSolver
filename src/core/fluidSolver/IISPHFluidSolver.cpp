@@ -1,8 +1,6 @@
 #include <iostream>
 #include <algorithm>
 #include <chrono>
-#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 #include "IISPHFluidSolver.hpp"
 
 
@@ -11,15 +9,6 @@ float FluidSolver::IISPHFluidSolver::getParticleSize() {
 }
 
 void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
-    this->KernelSupport = 2.0f * particleSize;
-    this->NeighborhoodRadius = 2.0f * particleSize;
-
-    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
-        delete neighborhoodSearch;
-        neighborhoodSearch = nullptr;
-        if (ParticleCollection != nullptr)
-            neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
-    }
     this->ParticleSize = particleSize;
 }
 
@@ -40,12 +29,6 @@ void FluidSolver::IISPHFluidSolver::setTimestep(float timestep) {
 }
 
 void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticleCollection *ParticleCollection) {
-    if (neighborhoodSearch != nullptr) {
-        delete neighborhoodSearch;
-        neighborhoodSearch = nullptr;
-    }
-    if (ParticleCollection != nullptr)
-        neighborhoodSearch = new CompactHashingNeighborhoodSearch(ParticleCollection, this->NeighborhoodRadius);
     this->ParticleCollection = ParticleCollection;
     this->maxPredictedDensityErrorReached = 0.0f;
 }
@@ -63,18 +46,13 @@ void FluidSolver::IISPHFluidSolver::setGravity(float gravity) {
 }
 
 void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
+
+    CheckSolverIntegrity();
+
     auto t1 = std::chrono::high_resolution_clock::now();
 
     // find neighbors for all particles
     neighborhoodSearch->FindNeighbors();
-
-  /*  auto tmp = dynamic_cast<CompactHashingNeighborhoodSearch*>(neighborhoodSearch);
-    if(tmp){
-        auto &search = *tmp;
-        std::cout << search << std::endl;
-        return;
-    }*/
-
 
     // calculating density and non pressure accelerations
 #pragma omp parallel for
@@ -136,7 +114,7 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
         }
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
         float neighborMass = ParticleCollection->GetMass(neighbor);
-        density += neighborMass * kernel->GetKernelValue(neighborPosition, position, KernelSupport);
+        density += neighborMass * kernel->GetKernelValue(neighborPosition, position);
     }
 
     ParticleCollection->SetDensity(particleIndex, density);
@@ -187,7 +165,7 @@ glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t p
 
         tmp += (neighborMass / neighborDensity) *
                (glm::dot(vij, xij) / (glm::dot(xij, xij) + 0.01f * ParticleSize * ParticleSize)) *
-               kernel->GetKernelDerivativeReversedValue(neighborPosition, position, KernelSupport);
+               kernel->GetKernelDerivativeReversedValue(neighborPosition, position);
 
 
     }
@@ -215,8 +193,7 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
 
         sum += neighborMass * glm::dot((particlePredictedVelocity - neighborPredictedVelocity),
-                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
-                                                                                KernelSupport));
+                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
         // the velocity of a boundary particle in the next timestep is here equal to the predicted velocity of said
         // boundary particle, since there are no other forces that apply to them.
 
@@ -255,12 +232,10 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
 
             if (internalNeighborType == ParticleTypeNormal) {
                 internalSum += internalNeighborMass / RestDensity / RestDensity *
-                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
-                                                                        KernelSupport);
+                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
             } else if (internalNeighborType == ParticleTypeBoundary) {
                 internalSum += 2.0f * Gamma * internalNeighborMass / RestDensity / RestDensity *
-                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition,
-                                                                        KernelSupport);
+                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
             }
 
             // since we have no factor for boundary particles, they can be handled as normal particles
@@ -268,8 +243,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         }
 
         sum += neighborMass *
-               glm::dot(-internalSum, kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
-                                                                               KernelSupport));
+               glm::dot(-internalSum, kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
 
 
     }
@@ -287,10 +261,8 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
 
         sum += neighborMass * glm::dot(particleMass / RestDensity / RestDensity *
-                                       kernel->GetKernelDerivativeReversedValue(particlePosition, neighborPosition,
-                                                                                KernelSupport),
-                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
-                                                                                KernelSupport));
+                                       kernel->GetKernelDerivativeReversedValue(particlePosition, neighborPosition),
+                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
 
     }
 
@@ -361,13 +333,11 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
                     sum += neighborMass * (particlePressure / RestDensity / RestDensity +
                                            neighborPressure / RestDensity / RestDensity) *
-                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
-                                                                    KernelSupport);
+                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
                 } else if (neighborType == ParticleTypeBoundary) {
                     // pressure is mirrored here
                     sum += Gamma * neighborMass * 2.0f * (particlePressure / RestDensity / RestDensity) *
-                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition,
-                                                                    KernelSupport);
+                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
                 }
 
             }
@@ -402,14 +372,12 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
                     sum += neighborMass * glm::dot((particlePressureAcceleration - neighborPressureAcceleration),
                                                    kernel->GetKernelDerivativeReversedValue(neighborPosition,
-                                                                                            particlePosition,
-                                                                                            KernelSupport));
+                                                                                            particlePosition));
 
                 } else if (neighborType == ParticleTypeBoundary) {
                     sum += neighborMass * glm::dot(particlePressureAcceleration,
                                                    kernel->GetKernelDerivativeReversedValue(neighborPosition,
-                                                                                            particlePosition,
-                                                                                            KernelSupport));
+                                                                                            particlePosition));
                 }
             }
 
@@ -485,5 +453,21 @@ uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimeLastTimestepInMicrosec
 
 uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
     return compTimePressureSolverMicroseconds;
+}
+
+void FluidSolver::IISPHFluidSolver::SetKernel(FluidSolver::IKernel *kernel) {
+    this->kernel = kernel;
+}
+
+FluidSolver::IKernel *FluidSolver::IISPHFluidSolver::GetKernel() {
+    return kernel;
+}
+
+void FluidSolver::IISPHFluidSolver::SetNeighborhoodSearch(FluidSolver::INeighborhoodSearch *neighborhoodSearch) {
+    this->neighborhoodSearch = neighborhoodSearch;
+}
+
+FluidSolver::INeighborhoodSearch *FluidSolver::IISPHFluidSolver::GetNeighborhoodSearch() {
+    return this->neighborhoodSearch;
 }
 

@@ -2,8 +2,8 @@
 #include "CubicSplineKernel.hpp"
 #include <limits>
 
-float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position, float kernelSupport) {
-    float h = kernelSupport / 2.0f;
+float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position) const {
+    float h = KernelSupport / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
 
@@ -20,8 +20,8 @@ float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position, float k
 
 }
 
-glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 position, float kernelSupport) {
-    float h = kernelSupport / 2.0f;
+glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 position) const {
+    float h = KernelSupport / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
 
@@ -43,3 +43,5 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
     // reverse the reversed implementation, since this function should return a non reversed kernel derivative value
     return alpha * ret * -1.0f;
 }
+
+FluidSolver::CubicSplineKernel::CubicSplineKernel(float kernelSupport) : IKernel(kernelSupport) {}

@@ -272,6 +272,8 @@ namespace FluidSolver {
          */
         virtual NeighborsCompactData GetNeighbors(glm::vec2 position) = 0;
 
+        IParticleCollection* GetParticleCollection();
+        float GetRadius();
 
     protected:
 

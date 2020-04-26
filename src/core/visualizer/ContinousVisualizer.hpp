@@ -100,7 +100,13 @@ namespace FluidSolver {
         std::vector<Color> data;
 
         HashedNeighborhoodSearch *neighborhoodSearch = nullptr;
-        IKernel *kernel = new CubicSplineKernel();
+        IKernel *kernel = nullptr;
+    public:
+        IKernel *getKernel() const;
+
+        void setKernel(IKernel *kernel);
+
+    private:
         float KernelSupport = 0.0f;
 
         Color CalculateColorForPixel(size_t x, size_t y);
