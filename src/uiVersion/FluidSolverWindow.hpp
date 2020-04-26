@@ -130,6 +130,8 @@ public:
 
     void setVisualizerRenderTargetHeight(size_t visualizerRenderTargetHeight);
 
+    std::vector<std::string> ErrorLog;
+
 private:
     size_t visualizerRenderTargetHeight = 1080;
 

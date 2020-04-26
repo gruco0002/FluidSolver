@@ -64,6 +64,8 @@ namespace FluidUI {
 
         void ImageRecorder();
 
+        void ErrorLogView();
+
     };
 }
 

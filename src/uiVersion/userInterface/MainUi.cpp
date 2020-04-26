@@ -23,6 +23,7 @@ void FluidUI::MainUi::Run() {
     Selection();
     DataLogger();
     ImageRecorder();
+    ErrorLogView();
 
 }
 
@@ -532,6 +533,24 @@ void FluidUI::MainUi::ImageRecorder() {
         // close
         ImGuiFileDialog::Instance()->CloseDialog("ImgLocationKey");
     }
+
+    ImGui::End();
+}
+
+void FluidUI::MainUi::ErrorLogView() {
+    if (this->window == nullptr)
+        return;
+    if (this->window->ErrorLog.empty())
+        return;
+    ImGui::Begin("Errors");
+    ImGui::Text("Caught simulation errors.");
+    if (ImGui::Button("Clear List")) {
+        this->window->ErrorLog.clear();
+    }
+    ImGui::BeginChild("Scrolling");
+    for (int n = 0; n < this->window->ErrorLog.size(); n++)
+        ImGui::Text(window->ErrorLog[n].c_str());
+    ImGui::EndChild();
 
     ImGui::End();
 }

@@ -35,8 +35,16 @@ void FluidSolverWindow::render() {
             while (accumulatedSimulationTime >= simulation->getTimestep()->getCurrentTimestep()) {
                 //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
                 accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
-                simulation->ExecuteSimulationStep();
-                simulation->CollectStatistics();
+                try {
+                    simulation->ExecuteSimulationStep();
+                    simulation->CollectStatistics();
+                } catch (const FluidSolver::FluidSolverException& ex) {
+                    ErrorLog.push_back("Error: " + ex.text);
+                    this->Pause = true;
+                    accumulatedSimulationTime = 0.0f;
+                    break;
+                }
+
                 simulationStepHappened = true;
             }
         } else {
