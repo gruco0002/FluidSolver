@@ -76,6 +76,7 @@ void FluidSolverWindow::render() {
     auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
 
+    mainUi->Run();
 
     ImGui::Begin("Simulation Visualization");
 
@@ -144,7 +145,7 @@ void FluidSolverWindow::render() {
 
     ImGui::End();
 
-    mainUi->Run();
+
 
     ImGuiHelper::PostRender();
 

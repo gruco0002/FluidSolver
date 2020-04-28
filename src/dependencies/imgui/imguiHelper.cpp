@@ -1,5 +1,5 @@
 #include "imguiHelper.hpp"
-
+#include "font/RobotoMedium.cpp"
 void ImGuiHelper::Init(GLFWwindow *window) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -7,6 +7,8 @@ void ImGuiHelper::Init(GLFWwindow *window) {
 
     ImGuiIO &io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15);
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);

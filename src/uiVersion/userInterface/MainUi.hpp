@@ -18,6 +18,17 @@ namespace FluidUI {
 
     private:
 
+        bool viewSimulationControl = true;
+        bool viewScenarioControl = true;
+        bool viewSimulation = false;
+        bool viewFluidSolver = false;
+        bool viewVisualizerSettings = false;
+        bool viewStatistics = false;
+        bool viewSelection = false;
+        bool viewDataLogger = false;
+        bool viewImageRecorder = false;
+
+
         void SimulationControl();
 
 
