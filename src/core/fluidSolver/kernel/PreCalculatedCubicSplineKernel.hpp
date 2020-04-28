@@ -9,7 +9,7 @@ namespace FluidSolver {
     public:
         IKernel *CreateCopy(float kernelSupport) override;
 
-        explicit PreCalculatedCubicSplineKernel(float kernelSupport, size_t numberOfSamples = 1024);
+        explicit PreCalculatedCubicSplineKernel(float kernelSupport, size_t numberOfSamples = 256);
 
         float GetKernelValue(glm::vec2 position) const override;
 
@@ -23,6 +23,8 @@ namespace FluidSolver {
         std::vector<glm::vec2> kernelDerivativeValues;
 
         void PrecalculateValues();
+        void PrecalculateKernel();
+        void PrecalculateDerivative();
 
     };
 }
