@@ -87,3 +87,9 @@ FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 pos
 FluidSolver::QuadraticNeighborhoodSearchPreAllocated::QuadraticNeighborhoodSearchPreAllocated(
         FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
                                                                                                   radius) {}
+
+FluidSolver::INeighborhoodSearch *
+FluidSolver::QuadraticNeighborhoodSearchPreAllocated::CreateCopy(FluidSolver::IParticleCollection *particleCollection,
+                                                                 float radius) {
+    return new QuadraticNeighborhoodSearchPreAllocated(particleCollection, radius);
+}

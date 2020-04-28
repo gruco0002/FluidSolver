@@ -7,6 +7,7 @@
 namespace FluidSolver {
     class PreCalculatedCubicSplineKernel : public IKernel{
     public:
+        IKernel *CreateCopy(float kernelSupport) override;
 
         explicit PreCalculatedCubicSplineKernel(float kernelSupport, size_t numberOfSamples = 1024);
 

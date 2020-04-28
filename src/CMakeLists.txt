@@ -78,7 +78,7 @@ if (UNIX AND NOT APPLE)
 
     # note that the order is important for setting the libs
     # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
-    set(FLUIDSOLVER_SYSTEM_LIBS X11 Xxf86vm GL dl pthread )
+    set(FLUIDSOLVER_SYSTEM_LIBS X11 Xxf86vm GL dl pthread OpenMP::OpenMP_CXX)
 
 endif ()
 

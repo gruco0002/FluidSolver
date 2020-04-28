@@ -16,6 +16,7 @@
 #include <imguiHelper.hpp>
 #include <core/statistics/CachedStatisticCollector.hpp>
 #include <core/selection/ParticleSelection.hpp>
+#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -38,7 +39,7 @@ void FluidSolverWindow::render() {
                 try {
                     simulation->ExecuteSimulationStep();
                     simulation->CollectStatistics();
-                } catch (const FluidSolver::FluidSolverException& ex) {
+                } catch (const FluidSolver::FluidSolverException &ex) {
                     ErrorLog.push_back("Error: " + ex.text);
                     this->Pause = true;
                     accumulatedSimulationTime = 0.0f;
@@ -146,7 +147,6 @@ void FluidSolverWindow::render() {
     ImGui::End();
 
 
-
     ImGuiHelper::PostRender();
 
 }
@@ -231,6 +231,13 @@ void FluidSolverWindow::setupSimulation() {
 
     // set datalogger but don't start it
     simulation->setDataLogger(new DataLogger("data.csv"));
+
+    // set neighborhood search & kernel
+    simulation->setKernel(new FluidSolver::CubicSplineKernel(simulation->getParticleSize() * 2.0f));
+    simulation->setNeighborhoodSearch(
+            new FluidSolver::CompactHashingNeighborhoodSearch(simulation->getParticleCollection(),
+                                                              simulation->getParticleSize() * 2.0f));
+
 
 }
 

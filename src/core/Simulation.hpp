@@ -7,6 +7,8 @@
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
 #include "core/fluidSolver/SESPHFluidSolver.hpp"
+#include <core/fluidSolver/kernel/IKernel.hpp>
+#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 
 namespace FluidSolver {
     class Simulation {
@@ -29,6 +31,10 @@ namespace FluidSolver {
         ITimestep *timestep = nullptr;
 
         IParticleSelection* particleSelection = new AllParticleSelection();
+
+        IKernel* kernel = nullptr;
+
+        INeighborhoodSearch* neighborhoodSearch = nullptr;
 
         float particleSize = 1.0f;
         float restDensity = 1.0f;
@@ -88,6 +94,14 @@ namespace FluidSolver {
         void addExternalForce(IExternalForce *force);
 
         void removeExternalForce(IExternalForce *force);
+
+        void setNeighborhoodSearch(INeighborhoodSearch* neighborhoodSearch);
+
+        INeighborhoodSearch* getNeighborhoodSearch();
+
+        void setKernel(IKernel* kernel);
+
+        IKernel* getKernel();
 
 
     public:

@@ -22,6 +22,8 @@ namespace FluidSolver {
      * search.
      */
     class QuadraticNeighborhoodSearchDynamicAllocated : public INeighborhoodSearch {
+    public:
+        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
 
     public:
         QuadraticNeighborhoodSearchDynamicAllocated(IParticleCollection *particleCollection, float radius);

@@ -9,6 +9,7 @@
 namespace FluidSolver {
     class HashedNeighborhoodSearch : public INeighborhoodSearch {
     public:
+        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
 
         void FindNeighbors() override;
 

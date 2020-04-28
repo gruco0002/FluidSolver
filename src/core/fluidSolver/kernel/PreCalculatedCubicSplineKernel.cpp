@@ -21,3 +21,7 @@ void FluidSolver::PreCalculatedCubicSplineKernel::PrecalculateValues() {
 
 
 }
+
+FluidSolver::IKernel *FluidSolver::PreCalculatedCubicSplineKernel::CreateCopy(float kernelSupport) {
+    return new PreCalculatedCubicSplineKernel(kernelSupport, numberOfSamples);
+}

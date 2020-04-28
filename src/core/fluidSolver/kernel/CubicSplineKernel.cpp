@@ -45,3 +45,7 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
 }
 
 FluidSolver::CubicSplineKernel::CubicSplineKernel(float kernelSupport) : IKernel(kernelSupport) {}
+
+FluidSolver::IKernel *FluidSolver::CubicSplineKernel::CreateCopy(float kernelSupport) {
+    return new CubicSplineKernel(kernelSupport);
+}

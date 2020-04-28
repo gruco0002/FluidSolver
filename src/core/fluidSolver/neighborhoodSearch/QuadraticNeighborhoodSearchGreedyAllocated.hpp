@@ -25,6 +25,8 @@ namespace FluidSolver {
      * allocations.
      */
     class QuadraticNeighborhoodSearchGreedyAllocated : public INeighborhoodSearch {
+    public:
+        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
 
     public:
         QuadraticNeighborhoodSearchGreedyAllocated(IParticleCollection *particleCollection, float radius);

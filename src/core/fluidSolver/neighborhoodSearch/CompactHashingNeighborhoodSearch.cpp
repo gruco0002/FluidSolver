@@ -227,6 +227,12 @@ std::ostream &FluidSolver::CompactHashingNeighborhoodSearch::PrintToStream(std::
     return os;
 }
 
+FluidSolver::INeighborhoodSearch *
+FluidSolver::CompactHashingNeighborhoodSearch::CreateCopy(FluidSolver::IParticleCollection *particleCollection,
+                                                          float radius) {
+    return new CompactHashingNeighborhoodSearch(particleCollection, radius);
+}
+
 bool FluidSolver::CompactHashingNeighborhoodSearch::GridCell::operator==(
         const FluidSolver::CompactHashingNeighborhoodSearch::GridCell &rhs) const {
     return x == rhs.x &&

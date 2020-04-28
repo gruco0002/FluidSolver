@@ -13,6 +13,8 @@ namespace  FluidSolver {
 
         glm::vec2 GetKernelDerivativeValue(glm::vec2 position) const override;
 
+        IKernel *CreateCopy(float kernelSupport) override;
+
     };
 }
 

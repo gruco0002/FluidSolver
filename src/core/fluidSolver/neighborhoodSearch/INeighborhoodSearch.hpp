@@ -275,6 +275,8 @@ namespace FluidSolver {
         IParticleCollection* GetParticleCollection();
         float GetRadius();
 
+        virtual INeighborhoodSearch* CreateCopy(IParticleCollection *particleCollection, float radius) = 0;
+
     protected:
 
         IParticleCollection *particleCollection = nullptr;

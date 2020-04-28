@@ -46,3 +46,8 @@ FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::QuadraticNeighborhoodS
         FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
                                                                                                   radius) {}
 
+FluidSolver::INeighborhoodSearch *FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::CreateCopy(
+        FluidSolver::IParticleCollection *particleCollection, float radius) {
+    return new QuadraticNeighborhoodSearchDynamicAllocated(particleCollection, radius);
+}
+

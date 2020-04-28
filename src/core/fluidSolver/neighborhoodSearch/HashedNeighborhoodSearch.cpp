@@ -166,3 +166,8 @@ FluidSolver::HashedNeighborhoodSearch::HashedNeighborhoodSearch(FluidSolver::IPa
                                                                                                     radius) {
     this->gridCellSize = radius;
 }
+
+FluidSolver::INeighborhoodSearch *
+FluidSolver::HashedNeighborhoodSearch::CreateCopy(FluidSolver::IParticleCollection *particleCollection, float radius) {
+    return new HashedNeighborhoodSearch(particleCollection, radius);
+}

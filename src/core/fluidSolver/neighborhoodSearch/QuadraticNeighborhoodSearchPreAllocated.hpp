@@ -23,6 +23,8 @@ namespace FluidSolver {
     class QuadraticNeighborhoodSearchPreAllocated : public INeighborhoodSearch {
 
     public:
+        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
+
         QuadraticNeighborhoodSearchPreAllocated(IParticleCollection *particleCollection, float radius);
 
         void FindNeighbors() override;

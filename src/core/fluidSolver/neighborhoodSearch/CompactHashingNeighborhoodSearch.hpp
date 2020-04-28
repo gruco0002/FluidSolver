@@ -8,6 +8,8 @@
 namespace FluidSolver {
 
     class CompactHashingNeighborhoodSearch : public INeighborhoodSearch {
+    public:
+        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
 
     public:
 

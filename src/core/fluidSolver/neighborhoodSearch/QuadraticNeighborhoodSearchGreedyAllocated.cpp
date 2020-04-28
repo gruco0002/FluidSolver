@@ -48,3 +48,8 @@ FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::GetNeighbors(glm::vec2 
 FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::QuadraticNeighborhoodSearchGreedyAllocated(
         FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
                                                                                                   radius) {}
+
+FluidSolver::INeighborhoodSearch *FluidSolver::QuadraticNeighborhoodSearchGreedyAllocated::CreateCopy(
+        FluidSolver::IParticleCollection *particleCollection, float radius) {
+    return new QuadraticNeighborhoodSearchGreedyAllocated(particleCollection, radius);
+}

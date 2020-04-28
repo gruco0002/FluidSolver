@@ -63,6 +63,8 @@ namespace FluidSolver {
 
         float GetKernelSupport() const;
 
+        virtual IKernel* CreateCopy(float kernelSupport) = 0;
+
     protected:
         float KernelSupport;
 

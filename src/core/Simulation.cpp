@@ -69,6 +69,12 @@ void FluidSolver::Simulation::setParticleCollection(FluidSolver::IParticleCollec
         statisticCollector->setParticleCollection(particleCollection);
     if (this->timestep != nullptr)
         timestep->setParticleCollection(particleCollection);
+    if (neighborhoodSearch != nullptr) {
+        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), this->particleSize * 2.0f);
+        auto oldSearch = this->getNeighborhoodSearch();
+        this->setNeighborhoodSearch(newSearch);
+        delete oldSearch;
+    }
 }
 
 FluidSolver::IFluidSolver *FluidSolver::Simulation::getFluidSolver() {
@@ -77,10 +83,14 @@ FluidSolver::IFluidSolver *FluidSolver::Simulation::getFluidSolver() {
 
 void FluidSolver::Simulation::setFluidSolver(FluidSolver::IFluidSolver *fluidSolver) {
     this->fluidSolver = fluidSolver;
-    fluidSolver->setParticleCollection(this->particleCollection);
-    fluidSolver->setParticleSize(this->particleSize);
-    fluidSolver->setRestDensity(this->restDensity);
-    fluidSolver->setGravity(this->gravity);
+    if (this->fluidSolver != nullptr) {
+        fluidSolver->setParticleCollection(this->particleCollection);
+        fluidSolver->setParticleSize(this->particleSize);
+        fluidSolver->setRestDensity(this->restDensity);
+        fluidSolver->setGravity(this->gravity);
+        fluidSolver->SetKernel(this->kernel);
+        fluidSolver->SetNeighborhoodSearch(this->neighborhoodSearch);
+    }
 
     if (dataLogger != nullptr)
         dataLogger->setFluidSolver(fluidSolver);
@@ -147,6 +157,18 @@ void FluidSolver::Simulation::setParticleSize(float particleSize) {
         simulationVisualizer->setParticleSize(particleSize);
     if (timestep != nullptr)
         timestep->setParticleSize(particleSize);
+    if (kernel != nullptr) {
+        auto newKernel = this->kernel->CreateCopy(this->particleSize * 2.0f);
+        auto oldKernel = this->getKernel();
+        this->setKernel(newKernel);
+        delete oldKernel;
+    }
+    if (neighborhoodSearch != nullptr) {
+        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), this->particleSize * 2.0f);
+        auto oldSearch = this->getNeighborhoodSearch();
+        this->setNeighborhoodSearch(newSearch);
+        delete oldSearch;
+    }
 }
 
 float FluidSolver::Simulation::getRestDensity() {
@@ -222,4 +244,26 @@ void FluidSolver::Simulation::setParticleSelection(FluidSolver::IParticleSelecti
         statisticCollector->setParticleSelection(particleSelection);
     if (simulationVisualizer != nullptr)
         simulationVisualizer->setParticleSelection(particleSelection);
+}
+
+void FluidSolver::Simulation::setNeighborhoodSearch(FluidSolver::INeighborhoodSearch *neighborhoodSearch) {
+    this->neighborhoodSearch = neighborhoodSearch;
+    if (this->fluidSolver != nullptr) {
+        this->fluidSolver->SetNeighborhoodSearch(this->neighborhoodSearch);
+    }
+}
+
+FluidSolver::INeighborhoodSearch *FluidSolver::Simulation::getNeighborhoodSearch() {
+    return this->neighborhoodSearch;
+}
+
+void FluidSolver::Simulation::setKernel(FluidSolver::IKernel *kernel) {
+    this->kernel = kernel;
+    if (this->fluidSolver != nullptr) {
+        this->fluidSolver->SetKernel(this->kernel);
+    }
+}
+
+FluidSolver::IKernel *FluidSolver::Simulation::getKernel() {
+    return this->kernel;
 }
