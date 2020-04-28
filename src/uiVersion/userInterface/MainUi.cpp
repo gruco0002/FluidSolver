@@ -9,7 +9,7 @@
 #include <core/selection/NormalParticleSelection.hpp>
 #include <core/selection/ParticleSelection.hpp>
 
-FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
+FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window), neighborhoodSearch(NeighborhoodSearch(window)) {}
 
 void FluidUI::MainUi::Run() {
     //ImGui::ShowDemoWindow();
@@ -32,12 +32,16 @@ void FluidUI::MainUi::Run() {
         ImGui::MenuItem("Selection", "", &viewSelection);
         ImGui::MenuItem("Data Logger", "", &viewDataLogger);
         ImGui::MenuItem("Image Recorder", "", &viewImageRecorder);
+        ImGui::Separator();
+        ImGui::MenuItem("Neighborhood","", &viewNeighborhoodSearch);
 
         ImGui::EndMenu();
     }
 
 
     ImGui::EndMainMenuBar();
+
+    neighborhoodSearch.Run(&viewNeighborhoodSearch);
 
     SimulationControl();
     Scenario();

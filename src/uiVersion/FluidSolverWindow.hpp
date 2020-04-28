@@ -99,6 +99,8 @@ public:
 
     void SetDataLogger(DataLogger *dataLogger);
 
+    FluidSolver::Simulation* GetSimulation();
+
 private:
 
     FluidSolver::Simulation *simulation = nullptr;

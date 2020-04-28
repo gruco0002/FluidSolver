@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include "NeighborhoodSearch.hpp"
 
 class FluidSolverWindow;
 
@@ -27,6 +28,9 @@ namespace FluidUI {
         bool viewSelection = false;
         bool viewDataLogger = false;
         bool viewImageRecorder = false;
+        bool viewNeighborhoodSearch = false;
+
+        NeighborhoodSearch neighborhoodSearch;
 
 
         void SimulationControl();

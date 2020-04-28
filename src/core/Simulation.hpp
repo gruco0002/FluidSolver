@@ -103,6 +103,7 @@ namespace FluidSolver {
 
         IKernel* getKernel();
 
+        float getRadius();
 
     public:
 

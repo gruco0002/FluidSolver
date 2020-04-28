@@ -604,5 +604,9 @@ void FluidSolverWindow::startRecording() {
     imageCounter = 0;
 }
 
+FluidSolver::Simulation *FluidSolverWindow::GetSimulation() {
+    return this->simulation;
+}
+
 
 

@@ -70,7 +70,7 @@ void FluidSolver::Simulation::setParticleCollection(FluidSolver::IParticleCollec
     if (this->timestep != nullptr)
         timestep->setParticleCollection(particleCollection);
     if (neighborhoodSearch != nullptr) {
-        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), this->particleSize * 2.0f);
+        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), getRadius());
         auto oldSearch = this->getNeighborhoodSearch();
         this->setNeighborhoodSearch(newSearch);
         delete oldSearch;
@@ -158,13 +158,13 @@ void FluidSolver::Simulation::setParticleSize(float particleSize) {
     if (timestep != nullptr)
         timestep->setParticleSize(particleSize);
     if (kernel != nullptr) {
-        auto newKernel = this->kernel->CreateCopy(this->particleSize * 2.0f);
+        auto newKernel = this->kernel->CreateCopy(getRadius());
         auto oldKernel = this->getKernel();
         this->setKernel(newKernel);
         delete oldKernel;
     }
     if (neighborhoodSearch != nullptr) {
-        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), this->particleSize * 2.0f);
+        auto newSearch = this->neighborhoodSearch->CreateCopy(this->getParticleCollection(), getRadius());
         auto oldSearch = this->getNeighborhoodSearch();
         this->setNeighborhoodSearch(newSearch);
         delete oldSearch;
@@ -266,4 +266,8 @@ void FluidSolver::Simulation::setKernel(FluidSolver::IKernel *kernel) {
 
 FluidSolver::IKernel *FluidSolver::Simulation::getKernel() {
     return this->kernel;
+}
+
+float FluidSolver::Simulation::getRadius() {
+    return 2.0f * particleSize;
 }
