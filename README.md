@@ -64,7 +64,7 @@ Use CMake to compile the project:
 - OpenMP (Version 4.5)
 - [cxxopts](https://github.com/jarro2783/cxxopts) (Version 2.1.2),
   included in this repository
-- [Dear imgui](https://github.com/ocornut/imgui) (Version 1.74, docking branch),
+- [Dear imgui](https://github.com/ocornut/imgui) (Version 1.76, docking branch),
   included in this repository
 - [imgui-plot](https://github.com/soulthreads/imgui-plot) (Version ce5f24e),
   included in this repository
