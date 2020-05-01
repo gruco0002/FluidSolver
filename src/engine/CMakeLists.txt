@@ -19,7 +19,7 @@ if (WIN32)
 
 
     set(ENGINE_LIBS glfw GLAD)
-    set(ENGINE_SYSTEM_LIBS Oopengl32 user32 Shlwapi)
+    set(ENGINE_SYSTEM_LIBS Opengl32 user32 Shlwapi)
 endif ()
 
 if (APPLE)
