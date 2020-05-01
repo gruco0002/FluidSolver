@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_TEXTURE2D_HPP
-#define CPPGUI_DEMO_TEXTURE2D_HPP
+#ifndef ENGINE_TEXTURE2D_HPP
+#define ENGINE_TEXTURE2D_HPP
 
 
 #include <string>
@@ -125,4 +125,4 @@ namespace Engine {
 }
 
 
-#endif //CPPGUI_DEMO_TEXTURE2D_HPP
+#endif //ENGINE_TEXTURE2D_HPP

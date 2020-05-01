@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_VERTEXBUFFER_HPP
-#define CPPGUI_DEMO_VERTEXBUFFER_HPP
+#ifndef ENGINE_VERTEXBUFFER_HPP
+#define ENGINE_VERTEXBUFFER_HPP
 
 #include <vector>
 #include "Buffer.hpp"
@@ -88,4 +88,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_VERTEXBUFFER_HPP
+#endif //ENGINE_VERTEXBUFFER_HPP

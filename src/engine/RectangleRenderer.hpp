@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_RECTANGLERENDERER_HPP
-#define CPPGUI_DEMO_RECTANGLERENDERER_HPP
+#ifndef ENGINE_RECTANGLERENDERER_HPP
+#define ENGINE_RECTANGLERENDERER_HPP
 
 #include <libraries/glm/glm.hpp>
 #include "graphics/Texture2D.hpp"
@@ -53,4 +53,4 @@ namespace Engine {
 }
 
 
-#endif //CPPGUI_DEMO_RECTANGLERENDERER_HPP
+#endif //ENGINE_RECTANGLERENDERER_HPP

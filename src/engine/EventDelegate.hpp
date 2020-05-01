@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_EVENTDELEGATE_HPP
-#define CPPGUI_DEMO_EVENTDELEGATE_HPP
+#ifndef ENGINE_EVENTDELEGATE_HPP
+#define ENGINE_EVENTDELEGATE_HPP
 
 #include <cstdint>
 #include <map>
@@ -97,4 +97,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_EVENTDELEGATE_HPP
+#endif //ENGINE_EVENTDELEGATE_HPP

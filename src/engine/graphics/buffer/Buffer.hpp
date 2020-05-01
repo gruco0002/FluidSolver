@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_BUFFER_HPP
-#define CPPGUI_DEMO_BUFFER_HPP
+#ifndef ENGINE_BUFFER_HPP
+#define ENGINE_BUFFER_HPP
 
 
 #include <glad/glad.h>
@@ -97,4 +97,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_BUFFER_HPP
+#endif //ENGINE_BUFFER_HPP

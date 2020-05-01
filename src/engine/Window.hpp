@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_WINDOW_HPP
-#define CPPGUI_DEMO_WINDOW_HPP
+#ifndef ENGINE_WINDOW_HPP
+#define ENGINE_WINDOW_HPP
 
 
 #include <string>
@@ -162,4 +162,4 @@ namespace Engine {
     };
 }
 
-#endif //CPPGUI_DEMO_WINDOW_HPP
+#endif //ENGINE_WINDOW_HPP

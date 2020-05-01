@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_FRAMEBUFFER_HPP
-#define CPPGUI_DEMO_FRAMEBUFFER_HPP
+#ifndef ENGINE_FRAMEBUFFER_HPP
+#define ENGINE_FRAMEBUFFER_HPP
 
 #include <glad/glad.h>
 #include "Texture2D.hpp"
@@ -55,4 +55,4 @@ private:
     }
 }
 
-#endif //CPPGUI_DEMO_FRAMEBUFFER_HPP
+#endif //ENGINE_FRAMEBUFFER_HPP

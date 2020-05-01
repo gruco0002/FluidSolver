@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_INDEXBUFFER_HPP
-#define CPPGUI_DEMO_INDEXBUFFER_HPP
+#ifndef ENGINE_INDEXBUFFER_HPP
+#define ENGINE_INDEXBUFFER_HPP
 
 #include "Buffer.hpp"
 #include <vector>
@@ -122,4 +122,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_INDEXBUFFER_HPP
+#endif //ENGINE_INDEXBUFFER_HPP

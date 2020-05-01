@@ -1,5 +1,5 @@
-#ifndef CPPGUI_TEXTURE2DARRAY_HPP
-#define CPPGUI_TEXTURE2DARRAY_HPP
+#ifndef ENGINE_TEXTURE2DARRAY_HPP
+#define ENGINE_TEXTURE2DARRAY_HPP
 
 #include <cstdint>
 #include "Texture2D.hpp"
@@ -101,4 +101,4 @@ namespace Engine {
 }
 
 
-#endif //CPPGUI_TEXTURE2DARRAY_HPP
+#endif //ENGINE_TEXTURE2DARRAY_HPP

@@ -5,12 +5,13 @@ the needed dependencies.
 
 ### Notes
 
-Libmorton should be in a subdirectory called `libmorton`.
+This folder should contain GLFW-3.3 in a subdirectory called `GLFW`.
 The directory structure should be the following:
 ```$xslt
 dependencies
-    libmorton
-        libmorton
-        test
+    GLFW
+        include
+        src
+        tests
         ...
 ```

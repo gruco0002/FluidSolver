@@ -13,18 +13,17 @@ $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
 [System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
-# Download libmorton v0.2.2
-$file = "v0.2.2.zip"
+#Download GLFW Version 3.3
+$file = "GLFW.zip"
 
-Invoke-WebRequest -Uri "https://github.com/Forceflow/libmorton/archive/v0.2.2.zip" -OutFile $file -TimeoutSec 5
+Invoke-WebRequest -Uri "https://github.com/glfw/glfw/releases/download/3.3/glfw-3.3.zip" -OutFile $file -TimeoutSec 5
 
 # Unzip the file to specified location
 $location = Get-Location
-$zip_file = (new-object -com shell.application).namespace("$location\$file")
+$zip_file = (new-object -com shell.application).namespace("$location\$file") 
 $destination = (new-object -com shell.application).namespace("$location")
 $items = $zip_file.items()
 $destination.Copyhere($items)
-rename-item "libmorton-0.2.2" "libmorton"
+rename-item "glfw-3.3" "GLFW"
+remove-item GLFW.zip
 
-
-remove-item "v0.2.2.zip"

@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_SHADER_HPP
-#define CPPGUI_DEMO_SHADER_HPP
+#ifndef ENGINE_SHADER_HPP
+#define ENGINE_SHADER_HPP
 
 #include <vector>
 #include <string>
@@ -121,4 +121,4 @@ namespace Engine {
 }
 
 
-#endif //CPPGUI_DEMO_SHADER_HPP
+#endif //ENGINE_SHADER_HPP

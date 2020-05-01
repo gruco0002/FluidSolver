@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_TEXTRENDERER_HPP
-#define CPPGUI_DEMO_TEXTRENDERER_HPP
+#ifndef ENGINE_TEXTRENDERER_HPP
+#define ENGINE_TEXTRENDERER_HPP
 
 #include "../graphics/buffer/VertexBuffer.hpp"
 #include "../graphics/buffer/IndexBuffer.hpp"
@@ -73,4 +73,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_TEXTRENDERER_HPP
+#endif //ENGINE_TEXTRENDERER_HPP

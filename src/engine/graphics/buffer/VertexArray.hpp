@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_VERTEXARRAY_HPP
-#define CPPGUI_DEMO_VERTEXARRAY_HPP
+#ifndef ENGINE_VERTEXARRAY_HPP
+#define ENGINE_VERTEXARRAY_HPP
 
 #include <vector>
 #include <set>
@@ -83,4 +83,4 @@ namespace Engine {
     }
 }
 
-#endif //CPPGUI_DEMO_VERTEXARRAY_HPP
+#endif //ENGINE_VERTEXARRAY_HPP

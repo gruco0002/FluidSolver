@@ -16,7 +16,7 @@ for your operating system in the repository root.
 For UNIX based systems: `download_dependencies.sh`, for Windows: `download_dependencies.ps1`
 Those scripts execute the individual download scripts contained in the repository.
 
-There are currently two dependency folders in the project tree: `src/dependencies` and `tests/dependencies`.
+There are currently three dependency folders in the project tree: `src/dependencies`, `src/engine/dependencies` and `tests/dependencies`.
 Each folder contains a `README.md` and a download script that automatically downloads the needed dependencies, extracts them correctly
 and cleans up afterwards. Those scripts can be called by yourself or will be started by calling the above described script
 in the repository root folder.

@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.7)
 project(IMGUI)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../imgui)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/.)
 
 # folder for glfw include
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../GLFW/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../engine/dependencies/GLFW/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../engine/libraries/Glad)
 
 set(IMGUI_SOURCE_FILES imgui.cpp imgui.h imgui_draw.cpp imconfig.h imgui_demo.cpp
         imgui_internal.h imgui_widgets.cpp imstb_rectpack.h imstb_textedit.h

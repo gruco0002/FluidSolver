@@ -1,5 +1,5 @@
-#ifndef CPPGUI_DEMO_ENUMS_HPP
-#define CPPGUI_DEMO_ENUMS_HPP
+#ifndef ENGINE_ENUMS_HPP
+#define ENGINE_ENUMS_HPP
 
 #include <glad/glad.h>
 #include <cstdint>
@@ -19,4 +19,4 @@ namespace Engine {
     uint8_t SizeOfComponentType(ComponentType type);
 
 }
-#endif //CPPGUI_DEMO_ENUMS_HPP
+#endif //ENGINE_ENUMS_HPP

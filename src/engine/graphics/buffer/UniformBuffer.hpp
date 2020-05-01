@@ -1,5 +1,5 @@
-#ifndef CPPGUI_UNIFORMBUFFER_HPP
-#define CPPGUI_UNIFORMBUFFER_HPP
+#ifndef ENGINE_UNIFORMBUFFER_HPP
+#define ENGINE_UNIFORMBUFFER_HPP
 
 #include <vector>
 #include "Buffer.hpp"
@@ -77,4 +77,4 @@ namespace Engine {
 }
 
 
-#endif //CPPGUI_UNIFORMBUFFER_HPP
+#endif //ENGINE_UNIFORMBUFFER_HPP
