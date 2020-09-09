@@ -3,7 +3,7 @@
 #include <limits>
 
 float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position) const {
-    float h = KernelSupport / 2.0f;
+    float h = kernel_support / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
 
@@ -21,7 +21,7 @@ float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position) const {
 }
 
 glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 position) const {
-    float h = KernelSupport / 2.0f;
+    float h = kernel_support / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
 
@@ -44,22 +44,17 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
     return alpha * ret * -1.0f;
 }
 
-FluidSolver::CubicSplineKernel::CubicSplineKernel(float kernelSupport) : IKernel(kernelSupport) {}
-
-FluidSolver::IKernel *FluidSolver::CubicSplineKernel::CreateCopy(float kernelSupport) {
-    return new CubicSplineKernel(kernelSupport);
-}
 
 float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const {
-    return IKernel::GetKernelValue(neighborPosition, position);
+    return this->GetKernelValue(position - neighborPosition);
 }
 
 glm::vec2
 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const {
-    return IKernel::GetKernelDerivativeValue(neighborPosition, position);
+    return this->GetKernelDerivativeValue(position - neighborPosition);
 }
 
 glm::vec2
 FluidSolver::CubicSplineKernel::GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const {
-    return IKernel::GetKernelDerivativeReversedValue(neighborPosition, position);
+    return this->GetKernelDerivativeValue(neighborPosition, position) * -1.0f;
 }

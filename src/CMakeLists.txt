@@ -70,8 +70,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
-        core/fluidSolver/kernel/IKernel.hpp
-        core/fluidSolver/kernel/IKernel.cpp
         uiVersion/ParticleVertexArray.cpp
         uiVersion/ParticleVertexArray.hpp
         uiVersion/ParticleRenderer.cpp
@@ -149,8 +147,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
         core/fluidSolver/particleCollection/ZIndexGridSorter.cpp
         core/fluidSolver/particleCollection/ZIndexGridSorter.hpp
-        core/fluidSolver/kernel/PreCalculatedCubicSplineKernel.cpp
-        core/fluidSolver/kernel/PreCalculatedCubicSplineKernel.hpp
         uiVersion/userInterface/NeighborhoodSearch.cpp
         uiVersion/userInterface/NeighborhoodSearch.hpp
         uiVersion/userInterface/Kernel.cpp

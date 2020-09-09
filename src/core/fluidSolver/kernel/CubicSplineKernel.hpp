@@ -1,25 +1,24 @@
 #ifndef FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 #define FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
 
-#include <core/fluidSolver/kernel/IKernel.hpp>
 
-namespace  FluidSolver {
-    class CubicSplineKernel : public IKernel{
+#include <engine/libraries/glm/glm.hpp>
+
+namespace FluidSolver {
+    class CubicSplineKernel {
 
     public:
-        CubicSplineKernel(float kernelSupport);
+        float kernel_support;
 
-        float GetKernelValue(glm::vec2 position) const override;
+        float GetKernelValue(glm::vec2 position) const;
 
-        glm::vec2 GetKernelDerivativeValue(glm::vec2 position) const override;
+        glm::vec2 GetKernelDerivativeValue(glm::vec2 position) const;
 
-        IKernel *CreateCopy(float kernelSupport) override;
+        float GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const;
 
-        float GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
+        glm::vec2 GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const;
 
-        glm::vec2 GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
-
-        glm::vec2 GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
+        glm::vec2 GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const;
 
     };
 }
