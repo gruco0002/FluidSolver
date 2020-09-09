@@ -49,3 +49,17 @@ FluidSolver::CubicSplineKernel::CubicSplineKernel(float kernelSupport) : IKernel
 FluidSolver::IKernel *FluidSolver::CubicSplineKernel::CreateCopy(float kernelSupport) {
     return new CubicSplineKernel(kernelSupport);
 }
+
+float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+    return IKernel::GetKernelValue(neighborPosition, position);
+}
+
+glm::vec2
+FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+    return IKernel::GetKernelDerivativeValue(neighborPosition, position);
+}
+
+glm::vec2
+FluidSolver::CubicSplineKernel::GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+    return IKernel::GetKernelDerivativeReversedValue(neighborPosition, position);
+}

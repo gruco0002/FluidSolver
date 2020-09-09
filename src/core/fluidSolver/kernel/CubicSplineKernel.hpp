@@ -15,6 +15,12 @@ namespace  FluidSolver {
 
         IKernel *CreateCopy(float kernelSupport) override;
 
+        float GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
+
+        glm::vec2 GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
+
+        glm::vec2 GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const override;
+
     };
 }
 

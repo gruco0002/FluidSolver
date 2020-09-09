@@ -3,7 +3,7 @@
 
 namespace FluidSolver {
     namespace ParticleCollectionAlgorithm {
-        void Sort::make_sortable(ParticleCollection &collection) {
+        void Sort::adapt_collection(ParticleCollection &collection) {
             FLUID_ASSERT(!collection.is_type_present<SortInfo>());
             collection.add_type<SortInfo>();
         }

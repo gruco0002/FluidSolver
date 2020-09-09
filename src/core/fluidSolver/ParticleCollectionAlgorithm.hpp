@@ -21,7 +21,7 @@ namespace FluidSolver {
 
             /// Adds the appropriate component to a particle collection in order to be able to sort it.
             /// \param collection
-            void make_sortable(ParticleCollection &collection);
+            void adapt_collection(ParticleCollection &collection);
 
             void merge_sort(ParticleCollection &collection, const key_function_t &key);
 

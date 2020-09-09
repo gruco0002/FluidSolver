@@ -3,159 +3,69 @@
 #include <chrono>
 #include "IISPHFluidSolver.hpp"
 
-
-float FluidSolver::IISPHFluidSolver::getParticleSize() {
-    return ParticleSize;
-}
-
-void FluidSolver::IISPHFluidSolver::setParticleSize(float particleSize) {
-    this->ParticleSize = particleSize;
-}
-
-float FluidSolver::IISPHFluidSolver::getRestDensity() {
-    return RestDensity;
-}
-
-void FluidSolver::IISPHFluidSolver::setRestDensity(float restDensity) {
-    this->RestDensity = restDensity;
-}
-
-float FluidSolver::IISPHFluidSolver::getTimestep() {
-    return Timestep;
-}
-
-void FluidSolver::IISPHFluidSolver::setTimestep(float timestep) {
-    this->Timestep = timestep;
-}
-
-void FluidSolver::IISPHFluidSolver::setParticleCollection(FluidSolver::IParticleCollection *ParticleCollection) {
-    this->ParticleCollection = ParticleCollection;
-    this->maxPredictedDensityErrorReached = 0.0f;
-}
-
-FluidSolver::IParticleCollection *FluidSolver::IISPHFluidSolver::getParticleCollection() {
-    return ParticleCollection;
-}
-
-float FluidSolver::IISPHFluidSolver::getGravity() {
-    return Gravity;
-}
-
-void FluidSolver::IISPHFluidSolver::setGravity(float gravity) {
-    this->Gravity = gravity;
-}
-
-void FluidSolver::IISPHFluidSolver::ExecuteSimulationStep() {
-
-    CheckSolverIntegrity();
-
-    auto t1 = std::chrono::high_resolution_clock::now();
-
-    // find neighbors for all particles
-    neighborhoodSearch->FindNeighbors();
-
-    // calculating density and non pressure accelerations
-#pragma omp parallel for
-    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        auto type = ParticleCollection->GetParticleType(i);
-        if (type == ParticleTypeDead)
-            continue; // we do not want to process dead particles
-
-        CalculateDensity(i);
-        CalculateNonPressureAccelerationAndPredictedVelocity(i);
-    }
-
-    // compute source term, diagonal element and initialize pressure
-#pragma  omp parallel for
-    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        auto type = ParticleCollection->GetParticleType(i);
-        if (type == ParticleTypeDead)
-            continue; // we do not want to process dead particles
-        if (type == ParticleTypeBoundary)
-            continue; // we do not want to process boundary particles
-
-        ComputeSourceTerm(i);
-        ComputeDiagonalElement(i);
-        InitializePressure(i);
-    }
-
-
-    auto p1 = std::chrono::high_resolution_clock::now();
-    // compute pressure
-    ComputePressure();
-    auto p2 = std::chrono::high_resolution_clock::now();
-
-
-    // update velocity and position of all particles
-#pragma omp parallel for
-    for (int64_t i = 0; i < ParticleCollection->GetSize(); i++) {
-        IntegrateParticle(i);
-    }
-
-    auto t2 = std::chrono::high_resolution_clock::now();
-    this->compTimeTotalMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    this->compTimePressureSolverMicroseconds = std::chrono::duration_cast<std::chrono::microseconds>(p2 - p1).count();
-}
-
-
 void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
-    auto particleType = ParticleCollection->GetParticleType(particleIndex);
+    auto particleType = collection->get<ParticleInfo>(particleIndex).type;
     if (particleType == ParticleTypeBoundary) {
         return; // don't calculate density for the boundary particles
     }
-    glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
+    const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
 
     float density = 0.0f;
-    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
     for (uint32_t neighbor: neighbors) {
-        auto type = ParticleCollection->GetParticleType(neighbor);
+        auto type = collection->get<ParticleInfo>(neighbor).type;
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
         }
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
-        float neighborMass = ParticleCollection->GetMass(neighbor);
-        density += neighborMass * kernel->GetKernelValue(neighborPosition, position);
+        const glm::vec2 &neighborPosition = collection->get<MovementData>(neighbor).position;
+        float neighborMass = collection->get<ParticleData>(neighbor).mass;
+        density += neighborMass * kernel.GetKernelValue(neighborPosition, position);
     }
 
-    ParticleCollection->SetDensity(particleIndex, density);
+    collection->get<ParticleData>(particleIndex).density = density;
 }
 
 void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex) {
-    auto type = ParticleCollection->GetParticleType(particleIndex);
-    auto nonPressureAcc = ParticleCollection->GetNonPressureAcceleration(particleIndex);
-    auto velocity = ParticleCollection->GetVelocity(particleIndex);
+    auto type = collection->get<ParticleInfo>(particleIndex).type;
+    glm::vec2 &nonPressureAcc = collection->get<ExternalForces>(particleIndex).non_pressure_acceleration;
+    const glm::vec2 &velocity = collection->get<MovementData>(particleIndex).velocity;
 
     // adding gravity to non pressure acceleration
     if (type != ParticleTypeBoundary) {
-        nonPressureAcc += glm::vec2(0.0f, -Gravity);
+        nonPressureAcc += glm::vec2(0.0f, -parameters.gravity);
         nonPressureAcc += ComputeViscosityAcceleration(particleIndex);
     }
 
     // calculate predicted velocity
-    glm::vec2 predictedVelocity = velocity + Timestep * nonPressureAcc;
+    glm::vec2 predictedVelocity = velocity + current_timestep * nonPressureAcc;
 
     // set predicted velocity and reset non pressure accelerations
-    ParticleCollection->SetPredictedVelocity(particleIndex, predictedVelocity);
-    ParticleCollection->SetNonPressureAcceleration(particleIndex, glm::vec2(0.0f));
+    collection->get<IISPHParticleData>(particleIndex).predicted_velocity = predictedVelocity;
+    nonPressureAcc = glm::vec2(0.0f);
+
 }
 
 glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
-    glm::vec2 position = ParticleCollection->GetPosition(particleIndex);
-    glm::vec2 velocity = ParticleCollection->GetVelocity(particleIndex);
+    const MovementData &mData = collection->get<MovementData>(particleIndex);
+    const glm::vec2 &position = mData.position;
+    const glm::vec2 &velocity = mData.velocity;
 
 
     glm::vec2 tmp = glm::vec2(0.0f);
-    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
     for (uint32_t neighbor: neighbors) {
-        auto type = ParticleCollection->GetParticleType(neighbor);
+        auto type = collection->get<ParticleInfo>(neighbor).type;
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.
         }
 
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
-        glm::vec2 neighborVelocity = ParticleCollection->GetVelocity(neighbor);
-        float neighborMass = ParticleCollection->GetMass(neighbor);
-        float neighborDensity = ParticleCollection->GetDensity(neighbor);
+        const MovementData &neighbor_mData = collection->get<MovementData>(neighbor);
+        const glm::vec2 &neighborPosition = neighbor_mData.position;
+        const glm::vec2 &neighborVelocity = neighbor_mData.velocity;
+
+        const ParticleData &neighbor_pData = collection->get<ParticleData>(neighbor);
+        float neighborMass = neighbor_pData.mass;
+        float neighborDensity = neighbor_pData.density;
 
         if (neighborDensity == 0.0f)
             continue;
@@ -164,78 +74,82 @@ glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t p
         glm::vec2 xij = position - neighborPosition;
 
         tmp += (neighborMass / neighborDensity) *
-               (glm::dot(vij, xij) / (glm::dot(xij, xij) + 0.01f * ParticleSize * ParticleSize)) *
-               kernel->GetKernelDerivativeReversedValue(neighborPosition, position);
+               (glm::dot(vij, xij) /
+                (glm::dot(xij, xij) + 0.01f * parameters.particle_size * parameters.particle_size)) *
+               kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
 
 
     }
 
-    glm::vec2 viscosityAcceleration = 2.0f * Viscosity * tmp;
+    glm::vec2 viscosityAcceleration = 2.0f * settings.Viscosity * tmp;
     return viscosityAcceleration;
 }
 
 
 void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
-    float particleDensity = ParticleCollection->GetDensity(particleIndex);
+    float particleDensity = collection->get<ParticleData>(particleIndex).density;
 
-    glm::vec2 particlePredictedVelocity = ParticleCollection->GetPredictedVelocity(particleIndex);
-    glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+
+    const glm::vec2 &particlePredictedVelocity = collection->get<IISPHParticleData>(particleIndex).predicted_velocity;
+    const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
     float sum = 0.0f;
-    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
     for (uint32_t neighborIndex: neighbors) {
-        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
 
-        float neighborMass = ParticleCollection->GetMass(neighborIndex);
-        glm::vec2 neighborPredictedVelocity = ParticleCollection->GetPredictedVelocity(neighborIndex);
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+        float neighborMass = collection->get<ParticleData>(neighborIndex).mass;
+        const glm::vec2 &neighborPredictedVelocity = collection->get<IISPHParticleData>(
+                neighborIndex).predicted_velocity;
+        const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
 
         sum += neighborMass * glm::dot((particlePredictedVelocity - neighborPredictedVelocity),
-                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
+                                       kernel.GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
         // the velocity of a boundary particle in the next timestep is here equal to the predicted velocity of said
         // boundary particle, since there are no other forces that apply to them.
 
     }
 
-    float sourceTerm = RestDensity - particleDensity - Timestep * sum;
+    float sourceTerm = parameters.rest_density - particleDensity - current_timestep * sum;
 
-    ParticleCollection->SetSourceTerm(particleIndex, sourceTerm);
+    collection->get<IISPHParticleData>(particleIndex).source_term = sourceTerm;
 
 }
 
 void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleIndex) {
     float sum = 0.0f;
-    glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
-    float particleMass = ParticleCollection->GetMass(particleIndex);
+    const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
+    float particleMass = collection->get<ParticleData>(particleIndex).mass;
 
     // first and third part of the sum (since we sum over normal particles and boundary particles)
-    auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
     for (uint32_t neighborIndex: neighbors) {
-        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
 
-        float neighborMass = ParticleCollection->GetMass(neighborIndex);
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+        float neighborMass = collection->get<ParticleData>(neighborIndex).mass;
+        const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
 
         glm::vec2 internalSum = glm::vec2(0.0f);
-        auto neighborsInternal = neighborhoodSearch->GetNeighbors(particleIndex);
+        auto neighborsInternal = neighborhood_search.GetNeighbors(particleIndex);
         for (uint32_t internalNeighbor: neighborsInternal) {
-            auto internalNeighborType = ParticleCollection->GetParticleType(internalNeighbor);
+            auto internalNeighborType = collection->get<ParticleInfo>(internalNeighbor).type;
             if (internalNeighborType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
 
-            float internalNeighborMass = ParticleCollection->GetMass(internalNeighbor);
-            glm::vec2 internalNeighborPosition = ParticleCollection->GetPosition(internalNeighbor);
+            float internalNeighborMass = collection->get<ParticleData>(internalNeighbor).mass;
+            const glm::vec2 &internalNeighborPosition = collection->get<MovementData>(internalNeighbor).position;
 
             if (internalNeighborType == ParticleTypeNormal) {
-                internalSum += internalNeighborMass / RestDensity / RestDensity *
-                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
+                internalSum += internalNeighborMass / parameters.rest_density / parameters.rest_density *
+                               kernel.GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
             } else if (internalNeighborType == ParticleTypeBoundary) {
-                internalSum += 2.0f * Gamma * internalNeighborMass / RestDensity / RestDensity *
-                               kernel->GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
+                internalSum += 2.0f * settings.Gamma * internalNeighborMass / parameters.rest_density /
+                               parameters.rest_density *
+                               kernel.GetKernelDerivativeReversedValue(internalNeighborPosition, particlePosition);
             }
 
             // since we have no factor for boundary particles, they can be handled as normal particles
@@ -243,40 +157,40 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         }
 
         sum += neighborMass *
-               glm::dot(-internalSum, kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
+               glm::dot(-internalSum, kernel.GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
 
 
     }
 
     // second part of the sum
     for (uint32_t neighborIndex: neighbors) {
-        auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+        auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
         if (neighborType == ParticleTypeDead)
             continue; // we do not want to process dead particles
 
         if (neighborType != ParticleTypeNormal)
             continue; // this loop only processes normal particles
 
-        float neighborMass = ParticleCollection->GetMass(neighborIndex);
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+        float neighborMass = collection->get<ParticleData>(neighborIndex).mass;
+        const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
 
-        sum += neighborMass * glm::dot(particleMass / RestDensity / RestDensity *
-                                       kernel->GetKernelDerivativeReversedValue(particlePosition, neighborPosition),
-                                       kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
+        sum += neighborMass * glm::dot(particleMass / parameters.rest_density / parameters.rest_density *
+                                       kernel.GetKernelDerivativeReversedValue(particlePosition, neighborPosition),
+                                       kernel.GetKernelDerivativeReversedValue(neighborPosition, particlePosition));
 
     }
 
 
-    float diagonalElement = Timestep * Timestep * sum;
-    ParticleCollection->SetDiagonalElement(particleIndex, diagonalElement);
+    float diagonalElement = current_timestep * current_timestep * sum;
+    collection->get<IISPHParticleData>(particleIndex).diagonal_element = diagonalElement;
 }
 
 void FluidSolver::IISPHFluidSolver::InitializePressure(uint32_t particleIndex) {
-    ParticleCollection->SetPressure(particleIndex, 0.0f);
+    collection->get<ParticleData>(particleIndex).pressure = 0.0f;
 }
 
 void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
-    auto type = ParticleCollection->GetParticleType(particleIndex);
+    auto type = collection->get<ParticleInfo>(particleIndex).type;
     if (type == ParticleTypeBoundary) {
         return; // don't calculate unnecessary values for the boundary particles.
     }
@@ -284,13 +198,11 @@ void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
         return; // don't calculate unnecessary values for dead particles.
     }
 
+    auto &mData = collection->get<MovementData>(particleIndex);
     // integrate using euler cromer
-    glm::vec2 acceleration = ParticleCollection->GetAcceleration(particleIndex);
-    glm::vec2 velocity = ParticleCollection->GetPredictedVelocity(particleIndex) + Timestep * acceleration;
-    glm::vec2 position = ParticleCollection->GetPosition(particleIndex) + Timestep * velocity;
-
-    ParticleCollection->SetVelocity(particleIndex, velocity);
-    ParticleCollection->SetPosition(particleIndex, position);
+    mData.velocity = collection->get<IISPHParticleData>(particleIndex).predicted_velocity +
+                     current_timestep * mData.acceleration;
+    mData.position = mData.position + current_timestep * mData.velocity;
 }
 
 void FluidSolver::IISPHFluidSolver::ComputePressure() {
@@ -299,8 +211,9 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
     float predictedDensityError = 0.0f;
 
     // iteration
-    while ((iteration < MinNumberOfIterations || abs(predictedDensityError) > MaxDensityErrorAllowed) &&
-           iteration < MaxNumberOfIterations) {
+    while ((iteration < settings.MinNumberOfIterations ||
+            abs(predictedDensityError) > settings.MaxDensityErrorAllowed) &&
+           iteration < settings.MaxNumberOfIterations) {
 
         // pre calculations
         predictedDensityError = 0.0f;
@@ -308,101 +221,105 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         // first loop: compute pressure acceleration
 #pragma omp parallel for
-        for (int64_t particleIndex = 0; particleIndex < ParticleCollection->GetSize(); particleIndex++) {
-            auto particleType = ParticleCollection->GetParticleType(particleIndex);
+        for (int64_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
+            auto particleType = collection->get<ParticleInfo>(particleIndex).type;
             if (particleType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
             if (particleType == ParticleTypeBoundary)
                 continue;
 
-            float particlePressure = ParticleCollection->GetPressure(particleIndex);
-            glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+            float particlePressure = collection->get<ParticleData>(particleIndex).pressure;
+            const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
             glm::vec2 sum = glm::vec2(0.0f);
-            auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+            auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
             for (uint32_t neighborIndex: neighbors) {
-                auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+                auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
                 if (neighborType == ParticleTypeDead)
                     continue; // we do not want to process dead particles
 
-                glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
-                float neighborMass = ParticleCollection->GetMass(neighborIndex);
+                const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
+                float neighborMass = collection->get<ParticleData>(neighborIndex).mass;
 
                 if (neighborType == ParticleTypeNormal) {
-                    float neighborPressure = ParticleCollection->GetPressure(neighborIndex);
+                    float neighborPressure = collection->get<ParticleData>(neighborIndex).pressure;
 
-                    sum += neighborMass * (particlePressure / RestDensity / RestDensity +
-                                           neighborPressure / RestDensity / RestDensity) *
-                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
+                    sum += neighborMass * (particlePressure / parameters.rest_density / parameters.rest_density +
+                                           neighborPressure / parameters.rest_density / parameters.rest_density) *
+                           kernel.GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
                 } else if (neighborType == ParticleTypeBoundary) {
                     // pressure is mirrored here
-                    sum += Gamma * neighborMass * 2.0f * (particlePressure / RestDensity / RestDensity) *
-                           kernel->GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
+                    sum += settings.Gamma * neighborMass * 2.0f *
+                           (particlePressure / parameters.rest_density / parameters.rest_density) *
+                           kernel.GetKernelDerivativeReversedValue(neighborPosition, particlePosition);
                 }
 
             }
-            ParticleCollection->SetAcceleration(particleIndex, -sum);
+
+            collection->get<MovementData>(particleIndex).acceleration = (-sum);
         }
 
         // second loop
 #pragma omp parallel for
-        for (int64_t particleIndex = 0; particleIndex < ParticleCollection->GetSize(); particleIndex++) {
-            auto particleType = ParticleCollection->GetParticleType(particleIndex);
+        for (int64_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
+            auto particleType = collection->get<ParticleInfo>(particleIndex).type;
             if (particleType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
             if (particleType == ParticleTypeBoundary)
                 continue;
 
             // First step calculate Ap
-            glm::vec2 particlePressureAcceleration = ParticleCollection->GetAcceleration(particleIndex);
-            glm::vec2 particlePosition = ParticleCollection->GetPosition(particleIndex);
+            const glm::vec2 &particlePressureAcceleration = collection->get<MovementData>(particleIndex).acceleration;
+            const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
             float sum = 0.0f;
-            auto neighbors = neighborhoodSearch->GetNeighbors(particleIndex);
+            auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
             for (uint32_t neighborIndex: neighbors) {
-                auto neighborType = ParticleCollection->GetParticleType(neighborIndex);
+                auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
                 if (neighborType == ParticleTypeDead)
                     continue; // we do not want to process dead particles
 
-                float neighborMass = ParticleCollection->GetMass(neighborIndex);
-                glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighborIndex);
+                float neighborMass = collection->get<ParticleData>(neighborIndex).mass;
+                const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
 
                 if (neighborType == ParticleTypeNormal) {
-                    glm::vec2 neighborPressureAcceleration = ParticleCollection->GetAcceleration(neighborIndex);
+                    const glm::vec2 &neighborPressureAcceleration = collection->get<MovementData>(
+                            neighborIndex).acceleration;
 
                     sum += neighborMass * glm::dot((particlePressureAcceleration - neighborPressureAcceleration),
-                                                   kernel->GetKernelDerivativeReversedValue(neighborPosition,
-                                                                                            particlePosition));
+                                                   kernel.GetKernelDerivativeReversedValue(neighborPosition,
+                                                                                           particlePosition));
 
                 } else if (neighborType == ParticleTypeBoundary) {
                     sum += neighborMass * glm::dot(particlePressureAcceleration,
-                                                   kernel->GetKernelDerivativeReversedValue(neighborPosition,
-                                                                                            particlePosition));
+                                                   kernel.GetKernelDerivativeReversedValue(neighborPosition,
+                                                                                           particlePosition));
                 }
             }
 
-            float Ap = Timestep * Timestep * sum;
+            float Ap = current_timestep * current_timestep * sum;
 
             // Second step: Update pressure
-            float particleDiagonalElement = ParticleCollection->GetDiagonalElement(particleIndex);
-            float particleSourceTerm = ParticleCollection->GetSourceTerm(particleIndex);
+            float particleDiagonalElement = collection->get<IISPHParticleData>(particleIndex).diagonal_element;
+            float particleSourceTerm = collection->get<IISPHParticleData>(particleIndex).source_term;
+            float &particlePressure = collection->get<ParticleData>(particleIndex).pressure;
             if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
-                float particlePressure = ParticleCollection->GetPressure(particleIndex);
-                float particlePressureNextStep = std::fmax(0.0f, particlePressure + Omega * ((particleSourceTerm - Ap) /
-                                                                                             particleDiagonalElement));
+                float particlePressureNextStep = std::fmax(0.0f, particlePressure +
+                                                                 settings.Omega * ((particleSourceTerm - Ap) /
+                                                                                   particleDiagonalElement));
                 // update pressure
-                ParticleCollection->SetPressure(particleIndex, particlePressureNextStep);
+                particlePressure = particlePressureNextStep;
 
             } else {
                 // otherwise set pressure to zero
-                ParticleCollection->SetPressure(particleIndex, 0.0f);
+                particlePressure = 0.0f;
             }
 
             // Info: The calculation of the particle density error is based on the implementation of IISPH by Stefan Band
             // Third step: Calculate predicted density error
             float particleDensityError = std::abs(particleSourceTerm - Ap);
             if (std::abs(particleDiagonalElement) > std::numeric_limits<float>::epsilon()) {
-                if (std::abs(ParticleCollection->GetPressure(particleIndex)) <= std::numeric_limits<float>::epsilon()) {
+                if (std::abs(particlePressure) <= std::numeric_limits<float>::epsilon()) {
                     // if the new pressure is zero, we do not have a density error
                     particleDensityError = 0.0f;
                 }
@@ -428,46 +345,65 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
     }
 
-    lastPredictedDensityError = predictedDensityError;
-    maxPredictedDensityErrorReached = std::max(maxPredictedDensityErrorReached, lastPredictedDensityError);
-    lastIterationCount = iteration;
-
 
 }
 
-float FluidSolver::IISPHFluidSolver::getLastPredictedDensityError() const {
-    return lastPredictedDensityError;
+void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
+
+    FLUID_ASSERT(collection->is_type_present<MovementData>());
+    FLUID_ASSERT(collection->is_type_present<ParticleData>());
+    FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+    FLUID_ASSERT(collection->is_type_present<ExternalForces>());
+    FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+    FLUID_ASSERT(collection->is_type_present<IISPHParticleData>());
+
+    FLUID_ASSERT(timestep > 0.0f);
+    current_timestep = timestep;
+
+
+    // find neighbors for all particles
+    neighborhood_search.FindNeighbors();
+
+    // calculating density and non pressure accelerations
+#pragma omp parallel for
+    for (int64_t i = 0; i < collection->size(); i++) {
+        auto type = collection->get<ParticleInfo>(i).type;
+        if (type == ParticleTypeDead)
+            continue; // we do not want to process dead particles
+
+        CalculateDensity(i);
+        CalculateNonPressureAccelerationAndPredictedVelocity(i);
+    }
+
+    // compute source term, diagonal element and initialize pressure
+#pragma  omp parallel for
+    for (int64_t i = 0; i < collection->size(); i++) {
+        auto type = collection->get<ParticleInfo>(i).type;
+        if (type == ParticleTypeDead)
+            continue; // we do not want to process dead particles
+        if (type == ParticleTypeBoundary)
+            continue; // we do not want to process boundary particles
+
+        ComputeSourceTerm(i);
+        ComputeDiagonalElement(i);
+        InitializePressure(i);
+    }
+
+
+    auto p1 = std::chrono::high_resolution_clock::now();
+    // compute pressure
+    ComputePressure();
+    auto p2 = std::chrono::high_resolution_clock::now();
+
+
+    // update velocity and position of all particles
+#pragma omp parallel for
+    for (int64_t i = 0; i < collection->size(); i++) {
+        IntegrateParticle(i);
+    }
 }
 
-size_t FluidSolver::IISPHFluidSolver::getLastIterationCount() const {
-    return lastIterationCount;
+void FluidSolver::IISPHFluidSolver::adapt_collection(ParticleCollection &collection) {
+    FLUID_ASSERT(!collection.is_type_present<IISPHParticleData>());
+    collection.add_type<IISPHParticleData>();
 }
-
-float FluidSolver::IISPHFluidSolver::getMaxPredictedDensityErrorReached() const {
-    return maxPredictedDensityErrorReached;
-}
-
-uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimeLastTimestepInMicroseconds() {
-    return compTimeTotalMicroseconds;
-}
-
-uint32_t FluidSolver::IISPHFluidSolver::GetComputationTimePressureSolverLastTimestepInMicroseconds() {
-    return compTimePressureSolverMicroseconds;
-}
-
-void FluidSolver::IISPHFluidSolver::SetKernel(FluidSolver::IKernel *kernel) {
-    this->kernel = kernel;
-}
-
-FluidSolver::IKernel *FluidSolver::IISPHFluidSolver::GetKernel() {
-    return kernel;
-}
-
-void FluidSolver::IISPHFluidSolver::SetNeighborhoodSearch(FluidSolver::INeighborhoodSearch *neighborhoodSearch) {
-    this->neighborhoodSearch = neighborhoodSearch;
-}
-
-FluidSolver::INeighborhoodSearch *FluidSolver::IISPHFluidSolver::GetNeighborhoodSearch() {
-    return this->neighborhoodSearch;
-}
-

@@ -3,43 +3,16 @@
 
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/fluidSolver/kernel/IKernel.hpp>
+#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+#include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
 
 namespace FluidSolver {
-    class IISPHFluidSolver : public IFluidSolver {
 
+    class IISPHFluidSolver : public IFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> {
     public:
-        uint32_t GetComputationTimeLastTimestepInMicroseconds() override;
-
-        uint32_t GetComputationTimePressureSolverLastTimestepInMicroseconds() override;
+        void execute_simulation_step(float timestep) override;
 
     private:
-        float Timestep = 0.0f;
-        float RestDensity = 0.0f;
-        float ParticleSize = 0.0f;
-        float Gravity = 0.0f;
-
-        float lastPredictedDensityError = 0.0f;
-        float maxPredictedDensityErrorReached = 0.0f;
-
-        uint32_t compTimeTotalMicroseconds = 0;
-        uint32_t compTimePressureSolverMicroseconds = 0;
-
-    public:
-        float getMaxPredictedDensityErrorReached() const;
-
-    private:
-        size_t lastIterationCount = 0;
-    public:
-        float getLastPredictedDensityError() const;
-
-        size_t getLastIterationCount() const;
-
-    private:
-
-        IParticleCollection *ParticleCollection = nullptr;
-
-        INeighborhoodSearch *neighborhoodSearch = nullptr;
-        IKernel *kernel = nullptr;
 
         void CalculateDensity(uint32_t particleIndex);
 
@@ -57,46 +30,33 @@ namespace FluidSolver {
 
         void ComputePressure();
 
+        float current_timestep = 0.0f;
+
     public:
 
-        float MaxDensityErrorAllowed = 0.001f;
+        struct IISPHSettings {
+            float MaxDensityErrorAllowed = 0.001f;
 
-        size_t MinNumberOfIterations = 2;
-        size_t MaxNumberOfIterations = 100;
+            size_t MinNumberOfIterations = 2;
+            size_t MaxNumberOfIterations = 100;
 
-        float Omega = 0.5f;
-        float Gamma = 0.7f;
-        float Viscosity = 5.0f;
+            float Omega = 0.5f;
+            float Gamma = 0.7f;
 
-        float getGravity() override;
+            float Viscosity = 5.0f;
+        } settings;
 
-        void setGravity(float gravity) override;
+        struct IISPHParticleData{
+            glm::vec2 predicted_velocity;
+            float source_term;
+            float diagonal_element;
+        };
 
-        void ExecuteSimulationStep() override;
+        void adapt_collection(ParticleCollection &collection);
 
-        float getParticleSize() override;
 
-        void setParticleSize(float particleSize) override;
 
-        float getRestDensity() override;
 
-        void setRestDensity(float restDensity) override;
-
-        float getTimestep() override;
-
-        void setTimestep(float timestep) override;
-
-        void setParticleCollection(IParticleCollection *particleCollection) override;
-
-        IParticleCollection *getParticleCollection() override;
-
-        void SetKernel(IKernel *kernel) override;
-
-        IKernel *GetKernel() override;
-
-        void SetNeighborhoodSearch(INeighborhoodSearch *neighborhoodSearch) override;
-
-        INeighborhoodSearch *GetNeighborhoodSearch() override;
     };
 }
 
