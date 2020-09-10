@@ -10,24 +10,25 @@
 #include "ParticleRenderer.hpp"
 
 
-#include <core/fluidSolver/SESPHFluidSolver.hpp>
-#include "core/statistics/DataLogger.hpp"
-#include "ContinousVisualizerOpenGL.hpp"
+// #include <core/fluidSolver/SESPHFluidSolver.hpp>
+// #include "core/statistics/DataLogger.hpp"
+// #include "ContinousVisualizerOpenGL.hpp"
 
 
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
 
 #include <core/basicScenarios/Scenario.hpp>
-#include <core/basicScenarios/HugeDamScenario.hpp>
+//#include <core/basicScenarios/HugeDamScenario.hpp>
 #include <core/basicScenarios/SimpleBoxScenario.hpp>
-#include <core/basicScenarios/MultipleHoleScenario.hpp>
-#include <core/basicScenarios/BoxWithHoleScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
-#include <core/basicScenarios/SimpleDamScenario.hpp>
+//#include <core/basicScenarios/MultipleHoleScenario.hpp>
+//#include <core/basicScenarios/BoxWithHoleScenario.hpp>
+//#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
+//#include <core/basicScenarios/SimpleDamScenario.hpp>
 #include <core/basicScenarios/BoundaryTestScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
+//#include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
 #include <uiVersion/userInterface/MainUi.hpp>
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -58,12 +59,6 @@ public:
 
     std::vector<FluidSolver::Scenario *> Scenarios = std::vector<FluidSolver::Scenario *>({
                                                                                                   new FluidSolver::SimpleBoxScenario(),
-                                                                                                  new FluidSolver::BoxWithHoleScenario(),
-                                                                                                  new FluidSolver::MultipleHoleScenario(),
-                                                                                                  new FluidSolver::SimpleBoxScenarioSmallerParticles(),
-                                                                                                  new FluidSolver::SimpleBoxScenarioLargerParticles(),
-                                                                                                  new FluidSolver::SimpleDamScenario(),
-                                                                                                  new FluidSolver::HugeDamScenario(),
                                                                                                   new FluidSolver::BoundaryTestScenario(),
                                                                                           }
 
@@ -81,23 +76,23 @@ public:
 
     void SetRestDensity(float restdensity);
 
-    FluidSolver::IFluidSolver *GetFluidSolver();
+    FluidSolver::IISPHFluidSolver *GetFluidSolver();
 
-    void SetFluidSolver(FluidSolver::IFluidSolver *solver);
+    void SetFluidSolver(FluidSolver::IISPHFluidSolver *solver);
 
     FluidSolver::ISimulationVisualizer *GetVisualizer();
 
     void SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer);
 
-    FluidSolver::StatisticCollector *GetStatisticCollector();
+    //FluidSolver::StatisticCollector *GetStatisticCollector();
 
-    FluidSolver::IParticleSelection *GetParticleSelection();
+    //FluidSolver::IParticleSelection *GetParticleSelection();
 
-    void SetParticleSelection(FluidSolver::IParticleSelection *particleSelection);
+    //void SetParticleSelection(FluidSolver::IParticleSelection *particleSelection);
 
-    DataLogger *GetDataLogger();
+    //DataLogger *GetDataLogger();
 
-    void SetDataLogger(DataLogger *dataLogger);
+    //void SetDataLogger(DataLogger *dataLogger);
 
     FluidSolver::Simulation* GetSimulation();
 

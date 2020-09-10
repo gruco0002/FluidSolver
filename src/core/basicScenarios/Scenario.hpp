@@ -1,7 +1,7 @@
 #ifndef FLUIDSOLVER_SCENARIO_HPP
 #define FLUIDSOLVER_SCENARIO_HPP
 
-#include <core/interface/ISimulationModifier.hpp>
+//#include <core/interface/ISimulationModifier.hpp>
 #include <core/fluidSolver/ParticleCollection.hpp>
 #include <vector>
 #include <string>
@@ -22,7 +22,7 @@ namespace FluidSolver {
 
         virtual int GetParticleCountY() = 0;
 
-        virtual std::vector<ISimulationModifier *> GetSimulationModifiers();
+        //virtual std::vector<ISimulationModifier *> GetSimulationModifiers();
 
         virtual std::string GetName() = 0;
     };

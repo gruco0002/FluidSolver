@@ -1,48 +1,47 @@
 #ifndef FLUIDSOLVER_SIMULATION_HPP
 #define FLUIDSOLVER_SIMULATION_HPP
 
-#include <core/statistics/DataLogger.hpp>
-#include <core/interface/IExternalForce.hpp>
+//#include <core/statistics/DataLogger.hpp>
+//#include <core/interface/IExternalForce.hpp>
 #include <core/visualizer/ISimulationVisualizer.hpp>
-#include <core/fluidSolver/IFluidSolver.hpp>
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
-#include "core/fluidSolver/SESPHFluidSolver.hpp"
-#include <core/fluidSolver/kernel/IKernel.hpp>
-#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
+//#include <core/fluidSolver/kernel/IKernel.hpp>
+//#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 
 namespace FluidSolver {
     class Simulation {
 
     private:
-        IParticleCollection *particleCollection = nullptr;
+        ParticleCollection *particleCollection = nullptr;
 
-        IFluidSolver *fluidSolver = nullptr;
+        IISPHFluidSolver *fluidSolver = nullptr;
 
-        StatisticCollector *statisticCollector = nullptr;
+        //StatisticCollector *statisticCollector = nullptr;
 
-        DataLogger *dataLogger = nullptr;
+        //DataLogger *dataLogger = nullptr;
 
-        std::vector<ISimulationModifier *> simulationModifiers;
+        //std::vector<ISimulationModifier *> simulationModifiers;
 
-        std::vector<IExternalForce *> externalForces;
+        //std::vector<IExternalForce *> externalForces;
 
         ISimulationVisualizer *simulationVisualizer = nullptr;
 
         ITimestep *timestep = nullptr;
 
-        IParticleSelection* particleSelection = new AllParticleSelection();
+        //IParticleSelection* particleSelection = new AllParticleSelection();
 
-        IKernel* kernel = nullptr;
+        //IKernel* kernel = nullptr;
 
-        INeighborhoodSearch* neighborhoodSearch = nullptr;
+        //INeighborhoodSearch* neighborhoodSearch = nullptr;
 
         float particleSize = 1.0f;
         float restDensity = 1.0f;
         float gravity = 9.81f;
     public:
-        IParticleSelection *getParticleSelection() const;
+        //IParticleSelection *getParticleSelection() const;
 
-        void setParticleSelection(IParticleSelection *particleSelection);
+        //void setParticleSelection(IParticleSelection *particleSelection);
 
     public:
         float getGravity() const;
@@ -51,21 +50,21 @@ namespace FluidSolver {
 
 
     public:
-        IParticleCollection *getParticleCollection();
+        ParticleCollection *getParticleCollection();
 
-        void setParticleCollection(IParticleCollection *particleCollection);
+        void setParticleCollection(ParticleCollection *particleCollection);
 
-        IFluidSolver *getFluidSolver();
+        IISPHFluidSolver *getFluidSolver();
 
-        void setFluidSolver(IFluidSolver *fluidSolver);
+        void setFluidSolver(IISPHFluidSolver *fluidSolver);
 
-        StatisticCollector *getStatisticCollector();
+        //StatisticCollector *getStatisticCollector();
 
-        void setStatisticCollector(StatisticCollector *statisticCollector);
+        //void setStatisticCollector(StatisticCollector *statisticCollector);
 
-        DataLogger *getDataLogger();
+        //DataLogger *getDataLogger();
 
-        void setDataLogger(DataLogger *dataLogger);
+        //void setDataLogger(DataLogger *dataLogger);
 
         ISimulationVisualizer *getSimulationVisualizer();
 
@@ -83,25 +82,25 @@ namespace FluidSolver {
 
         void setTimestep(ITimestep *timestep);
 
-        void addSimulationModifier(ISimulationModifier *modifier);
+        //void addSimulationModifier(ISimulationModifier *modifier);
 
-        void removeSimulationModifier(ISimulationModifier *modifier);
+        //void removeSimulationModifier(ISimulationModifier *modifier);
 
-        void clearSimulationModifiers();
+        //void clearSimulationModifiers();
 
-        void clearExternalForces();
+        //void clearExternalForces();
 
-        void addExternalForce(IExternalForce *force);
+        //void addExternalForce(IExternalForce *force);
 
-        void removeExternalForce(IExternalForce *force);
+        //void removeExternalForce(IExternalForce *force);
 
-        void setNeighborhoodSearch(INeighborhoodSearch* neighborhoodSearch);
+        //void setNeighborhoodSearch(INeighborhoodSearch* neighborhoodSearch);
 
-        INeighborhoodSearch* getNeighborhoodSearch();
+        //INeighborhoodSearch* getNeighborhoodSearch();
 
-        void setKernel(IKernel* kernel);
+        //void setKernel(IKernel* kernel);
 
-        IKernel* getKernel();
+        //IKernel* getKernel();
 
         float getRadius();
 

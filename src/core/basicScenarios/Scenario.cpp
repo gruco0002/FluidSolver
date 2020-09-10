@@ -15,9 +15,9 @@ float FluidSolver::Scenario::GetParticleSize() {
     return 1.0f;
 }
 
-std::vector<FluidSolver::ISimulationModifier *> FluidSolver::Scenario::GetSimulationModifiers() {
+/*std::vector<FluidSolver::ISimulationModifier *> FluidSolver::Scenario::GetSimulationModifiers() {
     return std::vector<FluidSolver::ISimulationModifier *>();
-}
+}*/
 
 FluidSolver::ParticleCollection *FluidSolver::Scenario::CreateEmptyParticleCollection() {
     auto collection = new ParticleCollection();

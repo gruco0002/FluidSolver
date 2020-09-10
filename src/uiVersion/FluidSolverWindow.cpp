@@ -1,22 +1,21 @@
 #include "FluidSolverWindow.hpp"
-#include "FluidSolverWindow.hpp"
-#include "FluidSolverWindow.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 
-#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
-#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
+//#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
+//#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <thread>
 #include <chrono>
 #include <core/timestep/ConstantTimestep.hpp>
 #include <imguiHelper.hpp>
-#include <core/statistics/CachedStatisticCollector.hpp>
-#include <core/selection/ParticleSelection.hpp>
-#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
+//#include <core/statistics/CachedStatisticCollector.hpp>
+//#include <core/selection/ParticleSelection.hpp>
+//#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
+#include <core/FluidSolverException.hpp>
 
 
 void FluidSolverWindow::render() {
@@ -199,9 +198,9 @@ void FluidSolverWindow::setupSimulation() {
 
 
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
-    isphFluidSolver->Omega = 0.5f;
-    isphFluidSolver->Gamma = 0.7f;
-    isphFluidSolver->MaxDensityErrorAllowed = 0.001f;
+    isphFluidSolver->settings.Omega = 0.5f;
+    isphFluidSolver->settings.Gamma = 0.7f;
+    isphFluidSolver->settings.MaxDensityErrorAllowed = 0.001f;
     simulation->setFluidSolver(isphFluidSolver);
 
 
@@ -209,11 +208,12 @@ void FluidSolverWindow::setupSimulation() {
     auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
     simulation->setParticleCollection(particleCollection);
 
+    /*
     // add simulation modifiers
     simulation->clearSimulationModifiers();
     for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
         simulation->addSimulationModifier(mod);
-    }
+    }*/
 
     // create particle renderer
     auto particleRenderer = new ParticleRenderer();
@@ -227,16 +227,14 @@ void FluidSolverWindow::setupSimulation() {
     accumulatedSimulationTime = 0.0f;
 
     // set statistics collection
-    simulation->setStatisticCollector(new FluidSolver::CachedStatisticCollector());
+    //simulation->setStatisticCollector(new FluidSolver::CachedStatisticCollector());
 
     // set datalogger but don't start it
-    simulation->setDataLogger(new DataLogger("data.csv"));
+    //simulation->setDataLogger(new DataLogger("data.csv"));
 
     // set neighborhood search & kernel
-    simulation->setKernel(new FluidSolver::CubicSplineKernel(simulation->getParticleSize() * 2.0f));
-    simulation->setNeighborhoodSearch(
-            new FluidSolver::CompactHashingNeighborhoodSearch(simulation->getParticleCollection(),
-                                                              simulation->getParticleSize() * 2.0f));
+    //simulation->setKernel(new FluidSolver::CubicSplineKernel(simulation->getParticleSize() * 2.0f));
+    //simulation->setNeighborhoodSearch(            new FluidSolver::CompactHashingNeighborhoodSearch(simulation->getParticleCollection(),                                                              simulation->getParticleSize() * 2.0f));
 
 
 }
@@ -244,21 +242,21 @@ void FluidSolverWindow::setupSimulation() {
 
 void FluidSolverWindow::resetData() {
 
-    if (simulation->getDataLogger() != nullptr) {
+   /* if (simulation->getDataLogger() != nullptr) {
         auto logger = simulation->getDataLogger();
         logger->FinishLogging();
         logger->ResetLogger();
-    }
+    }*/
 
     // set particle size
     simulation->setParticleSize(scenario->GetParticleSize());
 
 
     // set up values
-    auto fluidSolver = dynamic_cast<FluidSolver::SESPHFluidSolver *>(simulation->getFluidSolver());
+  /*  auto fluidSolver = dynamic_cast<FluidSolver::SESPHFluidSolver *>(simulation->getFluidSolver());
     if (fluidSolver != nullptr) {
 
-    }
+    }*/
     auto ifluidSolver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(simulation->getFluidSolver());
     if (ifluidSolver != nullptr) {
 
@@ -270,10 +268,10 @@ void FluidSolverWindow::resetData() {
     simulation->setParticleCollection(particleCollection);
 
     // set up simulation modifiers
-    simulation->clearSimulationModifiers();
+   /* simulation->clearSimulationModifiers();
     for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
         simulation->addSimulationModifier(mod);
-    }
+    }*/
 
 
     UpdateVisualizerViewport();
@@ -416,11 +414,11 @@ void FluidSolverWindow::SetRestDensity(float restdensity) {
     simulation->setRestDensity(restdensity);
 }
 
-FluidSolver::IFluidSolver *FluidSolverWindow::GetFluidSolver() {
+FluidSolver::IISPHFluidSolver *FluidSolverWindow::GetFluidSolver() {
     return simulation->getFluidSolver();
 }
 
-void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolver *solver) {
+void FluidSolverWindow::SetFluidSolver(FluidSolver::IISPHFluidSolver *solver) {
     simulation->setFluidSolver(solver);
 }
 
@@ -481,26 +479,26 @@ void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visual
     UpdateVisualizerViewport();
 }
 
-FluidSolver::StatisticCollector *FluidSolverWindow::GetStatisticCollector() {
+/*FluidSolver::StatisticCollector *FluidSolverWindow::GetStatisticCollector() {
     return simulation->getStatisticCollector();
-}
+}*/
 
 void FluidSolverWindow::unload() {
     delete mainUi;
     ImGuiHelper::Uninit();
 }
 
-void FluidSolverWindow::SetParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
+/*void FluidSolverWindow::SetParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
     simulation->setParticleSelection(particleSelection);
 }
 
 FluidSolver::IParticleSelection *FluidSolverWindow::GetParticleSelection() {
     return simulation->getParticleSelection();
-}
+}*/
 
 void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::SelectionType type) {
 
-    auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
+    /*auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
 
     // find nearest particle, that you have clicked on depending on type
     uint32_t particleIndex = -1;
@@ -538,13 +536,13 @@ void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::Se
         } else if (type == SelectionType::SelectionTypeDeselect) {
             custom->RemoveParticleFromSelection(particleIndex);
         }
-    }
+    }*/
 }
 
 void
 FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, FluidSolverWindow::SelectionType type) {
 
-    float minX = std::fmin(position1.x, position2.x);
+ /*   float minX = std::fmin(position1.x, position2.x);
     float minY = std::fmin(position1.y, position2.y);
     float maxX = std::fmax(position1.x, position2.x);
     float maxY = std::fmax(position1.y, position2.y);
@@ -580,17 +578,17 @@ FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, Flu
             custom->RemoveParticleFromSelection(particleIndex);
         }
     }
-
+*/
 
 }
-
+/*
 DataLogger *FluidSolverWindow::GetDataLogger() {
     return simulation->getDataLogger();
 }
 
 void FluidSolverWindow::SetDataLogger(DataLogger *dataLogger) {
     simulation->setDataLogger(dataLogger);
-}
+}*/
 
 void FluidSolverWindow::stopRecordingAndresetImageSettings() {
     saveFrames = false;
