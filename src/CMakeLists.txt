@@ -137,10 +137,10 @@ set(FLUID_SOLVER_SOURCE_FILES
        # core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
        # core/fluidSolver/particleCollection/ZIndexGridSorter.cpp
        # core/fluidSolver/particleCollection/ZIndexGridSorter.hpp
-        uiVersion/userInterface/NeighborhoodSearch.cpp
-        uiVersion/userInterface/NeighborhoodSearch.hpp
-        uiVersion/userInterface/Kernel.cpp
-        uiVersion/userInterface/Kernel.hpp
+       # uiVersion/userInterface/NeighborhoodSearch.cpp
+       # uiVersion/userInterface/NeighborhoodSearch.hpp
+       # uiVersion/userInterface/Kernel.cpp
+       # uiVersion/userInterface/Kernel.hpp
         core/fluidSolver/ParticleCollection.cpp
         core/fluidSolver/ParticleCollection.hpp
         core/fluidSolver/Particle.cpp

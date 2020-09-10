@@ -5,12 +5,11 @@
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
-#include <core/statistics/CachedStatisticCollector.hpp>
-#include <core/selection/NormalParticleSelection.hpp>
-#include <core/selection/ParticleSelection.hpp>
+// #include <core/statistics/CachedStatisticCollector.hpp>
+// #include <core/selection/NormalParticleSelection.hpp>
+// #include <core/selection/ParticleSelection.hpp>
 
-FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window), neighborhoodSearch(NeighborhoodSearch(window)),
-                                                     kernel(Kernel(window)) {}
+FluidUI::MainUi::MainUi(FluidSolverWindow *window) : window(window) {}
 
 void FluidUI::MainUi::Run() {
     //ImGui::ShowDemoWindow();
@@ -43,8 +42,8 @@ void FluidUI::MainUi::Run() {
 
     ImGui::EndMainMenuBar();
 
-    neighborhoodSearch.Run(&viewNeighborhoodSearch);
-    kernel.Run(&viewKernel);
+    //neighborhoodSearch.Run(&viewNeighborhoodSearch);
+    //kernel.Run(&viewKernel);
 
     SimulationControl();
     Scenario();
@@ -185,9 +184,10 @@ void FluidUI::MainUi::Simulation() {
 void FluidUI::MainUi::FluidSolver() {
     if (!viewFluidSolver)
         return;
-    auto simple = dynamic_cast<FluidSolver::SESPHFluidSolver *>(window->GetFluidSolver());
+    //auto simple = dynamic_cast<FluidSolver::SESPHFluidSolver *>(window->GetFluidSolver());
     auto iisph = dynamic_cast<FluidSolver::IISPHFluidSolver *>(window->GetFluidSolver());
 
+    void* simple = nullptr;
     if (!FluidSolver_Init) {
         if (simple != nullptr) {
             FluidSolver_SelectedSolver = 0;
@@ -201,7 +201,7 @@ void FluidUI::MainUi::FluidSolver() {
 
     if (ImGui::Begin("Fluid Solver", &viewFluidSolver)) {
 
-        static const char *selection[]{"Simple SPH Fluid Solver", "IISPH Fluid Solver"};
+        /*static const char *selection[]{"Simple SPH Fluid Solver", "IISPH Fluid Solver"};
         if (FluidSolver_SelectedSolver == 0 && simple == nullptr) {
             auto tmp = new FluidSolver::SESPHFluidSolver();
             delete window->GetFluidSolver();
@@ -216,24 +216,23 @@ void FluidUI::MainUi::FluidSolver() {
             iisph = tmp;
         }
 
-        ImGui::ListBox("Solver", &FluidSolver_SelectedSolver, selection, IM_ARRAYSIZE(selection));
-
+        ImGui::ListBox("Solver", &FluidSolver_SelectedSolver, selection, IM_ARRAYSIZE(selection));*/
 
         if (simple != nullptr) {
-            ImGui::InputFloat("Stiffness (k)", &simple->StiffnessK);
-            ImGui::InputFloat("Viscosity", &simple->Viscosity);
+            //ImGui::InputFloat("Stiffness (k)", &simple->StiffnessK);
+           // ImGui::InputFloat("Viscosity", &simple->Viscosity);
         } else if (iisph != nullptr) {
-            ImGui::InputInt("Min. Iterations", reinterpret_cast<int *>(&iisph->MinNumberOfIterations));
-            ImGui::InputInt("Max. Iterations", reinterpret_cast<int *>(&iisph->MaxNumberOfIterations));
-            ImGui::InputFloat("Max. Density Error", &iisph->MaxDensityErrorAllowed, 0, 0, "%.6f");
-            ImGui::InputFloat("Gamma", &iisph->Gamma);
-            ImGui::InputFloat("Omega", &iisph->Omega);
-            ImGui::InputFloat("Viscosity", &iisph->Viscosity);
+            ImGui::InputInt("Min. Iterations", reinterpret_cast<int *>(&iisph->settings.MinNumberOfIterations));
+            ImGui::InputInt("Max. Iterations", reinterpret_cast<int *>(&iisph->settings.MaxNumberOfIterations));
+            ImGui::InputFloat("Max. Density Error", &iisph->settings.MaxDensityErrorAllowed, 0, 0, "%.6f");
+            ImGui::InputFloat("Gamma", &iisph->settings.Gamma);
+            ImGui::InputFloat("Omega", &iisph->settings.Omega);
+            ImGui::InputFloat("Viscosity", &iisph->settings.Viscosity);
 
             ImGui::Separator();
-            ImGui::Text("Last Iteration Count: %zu", iisph->getLastIterationCount());
+            /*ImGui::Text("Last Iteration Count: %zu", iisph->getLastIterationCount());
             ImGui::Text("Last Predicted Density Error: %f", iisph->getLastPredictedDensityError());
-            ImGui::Text("Max Predicted Density Error: %f", iisph->getMaxPredictedDensityErrorReached());
+            ImGui::Text("Max Predicted Density Error: %f", iisph->getMaxPredictedDensityErrorReached());*/
 
         }
     }
@@ -245,16 +244,16 @@ void FluidUI::MainUi::VisualizerSettings() {
     if (!viewVisualizerSettings)
         return;
     auto pr = dynamic_cast<ParticleRenderer *>(window->GetVisualizer());
-    auto cv = dynamic_cast<ContinousVisualizerOpenGL *>(window->GetVisualizer());
+    //auto cv = dynamic_cast<ContinousVisualizerOpenGL *>(window->GetVisualizer());
 
     if (!Visualizer_Init) {
         Visualizer_Width = window->getVisualizerRenderTargetWidth();
         Visualizer_Height = window->getVisualizerRenderTargetHeight();
         if (pr != nullptr) {
             Visualizer_Selection = 0;
-        } else if (cv != nullptr) {
+        } /*else if (cv != nullptr) {
             Visualizer_Selection = 1;
-        }
+        }*/
         Visualizer_Init = true;
     }
 
@@ -270,7 +269,7 @@ void FluidUI::MainUi::VisualizerSettings() {
         ImGui::InputInt("Width (px)", reinterpret_cast<int *>(&Visualizer_Width));
         ImGui::InputInt("Height (px)", reinterpret_cast<int *>(&Visualizer_Height));
 
-        static const char *visSelection[]{"Particle Renderer", "Continuous Visualizer"};
+       /* static const char *visSelection[]{"Particle Renderer", "Continuous Visualizer"};
 
         if (Visualizer_Selection == 0 && pr == nullptr) {
             // change resolution
@@ -301,7 +300,7 @@ void FluidUI::MainUi::VisualizerSettings() {
             cv = tmp;
         }
 
-        ImGui::ListBox("Visualizer", &Visualizer_Selection, visSelection, IM_ARRAYSIZE(visSelection));
+        ImGui::ListBox("Visualizer", &Visualizer_Selection, visSelection, IM_ARRAYSIZE(visSelection));*/
 
         ImGui::Separator();
 
@@ -326,18 +325,18 @@ void FluidUI::MainUi::VisualizerSettings() {
             ImGui::Checkbox("Show Selection", &pr->showParticleSelection);
             ImGui::Checkbox("Show Memory Location", &pr->showMemoryLocation);
 
-        } else if (cv != nullptr) {
+        }/* else if (cv != nullptr) {
             ImGui::Text("Continuous Visualizer");
             ImGui::InputFloat("Min. Render Density", &cv->MinimumRenderDensity);
             ImGui::ColorEdit3("Background Color", reinterpret_cast<float *>(&cv->ClearColor));
             ImGui::Checkbox("Show Selection", &cv->VisualizeParticleSelection);
-        }
+        }*/
     }
     ImGui::End();
 }
 
 void FluidUI::MainUi::Statistics() {
-    if (!viewStatistics)
+    /*if (!viewStatistics)
         return;
     if (ImGui::Begin("Statistics", &viewStatistics)) {
 
@@ -404,11 +403,11 @@ void FluidUI::MainUi::Statistics() {
 
         ImGui::Columns();
     }
-    ImGui::End();
+    ImGui::End();*/
 }
 
 void FluidUI::MainUi::Selection() {
-    if (!viewSelection)
+   /* if (!viewSelection)
         return;
 
     auto selection = window->GetParticleSelection();
@@ -447,11 +446,11 @@ void FluidUI::MainUi::Selection() {
             ImGui::Text("Selected: %zu Particles", custom->GetSize());
         }
     }
-    ImGui::End();
+    ImGui::End();*/
 }
 
 void FluidUI::MainUi::DataLogger() {
-    if (!viewDataLogger)
+  /*  if (!viewDataLogger)
         return;
     if (ImGui::Begin("Data Logger", &viewDataLogger)) {
 
@@ -527,7 +526,7 @@ void FluidUI::MainUi::DataLogger() {
         }
 
     }
-    ImGui::End();
+    ImGui::End();*/
 }
 
 void FluidUI::MainUi::ImageRecorder() {

@@ -4,8 +4,8 @@
 
 #include <string>
 #include <vector>
-#include "NeighborhoodSearch.hpp"
-#include "Kernel.hpp"
+//#include "NeighborhoodSearch.hpp"
+//#include "Kernel.hpp"
 
 class FluidSolverWindow;
 
@@ -32,8 +32,8 @@ namespace FluidUI {
         bool viewNeighborhoodSearch = false;
         bool viewKernel = false;
 
-        NeighborhoodSearch neighborhoodSearch;
-        Kernel kernel;
+        //NeighborhoodSearch neighborhoodSearch;
+        //Kernel kernel;
 
 
         void SimulationControl();
