@@ -1,10 +1,10 @@
 #include "ITimestep.hpp"
 
-void FluidSolver::ITimestep::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
+void FluidSolver::ITimestep::setParticleCollection(FluidSolver::ParticleCollection *particleCollection) {
     this->particleCollection = particleCollection;
 }
 
-FluidSolver::IParticleCollection *FluidSolver::ITimestep::getParticleCollection() {
+FluidSolver::ParticleCollection *FluidSolver::ITimestep::getParticleCollection() {
     return this->particleCollection;
 }
 

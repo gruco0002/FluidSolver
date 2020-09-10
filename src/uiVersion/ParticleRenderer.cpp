@@ -20,7 +20,7 @@ void ParticleRenderer::Render() {
     particleShader->SetValue("topColor", topColor);
     particleShader->SetValue("topValue", topValue);
     particleShader->SetValue("boundaryColor", boundaryParticleColor);
-    particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
+    //particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
     particleShader->SetValue("numberOfParticles", (float) this->particleVertexArray->GetVaoParticleCount());
     particleShader->SetValue("showParticleMemoryLocation", (int) showMemoryLocation);
 
@@ -56,7 +56,7 @@ layout (location = 3) in float aMass;
 layout (location = 4) in float aPressure;
 layout (location = 5) in float aDensity;
 layout (location = 6) in uint aType;
-layout (location = 7) in int aIsSelected;
+// layout (location = 7) in int aIsSelected;
 
 
 #define COLOR_SELECTION_VELOCITY 0
@@ -94,9 +94,9 @@ void main()
 	vs_out.selected = 0;
 
     // determine selection
-    if(showParticleSelection + aIsSelected == 2){
-        vs_out.selected = 1;
-    }
+    //if(showParticleSelection + aIsSelected == 2){
+    //    vs_out.selected = 1;
+    //}
 
 
     float val = 0.0;
@@ -231,14 +231,14 @@ glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, fl
     return glm::ortho((float) left, (float) right, (float) bottom, (float) top);
 }
 
-void ParticleRenderer::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
+void ParticleRenderer::setParticleCollection(FluidSolver::ParticleCollection *particleCollection) {
     this->ParticleCollection = particleCollection;
     // delete old and create new vertex array
     delete particleVertexArray;
     particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(particleCollection);
 }
 
-FluidSolver::IParticleCollection *ParticleRenderer::getParticleCollection() {
+FluidSolver::ParticleCollection *ParticleRenderer::getParticleCollection() {
     return ParticleCollection;
 }
 

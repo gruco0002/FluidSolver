@@ -2,12 +2,12 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <engine/graphics/buffer/IndexBuffer.hpp>
 #include <engine/graphics/buffer/VertexArray.hpp>
-#include <core/selection/IParticleSelection.hpp>
-#include <core/fluidSolver/particleCollection/CompactParticleCollection.hpp>
+// #include <core/selection/IParticleSelection.hpp>
+#include <core/fluidSolver/ParticleCollection.hpp>
+#include <core/fluidSolver/FluidAssert.hpp>
 
 /**
  * The particle vertex array creates a vertex array object (vao) of point sprites for rendering particles with opengl.
@@ -62,14 +62,14 @@ public:
      * @param particleCollection Particle Collection
      * @return Correct type of particle vertex array based on the type of the particle collection.
      */
-    static ParticleVertexArray *CreateFromParticleCollection(FluidSolver::IParticleCollection *particleCollection);
+    static ParticleVertexArray *CreateFromParticleCollection(FluidSolver::ParticleCollection *particleCollection);
 
     /**
      * Should be called if the particle collection, its contained particle data or the selection data changed.
      * The function updates all buffers (and if needed their sizes) to represent the new state.
      * @param particleSelection The current particle selection.
      */
-    void Update(FluidSolver::IParticleSelection *particleSelection);
+    void Update(void *particleSelection);
 
     /**
      * Draws the vao as point sprites.
@@ -105,7 +105,7 @@ protected:
      * The default constructor. Should be called by derived classes.
      * @param particleCollection The particle collection that the vao represents.
      */
-    explicit ParticleVertexArray(FluidSolver::IParticleCollection *particleCollection);
+    explicit ParticleVertexArray(FluidSolver::ParticleCollection *particleCollection);
 
     /**
      * Returns the buffer object containing the indices for the point primitives that will be drawed.
@@ -128,11 +128,11 @@ protected:
 
 private:
     uint32_t vaoParticleCount = 0;
-    FluidSolver::IParticleCollection *particleCollection = nullptr;
+    FluidSolver::ParticleCollection *particleCollection = nullptr;
 
     std::vector<int8_t> selectionData;
 
-    void UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection);
+    //void UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection);
 
     Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
     Engine::Graphics::Buffer::VertexBuffer<int8_t> *selectionBuffer = nullptr;
@@ -140,36 +140,15 @@ private:
 };
 
 /**
- * A particle vertex array for the compact particle collection.
- */
-class ParticleVertexArrayForCompactParticleCollection : public ParticleVertexArray {
-
-public:
-    explicit ParticleVertexArrayForCompactParticleCollection(
-            FluidSolver::CompactParticleCollection *compactParticleCollection);
-
-    ~ParticleVertexArrayForCompactParticleCollection() override;
-
-protected:
-    void OnUpdate() override;
-
-    void OnGenerate() override;
-
-private:
-    FluidSolver::CompactParticleCollection *compactParticleCollection = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<FluidSolver::FluidParticle> *vertexBuffer = nullptr;
-};
-
-/**
  * A particle vertex array for the striped particle collection.
  */
-class ParticleVertexArrayForStripedParticleCollection : public ParticleVertexArray {
+class ParticleVertexArrayForCollection : public ParticleVertexArray {
 
 public:
-    explicit ParticleVertexArrayForStripedParticleCollection(
-            FluidSolver::StripedParticleCollection *stripedParticleCollection);
+    explicit ParticleVertexArrayForCollection(FluidSolver::ParticleCollection* collection);
 
-    ~ParticleVertexArrayForStripedParticleCollection() override;
+
+    ~ParticleVertexArrayForCollection() override;
 
 protected:
 
@@ -179,15 +158,12 @@ protected:
 
 private:
 
-    FluidSolver::StripedParticleCollection *stripedParticleCollection = nullptr;
+    FluidSolver::ParticleCollection *stripedParticleCollection = nullptr;
 
-    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *positionBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *velocityBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<glm::vec2> *accelerationBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<float> *massBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<float> *pressureBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<float> *densityBuffer = nullptr;
-    Engine::Graphics::Buffer::VertexBuffer<uint8_t> *typeBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::MovementData> *movementBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleData> *dataBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleInfo> *infoBuffer = nullptr;
+
 };
 
 

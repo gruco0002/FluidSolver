@@ -1,20 +1,20 @@
 #ifndef FLUIDSOLVER_SCENARIO_HPP
 #define FLUIDSOLVER_SCENARIO_HPP
 
-#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
 #include <core/interface/ISimulationModifier.hpp>
+#include <core/fluidSolver/ParticleCollection.hpp>
 #include <vector>
 #include <string>
 
 namespace FluidSolver {
     class Scenario {
     protected:
-        virtual IParticleCollection *CreateEmptyParticleCollection();
+        virtual ParticleCollection *CreateEmptyParticleCollection();
 
     public:
-        virtual void ResetData(IParticleCollection *particleCollection, float restDensity) = 0;
+        virtual void ResetData(ParticleCollection *collection, float restDensity) = 0;
 
-        virtual IParticleCollection *GenerateScenario(float restDensity);
+        virtual ParticleCollection *GenerateScenario(float restDensity);
 
         virtual float GetParticleSize();
 

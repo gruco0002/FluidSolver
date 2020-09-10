@@ -1,7 +1,7 @@
 #include "uiVersion/FluidSolverWindow.hpp"
 #include "libraries/cxxopts/cxxopts.hpp"
 #include <iostream>
-#include <FluidSolverConsole.hpp>
+// #include <FluidSolverConsole.hpp>
 
 void printHelp(cxxopts::Options &options) {
     std::cout << std::endl << options.help(
@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
             ("c,console",
              "Disable windowed mode and only show in console and use provided arguments. If not given, a gui is shown and no arguments are taken into account.");
 
-    FluidSolverConsole console(options);
+    //FluidSolverConsole console(options);
 
     try {
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
         if (result["console"].as<bool>()) {
             // go into console mode
 
-            console.start(result);
+            //console.start(result);
             return 0;
         }
 

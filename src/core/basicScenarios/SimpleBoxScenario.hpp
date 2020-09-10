@@ -7,13 +7,13 @@
 namespace FluidSolver {
     class SimpleBoxScenario : public Scenario {
     public:
-        void ResetData(IParticleCollection *particleCollection, float restDensity) override;
+        void ResetData(ParticleCollection *particleCollection, float restDensity) override;
 
         int GetParticleCountX() override;
 
         int GetParticleCountY() override;
 
-        std::vector<ISimulationModifier *> GetSimulationModifiers() override;
+        //std::vector<ISimulationModifier *> GetSimulationModifiers() override;
 
         std::string GetName() override;
     };

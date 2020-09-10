@@ -1,8 +1,8 @@
 #ifndef FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
-#include <core/selection/IParticleSelection.hpp>
-#include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
+// #include <core/selection/IParticleSelection.hpp>
+#include "core/fluidSolver/ParticleCollection.hpp"
 
 namespace FluidSolver {
     class ISimulationVisualizer {
@@ -21,9 +21,9 @@ namespace FluidSolver {
         };
 
     public:
-        virtual void setParticleCollection(IParticleCollection *particleCollection) = 0;
+        virtual void setParticleCollection(ParticleCollection *particleCollection) = 0;
 
-        virtual IParticleCollection *getParticleCollection() = 0;
+        virtual ParticleCollection *getParticleCollection() = 0;
 
         virtual void setParticleSize(float particleSize) = 0;
 
@@ -43,9 +43,9 @@ namespace FluidSolver {
 
         virtual glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) = 0;
 
-        virtual void setParticleSelection(IParticleSelection *particleSelection) = 0;
+        //virtual void setParticleSelection(IParticleSelection *particleSelection) = 0;
 
-        virtual IParticleSelection *getParticleSelection() = 0;
+        //virtual IParticleSelection *getParticleSelection() = 0;
 
     };
 }

@@ -1,13 +1,13 @@
 #ifndef FLUIDSOLVER_ITIMESTEP_HPP
 #define FLUIDSOLVER_ITIMESTEP_HPP
 
-#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
+#include <core/fluidSolver/ParticleCollection.hpp>
 
 namespace FluidSolver {
     class ITimestep {
 
     protected:
-        IParticleCollection *particleCollection = nullptr;
+        ParticleCollection *particleCollection = nullptr;
 
         float ParticleSize = 1.0f;
     public:
@@ -17,9 +17,9 @@ namespace FluidSolver {
 
     public:
 
-        virtual IParticleCollection *getParticleCollection();
+        virtual ParticleCollection *getParticleCollection();
 
-        virtual void setParticleCollection(IParticleCollection *particleCollection);
+        virtual void setParticleCollection(ParticleCollection *particleCollection);
 
         virtual void CalculateCurrentTimestep() = 0;
 

@@ -1,40 +1,44 @@
-#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
 #include "BoundaryTestScenario.hpp"
 
 void
-FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::IParticleCollection *particleCollection, float restDensity) {
-    particleCollection->Clear();
+FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::ParticleCollection *collection, float restDensity) {
+    collection->clear();
 
     float mass = restDensity * GetParticleSize() * GetParticleSize();
 
     // generate a simple boundary
-    std::vector<FluidSolver::FluidParticle> particles;
     for (int y = -5; y >= -7; y--) {
         for (int x = -10; x <= 10; x++) {
-            FluidSolver::FluidParticle p;
-            p.Position = glm::vec2((float) x, (float) y);
-            p.Velocity = glm::vec2(0.0f);
-            p.Acceleration = glm::vec2(0.0f);
-            p.Pressure = 0.0f;
-            p.Density = restDensity;
-            p.Mass = mass;
-            p.Type = FluidSolver::ParticleTypeBoundary;
-            particles.push_back(p);
+            auto id = collection->add();
+            auto &mData = collection->get<MovementData>(id);
+            auto &pData = collection->get<ParticleData>(id);
+            auto &iData = collection->get<ParticleInfo>(id);
+
+
+            mData.position = glm::vec2((float) x, (float) y);
+            mData.velocity = glm::vec2(0.0f);
+            mData.acceleration = glm::vec2(0.0f);
+            pData.pressure = 0.0f;
+            pData.density = restDensity;
+            pData.mass = mass;
+            iData.type = FluidSolver::ParticleTypeBoundary;
+            iData.index = id;
         }
     }
 
     // normal particle
-    FluidSolver::FluidParticle p;
-    p.Position = glm::vec2(0.0f);
-    p.Velocity = glm::vec2(0.0f);
-    p.Acceleration = glm::vec2(0.0f);
-    p.Pressure = 0.0f;
-    p.Density = restDensity;
-    p.Mass = mass;
-    p.Type = FluidSolver::ParticleTypeNormal;
-    particles.push_back(p);
-
-    particleCollection->AddParticles(particles);
+    auto id = collection->add();
+    auto &mData = collection->get<MovementData>(id);
+    auto &pData = collection->get<ParticleData>(id);
+    auto &iData = collection->get<ParticleInfo>(id);
+    mData.position = glm::vec2(0.0f);
+    mData.velocity = glm::vec2(0.0f);
+    mData.acceleration = glm::vec2(0.0f);
+    pData.pressure = 0.0f;
+    pData.density = restDensity;
+    pData.mass = mass;
+    iData.type = FluidSolver::ParticleTypeNormal;
+    iData.index = id;
 
 }
 

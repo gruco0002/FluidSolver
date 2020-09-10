@@ -62,9 +62,9 @@ public:
 
     void setRestDensity(float restDensity) override;
 
-    void setParticleCollection(FluidSolver::IParticleCollection *particleCollection) override;
+    void setParticleCollection(FluidSolver::ParticleCollection *particleCollection) override;
 
-    FluidSolver::IParticleCollection *getParticleCollection() override;
+    FluidSolver::ParticleCollection *getParticleCollection() override;
 
     void setSimulationViewArea(SimulationViewArea viewArea) override;
 
@@ -72,11 +72,11 @@ public:
 
 private:
 
-    FluidSolver::IParticleSelection *particleSelection = nullptr;
+   // FluidSolver::IParticleSelection *particleSelection = nullptr;
 public:
-    void setParticleSelection(FluidSolver::IParticleSelection *particleSelection) override;
+   // void setParticleSelection(FluidSolver::IParticleSelection *particleSelection) override;
 
-    FluidSolver::IParticleSelection *getParticleSelection() override;
+   // FluidSolver::IParticleSelection *getParticleSelection() override;
 
 private:
 
@@ -95,7 +95,7 @@ private:
 
     Engine::Graphics::Shader *particleShader = nullptr;
 
-    FluidSolver::IParticleCollection *ParticleCollection = nullptr;
+    FluidSolver::ParticleCollection *ParticleCollection = nullptr;
 
 
     float RestDensity = 0.0f;

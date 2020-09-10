@@ -96,6 +96,10 @@ namespace FluidSolver {
             return ((Component *) data_ptr[family::type<Component>()])[id];
         }
 
+        void clear() {
+            resize(0);
+        }
+
         ~ParticleCollection() {
             for (auto &fn : internal_delete) {
                 fn();

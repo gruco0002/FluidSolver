@@ -67,8 +67,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/SESPHFluidSolver.hpp
         core/FluidSolverException.cpp
         core/FluidSolverException.hpp
-        core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
-        core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
+       # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
+       # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
         uiVersion/ParticleVertexArray.cpp
         uiVersion/ParticleVertexArray.hpp
         uiVersion/ParticleRenderer.cpp
@@ -76,67 +76,67 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/kernel/CubicSplineKernel.cpp
         core/fluidSolver/kernel/CubicSplineKernel.hpp
         core/interface/Constants.hpp
-        core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.cpp
-        core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp
+       # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.cpp
+       # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
-        core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
-        core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
+       # core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
+       # core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
         core/basicScenarios/Scenario.hpp
         core/basicScenarios/Scenario.cpp
         core/basicScenarios/BoundaryTestScenario.cpp
         core/basicScenarios/BoundaryTestScenario.hpp
-        core/basicScenarios/SimpleDamScenario.cpp
-        core/basicScenarios/SimpleDamScenario.hpp
-        core/basicScenarios/HugeDamScenario.cpp
-        core/basicScenarios/HugeDamScenario.hpp
+       # core/basicScenarios/SimpleDamScenario.cpp
+       # core/basicScenarios/SimpleDamScenario.hpp
+       # core/basicScenarios/HugeDamScenario.cpp
+       # core/basicScenarios/HugeDamScenario.hpp
         core/basicScenarios/SimpleBoxScenario.cpp
         core/basicScenarios/SimpleBoxScenario.hpp
-        FluidSolverConsole.cpp
-        FluidSolverConsole.hpp
-        core/basicScenarios/BoxWithHoleScenario.cpp
-        core/basicScenarios/BoxWithHoleScenario.hpp
+       # FluidSolverConsole.cpp
+       # FluidSolverConsole.hpp
+       # core/basicScenarios/BoxWithHoleScenario.cpp
+       # core/basicScenarios/BoxWithHoleScenario.hpp
         core/interface/ISimulationModifier.hpp
-        core/simulationModifiers/DeathBox.cpp
-        core/simulationModifiers/DeathBox.hpp
-        core/simulationModifiers/SpawnArea.cpp
-        core/simulationModifiers/SpawnArea.hpp
-        core/basicScenarios/MultipleHoleScenario.cpp
-        core/basicScenarios/MultipleHoleScenario.hpp
+       # core/simulationModifiers/DeathBox.cpp
+       # core/simulationModifiers/DeathBox.hpp
+       # core/simulationModifiers/SpawnArea.cpp
+       # core/simulationModifiers/SpawnArea.hpp
+       # core/basicScenarios/MultipleHoleScenario.cpp
+       # core/basicScenarios/MultipleHoleScenario.hpp
         core/Simulation.cpp core/Simulation.hpp
         core/interface/IExternalForce.hpp
         core/visualizer/ISimulationVisualizer.hpp
         core/fluidSolver/IFluidSolver.hpp
         core/fluidSolver/IISPHFluidSolver.cpp
         core/fluidSolver/IISPHFluidSolver.hpp
-        core/basicScenarios/SimpleBoxScenarioSmallerParticles.cpp
-        core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp
-        core/basicScenarios/SimpleBoxScenarioLargerParticles.cpp
-        core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp
+       # core/basicScenarios/SimpleBoxScenarioSmallerParticles.cpp
+       # core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp
+       # core/basicScenarios/SimpleBoxScenarioLargerParticles.cpp
+       # core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp
         core/timestep/ITimestep.cpp core/timestep/ITimestep.hpp
         core/timestep/ConstantTimestep.cpp
         core/timestep/ConstantTimestep.hpp
         core/timestep/DynamicCFLTimestep.cpp
         core/timestep/DynamicCFLTimestep.hpp
-        core/visualizer/ContinousVisualizer.cpp
-        core/visualizer/ContinousVisualizer.hpp
-        uiVersion/ContinousVisualizerOpenGL.cpp
-        uiVersion/ContinousVisualizerOpenGL.hpp
+       # core/visualizer/ContinousVisualizer.cpp
+       # core/visualizer/ContinousVisualizer.hpp
+       # uiVersion/ContinousVisualizerOpenGL.cpp
+       # uiVersion/ContinousVisualizerOpenGL.hpp
         uiVersion/userInterface/MainUi.cpp
         uiVersion/userInterface/MainUi.hpp
         uiVersion/IOpenGLVisualizer.hpp
-        core/selection/ParticleSelection.cpp
-        core/selection/ParticleSelection.hpp
-        core/selection/IParticleSelection.hpp
-        core/selection/NormalParticleSelection.cpp
-        core/selection/NormalParticleSelection.hpp
-        core/selection/AllParticleSelection.cpp
-        core/selection/AllParticleSelection.hpp
+       # core/selection/ParticleSelection.cpp
+       # core/selection/ParticleSelection.hpp
+       # core/selection/IParticleSelection.hpp
+       # core/selection/NormalParticleSelection.cpp
+       # core/selection/NormalParticleSelection.hpp
+       # core/selection/AllParticleSelection.cpp
+       # core/selection/AllParticleSelection.hpp
         core/interface/TypeDefinitions.hpp
-        core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.cpp
-        core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
-        core/fluidSolver/particleCollection/ZIndexGridSorter.cpp
-        core/fluidSolver/particleCollection/ZIndexGridSorter.hpp
+       # core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.cpp
+       # core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
+       # core/fluidSolver/particleCollection/ZIndexGridSorter.cpp
+       # core/fluidSolver/particleCollection/ZIndexGridSorter.hpp
         uiVersion/userInterface/NeighborhoodSearch.cpp
         uiVersion/userInterface/NeighborhoodSearch.hpp
         uiVersion/userInterface/Kernel.cpp

@@ -1,16 +1,14 @@
-#include <core/fluidSolver/particleCollection/StripedParticleCollection.hpp>
-#include <core/fluidSolver/particleCollection/CompactParticleCollection.hpp>
+
 #include "core/basicScenarios/Scenario.hpp"
 
 
-FluidSolver::IParticleCollection *FluidSolver::Scenario::GenerateScenario(float restDensity) {
-    auto tmp = std::vector<FluidSolver::FluidParticle>();
-    auto particleCollection = CreateEmptyParticleCollection();
-    particleCollection->AddParticles(tmp);
+FluidSolver::ParticleCollection *FluidSolver::Scenario::GenerateScenario(float restDensity) {
 
-    this->ResetData(particleCollection, restDensity);
+    auto collection = CreateEmptyParticleCollection();
 
-    return particleCollection;
+    this->ResetData(collection, restDensity);
+
+    return collection;
 }
 
 float FluidSolver::Scenario::GetParticleSize() {
@@ -21,6 +19,13 @@ std::vector<FluidSolver::ISimulationModifier *> FluidSolver::Scenario::GetSimula
     return std::vector<FluidSolver::ISimulationModifier *>();
 }
 
-FluidSolver::IParticleCollection *FluidSolver::Scenario::CreateEmptyParticleCollection() {
-    return new FluidSolver::CompactParticleCollection();
+FluidSolver::ParticleCollection *FluidSolver::Scenario::CreateEmptyParticleCollection() {
+    auto collection = new ParticleCollection();
+    collection->add_type<MovementData>();
+    collection->add_type<ParticleData>();
+    collection->add_type<ParticleInfo>();
+    collection->add_type<ExternalForces>();
+
+
+    return collection;
 }
