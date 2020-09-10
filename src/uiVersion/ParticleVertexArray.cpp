@@ -168,12 +168,12 @@ void ParticleVertexArrayForCollection::OnGenerate() {
                                                                           offsetof(FluidSolver::ParticleInfo, type),
                                                                           sizeof(FluidSolver::ParticleInfo),
                                                                           Engine::ComponentTypeUnsignedByte
-                                                                  ),
-                                                                  Engine::Graphics::Buffer::VertexArray::BufferBinding(
+                                                                  )//,
+                                                                  /*Engine::Graphics::Buffer::VertexArray::BufferBinding(
                                                                           GetSelectionBuffer(),
                                                                           7, 1, 0, sizeof(int8_t),
                                                                           Engine::ComponentTypeByte
-                                                                  )
+                                                                  )*/
 
                                                           });
 
@@ -214,6 +214,6 @@ void ParticleVertexArrayForCollection::OnUpdate() {
 
 ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(FluidSolver::ParticleCollection *collection)
         : ParticleVertexArray(collection) {
-
+this->stripedParticleCollection = collection;
     Generate();
 }

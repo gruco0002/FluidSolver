@@ -207,6 +207,10 @@ void FluidSolverWindow::setupSimulation() {
     // set up scenario data
     auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
     simulation->setParticleCollection(particleCollection);
+    FluidSolver::IISPHFluidSolver::adapt_collection(*particleCollection);
+    isphFluidSolver->neighborhood_search.collection = particleCollection;
+    isphFluidSolver->neighborhood_search.search_radius = simulation->getRadius();
+    isphFluidSolver->kernel.kernel_support = simulation->getRadius();
 
     /*
     // add simulation modifiers

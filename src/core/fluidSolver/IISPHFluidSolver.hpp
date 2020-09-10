@@ -51,7 +51,7 @@ namespace FluidSolver {
             float diagonal_element;
         };
 
-        void adapt_collection(ParticleCollection &collection);
+       static void adapt_collection(ParticleCollection &collection);
 
 
 
