@@ -14,7 +14,10 @@ namespace FluidSolver {
         void execute_simulation_step(float timestep) override;
 
     private:
+    public:
+        void initialize() override;
 
+    private:
         float current_timestep = 0.0f;
 
         float ComputePressure(uint32_t particleIndex);

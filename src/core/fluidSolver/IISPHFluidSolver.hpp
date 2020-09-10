@@ -9,6 +9,8 @@ namespace FluidSolver {
 
     class IISPHFluidSolver : public IFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> {
     public:
+        void initialize() override;
+
         void execute_simulation_step(float timestep) override;
 
     private:

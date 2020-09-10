@@ -355,6 +355,9 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
     FLUID_ASSERT(collection->is_type_present<ExternalForces>());
     FLUID_ASSERT(collection->is_type_present<IISPHParticleData>());
 
+    FLUID_ASSERT(settings.MaxNumberOfIterations >= settings.MinNumberOfIterations);
+    FLUID_ASSERT(settings.MaxDensityErrorAllowed > 0.0f);
+
     FLUID_ASSERT(timestep > 0.0f);
     current_timestep = timestep;
 
@@ -401,4 +404,24 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
 void FluidSolver::IISPHFluidSolver::adapt_collection(ParticleCollection &collection) {
     FLUID_ASSERT(!collection.is_type_present<IISPHParticleData>());
     collection.add_type<IISPHParticleData>();
+}
+
+void FluidSolver::IISPHFluidSolver::initialize() {
+    FLUID_ASSERT(parameters.particle_size > 0.0f);
+    FLUID_ASSERT(collection != nullptr);
+
+    if(!collection->is_type_present<IISPHParticleData>())
+        adapt_collection(*collection);
+    neighborhood_search.collection = collection;
+    neighborhood_search.search_radius = parameters.particle_size * 2.0f;
+    kernel.kernel_support = parameters.particle_size * 2.0f;
+
+    FLUID_ASSERT(collection->is_type_present<MovementData>());
+    FLUID_ASSERT(collection->is_type_present<ParticleData>());
+    FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+    FLUID_ASSERT(collection->is_type_present<ExternalForces>());
+    FLUID_ASSERT(collection->is_type_present<IISPHParticleData>());
+
+    FLUID_ASSERT(settings.MaxNumberOfIterations >= settings.MinNumberOfIterations);
+    FLUID_ASSERT(settings.MaxDensityErrorAllowed > 0.0f);
 }

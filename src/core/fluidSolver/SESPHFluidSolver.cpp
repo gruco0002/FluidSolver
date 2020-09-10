@@ -189,5 +189,18 @@ namespace FluidSolver {
 
     }
 
+    void SESPHFluidSolver::initialize() {
+        FLUID_ASSERT(collection != nullptr);
+
+        neighborhood_search.collection = collection;
+        neighborhood_search.search_radius = parameters.particle_size * 2.0f;
+        kernel.kernel_support = parameters.particle_size * 2.0f;
+
+        FLUID_ASSERT(collection->is_type_present<MovementData>());
+        FLUID_ASSERT(collection->is_type_present<ParticleData>());
+        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(collection->is_type_present<ExternalForces>());
+    }
+
 
 }
