@@ -353,7 +353,6 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
     FLUID_ASSERT(collection->is_type_present<ParticleData>());
     FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
     FLUID_ASSERT(collection->is_type_present<ExternalForces>());
-    FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
     FLUID_ASSERT(collection->is_type_present<IISPHParticleData>());
 
     FLUID_ASSERT(timestep > 0.0f);
