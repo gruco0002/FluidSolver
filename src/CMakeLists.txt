@@ -65,9 +65,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/IISPHFluidSolver.cpp
         core/fluidSolver/SESPHFluidSolver.cpp
         core/fluidSolver/SESPHFluidSolver.hpp
-        core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp
         core/FluidSolverException.cpp core/FluidSolverException.hpp
-        core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
         uiVersion/ParticleVertexArray.cpp

@@ -6,6 +6,29 @@
 
 namespace FluidSolver {
 
+    /**
+     * Interface for a fluid solver.
+     * @tparam Kernel 2D SPH Kernel
+     * @tparam NeighborhoodSearch An object that implements a neighborhood search on the particle collection
+     * The objects has to implement the following behaviour:
+     * Types:
+     *      NeighborsIterator
+     *          An iterator that allows to iterate over the neighbors.
+     *          Dereferencing the iterator yields a size_t particle index.
+     *      Neighbors
+     *          An object that can be queried for an iterator to iterate over the neighbors.
+     *          It must therefore support the following functions:
+     *          NeighborsIterator begin();
+     *          NeighborsIterator end();
+     * Fields:
+     *      ParticleCollection* collection;
+     *      float search_radius;
+     * Functions:
+     *      void find_neighbors();
+     *      void get_neighbors(size_t particleIndex);
+     *      void get_neighbors(const glm::vec2 &position);
+     *
+     */
     template <typename Kernel, typename NeighborhoodSearch>
     class IFluidSolver {
     public:

@@ -2,7 +2,6 @@
 #define FLUIDSOLVER_IISPHFLUIDSOLVER_HPP
 
 #include <core/fluidSolver/IFluidSolver.hpp>
-#include <core/fluidSolver/kernel/IKernel.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
 

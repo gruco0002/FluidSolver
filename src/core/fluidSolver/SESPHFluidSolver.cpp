@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <algorithm>
-#include <chrono>
 #include "SESPHFluidSolver.hpp"
 
 namespace FluidSolver {
@@ -15,7 +14,7 @@ namespace FluidSolver {
         const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
 
         float density = 0.0f;
-        auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+        auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor: neighbors) {
             auto type = collection->get<ParticleInfo>(neighbor).type;
             if (type == ParticleTypeDead) {
@@ -50,7 +49,7 @@ namespace FluidSolver {
         float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / std::pow(density, 2.0f);
 
         glm::vec2 pressureAcceleration = glm::vec2(0.0f);
-        auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+        auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor: neighbors) {
             auto type = collection->get<ParticleInfo>(neighbor).type;
             if (type == ParticleTypeDead) {
@@ -89,7 +88,7 @@ namespace FluidSolver {
 
 
         glm::vec2 tmp = glm::vec2(0.0f);
-        auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+        auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor: neighbors) {
             auto type = collection->get<ParticleInfo>(neighbor).type;
             if (type == ParticleTypeDead) {
@@ -125,7 +124,8 @@ namespace FluidSolver {
         current_timestep = timestep;
 
         // find neighbors for all particles
-        neighborhood_search.FindNeighbors();
+        FLUID_ASSERT(neighborhood_search.collection == collection);
+        neighborhood_search.find_neighbors();
 
         // calculate density and pressure for all particles
 #pragma omp parallel for

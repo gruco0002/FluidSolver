@@ -1,9 +1,9 @@
 #ifndef FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 #define FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 
-#include <core/fluidSolver/particleCollection/IParticleCollection.hpp>
-#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
+#include <vector>
 #include <unordered_map>
+#include "../ParticleCollection.hpp"
 
 namespace FluidSolver {
 
@@ -20,23 +20,81 @@ namespace FluidSolver {
      * @note This neighborhood search is very inefficient and therefore not recommended to be used. However this
      * implementation can assist by helping to verify results of more complex implementations of the neighborhood
      * search.
+     *
+     *
+     *      * Types:
+     *      NeighborsIterator
+     *          An iterator that allows to iterate over the neighbors.
+     *          Dereferencing the iterator yields a size_t particle index.
+     *      Neighbors
+     *          An object that can be queried for an iterator to iterate over the neighbors.
+     *          It must therefore support the following functions:
+     *          NeighborsIterator begin();
+     *          NeighborsIterator end();
+     * Fields:
+     *      ParticleCollection* collection;
+     *      float search_radius;
+     * Functions:
+     *      void find_neighbors();
+     *      void get_neighbors(size_t particleIndex);
+     *      void get_neighbors(const glm::vec2 &position);
      */
-    class QuadraticNeighborhoodSearchDynamicAllocated : public INeighborhoodSearch {
+    class QuadraticNeighborhoodSearchDynamicAllocated {
     public:
-        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
+        using particleIndex_t = size_t ;
 
-    public:
-        QuadraticNeighborhoodSearchDynamicAllocated(IParticleCollection *particleCollection, float radius);
+        struct Neighbors;
+        struct NeighborsIterator{
 
-        void FindNeighbors() override;
+            const Neighbors* data;
+            size_t current;
 
-        NeighborsCompact GetNeighbors(particleIndex_t particleIndex) override;
+            bool operator==(const NeighborsIterator &other) const;
+            bool operator!=(const NeighborsIterator &other) const;
+            particleIndex_t &operator*();
+            NeighborsIterator &operator++();
+            const NeighborsIterator operator++(int);
 
-        NeighborsCompactData GetNeighbors(glm::vec2 position) override;
+        };
+
+        struct Neighbors{
+
+            // iterator defines
+            using T = particleIndex_t ;
+            using iterator = NeighborsIterator;
+            using const_iterator = NeighborsIterator;
+            using difference_type = ptrdiff_t;
+            using size_type = size_t ;
+            using value_type = T;
+            using pointer = T*;
+            using const_pointer = const T*;
+            using reference = T&;
+
+            // data
+            union{
+                glm::vec2 position;
+                particleIndex_t particle;
+            } of = {};
+            bool position_based = false;
+            QuadraticNeighborhoodSearchDynamicAllocated* data = nullptr;
+
+            NeighborsIterator begin();
+            NeighborsIterator end();
+
+        };
+
+        ParticleCollection* collection = nullptr;
+        float search_radius = 0.0f;
+
+        void find_neighbors();
+        Neighbors get_neighbors(size_t particleIndex);
+        Neighbors get_neighbors(const glm::vec2& position);
+
+
 
 
     private:
-        std::unordered_map<particleIndex_t, std::vector<particleIndex_t >> neighbors;
+        std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;
 
     };
 

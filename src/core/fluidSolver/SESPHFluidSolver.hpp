@@ -2,12 +2,10 @@
 #define FLUIDSOLVER_SESPHFLUIDSOLVER_HPP
 
 
-#include <core/interface/ISimulationModifier.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
 
-#include "core/statistics/StatisticCollector.hpp"
 
 namespace FluidSolver {
     class SESPHFluidSolver : public IFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> {

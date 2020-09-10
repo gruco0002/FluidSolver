@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <chrono>
 #include "IISPHFluidSolver.hpp"
 
 void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
@@ -11,7 +10,7 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
     const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
 
     float density = 0.0f;
-    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.get_neighbors(particleIndex);
     for (uint32_t neighbor: neighbors) {
         auto type = collection->get<ParticleInfo>(neighbor).type;
         if (type == ParticleTypeDead) {
@@ -52,7 +51,7 @@ glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t p
 
 
     glm::vec2 tmp = glm::vec2(0.0f);
-    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.get_neighbors(particleIndex);
     for (uint32_t neighbor: neighbors) {
         auto type = collection->get<ParticleInfo>(neighbor).type;
         if (type == ParticleTypeDead) {
@@ -94,7 +93,7 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
     const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
     float sum = 0.0f;
-    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.get_neighbors(particleIndex);
     for (uint32_t neighborIndex: neighbors) {
         auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
         if (neighborType == ParticleTypeDead)
@@ -124,7 +123,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
     float particleMass = collection->get<ParticleData>(particleIndex).mass;
 
     // first and third part of the sum (since we sum over normal particles and boundary particles)
-    auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+    auto neighbors = neighborhood_search.get_neighbors(particleIndex);
     for (uint32_t neighborIndex: neighbors) {
         auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
         if (neighborType == ParticleTypeDead)
@@ -134,7 +133,7 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
         const glm::vec2 &neighborPosition = collection->get<MovementData>(neighborIndex).position;
 
         glm::vec2 internalSum = glm::vec2(0.0f);
-        auto neighborsInternal = neighborhood_search.GetNeighbors(particleIndex);
+        auto neighborsInternal = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t internalNeighbor: neighborsInternal) {
             auto internalNeighborType = collection->get<ParticleInfo>(internalNeighbor).type;
             if (internalNeighborType == ParticleTypeDead)
@@ -232,7 +231,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
             glm::vec2 sum = glm::vec2(0.0f);
-            auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+            auto neighbors = neighborhood_search.get_neighbors(particleIndex);
             for (uint32_t neighborIndex: neighbors) {
                 auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
                 if (neighborType == ParticleTypeDead)
@@ -273,7 +272,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
             const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
 
             float sum = 0.0f;
-            auto neighbors = neighborhood_search.GetNeighbors(particleIndex);
+            auto neighbors = neighborhood_search.get_neighbors(particleIndex);
             for (uint32_t neighborIndex: neighbors) {
                 auto neighborType = collection->get<ParticleInfo>(neighborIndex).type;
                 if (neighborType == ParticleTypeDead)
@@ -362,7 +361,8 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
 
 
     // find neighbors for all particles
-    neighborhood_search.FindNeighbors();
+    FLUID_ASSERT(neighborhood_search.collection == collection);
+    neighborhood_search.find_neighbors();
 
     // calculating density and non pressure accelerations
 #pragma omp parallel for
@@ -389,12 +389,8 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
         InitializePressure(i);
     }
 
-
-    auto p1 = std::chrono::high_resolution_clock::now();
     // compute pressure
     ComputePressure();
-    auto p2 = std::chrono::high_resolution_clock::now();
-
 
     // update velocity and position of all particles
 #pragma omp parallel for
