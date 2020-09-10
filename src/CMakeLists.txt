@@ -65,7 +65,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/IISPHFluidSolver.cpp
         core/fluidSolver/SESPHFluidSolver.cpp
         core/fluidSolver/SESPHFluidSolver.hpp
-        core/FluidSolverException.cpp core/FluidSolverException.hpp
+        core/FluidSolverException.cpp
+        core/FluidSolverException.hpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
         uiVersion/ParticleVertexArray.cpp
@@ -81,7 +82,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
-        core/basicScenarios/Scenario.hpp core/basicScenarios/Scenario.cpp
+        core/basicScenarios/Scenario.hpp
+        core/basicScenarios/Scenario.cpp
         core/basicScenarios/BoundaryTestScenario.cpp
         core/basicScenarios/BoundaryTestScenario.hpp
         core/basicScenarios/SimpleDamScenario.cpp
@@ -90,8 +92,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/basicScenarios/HugeDamScenario.hpp
         core/basicScenarios/SimpleBoxScenario.cpp
         core/basicScenarios/SimpleBoxScenario.hpp
-        core/statistics/DataLogger.cpp
-        core/statistics/DataLogger.hpp
         FluidSolverConsole.cpp
         FluidSolverConsole.hpp
         core/basicScenarios/BoxWithHoleScenario.cpp
@@ -101,8 +101,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/simulationModifiers/DeathBox.hpp
         core/simulationModifiers/SpawnArea.cpp
         core/simulationModifiers/SpawnArea.hpp
-        core/statistics/StatisticCollector.cpp
-        core/statistics/StatisticCollector.hpp
         core/basicScenarios/MultipleHoleScenario.cpp
         core/basicScenarios/MultipleHoleScenario.hpp
         core/Simulation.cpp core/Simulation.hpp
@@ -127,8 +125,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         uiVersion/userInterface/MainUi.cpp
         uiVersion/userInterface/MainUi.hpp
         uiVersion/IOpenGLVisualizer.hpp
-        core/statistics/CachedStatisticCollector.cpp
-        core/statistics/CachedStatisticCollector.hpp
         core/selection/ParticleSelection.cpp
         core/selection/ParticleSelection.hpp
         core/selection/IParticleSelection.hpp
@@ -136,10 +132,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/selection/NormalParticleSelection.hpp
         core/selection/AllParticleSelection.cpp
         core/selection/AllParticleSelection.hpp
-        core/statistics/StatValue.cpp
-        core/statistics/StatValue.hpp
-        core/statistics/CachedStatValue.cpp
-        core/statistics/CachedStatValue.hpp
         core/interface/TypeDefinitions.hpp
         core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
@@ -156,7 +148,10 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/FluidAssert.hpp
         core/fluidSolver/ParticleCollectionAlgorithm.cpp
         core/fluidSolver/ParticleCollectionAlgorithm.hpp
-
+        core/statistics/Statistics.cpp
+        core/statistics/Statistics.hpp
+        core/statistics/ParticleStatistics.cpp
+        core/statistics/ParticleStatistics.hpp
         )
 
 

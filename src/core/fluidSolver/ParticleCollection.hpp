@@ -14,6 +14,7 @@ namespace FluidSolver {
         std::vector<void *> data_ptr;
         std::vector<std::function<void(size_t)>> internal_resize_calls;
         std::vector<std::function<void(size_t, size_t)>> internal_swap_calls;
+        std::vector<std::function<void()>> internal_delete;
 
         class family {
             static std::size_t identifier() noexcept {
@@ -47,6 +48,10 @@ namespace FluidSolver {
                 internal_swap_calls.push_back([&, typeId](size_t i, size_t j) {
                     std::swap(((std::vector<Component> *) data[typeId])[i],
                               ((std::vector<Component> *) data[typeId])[j]);
+                });
+                internal_delete.push_back([&, typeId]() {
+                    delete ((std::vector<Component> *) data[typeId]);
+                    data[typeId] = nullptr;
                 });
             }
         }
@@ -92,8 +97,8 @@ namespace FluidSolver {
         }
 
         ~ParticleCollection() {
-            for (auto ptr : data) {
-                delete ptr;
+            for (auto &fn : internal_delete) {
+                fn();
             }
         }
 
