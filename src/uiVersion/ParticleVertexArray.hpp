@@ -7,7 +7,7 @@
 #include <engine/graphics/buffer/VertexArray.hpp>
 // #include <core/selection/IParticleSelection.hpp>
 #include <core/fluidSolver/ParticleCollection.hpp>
-#include <core/fluidSolver/FluidAssert.hpp>
+#include <core/FluidAssert.hpp>
 
 /**
  * The particle vertex array creates a vertex array object (vao) of point sprites for rendering particles with opengl.

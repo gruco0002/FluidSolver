@@ -2,7 +2,7 @@
 #define FLUIDSOLVER_IFLUIDSOLVER_HPP
 
 #include "ParticleCollection.hpp"
-#include "FluidAssert.hpp"
+#include "core/FluidAssert.hpp"
 
 namespace FluidSolver {
 

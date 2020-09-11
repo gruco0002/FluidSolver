@@ -1,5 +1,5 @@
 #include "QuadraticNeighborhoodSearchDynamicAllocated.hpp"
-#include "../FluidAssert.hpp"
+#include "core/FluidAssert.hpp"
 
 void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::find_neighbors() {
     FLUID_ASSERT(collection != nullptr);

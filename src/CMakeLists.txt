@@ -145,7 +145,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/ParticleCollection.hpp
         core/fluidSolver/Particle.cpp
         core/fluidSolver/Particle.hpp
-        core/fluidSolver/FluidAssert.hpp
+        core/FluidAssert.hpp
         core/fluidSolver/ParticleCollectionAlgorithm.cpp
         core/fluidSolver/ParticleCollectionAlgorithm.hpp
         core/statistics/Statistics.cpp

@@ -1,5 +1,5 @@
 #include "ParticleStatistics.hpp"
-#include "../fluidSolver/FluidAssert.hpp"
+#include "core/FluidAssert.hpp"
 #include <algorithm>
 
 

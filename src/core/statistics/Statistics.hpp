@@ -5,7 +5,7 @@
 #include <string>
 #include <chrono>
 #include <functional>
-#include "../fluidSolver/FluidAssert.hpp"
+#include "core/FluidAssert.hpp"
 
 namespace FluidSolver {
     class Statistics {

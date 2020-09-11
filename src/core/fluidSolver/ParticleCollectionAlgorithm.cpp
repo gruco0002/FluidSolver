@@ -1,5 +1,5 @@
 #include "ParticleCollectionAlgorithm.hpp"
-#include "FluidAssert.hpp"
+#include "core/FluidAssert.hpp"
 
 namespace FluidSolver {
     namespace ParticleCollectionAlgorithm {
