@@ -25,7 +25,7 @@ namespace FluidSolver {
     };
 
     struct ParticleInfo {
-        uint32_t index;
+        uint32_t tag;
         uint8_t type;
     };
 

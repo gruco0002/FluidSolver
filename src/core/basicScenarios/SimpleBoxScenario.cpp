@@ -25,7 +25,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -40,7 +40,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -55,7 +55,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
     }
 
@@ -74,7 +74,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -89,7 +89,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -104,7 +104,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
     }
 
@@ -123,7 +123,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -138,7 +138,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
         {
             auto id = collection->add();
@@ -153,7 +153,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
 
 
@@ -175,7 +175,7 @@ FluidSolver::SimpleBoxScenario::ResetData(FluidSolver::ParticleCollection *colle
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeNormal;
-            iData.index = id;
+            iData.tag = id;
         }
     }
 

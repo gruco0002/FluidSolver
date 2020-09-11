@@ -22,7 +22,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::ParticleCollection *co
             pData.density = restDensity;
             pData.mass = mass;
             iData.type = FluidSolver::ParticleTypeBoundary;
-            iData.index = id;
+            iData.tag = id;
         }
     }
 
@@ -38,7 +38,7 @@ FluidSolver::BoundaryTestScenario::ResetData(FluidSolver::ParticleCollection *co
     pData.density = restDensity;
     pData.mass = mass;
     iData.type = FluidSolver::ParticleTypeNormal;
-    iData.index = id;
+    iData.tag = id;
 
 }
 
