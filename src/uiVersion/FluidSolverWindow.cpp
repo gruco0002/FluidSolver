@@ -32,21 +32,9 @@ void FluidSolverWindow::render() {
         if (!this->Pause) {
             accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
 
-            while (accumulatedSimulationTime >= simulation->getTimestep()->getCurrentTimestep()) {
-                //accumulatedSimulationTime -= sphFluidSolver->TimeStep;
-                accumulatedSimulationTime = 0.0f; // we always want to render after a simulation step
-                try {
-                    simulation->ExecuteSimulationStep();
-                    simulation->CollectStatistics();
-                } catch (const FluidSolver::FluidSolverException &ex) {
-                    ErrorLog.push_back("Error: " + ex.text);
-                    this->Pause = true;
-                    accumulatedSimulationTime = 0.0f;
-                    break;
-                }
+            simulation->execute_simulation_step();
+            simulationStepHappened = true;
 
-                simulationStepHappened = true;
-            }
         } else {
             accumulatedSimulationTime = 0.0f;
         }
@@ -55,7 +43,7 @@ void FluidSolverWindow::render() {
 
     // visualize the simulation
     if (simulation != nullptr) {
-        simulation->VisualizeSimulation();
+        simulation->visualize();
     }
 
     // force pending opengl stuff to finish
@@ -81,7 +69,7 @@ void FluidSolverWindow::render() {
     ImGui::Begin("Simulation Visualization");
 
     if (simulation != nullptr) {
-        auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->getSimulationVisualizer());
+        auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->parameters.visualizer);
         if (glRenderer != nullptr) {
             auto tex = glRenderer->GetTexture();
             // render visualization
@@ -181,114 +169,57 @@ void FluidSolverWindow::setupSimulation() {
 
     this->scenario = new FluidSolver::SimpleBoxScenario();
 
-
-    simulation = new FluidSolver::Simulation();
+    FluidSolver::Simulation::SimulationParameters parameters;
 
     // set particle size and timestep
-    simulation->setTimestep(new FluidSolver::ConstantTimestep(0.001f));
-    simulation->setParticleSize(scenario->GetParticleSize());
-    simulation->setRestDensity(1.0f);
-    simulation->setGravity(9.81f);
-
-    // set up basic stuff
-    /*auto sphFluidSolver = new FluidSolver::SPHFluidSolver();
-    sphFluidSolver->StiffnessK = 100000.0f;
-    sphFluidSolver->Viscosity = 5.0f;
-    simulation->setFluidSolver(sphFluidSolver);*/
-
+    parameters.timestep = new FluidSolver::ConstantTimestep(0.001f);
+    parameters.particle_size = scenario->GetParticleSize();
+    parameters.rest_density = 1.0f;
+    parameters.gravity = 9.81f;
 
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
     isphFluidSolver->settings.Omega = 0.5f;
     isphFluidSolver->settings.Gamma = 0.7f;
     isphFluidSolver->settings.MaxDensityErrorAllowed = 0.001f;
-    simulation->setFluidSolver(isphFluidSolver);
-
+    parameters.fluid_solver = isphFluidSolver;
 
     // set up scenario data
-    auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
-    simulation->setParticleCollection(particleCollection);
-    FluidSolver::IISPHFluidSolver::adapt_collection(*particleCollection);
-    isphFluidSolver->neighborhood_search.collection = particleCollection;
-    isphFluidSolver->neighborhood_search.search_radius = simulation->getRadius();
-    isphFluidSolver->kernel.kernel_support = simulation->getRadius();
+    auto particleCollection = scenario->GenerateScenario(parameters.rest_density);
+    parameters.collection = particleCollection;
 
-    /*
-    // add simulation modifiers
-    simulation->clearSimulationModifiers();
-    for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
-        simulation->addSimulationModifier(mod);
-    }*/
 
     // create particle renderer
-    auto particleRenderer = new ParticleRenderer();
-    simulation->setSimulationVisualizer(particleRenderer);
-
-
-    UpdateVisualizerViewport();
-
+    parameters.visualizer = new ParticleRenderer();
 
     // reset simulation time
     accumulatedSimulationTime = 0.0f;
 
-    // set statistics collection
-    //simulation->setStatisticCollector(new FluidSolver::CachedStatisticCollector());
-
-    // set datalogger but don't start it
-    //simulation->setDataLogger(new DataLogger("data.csv"));
-
-    // set neighborhood search & kernel
-    //simulation->setKernel(new FluidSolver::CubicSplineKernel(simulation->getParticleSize() * 2.0f));
-    //simulation->setNeighborhoodSearch(            new FluidSolver::CompactHashingNeighborhoodSearch(simulation->getParticleCollection(),                                                              simulation->getParticleSize() * 2.0f));
-
-
+    simulation = new FluidSolver::Simulation();
+    simulation->parameters = parameters;
+    UpdateVisualizerViewport();
 }
 
 
 void FluidSolverWindow::resetData() {
 
-   /* if (simulation->getDataLogger() != nullptr) {
-        auto logger = simulation->getDataLogger();
-        logger->FinishLogging();
-        logger->ResetLogger();
-    }*/
+    FluidSolver::Simulation::SimulationParameters parameters = simulation->parameters;
 
     // set particle size
-    simulation->setParticleSize(scenario->GetParticleSize());
-
-
-    // set up values
-  /*  auto fluidSolver = dynamic_cast<FluidSolver::SESPHFluidSolver *>(simulation->getFluidSolver());
-    if (fluidSolver != nullptr) {
-
-    }*/
-    auto ifluidSolver = dynamic_cast<FluidSolver::IISPHFluidSolver *>(simulation->getFluidSolver());
-    if (ifluidSolver != nullptr) {
-
-    }
+    parameters.particle_size = scenario->GetParticleSize();
 
     // set up scenario data, delete old particle collection
-    delete simulation->getParticleCollection();
-    auto particleCollection = scenario->GenerateScenario(simulation->getRestDensity());
-    simulation->setParticleCollection(particleCollection);
+    auto particleCollection = scenario->GenerateScenario(parameters.rest_density);
+    delete parameters.collection;
+    parameters.collection = particleCollection;
 
-    // set up simulation modifiers
-   /* simulation->clearSimulationModifiers();
-    for (FluidSolver::ISimulationModifier *mod : scenario->GetSimulationModifiers()) {
-        simulation->addSimulationModifier(mod);
-    }*/
-
-
+    simulation->parameters = parameters;
     UpdateVisualizerViewport();
-
-
-    /* this->imageCounter = 0;
-     this->currentSaveFrameTime = 1.0f / this->saveFramesPerSecond;*/
 
 }
 
 void FluidSolverWindow::onMouseDown(float x, float y, Engine::Window::MouseButton button) {
     if (simulation == nullptr) return;
-    if (simulation->getSimulationVisualizer() == nullptr) return;
+    if (simulation->parameters.visualizer == nullptr) return;
     if (!mouseInsideVisualization)return;
 
     isMouseDown = true;
@@ -304,7 +235,7 @@ void FluidSolverWindow::onMouseDown(float x, float y, Engine::Window::MouseButto
     positionOnImage.y = positionOnImage.y / visualizationWindowCoordinates.w;
     positionOnImage.x = positionOnImage.x * (float) visualizerRenderTargetWidth;
     positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
-    positionOnImageInSimSpaceDragStart = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace(
+    positionOnImageInSimSpaceDragStart = simulation->parameters.visualizer->ConvertPixelCoordinateToParticleSpace(
             (size_t) positionOnImage.x,
             (size_t) positionOnImage.y);
 
@@ -325,7 +256,7 @@ void FluidSolverWindow::onMouseUp(float x, float y, Engine::Window::MouseButton 
     isMouseDown = false;
 
     if (simulation == nullptr) return;
-    if (simulation->getSimulationVisualizer() == nullptr) return;
+    if (simulation->parameters.visualizer == nullptr) return;
     if (!mouseInsideVisualization)return;
 
 
@@ -336,7 +267,7 @@ void FluidSolverWindow::onMouseUp(float x, float y, Engine::Window::MouseButton 
     positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
 
 
-    auto pos = simulation->getSimulationVisualizer()->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
+    auto pos = simulation->parameters.visualizer->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
                                                                                             (size_t) positionOnImage.y);
 
     auto selectionType = button == Engine::Window::MouseButton::RightButton ? SelectionType::SelectionTypeDeselect
@@ -362,7 +293,7 @@ void FluidSolverWindow::saveAsImage() {
 
     if (simulation == nullptr)
         return;
-    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->getSimulationVisualizer());
+    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->parameters.visualizer);
     if (glRenderer == nullptr)
         return;
 
@@ -370,10 +301,10 @@ void FluidSolverWindow::saveAsImage() {
     if (tex == nullptr)
         return;
 
-    if (simulation->getTimestep() == nullptr)
+    if (simulation->parameters.timestep == nullptr)
         return;
 
-    float timestep = simulation->getTimestep()->getCurrentTimestep();
+    float timestep = simulation->parameters.timestep->getCurrentTimestep();
     saveFramesForSeconds -= timestep;
 
     std::string newFilepath =
@@ -403,38 +334,38 @@ FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
 }
 
 FluidSolver::ITimestep *FluidSolverWindow::GetTimestep() {
-    return simulation->getTimestep();
+    return simulation->parameters.timestep;
 }
 
 void FluidSolverWindow::SetTimestep(FluidSolver::ITimestep *timestep) {
-    simulation->setTimestep(timestep);
+    simulation->parameters.timestep = timestep;
 }
 
 float FluidSolverWindow::GetRestDensity() {
-    return simulation->getRestDensity();
+    return simulation->parameters.rest_density;
 }
 
 void FluidSolverWindow::SetRestDensity(float restdensity) {
-    simulation->setRestDensity(restdensity);
+    simulation->parameters.rest_density = restdensity;
 }
 
 FluidSolver::IISPHFluidSolver *FluidSolverWindow::GetFluidSolver() {
-    return simulation->getFluidSolver();
+    return simulation->parameters.fluid_solver;
 }
 
 void FluidSolverWindow::SetFluidSolver(FluidSolver::IISPHFluidSolver *solver) {
-    simulation->setFluidSolver(solver);
+    simulation->parameters.fluid_solver = solver;
 }
 
 
 FluidSolver::ISimulationVisualizer *FluidSolverWindow::GetVisualizer() {
-    return simulation->getSimulationVisualizer();
+   return simulation->parameters.visualizer;
 }
 
 void FluidSolverWindow::UpdateVisualizerViewport() {
     if (simulation == nullptr)
         return;
-    auto vis = simulation->getSimulationVisualizer();
+    auto vis = simulation->parameters.visualizer;
     if (vis == nullptr)
         return;
     vis->setRenderTargetSize(this->visualizerRenderTargetWidth, this->visualizerRenderTargetHeight);
@@ -479,7 +410,7 @@ void FluidSolverWindow::setVisualizerRenderTargetHeight(size_t visualizerRenderT
 }
 
 void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer) {
-    this->simulation->setSimulationVisualizer(visualizer);
+    this->simulation->parameters.visualizer = visualizer;
     UpdateVisualizerViewport();
 }
 
@@ -546,45 +477,46 @@ void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::Se
 void
 FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, FluidSolverWindow::SelectionType type) {
 
- /*   float minX = std::fmin(position1.x, position2.x);
-    float minY = std::fmin(position1.y, position2.y);
-    float maxX = std::fmax(position1.x, position2.x);
-    float maxY = std::fmax(position1.y, position2.y);
+    /*   float minX = std::fmin(position1.x, position2.x);
+       float minY = std::fmin(position1.y, position2.y);
+       float maxX = std::fmax(position1.x, position2.x);
+       float maxY = std::fmax(position1.y, position2.y);
 
-    // find nearest particle, that you have clicked on depending on type
-    std::vector<uint32_t> particles;
-    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-        auto particleType = simulation->getParticleCollection()->GetParticleType(i);
-        if (particleType == FluidSolver::ParticleTypeDead)
-            continue;
+       // find nearest particle, that you have clicked on depending on type
+       std::vector<uint32_t> particles;
+       for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
+           auto particleType = simulation->getParticleCollection()->GetParticleType(i);
+           if (particleType == FluidSolver::ParticleTypeDead)
+               continue;
 
 
-        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-        if (particlePos.x >= minX && particlePos.x <= maxX) {
-            if (particlePos.y >= minY && particlePos.y <= maxY) {
-                particles.push_back(i);
-            }
-        }
-    }
+           auto particlePos = simulation->getParticleCollection()->GetPosition(i);
+           if (particlePos.x >= minX && particlePos.x <= maxX) {
+               if (particlePos.y >= minY && particlePos.y <= maxY) {
+                   particles.push_back(i);
+               }
+           }
+       }
 
-    // select corresponding particle(s)
-    auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
+       // select corresponding particle(s)
+       auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
 
-    for (auto particleIndex:particles) {
-        if (custom == nullptr) {
-            custom = new FluidSolver::ParticleSelection();
-            delete simulation->getParticleSelection();
-            simulation->setParticleSelection(custom);
-        }
-        if (type == SelectionType::SelectionTypeSelect) {
-            custom->AddParticleToSelection(particleIndex);
-        } else if (type == SelectionType::SelectionTypeDeselect) {
-            custom->RemoveParticleFromSelection(particleIndex);
-        }
-    }
-*/
+       for (auto particleIndex:particles) {
+           if (custom == nullptr) {
+               custom = new FluidSolver::ParticleSelection();
+               delete simulation->getParticleSelection();
+               simulation->setParticleSelection(custom);
+           }
+           if (type == SelectionType::SelectionTypeSelect) {
+               custom->AddParticleToSelection(particleIndex);
+           } else if (type == SelectionType::SelectionTypeDeselect) {
+               custom->RemoveParticleFromSelection(particleIndex);
+           }
+       }
+   */
 
 }
+
 /*
 DataLogger *FluidSolverWindow::GetDataLogger() {
     return simulation->getDataLogger();
