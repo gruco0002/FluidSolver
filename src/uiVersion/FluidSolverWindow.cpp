@@ -349,11 +349,11 @@ void FluidSolverWindow::SetRestDensity(float restdensity) {
     simulation->parameters.rest_density = restdensity;
 }
 
-FluidSolver::IISPHFluidSolver *FluidSolverWindow::GetFluidSolver() {
+FluidSolver::IFluidSolverBase *FluidSolverWindow::GetFluidSolver() {
     return simulation->parameters.fluid_solver;
 }
 
-void FluidSolverWindow::SetFluidSolver(FluidSolver::IISPHFluidSolver *solver) {
+void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolverBase *solver) {
     simulation->parameters.fluid_solver = solver;
 }
 

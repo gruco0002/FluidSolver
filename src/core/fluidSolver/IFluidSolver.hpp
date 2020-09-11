@@ -6,6 +6,23 @@
 
 namespace FluidSolver {
 
+    class IFluidSolverBase {
+    public:
+        struct SimulationParameters {
+            float rest_density = 1.0f;
+            float gravity = 9.81f;
+            float particle_size = 1.0f;
+        } parameters;
+
+        virtual void execute_simulation_step(float timestep) = 0;
+
+        virtual void initialize() = 0;
+
+        virtual ~IFluidSolverBase() = default;
+
+        ParticleCollection *collection = nullptr;
+    };
+
     /**
      * Interface for a fluid solver.
      * @tparam Kernel 2D SPH Kernel
@@ -29,26 +46,13 @@ namespace FluidSolver {
      *      void get_neighbors(const glm::vec2 &position);
      *
      */
-    template <typename Kernel, typename NeighborhoodSearch>
-    class IFluidSolver {
+    template<typename Kernel, typename NeighborhoodSearch>
+    class IFluidSolver : public IFluidSolverBase {
     public:
-        struct SimulationParameters{
-            float rest_density = 1.0f;
-            float gravity = 9.81f;
-            float particle_size = 1.0f;
-        } parameters;
 
         Kernel kernel;
 
         NeighborhoodSearch neighborhood_search;
-
-        ParticleCollection *collection = nullptr;
-
-        virtual void execute_simulation_step(float timestep) = 0;
-
-        virtual void initialize() = 0;
-
-        virtual ~IFluidSolver() = default;
 
     };
 

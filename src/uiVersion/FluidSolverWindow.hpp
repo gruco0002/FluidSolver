@@ -76,9 +76,9 @@ public:
 
     void SetRestDensity(float restdensity);
 
-    FluidSolver::IISPHFluidSolver *GetFluidSolver();
+    FluidSolver::IFluidSolverBase *GetFluidSolver();
 
-    void SetFluidSolver(FluidSolver::IISPHFluidSolver *solver);
+    void SetFluidSolver(FluidSolver::IFluidSolverBase *solver);
 
     FluidSolver::ISimulationVisualizer *GetVisualizer();
 
