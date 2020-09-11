@@ -41,57 +41,65 @@ namespace FluidSolver {
      */
     class QuadraticNeighborhoodSearchDynamicAllocated {
     public:
-        using particleIndex_t = size_t ;
+        using particleIndex_t = size_t;
 
         struct Neighbors;
-        struct NeighborsIterator{
 
-            const Neighbors* data;
+        struct NeighborsIterator {
+
+            const Neighbors *data;
             size_t current;
 
             bool operator==(const NeighborsIterator &other) const;
+
             bool operator!=(const NeighborsIterator &other) const;
+
             particleIndex_t &operator*();
+
             NeighborsIterator &operator++();
+
             const NeighborsIterator operator++(int);
 
         };
 
-        struct Neighbors{
+        struct Neighbors {
 
             // iterator defines
-            using T = particleIndex_t ;
+            using T = particleIndex_t;
             using iterator = NeighborsIterator;
             using const_iterator = NeighborsIterator;
             using difference_type = ptrdiff_t;
-            using size_type = size_t ;
+            using size_type = size_t;
             using value_type = T;
-            using pointer = T*;
-            using const_pointer = const T*;
-            using reference = T&;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
 
             // data
-            union{
+            union {
                 glm::vec2 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
-            QuadraticNeighborhoodSearchDynamicAllocated* data = nullptr;
+            QuadraticNeighborhoodSearchDynamicAllocated *data = nullptr;
 
             NeighborsIterator begin();
+
             NeighborsIterator end();
 
         };
 
-        ParticleCollection* collection = nullptr;
+        ParticleCollection *collection = nullptr;
         float search_radius = 0.0f;
 
         void find_neighbors();
+
         Neighbors get_neighbors(size_t particleIndex);
-        Neighbors get_neighbors(const glm::vec2& position);
+
+        Neighbors get_neighbors(const glm::vec2 &position);
 
 
-
+        void initialize();
 
     private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;

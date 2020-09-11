@@ -50,6 +50,10 @@ FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(const gl
     return n;
 }
 
+void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::initialize() {
+
+}
+
 bool FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::NeighborsIterator::operator==(
         const FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::NeighborsIterator &other) const {
     return data == other.data && current == other.current;

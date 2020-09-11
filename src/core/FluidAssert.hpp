@@ -9,6 +9,7 @@
             if (!(condition)) {                                         \
                 std::cerr << "Assertion failed: " << #condition << std::endl; \
                 std::cerr << "This happened in " << __FILE__ << ":" << __LINE__ << " in " << __FUNCTION__ << std::endl; \
+                __debugbreak();                                                        \
                 abort();                                          \
             }                                                            \
         }

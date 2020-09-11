@@ -80,8 +80,8 @@ set(FLUID_SOLVER_SOURCE_FILES
        # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchPreAllocated.hpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.cpp
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
-       # core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
-       # core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
+        core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
+        core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
         core/basicScenarios/Scenario.hpp
         core/basicScenarios/Scenario.cpp
         core/basicScenarios/BoundaryTestScenario.cpp

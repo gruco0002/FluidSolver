@@ -4,10 +4,11 @@
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
 #include <core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
+#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
 
 namespace FluidSolver {
 
-    class IISPHFluidSolver : public IFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> {
+    class IISPHFluidSolver : public IFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> {
     public:
         void initialize() override;
 

@@ -1,41 +1,91 @@
 #ifndef FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 #define FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 
-#include <core/fluidSolver/neighborhoodSearch/INeighborhoodSearch.hpp>
 #include <unordered_map>
 #include <vector>
 #include <list>
+#include "../ParticleCollection.hpp"
 
 namespace FluidSolver {
-    class HashedNeighborhoodSearch : public INeighborhoodSearch {
+
+
+    class HashedNeighborhoodSearch {
+
+
     public:
-        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
+        using particleIndex_t = size_t;
+        using particleAmount_t = uint16_t;
 
-        void FindNeighbors() override;
 
-        NeighborsCompact GetNeighbors(particleIndex_t particleIndex) override;
+        struct Neighbors;
 
-        void UpdateGrid();
-        NeighborsCompactData GetNeighbors(glm::vec2 position) override;
+        struct NeighborsIterator {
 
-        HashedNeighborhoodSearch(IParticleCollection *particleCollection, float radius);
+            const Neighbors *data;
+            size_t current;
 
+            bool operator==(const NeighborsIterator &other) const;
+
+            bool operator!=(const NeighborsIterator &other) const;
+
+            particleIndex_t &operator*();
+
+            NeighborsIterator &operator++();
+
+            const NeighborsIterator operator++(int);
+
+        };
+
+        struct Neighbors {
+
+            // iterator defines
+            using T = particleIndex_t;
+            using iterator = NeighborsIterator;
+            using const_iterator = NeighborsIterator;
+            using difference_type = ptrdiff_t;
+            using size_type = size_t;
+            using value_type = T;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
+
+            // data
+            union {
+                glm::vec2 position;
+                particleIndex_t particle;
+            } of = {};
+            bool position_based = false;
+            HashedNeighborhoodSearch *data = nullptr;
+
+            NeighborsIterator begin();
+
+            NeighborsIterator end();
+
+        };
+
+        ParticleCollection *collection = nullptr;
+        float search_radius = 0.0f;
+
+        void find_neighbors();
+
+        Neighbors get_neighbors(size_t particleIndex);
+
+        Neighbors get_neighbors(const glm::vec2 &position);
+
+        void initialize();
 
     private:
+
+        float grid_cell_size = 0.0f;
+
+
         typedef std::pair<int32_t, int32_t> GridKey;
 
         struct GridKeyHash {
-            //static_assert(sizeof(int32_t) * 2 == sizeof(size_t));
-
             size_t operator()(GridKey p) const noexcept {
                 return (size_t((uint32_t) p.first) << 32) | ((uint32_t) p.second);
             }
         };
-
-        /**
-         * Can be an arbitrary value, but it is recommended to set it to 3 times the particle size.
-         */
-        float gridCellSize;
 
         /**
          * Maps the Grid cell to its containing particles
@@ -56,14 +106,16 @@ namespace FluidSolver {
 
         GridKey GetGridCellByParticleID(particleIndex_t particleIndex);
 
-        GridKey GetGridCellByPosition(glm::vec2 &position);
+        GridKey GetGridCellByPosition(const glm::vec2 &position);
 
-        void CreateGridEntryIfNecessary(GridKey &key);
+        void CreateGridEntryIfNecessary(const GridKey &key);
 
-
+        void UpdateGrid();
 
 
     };
+
+
 }
 
 #endif //FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP

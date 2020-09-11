@@ -44,6 +44,7 @@ namespace FluidSolver {
      *      void find_neighbors();
      *      void get_neighbors(size_t particleIndex);
      *      void get_neighbors(const glm::vec2 &position);
+     *      void initialize();
      *
      */
     template<typename Kernel, typename NeighborhoodSearch>
