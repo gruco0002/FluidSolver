@@ -11,10 +11,6 @@ endif ()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-if (MINGW)
-    set(CMKAE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -pthread")
-endif ()
-
 # include directories
 
 include_directories(src)

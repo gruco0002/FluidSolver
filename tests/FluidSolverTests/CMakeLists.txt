@@ -6,5 +6,5 @@ set(FluidSolverTests_SOURCE_FILES
 
 add_executable(runFluidSolverTests ${FluidSolverTests_SOURCE_FILES})
 
-target_link_libraries(runFluidSolverTests gtest gtest_main gmock)
+target_link_libraries(runFluidSolverTests PRIVATE GTest::gmock GTest::gtest GTest::gmock_main GTest::gtest_main)
 target_link_libraries(runFluidSolverTests FluidSolver)

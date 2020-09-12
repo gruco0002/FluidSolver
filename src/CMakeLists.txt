@@ -1,10 +1,6 @@
 # Add engine
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
-# add imgui
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libraries/imgui)
-
-
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
     find_package(OpenMP REQUIRED)
@@ -45,6 +41,14 @@ if (UNIX AND NOT APPLE)
     set(FLUIDSOLVER_SYSTEM_LIBS pthread OpenMP::OpenMP_CXX)
 
 endif ()
+
+
+find_package(imgui CONFIG REQUIRED)
+find_package(implot CONFIG REQUIRED)
+find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
+find_package(cxxopts CONFIG REQUIRED)
+
+  
 
 
 # include directories
@@ -156,4 +160,10 @@ set(FLUID_SOLVER_SOURCE_FILES
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
-target_link_libraries(FluidSolver PUBLIC ${FLUIDSOLVER_SYSTEM_LIBS} ENGINE IMGUI)
+target_link_libraries(FluidSolver PUBLIC ${FLUIDSOLVER_SYSTEM_LIBS} ENGINE)
+target_link_libraries(FluidSolver PUBLIC imgui::imgui)
+target_link_libraries(FluidSolver PUBLIC implot::implot)
+target_include_directories(FluidSolver PUBLIC ${LIBMORTON_INCLUDE_DIRS})
+target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
+
+
