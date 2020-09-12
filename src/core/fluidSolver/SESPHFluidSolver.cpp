@@ -4,13 +4,13 @@
 
 namespace FluidSolver {
 
-    float SESPHFluidSolver::ComputePressure(uint32_t particleIndex) {
+    float SESPHFluidSolver::ComputePressure(pIndex_t particleIndex) {
         float density = collection->get<ParticleData>(particleIndex).density;
         float pressure = settings.StiffnessK * (density / parameters.rest_density - 1.0f);
         return std::max(pressure, 0.0f);
     }
 
-    float SESPHFluidSolver::ComputeDensity(uint32_t particleIndex) {
+    float SESPHFluidSolver::ComputeDensity(pIndex_t particleIndex) {
         const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
 
         float density = 0.0f;
@@ -27,7 +27,7 @@ namespace FluidSolver {
         return density;
     }
 
-    glm::vec2 SESPHFluidSolver::ComputeNonPressureAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputeNonPressureAcceleration(pIndex_t particleIndex) {
         glm::vec2 nonPressureAcceleration = glm::vec2(0.0f);
 
         // Gravity
@@ -39,7 +39,7 @@ namespace FluidSolver {
         return nonPressureAcceleration;
     }
 
-    glm::vec2 SESPHFluidSolver::ComputePressureAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputePressureAcceleration(pIndex_t particleIndex) {
         const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
         const ParticleData &pData = collection->get<ParticleData>(particleIndex);
         const float &density = pData.density;
@@ -82,7 +82,7 @@ namespace FluidSolver {
         return pressureAcceleration;
     }
 
-    glm::vec2 SESPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
+    glm::vec2 SESPHFluidSolver::ComputeViscosityAcceleration(pIndex_t particleIndex) {
         const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
         const glm::vec2 &velocity = collection->get<MovementData>(particleIndex).velocity;
 
@@ -133,7 +133,7 @@ namespace FluidSolver {
 
         // calculate density and pressure for all particles
 #pragma omp parallel for
-        for (int64_t i = 0; i < collection->size(); i++) {
+        for (pIndex_t i = 0; i < collection->size(); i++) {
             auto type = collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -151,7 +151,7 @@ namespace FluidSolver {
 
         // compute non pressure accelerations and pressure accelerations for all particles
 #pragma omp parallel for
-        for (int64_t i = 0; i < collection->size(); i++) {
+        for (pIndex_t i = 0; i < collection->size(); i++) {
             auto type = collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.
@@ -168,7 +168,7 @@ namespace FluidSolver {
 
         // update velocity and position of all particles
 #pragma omp parallel for
-        for (int64_t i = 0; i < collection->size(); i++) {
+        for (pIndex_t i = 0; i < collection->size(); i++) {
             auto type = collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 continue; // don't calculate unnecessary values for the boundary particles.

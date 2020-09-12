@@ -4,6 +4,10 @@
 #include <iostream>
 
 #ifndef NDEBUG
+    #define USE_FLUID_ASSERT
+#endif
+
+#ifdef USE_FLUID_ASSERT
     #define FLUID_ASSERT(condition)                                     \
         {                                                               \
             if (!(condition)) {                                         \

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include "IISPHFluidSolver.hpp"
 
-void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::CalculateDensity(pIndex_t particleIndex) {
     auto particleType = collection->get<ParticleInfo>(particleIndex).type;
     if (particleType == ParticleTypeBoundary) {
         return; // don't calculate density for the boundary particles
@@ -24,7 +24,7 @@ void FluidSolver::IISPHFluidSolver::CalculateDensity(uint32_t particleIndex) {
     collection->get<ParticleData>(particleIndex).density = density;
 }
 
-void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredictedVelocity(pIndex_t particleIndex) {
     auto type = collection->get<ParticleInfo>(particleIndex).type;
     glm::vec2 &nonPressureAcc = collection->get<ExternalForces>(particleIndex).non_pressure_acceleration;
     const glm::vec2 &velocity = collection->get<MovementData>(particleIndex).velocity;
@@ -44,7 +44,7 @@ void FluidSolver::IISPHFluidSolver::CalculateNonPressureAccelerationAndPredicted
 
 }
 
-glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t particleIndex) {
+glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(pIndex_t particleIndex) {
     const MovementData &mData = collection->get<MovementData>(particleIndex);
     const glm::vec2 &position = mData.position;
     const glm::vec2 &velocity = mData.velocity;
@@ -85,7 +85,7 @@ glm::vec2 FluidSolver::IISPHFluidSolver::ComputeViscosityAcceleration(uint32_t p
 }
 
 
-void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(pIndex_t particleIndex) {
     float particleDensity = collection->get<ParticleData>(particleIndex).density;
 
 
@@ -117,7 +117,7 @@ void FluidSolver::IISPHFluidSolver::ComputeSourceTerm(uint32_t particleIndex) {
 
 }
 
-void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(pIndex_t particleIndex) {
     float sum = 0.0f;
     const glm::vec2 &particlePosition = collection->get<MovementData>(particleIndex).position;
     float particleMass = collection->get<ParticleData>(particleIndex).mass;
@@ -184,11 +184,11 @@ void FluidSolver::IISPHFluidSolver::ComputeDiagonalElement(uint32_t particleInde
     collection->get<IISPHParticleData>(particleIndex).diagonal_element = diagonalElement;
 }
 
-void FluidSolver::IISPHFluidSolver::InitializePressure(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::InitializePressure(pIndex_t particleIndex) {
     collection->get<ParticleData>(particleIndex).pressure = 0.0f;
 }
 
-void FluidSolver::IISPHFluidSolver::IntegrateParticle(uint32_t particleIndex) {
+void FluidSolver::IISPHFluidSolver::IntegrateParticle(pIndex_t particleIndex) {
     auto type = collection->get<ParticleInfo>(particleIndex).type;
     if (type == ParticleTypeBoundary) {
         return; // don't calculate unnecessary values for the boundary particles.
@@ -220,7 +220,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         // first loop: compute pressure acceleration
 #pragma omp parallel for
-        for (int64_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
+        for (pIndex_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
             auto particleType = collection->get<ParticleInfo>(particleIndex).type;
             if (particleType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
@@ -260,7 +260,7 @@ void FluidSolver::IISPHFluidSolver::ComputePressure() {
 
         // second loop
 #pragma omp parallel for
-        for (int64_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
+        for (pIndex_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
             auto particleType = collection->get<ParticleInfo>(particleIndex).type;
             if (particleType == ParticleTypeDead)
                 continue; // we do not want to process dead particles
@@ -368,7 +368,7 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
 
     // calculating density and non pressure accelerations
 #pragma omp parallel for
-    for (int64_t i = 0; i < collection->size(); i++) {
+    for (pIndex_t i = 0; i < collection->size(); i++) {
         auto type = collection->get<ParticleInfo>(i).type;
         if (type == ParticleTypeDead)
             continue; // we do not want to process dead particles
@@ -378,8 +378,8 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
     }
 
     // compute source term, diagonal element and initialize pressure
-#pragma  omp parallel for
-    for (int64_t i = 0; i < collection->size(); i++) {
+#pragma omp parallel for
+    for (pIndex_t i = 0; i < collection->size(); i++) {
         auto type = collection->get<ParticleInfo>(i).type;
         if (type == ParticleTypeDead)
             continue; // we do not want to process dead particles
@@ -396,7 +396,7 @@ void FluidSolver::IISPHFluidSolver::execute_simulation_step(float timestep) {
 
     // update velocity and position of all particles
 #pragma omp parallel for
-    for (int64_t i = 0; i < collection->size(); i++) {
+    for (pIndex_t i = 0; i < collection->size(); i++) {
         IntegrateParticle(i);
     }
 }

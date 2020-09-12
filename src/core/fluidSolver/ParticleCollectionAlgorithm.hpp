@@ -11,7 +11,7 @@ namespace FluidSolver {
 
         class Sort {
         public:
-            using key_function_t = std::function<uint64_t(ParticleCollection &collection, const size_t)>;
+            using key_function_t = std::function<uint64_t(ParticleCollection &collection, const pIndex_t)>;
 
 
             struct SortInfo {

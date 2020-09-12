@@ -1,5 +1,5 @@
 #include "QuadraticNeighborhoodSearchDynamicAllocated.hpp"
-#include "core/FluidAssert.hpp"
+
 
 void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::find_neighbors() {
     FLUID_ASSERT(collection != nullptr);
@@ -33,7 +33,7 @@ void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::find_neighbors() 
 }
 
 FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::Neighbors
-FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(size_t particleIndex) {
+FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(particleIndex_t particleIndex) {
     Neighbors n;
     n.position_based = false;
     n.data = this;
@@ -42,7 +42,7 @@ FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(size_t p
 }
 
 FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::Neighbors
-FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(const glm::vec2 &position) {
+FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(const vec2 &position) {
     Neighbors n;
     n.position_based = true;
     n.data = this;

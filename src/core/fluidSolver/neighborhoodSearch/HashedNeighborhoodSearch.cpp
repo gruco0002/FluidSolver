@@ -1,5 +1,5 @@
 #include "HashedNeighborhoodSearch.hpp"
-#include "../../FluidAssert.hpp"
+
 
 namespace FluidSolver {
 
@@ -57,7 +57,7 @@ namespace FluidSolver {
         }
     }
 
-    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(size_t particleIndex) {
+    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(pIndex_t particleIndex) {
         Neighbors n;
         n.position_based = false;
         n.data = this;

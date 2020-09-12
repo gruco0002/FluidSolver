@@ -3,7 +3,7 @@
 void FluidSolver::DeathBox::ModifySimulation(FluidSolver::IParticleCollection *collection, SimulationInfo &info) {
 
     #pragma omp parallel for
-    for (int64_t  i = 0; i < collection->GetSize(); i++) {
+    for (pIndex_t  i = 0; i < collection->GetSize(); i++) {
         auto type = collection->GetParticleType(i);
         if (type == ParticleTypeBoundary) {
             continue; // don't calculate unnecessary values for the boundary particles.

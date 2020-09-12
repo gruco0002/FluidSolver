@@ -2,7 +2,7 @@
 #define FLUIDSOLVER_PARTICLE_HPP
 
 
-#include <engine/libraries/glm/glm.hpp>
+#include <core/FluidInclude.hpp>
 
 namespace FluidSolver {
 
@@ -13,24 +13,24 @@ namespace FluidSolver {
     };
 
     struct MovementData {
-        glm::vec2 position;
-        glm::vec2 velocity;
-        glm::vec2 acceleration;
+        vec2 position;
+        vec2 velocity;
+        vec2 acceleration;
     };
 
     struct ParticleData {
-        float mass;
-        float pressure;
-        float density;
+        pFloat mass;
+        pFloat pressure;
+        pFloat density;
     };
 
     struct ParticleInfo {
-        uint32_t tag;
+        pTag_t tag;
         uint8_t type;
     };
 
-    struct ExternalForces{
-        glm::vec2 non_pressure_acceleration;
+    struct ExternalForces {
+        vec2 non_pressure_acceleration;
     };
 
 }

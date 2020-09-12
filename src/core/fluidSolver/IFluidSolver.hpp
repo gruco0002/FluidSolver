@@ -2,19 +2,19 @@
 #define FLUIDSOLVER_IFLUIDSOLVER_HPP
 
 #include "ParticleCollection.hpp"
-#include "core/FluidAssert.hpp"
+#include "core/FluidInclude.hpp"
 
 namespace FluidSolver {
 
     class IFluidSolverBase {
     public:
         struct SimulationParameters {
-            float rest_density = 1.0f;
-            float gravity = 9.81f;
-            float particle_size = 1.0f;
+            pFloat rest_density = 1.0f;
+            pFloat gravity = 9.81f;
+            pFloat particle_size = 1.0f;
         } parameters;
 
-        virtual void execute_simulation_step(float timestep) = 0;
+        virtual void execute_simulation_step(pFloat timestep) = 0;
 
         virtual void initialize() = 0;
 

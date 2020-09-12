@@ -72,7 +72,7 @@ ParticleVertexArray::~ParticleVertexArray() {
     selectionData.resize(size);
 
 #pragma omp parallel for
-    for (int64_t particleIndex = 0; particleIndex < size; particleIndex++) {
+    for (pIndex_t particleIndex = 0; particleIndex < size; particleIndex++) {
         bool selected = particleSelection->IsParticleSelected(particleIndex, particleCollection);
         selectionData[particleIndex] = selected ? 1 : 0;
     }

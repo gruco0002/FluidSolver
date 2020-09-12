@@ -11,30 +11,30 @@ namespace FluidSolver {
     class SESPHFluidSolver : public IFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> {
 
     public:
-        void execute_simulation_step(float timestep) override;
+        void execute_simulation_step(pFloat timestep) override;
 
     private:
     public:
         void initialize() override;
 
     private:
-        float current_timestep = 0.0f;
+        pFloat current_timestep = 0.0f;
 
-        float ComputePressure(uint32_t particleIndex);
+        pFloat ComputePressure(pIndex_t particleIndex);
 
-        float ComputeDensity(uint32_t particleIndex);
+        pFloat ComputeDensity(pIndex_t particleIndex);
 
-        glm::vec2 ComputeNonPressureAcceleration(uint32_t particleIndex);
+        vec2 ComputeNonPressureAcceleration(pIndex_t particleIndex);
 
-        glm::vec2 ComputePressureAcceleration(uint32_t particleIndex);
+        vec2 ComputePressureAcceleration(pIndex_t particleIndex);
 
-        glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
+        vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
 
 
     public:
         struct SESPHSettings {
-            float StiffnessK = 100000.0f;
-            float Viscosity = 5.0f;
+            pFloat StiffnessK = 100000.0f;
+            pFloat Viscosity = 5.0f;
         } settings;
 
 

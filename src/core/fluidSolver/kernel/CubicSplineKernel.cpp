@@ -2,7 +2,7 @@
 #include "CubicSplineKernel.hpp"
 #include <limits>
 
-float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position) const {
+float FluidSolver::CubicSplineKernel::GetKernelValue(const glm::vec2 &position) const {
     float h = kernel_support / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
@@ -20,7 +20,7 @@ float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 position) const {
 
 }
 
-glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 position) const {
+glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(const glm::vec2 &position) const {
     float h = kernel_support / 2.0f;
     float alpha = 5.0f / (14.0f * FS_PI * std::pow(h, 2.0f));
     float q = glm::length(position) / h;
@@ -45,16 +45,19 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 pos
 }
 
 
-float FluidSolver::CubicSplineKernel::GetKernelValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+float
+FluidSolver::CubicSplineKernel::GetKernelValue(const glm::vec2 &neighborPosition, const glm::vec2 &position) const {
     return this->GetKernelValue(position - neighborPosition);
 }
 
 glm::vec2
-FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+FluidSolver::CubicSplineKernel::GetKernelDerivativeValue(const glm::vec2 &neighborPosition,
+                                                         const glm::vec2 &position) const {
     return this->GetKernelDerivativeValue(position - neighborPosition);
 }
 
 glm::vec2
-FluidSolver::CubicSplineKernel::GetKernelDerivativeReversedValue(glm::vec2 neighborPosition, glm::vec2 position) const {
+FluidSolver::CubicSplineKernel::GetKernelDerivativeReversedValue(const glm::vec2 &neighborPosition,
+                                                                 const glm::vec2 &position) const {
     return this->GetKernelDerivativeValue(neighborPosition, position) * -1.0f;
 }

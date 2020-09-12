@@ -12,46 +12,46 @@ namespace FluidSolver {
     public:
         void initialize() override;
 
-        void execute_simulation_step(float timestep) override;
+        void execute_simulation_step(pFloat timestep) override;
 
     private:
 
-        void CalculateDensity(uint32_t particleIndex);
+        void CalculateDensity(pIndex_t particleIndex);
 
-        void CalculateNonPressureAccelerationAndPredictedVelocity(uint32_t particleIndex);
+        void CalculateNonPressureAccelerationAndPredictedVelocity(pIndex_t particleIndex);
 
-        glm::vec2 ComputeViscosityAcceleration(uint32_t particleIndex);
+        glm::vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
 
-        void ComputeSourceTerm(uint32_t particleIndex);
+        void ComputeSourceTerm(pIndex_t particleIndex);
 
-        void ComputeDiagonalElement(uint32_t particleIndex);
+        void ComputeDiagonalElement(pIndex_t particleIndex);
 
-        void InitializePressure(uint32_t particleIndex);
+        void InitializePressure(pIndex_t particleIndex);
 
-        void IntegrateParticle(uint32_t particleIndex);
+        void IntegrateParticle(pIndex_t particleIndex);
 
         void ComputePressure();
 
-        float current_timestep = 0.0f;
+        pFloat current_timestep = 0.0f;
 
     public:
 
         struct IISPHSettings {
-            float MaxDensityErrorAllowed = 0.001f;
+            pFloat MaxDensityErrorAllowed = 0.001f;
 
             size_t MinNumberOfIterations = 2;
             size_t MaxNumberOfIterations = 100;
 
-            float Omega = 0.5f;
-            float Gamma = 0.7f;
+            pFloat Omega = 0.5f;
+            pFloat Gamma = 0.7f;
 
-            float Viscosity = 5.0f;
+            pFloat Viscosity = 5.0f;
         } settings;
 
         struct IISPHParticleData{
-            glm::vec2 predicted_velocity;
-            float source_term;
-            float diagonal_element;
+            vec2 predicted_velocity;
+            pFloat source_term;
+            pFloat diagonal_element;
         };
 
        static void adapt_collection(ParticleCollection &collection);

@@ -66,7 +66,7 @@ bool FluidSolver::SpawnArea::IsColliding(glm::vec2 position, IParticleCollection
 
     bool hasCollision = false;
     #pragma omp parallel for
-    for (int64_t  i = 0; i < collection->GetSize(); i++) {
+    for (pIndex_t  i = 0; i < collection->GetSize(); i++) {
         auto type = collection->GetParticleType(i);
         if (type == ParticleTypeDead) {
             continue; // don*t calculate unnecessary values for dead particles.

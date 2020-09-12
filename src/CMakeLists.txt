@@ -7,8 +7,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libraries/imgui)
 
 # Setting linker flags and library stuff for the different platforms
 if (WIN32)
-    #find_package(OpenMP REQUIRED)
-    #set(FLUIDSOLVER_SYSTEM_LIBS OpenMP::OpenMP_CXX)
+    find_package(OpenMP REQUIRED)
+    set(FLUIDSOLVER_SYSTEM_LIBS OpenMP::OpenMP_CXX)
 endif ()
 
 if (APPLE)
@@ -152,7 +152,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/statistics/Statistics.hpp
         core/statistics/ParticleStatistics.cpp
         core/statistics/ParticleStatistics.hpp
-        )
+        core/FluidTypes.hpp core/FluidInclude.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})

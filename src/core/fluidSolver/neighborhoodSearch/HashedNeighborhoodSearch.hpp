@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include "../ParticleCollection.hpp"
+#include "../../FluidInclude.hpp"
 
 namespace FluidSolver {
 
@@ -13,7 +14,7 @@ namespace FluidSolver {
 
 
     public:
-        using particleIndex_t = size_t;
+        using particleIndex_t = pIndex_t ;
         using particleAmount_t = uint16_t;
 
 
@@ -22,7 +23,7 @@ namespace FluidSolver {
         struct NeighborsIterator {
 
             const Neighbors *data;
-            size_t current;
+            particleIndex_t current;
 
             bool operator==(const NeighborsIterator &other) const;
 
@@ -51,7 +52,7 @@ namespace FluidSolver {
 
             // data
             union {
-                glm::vec2 position;
+                vec2 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -64,19 +65,19 @@ namespace FluidSolver {
         };
 
         ParticleCollection *collection = nullptr;
-        float search_radius = 0.0f;
+        pFloat search_radius = 0.0f;
 
         void find_neighbors();
 
-        Neighbors get_neighbors(size_t particleIndex);
+        Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const glm::vec2 &position);
+        Neighbors get_neighbors(const vec2 &position);
 
         void initialize();
 
     private:
 
-        float grid_cell_size = 0.0f;
+        pFloat grid_cell_size = 0.0f;
 
 
         typedef std::pair<int32_t, int32_t> GridKey;
@@ -106,7 +107,7 @@ namespace FluidSolver {
 
         GridKey GetGridCellByParticleID(particleIndex_t particleIndex);
 
-        GridKey GetGridCellByPosition(const glm::vec2 &position);
+        GridKey GetGridCellByPosition(const vec2 &position);
 
         void CreateGridEntryIfNecessary(const GridKey &key);
 

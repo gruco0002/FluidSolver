@@ -40,7 +40,7 @@ void FluidSolver::ContinousVisualizer::Render() {
 
     // calculate color for each pixel
 #pragma omp parallel for
-    for (int64_t i = 0; i < Width * Height; i++) {
+    for (pIndex_t i = 0; i < Width * Height; i++) {
         size_t x = i % Width;
         size_t y = (i - (i % Width)) / Width;
 
