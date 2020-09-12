@@ -140,3 +140,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+vcpkg_installed

@@ -1,7 +1,7 @@
 #include "MainUi.hpp"
 
 #include <uiVersion/FluidSolverWindow.hpp>
-#include <imguiHelper.hpp>
+#include "../ImguiHelper.hpp"
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
@@ -554,7 +554,7 @@ void FluidUI::MainUi::ImageRecorder() {
                          ImGuiInputTextFlags_ReadOnly);
 
 
-        if (!window->saveFrames && ImGui::Button("Choose Location")) {
+     /*   if (!window->saveFrames && ImGui::Button("Choose Location")) {
 
             std::string path = window->imageFilepath;
             if (path.empty()) path = ".";
@@ -580,7 +580,7 @@ void FluidUI::MainUi::ImageRecorder() {
             }
             // close
             ImGuiFileDialog::Instance()->CloseDialog("ImgLocationKey");
-        }
+        }*/
     }
     ImGui::End();
 }

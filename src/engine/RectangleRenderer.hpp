@@ -1,7 +1,7 @@
 #ifndef ENGINE_RECTANGLERENDERER_HPP
 #define ENGINE_RECTANGLERENDERER_HPP
 
-#include <libraries/glm/glm.hpp>
+#include "glm/glm.hpp"
 #include "graphics/Texture2D.hpp"
 #include "graphics/Shader.hpp"
 #include "graphics/buffer/VertexBuffer.hpp"

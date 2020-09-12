@@ -1,6 +1,6 @@
 #include "../EngineException.hpp"
 #include "TextRenderer.hpp"
-#include <libraries/glm/gtc/matrix_transform.hpp>
+#include "glm/gtc/matrix_transform.hpp"
 #include <algorithm>
 
 

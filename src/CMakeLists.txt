@@ -156,7 +156,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/statistics/Statistics.hpp
         core/statistics/ParticleStatistics.cpp
         core/statistics/ParticleStatistics.hpp
-        core/FluidTypes.hpp core/FluidInclude.hpp)
+        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})

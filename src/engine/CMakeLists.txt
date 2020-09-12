@@ -42,6 +42,7 @@ endif ()
 
 # packages
 find_path(STB_INCLUDE_DIRS "stb.h")
+
 find_package(glm CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
@@ -51,15 +52,11 @@ include_directories(./)
   
 # source files
 set(ENGINE_SOURCE_FILES 
-Window.cpp Window.hpp EventDelegate.hpp EngineException.cpp EngineException.hpp graphics/Texture2D.cpp graphics/Texture2D.hpp graphics/Texture2DArray.cpp graphics/Texture2DArray.hpp graphics/buffer/UniformBuffer.cpp graphics/buffer/UniformBuffer.hpp libraries/stb/stb_loader.cpp graphics/Framebuffer.cpp graphics/Framebuffer.hpp graphics/buffer/VertexArray.cpp graphics/buffer/VertexArray.hpp graphics/buffer/VertexBuffer.cpp graphics/buffer/VertexBuffer.hpp graphics/buffer/IndexBuffer.cpp graphics/buffer/IndexBuffer.hpp graphics/buffer/Buffer.cpp graphics/buffer/Buffer.hpp graphics/Shader.cpp graphics/Shader.hpp graphics/Enums.hpp graphics/Enums.cpp
-text/Font.cpp text/Font.hpp text/TextRenderer.cpp text/TextRenderer.hpp RectangleRenderer.cpp RectangleRenderer.hpp )
+Window.cpp Window.hpp EventDelegate.hpp EngineException.cpp EngineException.hpp graphics/Texture2D.cpp graphics/Texture2D.hpp graphics/Texture2DArray.cpp graphics/Texture2DArray.hpp graphics/buffer/UniformBuffer.cpp graphics/buffer/UniformBuffer.hpp graphics/Framebuffer.cpp graphics/Framebuffer.hpp graphics/buffer/VertexArray.cpp graphics/buffer/VertexArray.hpp graphics/buffer/VertexBuffer.cpp graphics/buffer/VertexBuffer.hpp graphics/buffer/IndexBuffer.cpp graphics/buffer/IndexBuffer.hpp graphics/buffer/Buffer.cpp graphics/buffer/Buffer.hpp graphics/Shader.cpp graphics/Shader.hpp graphics/Enums.hpp graphics/Enums.cpp
+text/Font.cpp text/Font.hpp text/TextRenderer.cpp text/TextRenderer.hpp RectangleRenderer.cpp RectangleRenderer.hpp stb_implementation.cpp)
 
 
 # linking
-
 add_library(ENGINE STATIC ${ENGINE_SOURCE_FILES})
-target_link_libraries(ENGINE PUBLIC ${ENGINE_SYSTEM_LIBS})
 target_include_directories(ENGINE PUBLIC ${STB_INCLUDE_DIRS})
-target_link_libraries(ENGINE PUBLIC glm)
-target_link_libraries(ENGINE PUBLIC glad::glad)
-target_link_libraries(ENGINE PUBLIC glfw)
+target_link_libraries(ENGINE PUBLIC ${ENGINE_SYSTEM_LIBS} glm glad::glad glfw)

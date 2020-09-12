@@ -11,7 +11,7 @@
 #include <thread>
 #include <chrono>
 #include <core/timestep/ConstantTimestep.hpp>
-#include <imguiHelper.hpp>
+#include "ImguiHelper.hpp"
 //#include <core/statistics/CachedStatisticCollector.hpp>
 //#include <core/selection/ParticleSelection.hpp>
 //#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
@@ -61,7 +61,7 @@ void FluidSolverWindow::render() {
     ImGuiHelper::PreRender();
 
 
-    auto id = ImGui::DockSpaceOverViewport();
+    //auto id = ImGui::DockSpaceOverViewport();
     // render your GUI
 
     mainUi->Run();

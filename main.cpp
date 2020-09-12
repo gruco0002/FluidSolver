@@ -1,5 +1,5 @@
 #include "uiVersion/FluidSolverWindow.hpp"
-#include "libraries/cxxopts/cxxopts.hpp"
+#include "cxxopts.hpp"
 #include <iostream>
 // #include <FluidSolverConsole.hpp>
 

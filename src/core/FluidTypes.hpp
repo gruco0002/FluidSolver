@@ -2,7 +2,7 @@
 #define FLUIDSOLVER_FLUIDTYPES_HPP
 
 #include <cstdint>
-#include <libraries/glm/glm.hpp>
+#include "glm/glm.hpp"
 
 namespace FluidSolver {
 

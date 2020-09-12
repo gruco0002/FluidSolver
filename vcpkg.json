@@ -1,94 +1,24 @@
 {
-    "name": "gruco0002-FluidSolver",
+    "name": "gruco0002-fluid-solver",
     "version-string": "1.2.0",
     "port-version": 0,
     "homepage": "https://github.com/gruco0002/FluidSolver",
     "description": "A simple 2D SPH Fluid Solver",
     "dependencies": [
-        {
-            "name": "glfw3",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "gtest",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "glad",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "glm",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "stb",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "cxxopts",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
-        {
-            "name": "libmorton",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        },
+        "glfw3",
+        "gtest",
+        "glad",
+        "glm",
+        "stb",
+        "cxxopts",
+        "libmorton",
         {
             "name": "imgui",
             "features": [
-                "core",
-                "opengl3-gl3w-binding"
-            ],
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
+                "opengl3-glad-binding",
+                "glfw-binding"
+            ]
         },
-        {
-            "name": "implot",
-            "platform": {
-                "and": [
-                    "x64",
-                    "static"
-                ]
-            }
-        }
+        "implot"
     ]
 }

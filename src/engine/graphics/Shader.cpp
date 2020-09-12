@@ -1,6 +1,6 @@
 #include "../EngineException.hpp"
 #include "Shader.hpp"
-#include <libraries/glm/gtc/type_ptr.hpp>
+#include "glm/gtc/type_ptr.hpp"
 #include <fstream>
 #include <sstream>
 #include <algorithm>

@@ -2,10 +2,10 @@
 #include <fstream>
 #include <iostream>
 #include "Texture2D.hpp"
-#include "libraries/stb/stb_image.h"
+#include "stb_image.h"
 #include "Framebuffer.hpp"
 
-#include "libraries/stb/stb_image_write.h"
+#include "stb_image_write.h"
 
 
 void Engine::Graphics::Texture2D::LoadFromFile(std::string filepath, Engine::Graphics::Texture2DSettings *settings) {

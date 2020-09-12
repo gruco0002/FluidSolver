@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <libraries/glm/glm.hpp>
+#include "glm/glm.hpp"
 #include <engine/graphics/buffer/Buffer.hpp>
 #include "Texture2D.hpp"
 #include "Texture2DArray.hpp"
