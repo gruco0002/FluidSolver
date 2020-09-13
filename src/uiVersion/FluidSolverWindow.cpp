@@ -167,14 +167,16 @@ void FluidSolverWindow::load() {
 
 void FluidSolverWindow::setupSimulation() {
 
-    this->scenario = new FluidSolver::SimpleBoxScenario();
+    this->scenario = Scenarios[0];
 
     FluidSolver::Simulation::SimulationParameters parameters;
 
+    auto data = scenario->create_data();
+
     // set particle size and timestep
     parameters.timestep = new FluidSolver::ConstantTimestep(0.001f);
-    parameters.particle_size = scenario->GetParticleSize();
-    parameters.rest_density = 1.0f;
+    parameters.particle_size = data->particle_size;
+    parameters.rest_density = data->rest_density;
     parameters.gravity = 9.81f;
 
     auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
@@ -184,7 +186,7 @@ void FluidSolverWindow::setupSimulation() {
     parameters.fluid_solver = isphFluidSolver;
 
     // set up scenario data
-    auto particleCollection = scenario->GenerateScenario(parameters.rest_density);
+    auto particleCollection = &data->collection;
     parameters.collection = particleCollection;
 
 
@@ -204,11 +206,13 @@ void FluidSolverWindow::resetData() {
 
     FluidSolver::Simulation::SimulationParameters parameters = simulation->parameters;
 
+    auto data = scenario->create_data();
     // set particle size
-    parameters.particle_size = scenario->GetParticleSize();
+    parameters.particle_size = data->particle_size;
+    parameters.rest_density = data->rest_density;
 
     // set up scenario data, delete old particle collection
-    auto particleCollection = scenario->GenerateScenario(parameters.rest_density);
+    auto particleCollection = &data->collection;
     delete parameters.collection;
     parameters.collection = particleCollection;
 
@@ -372,8 +376,9 @@ void FluidSolverWindow::UpdateVisualizerViewport() {
     if (scenario == nullptr)
         return;
 
-    int particlesX = scenario->GetParticleCountX();
-    int particlesY = scenario->GetParticleCountY();
+    // TODO: setup view with script
+    int particlesX = 15;
+    int particlesY = 15;
 
     float width = (float) particlesX;
     float height = (float) particlesY;

@@ -1,0 +1,29 @@
+/*
+Basic scenario
+*/
+
+def getParticleSize() {
+    return 1.0;
+}
+
+def getRestDensity() {
+    return 1.0;
+}
+
+def getMass() {
+    return getRestDensity() * (getParticleSize() * getParticleSize());
+}
+
+def loadParticles() {
+
+    var p = Particle();
+
+    p.x = 5.0;
+    p.y = 5.0;
+    p.type = 0;
+    p.mass = getMass();
+    p.density = getRestDensity();
+
+    var index = addParticle(p);
+
+}

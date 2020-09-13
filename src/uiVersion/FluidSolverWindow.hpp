@@ -18,14 +18,14 @@
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
 
-#include <core/basicScenarios/Scenario.hpp>
+#include <core/scenario/Scenario.hpp>
 //#include <core/basicScenarios/HugeDamScenario.hpp>
-#include <core/basicScenarios/SimpleBoxScenario.hpp>
+//#include <core/basicScenarios/SimpleBoxScenario.hpp>
 //#include <core/basicScenarios/MultipleHoleScenario.hpp>
 //#include <core/basicScenarios/BoxWithHoleScenario.hpp>
 //#include <core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp>
 //#include <core/basicScenarios/SimpleDamScenario.hpp>
-#include <core/basicScenarios/BoundaryTestScenario.hpp>
+//#include <core/basicScenarios/BoundaryTestScenario.hpp>
 //#include <core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp>
 #include <uiVersion/userInterface/MainUi.hpp>
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
@@ -58,8 +58,7 @@ public:
 
 
     std::vector<FluidSolver::Scenario *> Scenarios = std::vector<FluidSolver::Scenario *>({
-                                                                                                  new FluidSolver::SimpleBoxScenario(),
-                                                                                                  new FluidSolver::BoundaryTestScenario(),
+                                                                                                  new FluidSolver::Scenario("../scenarios/test.chai"),
                                                                                           }
 
     );

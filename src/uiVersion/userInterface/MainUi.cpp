@@ -80,7 +80,7 @@ void FluidUI::MainUi::Scenario() {
         return;
     if (ImGui::Begin("Scenario", &viewScenarioControl)) {
 
-        ImGui::Text("Current Scenario:");
+      /*  ImGui::Text("Current Scenario:");
         ImGui::Text("Name: %s", window->GetScenario()->GetName().c_str());
         ImGui::Text("Particle Size: %f", window->GetScenario()->GetParticleSize());
         ImGui::Separator();
@@ -111,7 +111,7 @@ void FluidUI::MainUi::Scenario() {
             i++;
         }
 
-        ImGui::ListBox("Scenarios", &Scenario_selectedScenario, scenarios.data(), scenarios.size());
+        ImGui::ListBox("Scenarios", &Scenario_selectedScenario, scenarios.data(), scenarios.size());*/
     }
     ImGui::End();
 }

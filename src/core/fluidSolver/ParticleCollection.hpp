@@ -106,6 +106,9 @@ namespace FluidSolver {
             }
         }
 
+        ParticleCollection() = default;
+
+        ParticleCollection(const ParticleCollection&) = delete;
     };
 }
 

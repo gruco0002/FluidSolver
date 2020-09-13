@@ -5,6 +5,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 if (WIN32)
     find_package(OpenMP REQUIRED)
     set(FLUIDSOLVER_SYSTEM_LIBS OpenMP::OpenMP_CXX)
+    add_definitions(/bigobj)
 endif ()
 
 if (APPLE)
@@ -47,6 +48,8 @@ find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(cxxopts CONFIG REQUIRED)
+find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
+
 
   
 
@@ -86,16 +89,16 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
-        core/basicScenarios/Scenario.hpp
-        core/basicScenarios/Scenario.cpp
-        core/basicScenarios/BoundaryTestScenario.cpp
-        core/basicScenarios/BoundaryTestScenario.hpp
+       # core/basicScenarios/Scenario.hpp
+       # core/basicScenarios/Scenario.cpp
+       # core/basicScenarios/BoundaryTestScenario.cpp
+       # core/basicScenarios/BoundaryTestScenario.hpp
        # core/basicScenarios/SimpleDamScenario.cpp
        # core/basicScenarios/SimpleDamScenario.hpp
        # core/basicScenarios/HugeDamScenario.cpp
        # core/basicScenarios/HugeDamScenario.hpp
-        core/basicScenarios/SimpleBoxScenario.cpp
-        core/basicScenarios/SimpleBoxScenario.hpp
+       # core/basicScenarios/SimpleBoxScenario.cpp
+       # core/basicScenarios/SimpleBoxScenario.hpp
        # FluidSolverConsole.cpp
        # FluidSolverConsole.hpp
        # core/basicScenarios/BoxWithHoleScenario.cpp
@@ -156,7 +159,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/statistics/Statistics.hpp
         core/statistics/ParticleStatistics.cpp
         core/statistics/ParticleStatistics.hpp
-        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp)
+        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp )
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
@@ -165,5 +168,6 @@ target_link_libraries(FluidSolver PUBLIC imgui::imgui)
 target_link_libraries(FluidSolver PUBLIC implot::implot)
 target_include_directories(FluidSolver PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
+target_include_directories(FluidSolver PUBLIC ${CHAISCRIPT_INCLUDE_DIRS})
 
 
