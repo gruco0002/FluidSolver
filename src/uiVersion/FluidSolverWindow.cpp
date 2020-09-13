@@ -1,57 +1,31 @@
 #include "FluidSolverWindow.hpp"
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
-
-//#include <core/fluidSolver/kernel/CubicSplineKernel.hpp>
-//#include <core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <core/fluidSolver/IISPHFluidSolver.hpp>
-#include <thread>
-#include <chrono>
-#include <core/timestep/ConstantTimestep.hpp>
+#include <core/timestep/DynamicCFLTimestep.hpp>
 #include "ImguiHelper.hpp"
-//#include <core/statistics/CachedStatisticCollector.hpp>
-//#include <core/selection/ParticleSelection.hpp>
-//#include <core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp>
-#include <core/FluidSolverException.hpp>
 
+FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
+
+}
+
+void FluidSolverWindow::load() {
+    ImGuiHelper::Init(this->GetWindowHandler());
+    set_default_simulation_parameters();
+    set_visualizer_parameters();
+    load_scenario("../scenarios/test.chai");
+}
+
+void FluidSolverWindow::unload() {
+    delete scenario_data;
+    delete scenario;
+    ImGuiHelper::Uninit();
+}
 
 void FluidSolverWindow::render() {
 
-    if (this->Pause) {
-        // sleep some time to save resources
-        std::this_thread::sleep_for(std::chrono::milliseconds(30));
-    }
-
-
-    // particle simulation
-    bool simulationStepHappened = false;
-    if (simulation != nullptr) {
-        if (!this->Pause) {
-            accumulatedSimulationTime += GetLastFrameTime() * RealTimeSpeed;
-
-            simulation->execute_simulation_step();
-            simulationStepHappened = true;
-
-        } else {
-            accumulatedSimulationTime = 0.0f;
-        }
-    }
-
-
-    // visualize the simulation
-    if (simulation != nullptr) {
-        simulation->visualize();
-    }
-
-    // force pending opengl stuff to finish
+    simulation.visualize();
     glFlush();
-
-    // save as image
-    if (simulationStepHappened)
-        saveAsImage();
 
     // render to screen
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -60,492 +34,94 @@ void FluidSolverWindow::render() {
 
     ImGuiHelper::PreRender();
 
-
-    //auto id = ImGui::DockSpaceOverViewport();
-    // render your GUI
-
-    mainUi->Run();
-
-    ImGui::Begin("Simulation Visualization");
-
-    if (simulation != nullptr) {
-        auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->parameters.visualizer);
-        if (glRenderer != nullptr) {
-            auto tex = glRenderer->GetTexture();
-            // render visualization
-            auto maxRegion = ImGui::GetContentRegionMax();
-            maxRegion.x -= 20.0f;
-            maxRegion.y -= 30.0f;
-            float width = 0.0f;
-            float height = 0.0f;
-            if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
-                // height is too small
-                width = maxRegion.x;
-                height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
-            } else {
-                height = maxRegion.y;
-                width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
-            }
-
-
-            // im gui image location finder trick
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-            if (ImGui::BeginChild("SimView")) {
-
-                bool imageHasFocus = ImGui::IsWindowHovered();
-                auto pos = ImGui::GetWindowPos();
-                auto padding = ImGui::GetStyle().WindowPadding;
-                auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
-                auto windowSize = glm::vec2(width, height);
-                visualizationWindowCoordinates = glm::vec4(windowPosition.x, windowPosition.y, windowSize.x,
-                                                           windowSize.y);
-                mouseInsideVisualization = imageHasFocus;
-
-                ImGui::PushItemWidth(width);
-
-                ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
-
-
-                if (mouseDragStarted) {
-                    // draw selection rectangle
-                    glm::vec2 currentMousePos = glm::vec2((float) this->GetMousePositionX(),
-                                                          (float) this->GetMousePositionY());
-                    ImDrawList *drawList = ImGui::GetWindowDrawList();
-                    drawList->AddRect(ImVec2(mouseDragStart.x, mouseDragStart.y),
-                                      ImVec2(currentMousePos.x, currentMousePos.y), 0xFF0000FF);
-                }
-
-                ImGui::PopItemWidth();
-
-            }
-
-            ImGui::PopStyleVar(3);
-
-            ImGui::EndChild();
-
-        } else {
-            ImGui::Text("No OpenGL compatible visualizer!");
-        }
-    }
-
-    ImGui::End();
-
+    render_visualization_window();
 
     ImGuiHelper::PostRender();
 
 }
 
-FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
+void FluidSolverWindow::load_data() {
+    FLUID_ASSERT(scenario != nullptr)
+    simulation.parameters.collection = nullptr;
+    delete scenario_data;
+    scenario_data = nullptr;
 
+    scenario_data = scenario->create_data();
 
+    simulation.parameters.collection = &scenario_data->collection;
+    simulation.parameters.rest_density = scenario_data->rest_density;
+    simulation.parameters.particle_size = scenario_data->particle_size;
 }
 
-
-void FluidSolverWindow::load() {
-
-    OnKeyPressed.Subscribe([=](int keyCode) { if (keyCode == GLFW_KEY_SPACE)this->Pause = !this->Pause; });
-    OnMouseDown.Subscribe([=](Engine::Window::MouseButton btn) {
-        this->onMouseDown(this->GetMousePositionX(), this->GetMousePositionY(), btn);
-    });
-    OnMouseUp.Subscribe([=](Engine::Window::MouseButton btn) {
-        this->onMouseUp(this->GetMousePositionX(), this->GetMousePositionY(), btn);
-    });
-    OnCursorPositionChanged.Subscribe([=](double x, double y) {
-        this->onMouseMove(this->GetMousePositionX(), this->GetMousePositionY());
-    });
-
-    setupSimulation();
-    setupUI();
-
-    // SETUP IMGUI
-    ImGuiHelper::Init(this->GetWindowHandler());
-
+void FluidSolverWindow::load_scenario(const std::string &filepath) {
+    delete scenario;
+    scenario = nullptr;
+    scenario = new FluidSolver::Scenario(filepath);
+    load_data();
 }
 
-void FluidSolverWindow::setupSimulation() {
-
-    this->scenario = Scenarios[0];
-
-    FluidSolver::Simulation::SimulationParameters parameters;
-
-    auto data = scenario->create_data();
-
-    // set particle size and timestep
-    parameters.timestep = new FluidSolver::ConstantTimestep(0.001f);
-    parameters.particle_size = data->particle_size;
-    parameters.rest_density = data->rest_density;
-    parameters.gravity = 9.81f;
-
-    auto isphFluidSolver = new FluidSolver::IISPHFluidSolver();
-    isphFluidSolver->settings.Omega = 0.5f;
-    isphFluidSolver->settings.Gamma = 0.7f;
-    isphFluidSolver->settings.MaxDensityErrorAllowed = 0.001f;
-    parameters.fluid_solver = isphFluidSolver;
-
-    // set up scenario data
-    auto particleCollection = &data->collection;
-    parameters.collection = particleCollection;
-
-
-    // create particle renderer
-    parameters.visualizer = new ParticleRenderer();
-
-    // reset simulation time
-    accumulatedSimulationTime = 0.0f;
-
-    simulation = new FluidSolver::Simulation();
-    simulation->parameters = parameters;
-    UpdateVisualizerViewport();
+void FluidSolverWindow::set_default_simulation_parameters() {
+    simulation.parameters.fluid_solver = new FluidSolver::IISPHFluidSolver();
+    simulation.parameters.timestep = new FluidSolver::DynamicCFLTimestep();
+    simulation.parameters.gravity = 9.81f;
+    simulation.parameters.visualizer = new ParticleRenderer();
 }
 
+void FluidSolverWindow::render_visualization_window() {
+    ImGui::Begin("Simulation Visualization");
 
-void FluidSolverWindow::resetData() {
-
-    FluidSolver::Simulation::SimulationParameters parameters = simulation->parameters;
-
-    auto data = scenario->create_data();
-    // set particle size
-    parameters.particle_size = data->particle_size;
-    parameters.rest_density = data->rest_density;
-
-    // set up scenario data, delete old particle collection
-    auto particleCollection = &data->collection;
-    delete parameters.collection;
-    parameters.collection = particleCollection;
-
-    simulation->parameters = parameters;
-    UpdateVisualizerViewport();
-
-}
-
-void FluidSolverWindow::onMouseDown(float x, float y, Engine::Window::MouseButton button) {
-    if (simulation == nullptr) return;
-    if (simulation->parameters.visualizer == nullptr) return;
-    if (!mouseInsideVisualization)return;
-
-    isMouseDown = true;
-
-
-    // setting coordinates for the drag start
-    mouseDragStart = glm::vec2(x, y);
-    mouseDragStarted = false;
-
-    // calculating position on image on drag start in simulation space
-    glm::vec2 positionOnImage = glm::vec2(x - visualizationWindowCoordinates.x, y - visualizationWindowCoordinates.y);
-    positionOnImage.x = positionOnImage.x / visualizationWindowCoordinates.z;
-    positionOnImage.y = positionOnImage.y / visualizationWindowCoordinates.w;
-    positionOnImage.x = positionOnImage.x * (float) visualizerRenderTargetWidth;
-    positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
-    positionOnImageInSimSpaceDragStart = simulation->parameters.visualizer->ConvertPixelCoordinateToParticleSpace(
-            (size_t) positionOnImage.x,
-            (size_t) positionOnImage.y);
-
-}
-
-void FluidSolverWindow::onMouseMove(float x, float y) {
-    const float DRAG_START_THRESHOLD_DISTANCE = 3.5f;
-    if (isMouseDown) {
-        glm::vec2 tmp = glm::vec2(x, y);
-        if (glm::length(tmp - mouseDragStart) >= DRAG_START_THRESHOLD_DISTANCE) {
-            mouseDragStarted = true;
-        }
-    }
-}
-
-
-void FluidSolverWindow::onMouseUp(float x, float y, Engine::Window::MouseButton button) {
-    isMouseDown = false;
-
-    if (simulation == nullptr) return;
-    if (simulation->parameters.visualizer == nullptr) return;
-    if (!mouseInsideVisualization)return;
-
-
-    glm::vec2 positionOnImage = glm::vec2(x - visualizationWindowCoordinates.x, y - visualizationWindowCoordinates.y);
-    positionOnImage.x = positionOnImage.x / visualizationWindowCoordinates.z;
-    positionOnImage.y = positionOnImage.y / visualizationWindowCoordinates.w;
-    positionOnImage.x = positionOnImage.x * (float) visualizerRenderTargetWidth;
-    positionOnImage.y = positionOnImage.y * (float) visualizerRenderTargetHeight;
-
-
-    auto pos = simulation->parameters.visualizer->ConvertPixelCoordinateToParticleSpace((size_t) positionOnImage.x,
-                                                                                            (size_t) positionOnImage.y);
-
-    auto selectionType = button == Engine::Window::MouseButton::RightButton ? SelectionType::SelectionTypeDeselect
-                                                                            : SelectionTypeSelect;
-    if (mouseDragStarted) {
-        mouseDragStarted = false;
-        this->SelectParticles(pos, positionOnImageInSimSpaceDragStart, selectionType);
+    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation.parameters.visualizer);
+    if (glRenderer == nullptr) {
+        ImGui::Text("No OpenGL compatible visualizer!");
     } else {
-        this->SelectParticle(pos, selectionType);
-    }
-
-}
-
-
-void FluidSolverWindow::saveAsImage() {
-    if (!saveFrames)
-        return;
-
-    if (saveFramesForSeconds <= 0.0f) {
-        stopRecordingAndresetImageSettings();
-        return;
-    }
-
-    if (simulation == nullptr)
-        return;
-    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation->parameters.visualizer);
-    if (glRenderer == nullptr)
-        return;
-
-    auto tex = glRenderer->GetTexture();
-    if (tex == nullptr)
-        return;
-
-    if (simulation->parameters.timestep == nullptr)
-        return;
-
-    float timestep = simulation->parameters.timestep->getCurrentTimestep();
-    saveFramesForSeconds -= timestep;
-
-    std::string newFilepath =
-            imageFilepath.substr(0, imageFilepath.length() - 4) + std::to_string(imageCounter) + ".png";
-    tex->SaveAsPNG(newFilepath);
-
-    imageCounter++;
-
-}
-
-void FluidSolverWindow::setupUI() {
-
-    mainUi = new FluidUI::MainUi(this);
-
-}
-
-void FluidSolverWindow::SetScenario(FluidSolver::Scenario *scenario) {
-    if (this->scenario == scenario)
-        return;
-    this->scenario = scenario;
-    resetData();
-    UpdateVisualizerViewport();
-}
-
-FluidSolver::Scenario *FluidSolverWindow::GetScenario() {
-    return scenario;
-}
-
-FluidSolver::ITimestep *FluidSolverWindow::GetTimestep() {
-    return simulation->parameters.timestep;
-}
-
-void FluidSolverWindow::SetTimestep(FluidSolver::ITimestep *timestep) {
-    simulation->parameters.timestep = timestep;
-}
-
-float FluidSolverWindow::GetRestDensity() {
-    return simulation->parameters.rest_density;
-}
-
-void FluidSolverWindow::SetRestDensity(float restdensity) {
-    simulation->parameters.rest_density = restdensity;
-}
-
-FluidSolver::IFluidSolverBase *FluidSolverWindow::GetFluidSolver() {
-    return simulation->parameters.fluid_solver;
-}
-
-void FluidSolverWindow::SetFluidSolver(FluidSolver::IFluidSolverBase *solver) {
-    simulation->parameters.fluid_solver = solver;
-}
-
-
-FluidSolver::ISimulationVisualizer *FluidSolverWindow::GetVisualizer() {
-   return simulation->parameters.visualizer;
-}
-
-void FluidSolverWindow::UpdateVisualizerViewport() {
-    if (simulation == nullptr)
-        return;
-    auto vis = simulation->parameters.visualizer;
-    if (vis == nullptr)
-        return;
-    vis->setRenderTargetSize(this->visualizerRenderTargetWidth, this->visualizerRenderTargetHeight);
-    if (scenario == nullptr)
-        return;
-
-    // TODO: setup view with script
-    int particlesX = 15;
-    int particlesY = 15;
-
-    float width = (float) particlesX;
-    float height = (float) particlesY;
-    FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea;
-    viewArea.Top = height / 2.0f;
-    viewArea.Bottom = -height / 2.0f;
-    viewArea.Left = -width / 2.0f;
-    viewArea.Right = width / 2.0f;
-
-    vis->setSimulationViewArea(viewArea);
-
-}
-
-size_t FluidSolverWindow::getVisualizerRenderTargetWidth() const {
-    return visualizerRenderTargetWidth;
-}
-
-void FluidSolverWindow::setVisualizerRenderTargetWidth(size_t visualizerRenderTargetWidth) {
-    if (this->visualizerRenderTargetWidth != visualizerRenderTargetWidth) {
-        this->visualizerRenderTargetWidth = visualizerRenderTargetWidth;
-        UpdateVisualizerViewport();
-    }
-}
-
-size_t FluidSolverWindow::getVisualizerRenderTargetHeight() const {
-    return visualizerRenderTargetHeight;
-}
-
-void FluidSolverWindow::setVisualizerRenderTargetHeight(size_t visualizerRenderTargetHeight) {
-    if (this->visualizerRenderTargetHeight != visualizerRenderTargetHeight) {
-        this->visualizerRenderTargetHeight = visualizerRenderTargetHeight;
-        UpdateVisualizerViewport();
-    }
-}
-
-void FluidSolverWindow::SetVisualizer(FluidSolver::ISimulationVisualizer *visualizer) {
-    this->simulation->parameters.visualizer = visualizer;
-    UpdateVisualizerViewport();
-}
-
-/*FluidSolver::StatisticCollector *FluidSolverWindow::GetStatisticCollector() {
-    return simulation->getStatisticCollector();
-}*/
-
-void FluidSolverWindow::unload() {
-    delete mainUi;
-    ImGuiHelper::Uninit();
-}
-
-/*void FluidSolverWindow::SetParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
-    simulation->setParticleSelection(particleSelection);
-}
-
-FluidSolver::IParticleSelection *FluidSolverWindow::GetParticleSelection() {
-    return simulation->getParticleSelection();
-}*/
-
-void FluidSolverWindow::SelectParticle(glm::vec2 position, FluidSolverWindow::SelectionType type) {
-
-    /*auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
-
-    // find nearest particle, that you have clicked on depending on type
-    uint32_t particleIndex = -1;
-    float dist = simulation->getParticleSize();
-    for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-        auto particleType = simulation->getParticleCollection()->GetParticleType(i);
-        if (particleType == FluidSolver::ParticleTypeDead)
-            continue;
-
-        if (custom != nullptr) {
-            auto isSelected = custom->IsParticleSelected(i, simulation->getParticleCollection());
-            if (type == SelectionType::SelectionTypeSelect && isSelected) {
-                continue; // skip this one, since it is already selected
-            } else if (type == SelectionType::SelectionTypeDeselect && !isSelected) {
-                continue; // skip this one, since it is already deselected
-            }
+        auto tex = glRenderer->GetTexture();
+        // render visualization
+        auto maxRegion = ImGui::GetContentRegionMax();
+        maxRegion.x -= 20.0f;
+        maxRegion.y -= 30.0f;
+        float width = 0.0f;
+        float height = 0.0f;
+        if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
+            // height is too small
+            width = maxRegion.x;
+            height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
+        } else {
+            height = maxRegion.y;
+            width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
         }
-        auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-        auto partDist = glm::length(position - particlePos);
-        if (partDist < dist) {
-            particleIndex = i;
-            dist = partDist;
+
+
+        // im gui image location finder trick
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+        if (ImGui::BeginChild("SimView")) {
+
+            bool imageHasFocus = ImGui::IsWindowHovered();
+            auto pos = ImGui::GetWindowPos();
+            auto padding = ImGui::GetStyle().WindowPadding;
+            auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
+            auto windowSize = glm::vec2(width, height);
+
+            ImGui::PushItemWidth(width);
+
+            ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
+
+            ImGui::PopItemWidth();
+
         }
+
+        ImGui::PopStyleVar(3);
+
+        ImGui::EndChild();
+
     }
-
-    // select corresponding particle(s)
-    if (particleIndex != -1) {
-        if (custom == nullptr) {
-            custom = new FluidSolver::ParticleSelection();
-            delete simulation->getParticleSelection();
-            simulation->setParticleSelection(custom);
-        }
-        if (type == SelectionType::SelectionTypeSelect) {
-            custom->AddParticleToSelection(particleIndex);
-        } else if (type == SelectionType::SelectionTypeDeselect) {
-            custom->RemoveParticleFromSelection(particleIndex);
-        }
-    }*/
+    ImGui::End();
 }
 
-void
-FluidSolverWindow::SelectParticles(glm::vec2 position1, glm::vec2 position2, FluidSolverWindow::SelectionType type) {
+void FluidSolverWindow::set_visualizer_parameters() {
+    FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
 
-    /*   float minX = std::fmin(position1.x, position2.x);
-       float minY = std::fmin(position1.y, position2.y);
-       float maxX = std::fmax(position1.x, position2.x);
-       float maxY = std::fmax(position1.y, position2.y);
-
-       // find nearest particle, that you have clicked on depending on type
-       std::vector<uint32_t> particles;
-       for (uint32_t i = 0; i < simulation->getParticleCollection()->GetSize(); i++) {
-           auto particleType = simulation->getParticleCollection()->GetParticleType(i);
-           if (particleType == FluidSolver::ParticleTypeDead)
-               continue;
-
-
-           auto particlePos = simulation->getParticleCollection()->GetPosition(i);
-           if (particlePos.x >= minX && particlePos.x <= maxX) {
-               if (particlePos.y >= minY && particlePos.y <= maxY) {
-                   particles.push_back(i);
-               }
-           }
-       }
-
-       // select corresponding particle(s)
-       auto custom = dynamic_cast<FluidSolver::ParticleSelection *>(simulation->getParticleSelection());
-
-       for (auto particleIndex:particles) {
-           if (custom == nullptr) {
-               custom = new FluidSolver::ParticleSelection();
-               delete simulation->getParticleSelection();
-               simulation->setParticleSelection(custom);
-           }
-           if (type == SelectionType::SelectionTypeSelect) {
-               custom->AddParticleToSelection(particleIndex);
-           } else if (type == SelectionType::SelectionTypeDeselect) {
-               custom->RemoveParticleFromSelection(particleIndex);
-           }
-       }
-   */
-
+    simulation.parameters.visualizer->setSimulationViewArea({-15,15, 15, -15 });
 }
-
-/*
-DataLogger *FluidSolverWindow::GetDataLogger() {
-    return simulation->getDataLogger();
-}
-
-void FluidSolverWindow::SetDataLogger(DataLogger *dataLogger) {
-    simulation->setDataLogger(dataLogger);
-}*/
-
-void FluidSolverWindow::stopRecordingAndresetImageSettings() {
-    saveFrames = false;
-    saveFramesForSeconds = saveFramesForSecondsInitalValue;
-    imageCounter = 0;
-}
-
-void FluidSolverWindow::startRecording() {
-    saveFramesForSecondsInitalValue = saveFramesForSeconds;
-    saveFrames = true;
-    imageCounter = 0;
-}
-
-FluidSolver::Simulation *FluidSolverWindow::GetSimulation() {
-    return this->simulation;
-}
-
-
-

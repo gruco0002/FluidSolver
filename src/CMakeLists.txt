@@ -129,8 +129,8 @@ set(FLUID_SOLVER_SOURCE_FILES
        # core/visualizer/ContinousVisualizer.hpp
        # uiVersion/ContinousVisualizerOpenGL.cpp
        # uiVersion/ContinousVisualizerOpenGL.hpp
-        uiVersion/userInterface/MainUi.cpp
-        uiVersion/userInterface/MainUi.hpp
+       # uiVersion/userInterface/MainUi.cpp
+       # uiVersion/userInterface/MainUi.hpp
         uiVersion/IOpenGLVisualizer.hpp
        # core/selection/ParticleSelection.cpp
        # core/selection/ParticleSelection.hpp
