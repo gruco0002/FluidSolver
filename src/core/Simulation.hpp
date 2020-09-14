@@ -18,6 +18,8 @@ namespace FluidSolver {
             ISimulationVisualizer *visualizer = nullptr;
             ITimestep *timestep = nullptr;
 
+            bool invalidate = false;
+
             bool operator==(const SimulationParameters &other) const;
 
             bool operator!=(const SimulationParameters &other) const;

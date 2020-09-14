@@ -64,6 +64,7 @@ void FluidSolverWindow::load_scenario(const std::string &filepath) {
     simulation.parameters.collection = &scenario->data.collection;
     simulation.parameters.rest_density = scenario->data.rest_density;
     simulation.parameters.particle_size = scenario->data.particle_size;
+    simulation.parameters.invalidate = true;
 
     std::cout << "Loaded " << scenario->data.name << std::endl;
 }
@@ -73,6 +74,7 @@ void FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.001f);
     simulation.parameters.gravity = 9.81f;
     simulation.parameters.visualizer = new ParticleRenderer();
+    simulation.parameters.invalidate = true;
 }
 
 void FluidSolverWindow::render_visualization_window() {

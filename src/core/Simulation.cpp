@@ -8,7 +8,8 @@ bool FluidSolver::Simulation::SimulationParameters::operator==(
            && other.rest_density == rest_density
            && other.timestep == timestep
            && other.gravity == gravity
-           && other.visualizer == visualizer;
+           && other.visualizer == visualizer
+           && other.invalidate == invalidate;
 }
 
 bool FluidSolver::Simulation::SimulationParameters::operator!=(
@@ -45,6 +46,7 @@ void FluidSolver::Simulation::initialize() {
     FLUID_ASSERT(parameters.particle_size > 0.0f)
 
     internal_parameters = parameters;
+    internal_parameters.invalidate = false;
 
     if (internal_parameters.fluid_solver != nullptr) {
         internal_parameters.fluid_solver->parameters.particle_size = parameters.particle_size;
