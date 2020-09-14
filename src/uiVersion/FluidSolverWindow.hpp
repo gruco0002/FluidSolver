@@ -8,7 +8,7 @@
 #include <core/Simulation.hpp>
 #include <core/scenario/Scenario.hpp>
 #include <uiVersion/userInterface/MainUi.hpp>
-
+#include <uiVersion/userInterface/ScenariosWindow.hpp>
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -40,6 +40,13 @@ private:
     void set_visualizer_parameters();
 
     void set_default_simulation_parameters();
+
+private:
+
+    void setup_windows();
+
+    ScenariosWindow scenarios_window;
+
 };
 
 

@@ -22,6 +22,8 @@ void FluidSolverWindow::load() {
             running = !running;
         }
     });
+
+    setup_windows();
 }
 
 void FluidSolverWindow::unload() {
@@ -46,6 +48,7 @@ void FluidSolverWindow::render() {
     ImGuiHelper::PreRender();
 
     render_visualization_window();
+    scenarios_window.render();
 
     ImGuiHelper::PostRender();
 
@@ -128,4 +131,9 @@ void FluidSolverWindow::set_visualizer_parameters() {
     FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
 
     simulation.parameters.visualizer->setSimulationViewArea({-15, 15, 15, -15});
+}
+
+void FluidSolverWindow::setup_windows() {
+    scenarios_window.window = this;
+    scenarios_window.initialize();
 }

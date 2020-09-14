@@ -1,5 +1,8 @@
 #include "ScriptInterface.hpp"
+#include "chaiscript/chaiscript.hpp"
 
+chaiscript::ChaiScript *getPtr(void *ptr) { return (chaiscript::ChaiScript *) ptr; }
+chaiscript::ChaiScript &getRef(void *ptr) { return *((chaiscript::ChaiScript *) ptr); }
 
 void FluidSolver::ScriptInterface::make_available() {
 
@@ -27,7 +30,7 @@ void FluidSolver::ScriptInterface::make_available() {
                                                          {chaiscript::fun(&ScenarioInfo::name),         "scenarioName"},
                                                  });
 
-
+    auto& chai = getRef(chai_ptr);
     chai.add(m);
 
     chai.add_global(chaiscript::var(std::ref(info)), "scenarioInfo");
@@ -53,7 +56,7 @@ FluidSolver::pIndex_t FluidSolver::ScriptInterface::add_particle(FluidSolver::Sc
     auto &pData = collection->get<ParticleData>(id);
     auto &iData = collection->get<ParticleInfo>(id);
 
-    mData.position = glm::vec2((float)particle.x, (float)particle.y);
+    mData.position = glm::vec2((float) particle.x, (float) particle.y);
     mData.velocity = glm::vec2(0.0f);
     mData.acceleration = glm::vec2(0.0f);
     pData.pressure = 0.0f;
@@ -67,6 +70,7 @@ FluidSolver::pIndex_t FluidSolver::ScriptInterface::add_particle(FluidSolver::Sc
 
 void FluidSolver::ScriptInterface::load_file(const std::string &filepath) {
     make_available();
+    auto& chai = getRef(chai_ptr);
     try {
         chai.eval_file(filepath);
     } catch (const chaiscript::exception::eval_error &e) {
@@ -80,4 +84,12 @@ void FluidSolver::ScriptInterface::transfer_data() {
     data->name = info.name;
     data->rest_density = info.rest_density;
     data->particle_size = info.particle_size;
+}
+
+FluidSolver::ScriptInterface::ScriptInterface() {
+    chai_ptr = new chaiscript::ChaiScript();
+}
+
+FluidSolver::ScriptInterface::~ScriptInterface() {
+    delete ((chaiscript::ChaiScript *) chai_ptr);
 }

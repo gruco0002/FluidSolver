@@ -9,7 +9,6 @@ namespace FluidSolver {
     private:
 
         ScriptInterface interface;
-        chaiscript::ChaiScript chai;
 
         void setup();
 

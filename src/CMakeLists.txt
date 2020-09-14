@@ -159,7 +159,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/statistics/Statistics.hpp
         core/statistics/ParticleStatistics.cpp
         core/statistics/ParticleStatistics.hpp
-        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp )
+        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})

@@ -2,13 +2,12 @@
 #define FLUIDSOLVER_SCRIPTINTERFACE_HPP
 
 #include "ScenarioData.hpp"
-#include "chaiscript/chaiscript.hpp"
 
 namespace FluidSolver {
     class ScriptInterface {
     private:
 
-        chaiscript::ChaiScript chai;
+        void* chai_ptr;
 
         void make_available();
 
@@ -39,6 +38,9 @@ namespace FluidSolver {
         ScenarioData *data = nullptr;
 
         void load_file(const std::string &filepath);
+
+        ScriptInterface();
+        ~ScriptInterface();
 
     };
 
