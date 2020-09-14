@@ -1,0 +1,185 @@
+/*
+Multiple Hole Scenario
+*/
+global factor = 4;
+
+
+scenarioInfo.scenarioName = "Multiple Hole Scenario";
+scenarioInfo.restDensity = 1.0f;
+scenarioInfo.particleSize = 1.0f;
+
+scenarioViewport.left = -96 * factor / 2.0;
+scenarioViewport.right = 96 * factor / 2.0;
+scenarioViewport.top =   32 * factor / 2.0;
+scenarioViewport.bottom = -32 * factor / 2.0;
+
+
+
+
+def getMass() {
+    return scenarioInfo.restDensity * (scenarioInfo.particleSize * scenarioInfo.particleSize);
+}
+
+def loadParticles() {
+
+    var xOffset = -96 / 2;
+    var yOffset = -32 / 2;
+
+
+    // boundaries
+    for (var x = 1; x <= 3; ++x) {
+    for (var y = 5; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 13; x <= 15; ++x) {
+    for (var y = 5; y <= 16; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 4; x <= 29; ++x) {
+    for (var y = 30; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 27; x <= 29; ++x) {
+    for (var y = 26; y <= 29; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 37; x <= 39; ++x) {
+    for (var y = 16; y <= 20; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 37; x <= 39; ++x) {
+    for (var y = 24; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 40; x <= 66; ++x) {
+    for (var y = 30; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 51; x <= 53; ++x) {
+    for (var y = 27; y <= 29; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 64; x <= 66; ++x) {
+    for (var y = 16; y <= 27; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 93; x <= 95; ++x) {
+    for (var y = 5; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 77; x <= 92; ++x) {
+    for (var y = 30; y <= 32; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 85; x <= 87; ++x) {
+    for (var y = 5; y <= 9; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+    for (var x = 76; x <= 78; ++x) {
+    for (var y = 5; y <= 9; ++y) {
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+
+    // tilted boundaries
+    for (var y = 5; y <= 15; ++y) {
+    var cutoffLeft = 37;
+    var cutoffRight = 50;
+    var startX = 37;
+    var startY = 5;
+    for (var i = 0; i < 5; ++i) {
+    var x = startX + i + y - startY;
+    if (x <= cutoffLeft || x >= cutoffRight) {continue;}
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+
+    for (var y = 15; y >= 5; --y) {
+    var cutoffLeft = 54;
+    var cutoffRight = 67;
+    var startX = 53;
+    var startY = 15;
+    for (var i = 0; i < 5; ++i) {
+    var x = startX + i - y + startY;
+    if (x <= cutoffLeft || x >= cutoffRight) {continue;}
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+
+    for (var y = 10; y <= 20; ++y) {
+    var cutoffLeft = 75;
+    var cutoffRight = 88;
+    var startX = 75;
+    var startY = 10;
+    for (var i = 0; i < 5; ++i) {
+    var x = startX + i + y - startY;
+    if (x <= cutoffLeft || x >= cutoffRight) {continue;}
+    addBoundary(x + xOffset, y + yOffset);
+    }
+    }
+
+    // particles
+    for (var x = 84; x <= 92; ++x) {
+    for (var y = 24; y <= 29; ++y) {
+    add(x + xOffset, y + yOffset);
+    }
+    }
+
+
+
+}
+
+def add(x, y){
+    var p = Particle();
+    p.type = TYPE_NORMAL;
+    p.mass = getMass();
+    p.density = scenarioInfo.restDensity;
+
+    for (var i = 0; i < factor; ++i) {
+        for (var j = 0; j < factor; ++j) {
+            var calcX = 1.0f / factor * i;
+            var calcY = 1.0f / factor * j;
+            calcX -= 0.5f;
+            calcY -= 0.5f;
+
+            p.x = (x + calcX) * factor;
+            p.y = (calcY - y) *  factor;
+            addParticle(p);
+        }
+    }
+}
+
+def addBoundary(x,y){
+    var p = Particle();
+    p.type = TYPE_BOUNDARY;
+    p.mass = getMass();
+    p.density = scenarioInfo.restDensity;
+
+    for (var i = 0; i < factor; ++i) {
+        for (var j = 0; j < factor; ++j) {
+            var calcX = 1.0f / factor * i;
+            var calcY = 1.0f / factor * j;
+            calcX -= 0.5f;
+            calcY -= 0.5f;
+
+            p.x = (x + calcX) * factor;
+            p.y = (calcY - y) *  factor;
+            addParticle(p);
+        }
+    }
+}
+
+
+loadParticles();
