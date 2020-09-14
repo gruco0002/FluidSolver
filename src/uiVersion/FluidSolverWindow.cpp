@@ -14,6 +14,11 @@ void FluidSolverWindow::load() {
     set_default_simulation_parameters();
     set_visualizer_parameters();
     load_scenario("../scenarios/test.chai");
+    OnKeyPressed.Subscribe([=](int key) {
+        if (key == GLFW_KEY_SPACE) {
+            running = !running;
+        }
+    });
 }
 
 void FluidSolverWindow::unload() {
@@ -23,6 +28,10 @@ void FluidSolverWindow::unload() {
 }
 
 void FluidSolverWindow::render() {
+
+    if (running) {
+        simulation.execute_simulation_step();
+    }
 
     simulation.visualize();
     glFlush();
@@ -111,10 +120,9 @@ void FluidSolverWindow::render_visualization_window() {
             ImGui::PopItemWidth();
 
         }
+        ImGui::EndChild();
 
         ImGui::PopStyleVar(3);
-
-        ImGui::EndChild();
 
     }
     ImGui::End();
@@ -123,5 +131,5 @@ void FluidSolverWindow::render_visualization_window() {
 void FluidSolverWindow::set_visualizer_parameters() {
     FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
 
-    simulation.parameters.visualizer->setSimulationViewArea({-15,15, 15, -15 });
+    simulation.parameters.visualizer->setSimulationViewArea({-15, 15, 15, -15});
 }

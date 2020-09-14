@@ -27,13 +27,15 @@ public:
 
     FluidSolver::Scenario *scenario = nullptr;
 
-    FluidSolver::ScenarioData* scenario_data = nullptr;
+    FluidSolver::ScenarioData *scenario_data = nullptr;
 
     FluidSolver::Simulation simulation;
 
     void load_data();
 
     void load_scenario(const std::string &filepath);
+
+    bool running = false;
 
 private:
 
