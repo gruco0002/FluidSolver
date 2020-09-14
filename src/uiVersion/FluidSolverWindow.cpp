@@ -15,7 +15,6 @@ FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int he
 void FluidSolverWindow::load() {
     ImGuiHelper::Init(this->GetWindowHandler());
     set_default_simulation_parameters();
-    set_visualizer_parameters();
     load_scenario("../scenarios/boundaryTest.chai");
     OnKeyPressed.Subscribe([=](int key) {
         if (key == GLFW_KEY_SPACE) {
@@ -65,6 +64,8 @@ void FluidSolverWindow::load_scenario(const std::string &filepath) {
     simulation.parameters.rest_density = scenario->data.rest_density;
     simulation.parameters.particle_size = scenario->data.particle_size;
     simulation.parameters.invalidate = true;
+
+    set_visualizer_parameters();
 
     std::cout << "Loaded " << scenario->data.name << std::endl;
 }
@@ -131,8 +132,10 @@ void FluidSolverWindow::render_visualization_window() {
 
 void FluidSolverWindow::set_visualizer_parameters() {
     FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
-
-    simulation.parameters.visualizer->setSimulationViewArea({-15, 15, 15, -15});
+    FLUID_ASSERT(scenario != nullptr);
+    simulation.parameters.visualizer->setSimulationViewArea(
+            {scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right,
+             scenario->data.viewport.bottom});
 }
 
 void FluidSolverWindow::setup_windows() {

@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_SCENARIODATA_HPP
 
 #include "../fluidSolver/ParticleCollection.hpp"
+
 namespace FluidSolver {
     struct ScenarioData {
 
@@ -12,6 +13,13 @@ namespace FluidSolver {
         float rest_density = 1.0f;
 
         std::string name;
+
+        struct Viewport {
+            float left;
+            float right;
+            float top;
+            float bottom;
+        } viewport;
 
     };
 

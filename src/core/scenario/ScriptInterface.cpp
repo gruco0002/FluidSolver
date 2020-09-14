@@ -2,6 +2,7 @@
 #include "chaiscript/chaiscript.hpp"
 
 chaiscript::ChaiScript *getPtr(void *ptr) { return (chaiscript::ChaiScript *) ptr; }
+
 chaiscript::ChaiScript &getRef(void *ptr) { return *((chaiscript::ChaiScript *) ptr); }
 
 void FluidSolver::ScriptInterface::make_available() {
@@ -29,11 +30,25 @@ void FluidSolver::ScriptInterface::make_available() {
                                                          {chaiscript::fun(&ScenarioInfo::rest_density), "restDensity"},
                                                          {chaiscript::fun(&ScenarioInfo::name),         "scenarioName"},
                                                  });
+    chaiscript::utility::add_class<ScenarioData::Viewport>(*m, "ScenarioViewport",
+                                                           {
+                                                           },
+                                                           {
+                                                                   {chaiscript::fun(
+                                                                           &ScenarioData::Viewport::left),   "left"},
+                                                                   {chaiscript::fun(
+                                                                           &ScenarioData::Viewport::right),  "right"},
+                                                                   {chaiscript::fun(
+                                                                           &ScenarioData::Viewport::top),    "top"},
+                                                                   {chaiscript::fun(
+                                                                           &ScenarioData::Viewport::bottom), "bottom"},
+                                                           });
 
-    auto& chai = getRef(chai_ptr);
+    auto &chai = getRef(chai_ptr);
     chai.add(m);
 
     chai.add_global(chaiscript::var(std::ref(info)), "scenarioInfo");
+    chai.add_global(chaiscript::var(std::ref(data->viewport)), "scenarioViewport");
     chai.add(chaiscript::fun(&ScriptInterface::add_particle, this), "addParticle");
 
 
@@ -70,7 +85,7 @@ FluidSolver::pIndex_t FluidSolver::ScriptInterface::add_particle(FluidSolver::Sc
 
 void FluidSolver::ScriptInterface::load_file(const std::string &filepath) {
     make_available();
-    auto& chai = getRef(chai_ptr);
+    auto &chai = getRef(chai_ptr);
     try {
         chai.eval_file(filepath);
     } catch (const chaiscript::exception::eval_error &e) {
