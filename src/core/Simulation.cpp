@@ -47,6 +47,7 @@ void FluidSolver::Simulation::initialize() {
 
     internal_parameters = parameters;
     internal_parameters.invalidate = false;
+    parameters.invalidate = false;
 
     if (internal_parameters.fluid_solver != nullptr) {
         internal_parameters.fluid_solver->parameters.particle_size = parameters.particle_size;
