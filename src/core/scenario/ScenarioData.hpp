@@ -11,6 +11,8 @@ namespace FluidSolver {
 
         float rest_density = 1.0f;
 
+        std::string name;
+
     };
 
 }

@@ -3,7 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <core/timestep/DynamicCFLTimestep.hpp>
+#include <core/timestep/ConstantTimestep.hpp>
 #include "ImguiHelper.hpp"
+#include <core/fluidSolver/IISPHFluidSolver.hpp>
+#include <core/fluidSolver/SESPHFluidSolver.hpp>
 
 FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
 
@@ -13,7 +16,7 @@ void FluidSolverWindow::load() {
     ImGuiHelper::Init(this->GetWindowHandler());
     set_default_simulation_parameters();
     set_visualizer_parameters();
-    load_scenario("../scenarios/test.chai");
+    load_scenario("../scenarios/boundaryTest.chai");
     OnKeyPressed.Subscribe([=](int key) {
         if (key == GLFW_KEY_SPACE) {
             running = !running;
@@ -22,7 +25,6 @@ void FluidSolverWindow::load() {
 }
 
 void FluidSolverWindow::unload() {
-    delete scenario_data;
     delete scenario;
     ImGuiHelper::Uninit();
 }
@@ -49,29 +51,23 @@ void FluidSolverWindow::render() {
 
 }
 
-void FluidSolverWindow::load_data() {
-    FLUID_ASSERT(scenario != nullptr)
-    simulation.parameters.collection = nullptr;
-    delete scenario_data;
-    scenario_data = nullptr;
-
-    scenario_data = scenario->create_data();
-
-    simulation.parameters.collection = &scenario_data->collection;
-    simulation.parameters.rest_density = scenario_data->rest_density;
-    simulation.parameters.particle_size = scenario_data->particle_size;
-}
-
 void FluidSolverWindow::load_scenario(const std::string &filepath) {
     delete scenario;
     scenario = nullptr;
     scenario = new FluidSolver::Scenario(filepath);
-    load_data();
+    FLUID_ASSERT(scenario != nullptr)
+    simulation.parameters.collection = nullptr;
+
+    simulation.parameters.collection = &scenario->data.collection;
+    simulation.parameters.rest_density = scenario->data.rest_density;
+    simulation.parameters.particle_size = scenario->data.particle_size;
+
+    std::cout << "Loaded " << scenario->data.name << std::endl;
 }
 
 void FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.fluid_solver = new FluidSolver::IISPHFluidSolver();
-    simulation.parameters.timestep = new FluidSolver::DynamicCFLTimestep();
+    simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.001f);
     simulation.parameters.gravity = 9.81f;
     simulation.parameters.visualizer = new ParticleRenderer();
 }

@@ -8,7 +8,7 @@
 #include <core/Simulation.hpp>
 #include <core/scenario/Scenario.hpp>
 #include <uiVersion/userInterface/MainUi.hpp>
-#include <core/fluidSolver/IISPHFluidSolver.hpp>
+
 
 
 class FluidSolverWindow : public Engine::Window {
@@ -27,11 +27,7 @@ public:
 
     FluidSolver::Scenario *scenario = nullptr;
 
-    FluidSolver::ScenarioData *scenario_data = nullptr;
-
     FluidSolver::Simulation simulation;
-
-    void load_data();
 
     void load_scenario(const std::string &filepath);
 

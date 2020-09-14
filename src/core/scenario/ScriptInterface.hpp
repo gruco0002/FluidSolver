@@ -5,8 +5,16 @@
 #include "chaiscript/chaiscript.hpp"
 
 namespace FluidSolver {
-    struct ScriptInterface {
+    class ScriptInterface {
+    private:
 
+        chaiscript::ChaiScript chai;
+
+        void make_available();
+
+        void transfer_data();
+
+    private:
         struct Particle {
             float x = 0.0f;
             float y = 0.0f;
@@ -15,12 +23,22 @@ namespace FluidSolver {
             float mass;
         };
 
+        struct ScenarioInfo{
+            float particle_size = 1.0f;
+            float rest_density = 1.0f;
+            std::string name;
+        } info;
 
-        ScenarioData *current = nullptr;
+
+
 
         pIndex_t add_particle(Particle particle);
 
-        void make_available(chaiscript::ChaiScript &chai);
+    public:
+
+        ScenarioData *data = nullptr;
+
+        void load_file(const std::string &filepath);
 
     };
 

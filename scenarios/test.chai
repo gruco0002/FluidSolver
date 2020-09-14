@@ -2,16 +2,12 @@
 Basic scenario
 */
 
-def getParticleSize() {
-    return 1.0;
-}
-
-def getRestDensity() {
-    return 1.0;
-}
+scenarioInfo.scenarioName = "Test Scenario";
+scenarioInfo.restDensity = 1.0;
+scenarioInfo.particleSize = 1.0;
 
 def getMass() {
-    return getRestDensity() * (getParticleSize() * getParticleSize());
+    return scenarioInfo.restDensity * (scenarioInfo.particleSize * scenarioInfo.particleSize);
 }
 
 def loadParticles() {
@@ -22,8 +18,10 @@ def loadParticles() {
     p.y = 5.0;
     p.type = 0;
     p.mass = getMass();
-    p.density = getRestDensity();
+    p.density = scenarioInfo.restDensity;
 
     var index = addParticle(p);
 
 }
+
+loadParticles();
