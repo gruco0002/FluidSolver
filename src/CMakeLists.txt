@@ -89,37 +89,19 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
-       # core/basicScenarios/Scenario.hpp
-       # core/basicScenarios/Scenario.cpp
-       # core/basicScenarios/BoundaryTestScenario.cpp
-       # core/basicScenarios/BoundaryTestScenario.hpp
-       # core/basicScenarios/SimpleDamScenario.cpp
-       # core/basicScenarios/SimpleDamScenario.hpp
-       # core/basicScenarios/HugeDamScenario.cpp
-       # core/basicScenarios/HugeDamScenario.hpp
-       # core/basicScenarios/SimpleBoxScenario.cpp
-       # core/basicScenarios/SimpleBoxScenario.hpp
        # FluidSolverConsole.cpp
        # FluidSolverConsole.hpp
-       # core/basicScenarios/BoxWithHoleScenario.cpp
-       # core/basicScenarios/BoxWithHoleScenario.hpp
         core/interface/ISimulationModifier.hpp
        # core/simulationModifiers/DeathBox.cpp
        # core/simulationModifiers/DeathBox.hpp
        # core/simulationModifiers/SpawnArea.cpp
        # core/simulationModifiers/SpawnArea.hpp
-       # core/basicScenarios/MultipleHoleScenario.cpp
-       # core/basicScenarios/MultipleHoleScenario.hpp
         core/Simulation.cpp core/Simulation.hpp
        # core/interface/IExternalForce.hpp
         core/visualizer/ISimulationVisualizer.hpp
         core/fluidSolver/IFluidSolver.hpp
         core/fluidSolver/IISPHFluidSolver.cpp
         core/fluidSolver/IISPHFluidSolver.hpp
-       # core/basicScenarios/SimpleBoxScenarioSmallerParticles.cpp
-       # core/basicScenarios/SimpleBoxScenarioSmallerParticles.hpp
-       # core/basicScenarios/SimpleBoxScenarioLargerParticles.cpp
-       # core/basicScenarios/SimpleBoxScenarioLargerParticles.hpp
         core/timestep/ITimestep.cpp core/timestep/ITimestep.hpp
         core/timestep/ConstantTimestep.cpp
         core/timestep/ConstantTimestep.hpp
@@ -159,7 +141,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/statistics/Statistics.hpp
         core/statistics/ParticleStatistics.cpp
         core/statistics/ParticleStatistics.hpp
-        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp)
+        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp core/group/GroupActions.cpp core/group/GroupActions.hpp core/group/RectangleAreaGroup.cpp core/group/RectangleAreaGroup.hpp core/group/TagGroup.cpp core/group/TagGroup.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})
