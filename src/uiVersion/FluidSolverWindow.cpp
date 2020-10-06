@@ -63,6 +63,7 @@ void FluidSolverWindow::load_scenario(const std::string &filepath) {
     simulation.parameters.collection = &scenario->data.collection;
     simulation.parameters.rest_density = scenario->data.rest_density;
     simulation.parameters.particle_size = scenario->data.particle_size;
+    simulation.parameters.entities = scenario->data.entities;
     simulation.parameters.invalidate = true;
 
     set_visualizer_parameters();

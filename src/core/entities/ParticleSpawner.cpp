@@ -1,5 +1,6 @@
 #include "ParticleSpawner.hpp"
 
+
 void FluidSolver::ParticleSpawner::initialize() {
     time_left_over = 0.0f;
 }
@@ -18,7 +19,12 @@ void FluidSolver::ParticleSpawner::execute_simulation_step(FluidSolver::pFloat t
         time_left_over -= spawn_every_second;
 
         // determine spawn position
+        auto xDistr = std::uniform_real_distribution<float>(parameters.area.left, parameters.area.right);
+        auto yDistr = std::uniform_real_distribution<float>(parameters.area.bottom, parameters.area.top);
+
         vec2 spawn_position;
+        spawn_position.x = xDistr(generator);
+        spawn_position.y = yDistr(generator);
 
         // spawn a particle
         bool spawned = false;

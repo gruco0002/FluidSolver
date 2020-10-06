@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_SCENARIODATA_HPP
 
 #include "../fluidSolver/ParticleCollection.hpp"
+#include <core/entities/IEntity.hpp>
 
 namespace FluidSolver {
     struct ScenarioData {
@@ -20,6 +21,8 @@ namespace FluidSolver {
             float top;
             float bottom;
         } viewport;
+
+        std::vector<IEntity *> entities;
 
     };
 

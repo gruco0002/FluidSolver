@@ -9,7 +9,8 @@ bool FluidSolver::Simulation::SimulationParameters::operator==(
            && other.timestep == timestep
            && other.gravity == gravity
            && other.visualizer == visualizer
-           && other.invalidate == invalidate;
+           && other.invalidate == invalidate
+           && other.entities == entities;
 }
 
 bool FluidSolver::Simulation::SimulationParameters::operator!=(
@@ -36,6 +37,11 @@ void FluidSolver::Simulation::execute_simulation_step() {
 
     // simulate
     internal_parameters.fluid_solver->execute_simulation_step(current_timestep);
+
+    // simulate entities
+    for (auto ent: internal_parameters.entities) {
+        ent->execute_simulation_step(current_timestep);
+    }
 
 
 }
@@ -66,6 +72,11 @@ void FluidSolver::Simulation::initialize() {
     if (internal_parameters.timestep != nullptr) {
         internal_parameters.timestep->setParticleSize(internal_parameters.particle_size);
         internal_parameters.timestep->setParticleCollection(internal_parameters.collection);
+    }
+
+    for (auto ent: internal_parameters.entities) {
+        ent->collection = internal_parameters.collection;
+        ent->initialize();
     }
 
 }

@@ -14,6 +14,8 @@ namespace FluidSolver {
 
         virtual void execute_simulation_step(pFloat timestep) = 0;
 
+        virtual ~IEntity() = default;
+
     };
 }
 

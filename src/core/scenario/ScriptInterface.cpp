@@ -1,5 +1,7 @@
 #include "ScriptInterface.hpp"
 #include "chaiscript/chaiscript.hpp"
+#include "core/entities/IEntity.hpp"
+#include "core/entities/ParticleSpawner.hpp"
 
 chaiscript::ChaiScript *getPtr(void *ptr) { return (chaiscript::ChaiScript *) ptr; }
 
@@ -8,6 +10,17 @@ chaiscript::ChaiScript &getRef(void *ptr) { return *((chaiscript::ChaiScript *) 
 void FluidSolver::ScriptInterface::make_available() {
 
     chaiscript::ModulePtr m = chaiscript::ModulePtr(new chaiscript::Module());
+
+
+    chaiscript::utility::add_class<vec2>(*m, "vec2",
+                                         {
+                                         },
+                                         {
+                                                 {chaiscript::fun(
+                                                         &vec2::x), "x"},
+                                                 {chaiscript::fun(
+                                                         &vec2::y), "y"},
+                                         });
 
     chaiscript::utility::add_class<Particle>(*m,
                                              "Particle",
@@ -44,12 +57,56 @@ void FluidSolver::ScriptInterface::make_available() {
                                                                            &ScenarioData::Viewport::bottom), "bottom"},
                                                            });
 
+
+    chaiscript::utility::add_class<ParticleSpawner::Parameters::Area>(*m, "ParticleSpawnerParametersArea",
+                                                                      {
+                                                                      },
+                                                                      {
+                                                                              {chaiscript::fun(
+                                                                                      &ParticleSpawner::Parameters::Area::bottom), "bottom"},
+                                                                              {chaiscript::fun(
+                                                                                      &ParticleSpawner::Parameters::Area::top),    "top"},
+                                                                              {chaiscript::fun(
+                                                                                      &ParticleSpawner::Parameters::Area::left),   "left"},
+                                                                              {chaiscript::fun(
+                                                                                      &ParticleSpawner::Parameters::Area::right),  "right"},
+                                                                      });
+
+
+    chaiscript::utility::add_class<ParticleSpawner::Parameters>(*m, "ParticleSpawnerParameters",
+                                                                {
+                                                                },
+                                                                {
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::rest_density),         "restDensity"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::particles_per_second), "particlesPerSecond"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::mass),                 "mass"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::initial_velocity),     "initialVelocity"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::area),                 "area"},
+                                                                });
+
+    chaiscript::utility::add_class<ParticleSpawner>(*m, "ParticleSpawner",
+                                                    {
+                                                            chaiscript::constructor<ParticleSpawner()>()
+                                                    },
+                                                    {
+                                                            {chaiscript::fun(
+                                                                    &ParticleSpawner::parameters), "parameters"},
+                                                    });
+
+    m->add(chaiscript::base_class<IEntity, ParticleSpawner>());
+
     auto &chai = getRef(chai_ptr);
     chai.add(m);
 
     chai.add_global(chaiscript::var(std::ref(info)), "scenarioInfo");
     chai.add_global(chaiscript::var(std::ref(data->viewport)), "scenarioViewport");
     chai.add(chaiscript::fun(&ScriptInterface::add_particle, this), "addParticle");
+    chai.add(chaiscript::fun(&ScriptInterface::add_entity, this), "addEntity");
 
 
     chai.add_global_const(chaiscript::const_var((uint8_t) ParticleTypeNormal), "TYPE_NORMAL");
@@ -107,4 +164,9 @@ FluidSolver::ScriptInterface::ScriptInterface() {
 
 FluidSolver::ScriptInterface::~ScriptInterface() {
     delete ((chaiscript::ChaiScript *) chai_ptr);
+}
+
+void FluidSolver::ScriptInterface::add_entity(FluidSolver::IEntity *entity) {
+    FLUID_ASSERT(data != nullptr);
+    data->entities.push_back(entity);
 }

@@ -1,6 +1,7 @@
 #ifndef FLUIDSOLVER_SCRIPTINTERFACE_HPP
 #define FLUIDSOLVER_SCRIPTINTERFACE_HPP
 
+#include <core/entities/IEntity.hpp>
 #include "ScenarioData.hpp"
 
 namespace FluidSolver {
@@ -32,6 +33,8 @@ namespace FluidSolver {
 
 
         pIndex_t add_particle(Particle particle);
+
+        void add_entity(IEntity *entity);
 
     public:
 

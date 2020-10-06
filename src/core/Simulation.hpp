@@ -4,6 +4,7 @@
 #include <core/visualizer/ISimulationVisualizer.hpp>
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
+#include <core/entities/IEntity.hpp>
 
 namespace FluidSolver {
     class Simulation {
@@ -17,6 +18,8 @@ namespace FluidSolver {
             IFluidSolverBase *fluid_solver = nullptr;
             ISimulationVisualizer *visualizer = nullptr;
             ITimestep *timestep = nullptr;
+
+            std::vector<IEntity *> entities;
 
             bool invalidate = false;
 

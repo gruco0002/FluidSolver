@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_PARTICLESPAWNER_HPP
 
 #include "IEntity.hpp"
+#include <random>
 
 namespace FluidSolver {
     class ParticleSpawner : public IEntity {
@@ -27,9 +28,13 @@ namespace FluidSolver {
 
         void execute_simulation_step(pFloat timestep) override;
 
+
+
     private:
 
         float time_left_over = 0.0f;
+
+        std::mt19937 generator;
 
     };
 
