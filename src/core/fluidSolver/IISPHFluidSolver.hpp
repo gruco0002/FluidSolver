@@ -92,6 +92,7 @@ namespace FluidSolver {
 
     template<typename Kernel, typename NeighborhoodSearch>
     void IISPHFluidSolver<Kernel, NeighborhoodSearch>::execute_simulation_step(pFloat timestep) {
+        FLUID_ASSERT(collection != nullptr)
         FLUID_ASSERT(collection->is_type_present<MovementData>());
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());

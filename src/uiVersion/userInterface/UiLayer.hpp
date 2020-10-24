@@ -18,6 +18,7 @@ namespace FluidUi {
     private:
         ScenariosWindow scenarios;
 
+        void render_solver_parameters();
 
     };
 

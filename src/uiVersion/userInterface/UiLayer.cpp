@@ -133,7 +133,8 @@ void FluidUi::UiLayer::render() {
         BeginSubsection("SESPH", [=]() {
             auto v = (FluidSolver::SESPHSettings *) window->current_type->get_settings(
                     window->simulation.parameters.fluid_solver);
-
+            render_solver_parameters();
+            ImGui::Separator();
             ImGui::InputFloat("Viscosity", &v->Viscosity);
             ImGui::InputFloat("Stiffness", &v->StiffnessK);
         });
@@ -141,6 +142,10 @@ void FluidUi::UiLayer::render() {
 
     if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
         BeginSubsection("IISPH", [=]() {
+
+            render_solver_parameters();
+            ImGui::Separator();
+
             auto v = (FluidSolver::IISPHSettings *) window->current_type->get_settings(
                     window->simulation.parameters.fluid_solver);
 
@@ -160,4 +165,10 @@ void FluidUi::UiLayer::render() {
 void FluidUi::UiLayer::initialize() {
     scenarios.window = window;
     scenarios.initialize();
+}
+
+void FluidUi::UiLayer::render_solver_parameters() {
+    ImGui::InputFloat("Gravity", &window->simulation.parameters.fluid_solver->parameters.gravity);
+    ImGui::InputFloat("Rest Density", &window->simulation.parameters.fluid_solver->parameters.rest_density);
+    ImGui::InputFloat("Particle Size", &window->simulation.parameters.fluid_solver->parameters.particle_size);
 }
