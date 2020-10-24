@@ -33,6 +33,10 @@ namespace FluidUi {
 
         bool running = false;
 
+        bool asynchronous_simulation = true;
+
+        bool is_done_working() const;
+
     private:
 
         void render_visualization_window();
@@ -47,6 +51,12 @@ namespace FluidUi {
 
 
         UiLayer uiLayer;
+
+        void sim_worker_thread_main();
+        std::thread sim_worker_thread;
+        bool sim_worker_thread_working = false;
+        bool sim_worker_thread_done = false;
+        bool sim_worker_thread_should_terminate = false;
 
     };
 }

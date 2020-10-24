@@ -42,7 +42,7 @@ void FluidUi::UiLayer::render() {
             this->window->running = false;
         }
 
-
+        ImGui::Checkbox("Asynchronous", &window->asynchronous_simulation);
     });
 
     BeginSubsection("Scenarios", [=]() {

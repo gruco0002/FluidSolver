@@ -70,6 +70,8 @@ public:
 
     void setRenderTargetSize(size_t width, size_t height) override;
 
+    void UpdateData() override;
+
 private:
 
    // FluidSolver::IParticleSelection *particleSelection = nullptr;

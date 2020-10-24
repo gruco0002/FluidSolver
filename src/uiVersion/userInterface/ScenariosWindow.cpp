@@ -10,7 +10,15 @@ void FluidUi::ScenariosWindow::render() {
     FLUID_ASSERT(window != nullptr)
 
     ImGui::ListBox("Scenarios", &current_item, scenarios.data(), scenarios.size());
-    if (ImGui::Button("(Re)Load Scenario")) {
+    if (window->asynchronous_simulation) {
+        if (window->running || !window->is_done_working()) {
+            ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Scenario Loading not possible");
+            ImGui::TextWrapped(
+                    "Since you are running the simulation in asynchronous mode, you cannot load a scenario if the simulation is running or has not stopped running!");
+        }
+    }
+    if (ImGui::Button("(Re)Load Scenario") &&
+        (!window->asynchronous_simulation || (!window->running && window->is_done_working()))) {
         load();
     }
 

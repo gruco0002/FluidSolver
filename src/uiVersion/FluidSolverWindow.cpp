@@ -7,8 +7,12 @@
 #include "ImguiHelper.hpp"
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <core/fluidSolver/SESPHFluidSolver.hpp>
+#include <thread>
+#include <chrono>
 
-FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
+FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
+        &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
+                                                                  height) {
 
 }
 
@@ -26,17 +30,30 @@ void FluidUi::FluidSolverWindow::load() {
 }
 
 void FluidUi::FluidSolverWindow::unload() {
+    sim_worker_thread_should_terminate = false;
+    sim_worker_thread.join();
     delete scenario;
     ImGuiHelper::Uninit();
 }
 
 void FluidUi::FluidSolverWindow::render() {
 
-    if (running) {
-        simulation.execute_simulation_step();
+
+    if (!sim_worker_thread_working && !sim_worker_thread_done) {
+        if (running) {
+            if (asynchronous_simulation) {
+                sim_worker_thread_working = true;
+            } else {
+                simulation.execute_simulation_step();
+            }
+        }
     }
 
-    simulation.visualize();
+    if(!sim_worker_thread_working && sim_worker_thread_done){
+        sim_worker_thread_done = false;
+    }
+
+    simulation.visualize(!sim_worker_thread_working);
     glFlush();
 
     // render to screen
@@ -74,9 +91,11 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.fluid_solver = new FluidSolver::IISPHFluidSolver();
     simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.01f);
-    simulation.parameters.gravity = 9.81f;
     simulation.parameters.visualizer = new ParticleRenderer();
+    simulation.parameters.gravity = 9.81f;
     simulation.parameters.invalidate = true;
+
+
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
@@ -142,4 +161,23 @@ void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
 void FluidUi::FluidSolverWindow::setup_windows() {
     uiLayer.window = this;
     uiLayer.initialize();
+}
+
+void FluidUi::FluidSolverWindow::sim_worker_thread_main() {
+    using namespace std::chrono_literals;
+    while (!sim_worker_thread_should_terminate) {
+        if (!running || !asynchronous_simulation) {
+            std::this_thread::sleep_for(100ms);
+        } else {
+            if (sim_worker_thread_working) {
+                simulation.execute_simulation_step();
+                sim_worker_thread_done = true;
+                sim_worker_thread_working = false;
+            }
+        }
+    }
+}
+
+bool FluidUi::FluidSolverWindow::is_done_working() const {
+    return !sim_worker_thread_working;
 }

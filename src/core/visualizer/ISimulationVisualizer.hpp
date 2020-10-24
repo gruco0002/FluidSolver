@@ -33,6 +33,8 @@ namespace FluidSolver {
 
         virtual void setRestDensity(float restDensity) = 0;
 
+        virtual void UpdateData() = 0;
+
         virtual void Render() = 0;
 
         virtual void setSimulationViewArea(SimulationViewArea viewArea) = 0;

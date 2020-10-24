@@ -9,7 +9,7 @@ void ParticleRenderer::Render() {
     glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    particleVertexArray->Update(nullptr);
+    //particleVertexArray->Update(nullptr);
 
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
@@ -337,6 +337,11 @@ glm::vec2 ParticleRenderer::ConvertPixelCoordinateToParticleSpace(size_t pixelX,
     // pos is the position in particle space
     glm::vec2 pos = glm::vec2(unprojected.x, unprojected.y);
     return pos;
+}
+
+void ParticleRenderer::UpdateData() {
+    FLUID_ASSERT(particleVertexArray != nullptr)
+    particleVertexArray->Update(nullptr);
 }
 /*
 void ParticleRenderer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
