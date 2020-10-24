@@ -25,6 +25,8 @@ namespace FluidSolver {
 
     /**
      * Interface for a fluid solver.
+     * This is only there to define how every fluid solver should be structured.
+     *
      * @tparam Kernel 2D SPH Kernel
      * @tparam NeighborhoodSearch An object that implements a neighborhood search on the particle collection
      * The objects has to implement the following behaviour:
@@ -54,6 +56,10 @@ namespace FluidSolver {
         Kernel kernel;
 
         NeighborhoodSearch neighborhood_search;
+
+        void prevent_inheritance(){
+            static_assert(false, "You should not use this to inherit from!");
+        }
 
     };
 

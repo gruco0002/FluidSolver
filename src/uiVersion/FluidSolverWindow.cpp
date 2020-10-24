@@ -30,7 +30,7 @@ void FluidUi::FluidSolverWindow::load() {
 }
 
 void FluidUi::FluidSolverWindow::unload() {
-    sim_worker_thread_should_terminate = false;
+    sim_worker_thread_should_terminate = true;
     sim_worker_thread.join();
     delete scenario;
     ImGuiHelper::Uninit();
