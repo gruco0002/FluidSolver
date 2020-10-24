@@ -9,9 +9,9 @@
 namespace FluidUi {
     class FluidSolverTypes {
     public:
-        enum SolverParameterType{
-            SolverParameterTypeIISPH,
-            SolverParameterTypeSESPH
+        enum SolverSettingsType {
+            SolverSettingsTypeIISPH,
+            SolverSettingsTypeSESPH
         };
 
         struct FluidSolverType {
@@ -22,9 +22,10 @@ namespace FluidUi {
 
             std::function<FluidSolver::IFluidSolverBase *()> create_type;
 
-            std::function<bool(const FluidSolver::IFluidSolverBase*)> is_type;
+            std::function<bool(const FluidSolver::IFluidSolverBase *)> is_type;
 
-            std::function<std::pair<SolverParameterType, void*>(FluidSolver::IFluidSolverBase*)> get_parameters;
+            SolverSettingsType settings_type;
+            std::function<void *(FluidSolver::IFluidSolverBase *)> get_settings;
 
         };
 

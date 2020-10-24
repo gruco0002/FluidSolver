@@ -29,9 +29,9 @@ void FluidUi::FluidSolverTypes::add_types() {
                                 return dynamic_cast<const SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b) !=
                                        nullptr;
                             },
+                            SolverSettingsTypeSESPH,
                             [](IFluidSolverBase *b) {
-                                return std::pair<SolverParameterType, void *>{SolverParameterTypeSESPH,
-                                                                              &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b)->parameters};
+                                return &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b)->settings;
                             }
                     });
 
@@ -46,9 +46,9 @@ void FluidUi::FluidSolverTypes::add_types() {
                                 return dynamic_cast<const SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b) !=
                                        nullptr;
                             },
+                            SolverSettingsTypeSESPH,
                             [](IFluidSolverBase *b) {
-                                return std::pair<SolverParameterType, void *>{SolverParameterTypeSESPH,
-                                                                              &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b)->parameters};
+                                return &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b)->settings;
                             }
                     });
 
@@ -63,9 +63,9 @@ void FluidUi::FluidSolverTypes::add_types() {
                                 return dynamic_cast<const IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b) !=
                                        nullptr;
                             },
+                            SolverSettingsTypeIISPH,
                             [](IFluidSolverBase *b) {
-                                return std::pair<SolverParameterType, void *>{SolverParameterTypeIISPH,
-                                                                              &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b)->parameters};
+                                return &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated> *>(b)->settings;
                             }
                     });
 
@@ -80,9 +80,9 @@ void FluidUi::FluidSolverTypes::add_types() {
                                 return dynamic_cast<const IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b) !=
                                        nullptr;
                             },
+                            SolverSettingsTypeIISPH,
                             [](IFluidSolverBase *b) {
-                                return std::pair<SolverParameterType, void *>{SolverParameterTypeIISPH,
-                                                                              &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b)->parameters};
+                                return &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b)->settings;
                             }
                     });
 }

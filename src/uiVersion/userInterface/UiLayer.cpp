@@ -4,6 +4,9 @@
 #include <functional>
 #include "uiVersion/FluidSolverWindow.hpp"
 
+#include "core/fluidSolver/SESPHFluidSolver.hpp"
+#include "core/fluidSolver/IISPHFluidSolver.hpp"
+
 
 static void BeginSubsection(const std::string &name, const std::function<void()> &fnc) {
     const ImGuiTreeNodeFlags treeNodeFlags =
@@ -25,7 +28,7 @@ static void BeginSubsection(const std::string &name, const std::function<void()>
 
 void FluidUi::UiLayer::render() {
 
-    ImGui::Begin("General");
+    ImGui::Begin("Properties");
 
     BeginSubsection("Simulation", [=]() {
 
@@ -120,6 +123,35 @@ void FluidUi::UiLayer::render() {
         }
 
     });
+
+    BeginSubsection("Timestep", [=]() {
+        // TODO
+        ImGui::Text("todo");
+    });
+
+    if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {
+        BeginSubsection("SESPH", [=]() {
+            auto v = (FluidSolver::SESPHSettings *) window->current_type->get_settings(
+                    window->simulation.parameters.fluid_solver);
+
+            ImGui::InputFloat("Viscosity", &v->Viscosity);
+            ImGui::InputFloat("Stiffness", &v->StiffnessK);
+        });
+    }
+
+    if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
+        BeginSubsection("IISPH", [=]() {
+            auto v = (FluidSolver::IISPHSettings *) window->current_type->get_settings(
+                    window->simulation.parameters.fluid_solver);
+
+            ImGui::InputFloat("Viscosity", &v->Viscosity);
+            ImGui::InputFloat("Max. Density Err.", &v->MaxDensityErrorAllowed);
+            ImGui::InputInt("Min. Iterations", (int *) &v->MinNumberOfIterations);
+            ImGui::InputInt("Max. Iterations", (int *) &v->MaxNumberOfIterations);
+            ImGui::InputFloat("Gamma", &v->Gamma);
+            ImGui::InputFloat("Omega", &v->Omega);
+        });
+    }
 
     ImGui::End();
 
