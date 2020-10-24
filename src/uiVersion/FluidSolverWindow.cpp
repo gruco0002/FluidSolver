@@ -5,8 +5,7 @@
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/timestep/ConstantTimestep.hpp>
 #include "ImguiHelper.hpp"
-#include <core/fluidSolver/IISPHFluidSolver.hpp>
-#include <core/fluidSolver/SESPHFluidSolver.hpp>
+
 #include <thread>
 #include <chrono>
 
@@ -17,6 +16,8 @@ FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int widt
 }
 
 void FluidUi::FluidSolverWindow::load() {
+    current_type = &solver_types.types[0];
+
     ImGuiHelper::Init(this->GetWindowHandler());
     set_default_simulation_parameters();
     load_scenario("../scenarios/boundaryTest.chai");
@@ -89,7 +90,7 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
 }
 
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
-    simulation.parameters.fluid_solver = new FluidSolver::IISPHFluidSolver();
+    simulation.parameters.fluid_solver = current_type->create_type();
     simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.01f);
     simulation.parameters.visualizer = new ParticleRenderer();
     simulation.parameters.gravity = 9.81f;

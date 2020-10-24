@@ -4,6 +4,7 @@
 #include <engine/Window.hpp>
 #include <engine/RectangleRenderer.hpp>
 #include "ParticleRenderer.hpp"
+#include "FluidSolverTypes.hpp"
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
 #include <core/scenario/Scenario.hpp>
@@ -36,6 +37,10 @@ namespace FluidUi {
         bool asynchronous_simulation = true;
 
         bool is_done_working() const;
+
+        const FluidSolverTypes solver_types;
+
+        const FluidSolverTypes::FluidSolverType* current_type = nullptr;
 
     private:
 
