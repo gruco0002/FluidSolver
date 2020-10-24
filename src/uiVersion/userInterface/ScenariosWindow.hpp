@@ -4,33 +4,34 @@
 #include <vector>
 #include <string>
 
-class FluidSolverWindow;
-class ScenariosWindow{
-public:
-    FluidSolverWindow* window = nullptr;
+namespace FluidUi {
+    class FluidSolverWindow;
 
-    void render();
+    class ScenariosWindow {
+    public:
+        FluidSolverWindow *window = nullptr;
 
-    void initialize();
+        void render();
 
-    ~ScenariosWindow();
+        void initialize();
 
-private:
-    std::vector<char*> scenarios;
+        ~ScenariosWindow();
 
-    std::string path = "../scenarios/";
+    private:
+        std::vector<char *> scenarios;
 
-    int current_item = 0;
+        std::string path = "../scenarios/";
 
-    bool initialized = false;
+        int current_item = 0;
 
-    void update_path();
+        bool initialized = false;
 
-    void load();
+        void update_path();
+
+        void load();
 
 
-
-} ;
-
+    };
+}
 
 #endif //FLUIDSOLVER_SCENARIOSWINDOW_HPP

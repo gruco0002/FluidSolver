@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
 
-        FluidSolverWindow window("FluidSolver");
+        FluidUi::FluidSolverWindow window("FluidSolver");
         window.MainLoop();
         return 0;
     }

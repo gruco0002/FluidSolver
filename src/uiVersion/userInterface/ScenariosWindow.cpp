@@ -5,20 +5,18 @@
 
 #include <filesystem>
 
-void ScenariosWindow::render() {
+void FluidUi::ScenariosWindow::render() {
     FLUID_ASSERT(initialized)
     FLUID_ASSERT(window != nullptr)
 
-    if (ImGui::Begin("Scenarios")) {
-        ImGui::ListBox("Scenarios", &current_item, scenarios.data(), scenarios.size());
-        if (ImGui::Button("(Re)Load Scenario")) {
-            load();
-        }
+    ImGui::ListBox("Scenarios", &current_item, scenarios.data(), scenarios.size());
+    if (ImGui::Button("(Re)Load Scenario")) {
+        load();
     }
-    ImGui::End();
+
 }
 
-void ScenariosWindow::initialize() {
+void FluidUi::ScenariosWindow::initialize() {
     FLUID_ASSERT(window != nullptr)
     FLUID_ASSERT(initialized == false)
     initialized = true;
@@ -26,7 +24,7 @@ void ScenariosWindow::initialize() {
     update_path();
 }
 
-void ScenariosWindow::update_path() {
+void FluidUi::ScenariosWindow::update_path() {
 
     for (auto ptr: scenarios)
         delete[] ptr;
@@ -47,7 +45,7 @@ void ScenariosWindow::update_path() {
 
 }
 
-void ScenariosWindow::load() {
+void FluidUi::ScenariosWindow::load() {
     FLUID_ASSERT(scenarios.size() > 0)
     FLUID_ASSERT(window != nullptr)
     FLUID_ASSERT(current_item >= 0)
@@ -56,7 +54,7 @@ void ScenariosWindow::load() {
     window->load_scenario(toLoad);
 }
 
-ScenariosWindow::~ScenariosWindow() {
+FluidUi::ScenariosWindow::~ScenariosWindow() {
     for (auto ptr: scenarios)
         delete[] ptr;
 }

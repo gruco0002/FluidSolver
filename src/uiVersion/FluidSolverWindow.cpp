@@ -8,11 +8,11 @@
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <core/fluidSolver/SESPHFluidSolver.hpp>
 
-FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
+FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : Window(title, width, height) {
 
 }
 
-void FluidSolverWindow::load() {
+void FluidUi::FluidSolverWindow::load() {
     ImGuiHelper::Init(this->GetWindowHandler());
     set_default_simulation_parameters();
     load_scenario("../scenarios/boundaryTest.chai");
@@ -25,12 +25,12 @@ void FluidSolverWindow::load() {
     setup_windows();
 }
 
-void FluidSolverWindow::unload() {
+void FluidUi::FluidSolverWindow::unload() {
     delete scenario;
     ImGuiHelper::Uninit();
 }
 
-void FluidSolverWindow::render() {
+void FluidUi::FluidSolverWindow::render() {
 
     if (running) {
         simulation.execute_simulation_step();
@@ -47,13 +47,13 @@ void FluidSolverWindow::render() {
     ImGuiHelper::PreRender();
 
     render_visualization_window();
-    scenarios_window.render();
+    uiLayer.render();
 
     ImGuiHelper::PostRender();
 
 }
 
-void FluidSolverWindow::load_scenario(const std::string &filepath) {
+void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
     delete scenario;
     scenario = nullptr;
     scenario = new FluidSolver::Scenario(filepath);
@@ -71,7 +71,7 @@ void FluidSolverWindow::load_scenario(const std::string &filepath) {
     std::cout << "Loaded " << scenario->data.name << std::endl;
 }
 
-void FluidSolverWindow::set_default_simulation_parameters() {
+void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.fluid_solver = new FluidSolver::IISPHFluidSolver();
     simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.01f);
     simulation.parameters.gravity = 9.81f;
@@ -79,7 +79,7 @@ void FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.invalidate = true;
 }
 
-void FluidSolverWindow::render_visualization_window() {
+void FluidUi::FluidSolverWindow::render_visualization_window() {
     ImGui::Begin("Simulation Visualization");
 
     auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation.parameters.visualizer);
@@ -131,7 +131,7 @@ void FluidSolverWindow::render_visualization_window() {
     ImGui::End();
 }
 
-void FluidSolverWindow::set_visualizer_parameters() {
+void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
     FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
     FLUID_ASSERT(scenario != nullptr);
     simulation.parameters.visualizer->setSimulationViewArea(
@@ -139,7 +139,7 @@ void FluidSolverWindow::set_visualizer_parameters() {
              scenario->data.viewport.bottom});
 }
 
-void FluidSolverWindow::setup_windows() {
-    scenarios_window.window = this;
-    scenarios_window.initialize();
+void FluidUi::FluidSolverWindow::setup_windows() {
+    uiLayer.window = this;
+    uiLayer.initialize();
 }
