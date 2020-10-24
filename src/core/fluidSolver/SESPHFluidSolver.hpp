@@ -9,6 +9,11 @@
 
 namespace FluidSolver {
 
+    struct SESPHSettings {
+        pFloat StiffnessK = 100000.0f;
+        pFloat Viscosity = 5.0f;
+    };
+
     template<typename Kernel = CubicSplineKernel, typename NeighborhoodSearch = QuadraticNeighborhoodSearchDynamicAllocated>
     class SESPHFluidSolver : public IFluidSolverBase {
     public:
@@ -36,11 +41,8 @@ namespace FluidSolver {
 
 
     public:
-        struct SESPHSettings {
-            pFloat StiffnessK = 100000.0f;
-            pFloat Viscosity = 5.0f;
-        } settings;
 
+        SESPHSettings settings;
 
     };
 

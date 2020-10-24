@@ -3,11 +3,17 @@
 
 #include <string>
 #include <functional>
+#include <tuple>
 #include "core/fluidSolver/IFluidSolver.hpp"
 
 namespace FluidUi {
     class FluidSolverTypes {
     public:
+        enum SolverParameterType{
+            SolverParameterTypeIISPH,
+            SolverParameterTypeSESPH
+        };
+
         struct FluidSolverType {
 
             std::string name_solver;
@@ -16,6 +22,9 @@ namespace FluidUi {
 
             std::function<FluidSolver::IFluidSolverBase *()> create_type;
 
+            std::function<bool(const FluidSolver::IFluidSolverBase*)> is_type;
+
+            std::function<std::pair<SolverParameterType, void*>(FluidSolver::IFluidSolverBase*)> get_parameters;
 
         };
 

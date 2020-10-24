@@ -8,6 +8,25 @@
 
 namespace FluidSolver {
 
+    struct IISPHSettings {
+        pFloat MaxDensityErrorAllowed = 0.001f;
+
+        size_t MinNumberOfIterations = 2;
+        size_t MaxNumberOfIterations = 100;
+
+        pFloat Omega = 0.5f;
+        pFloat Gamma = 0.7f;
+
+        pFloat Viscosity = 5.0f;
+    } ;
+
+    struct IISPHParticleData {
+        vec2 predicted_velocity;
+        pFloat source_term;
+        pFloat diagonal_element;
+    };
+
+
     template<typename Kernel = CubicSplineKernel, typename NeighborhoodSearch = QuadraticNeighborhoodSearchDynamicAllocated>
     class IISPHFluidSolver : public IFluidSolverBase {
     public:
@@ -42,23 +61,7 @@ namespace FluidSolver {
 
     public:
 
-        struct IISPHSettings {
-            pFloat MaxDensityErrorAllowed = 0.001f;
-
-            size_t MinNumberOfIterations = 2;
-            size_t MaxNumberOfIterations = 100;
-
-            pFloat Omega = 0.5f;
-            pFloat Gamma = 0.7f;
-
-            pFloat Viscosity = 5.0f;
-        } settings;
-
-        struct IISPHParticleData {
-            vec2 predicted_velocity;
-            pFloat source_term;
-            pFloat diagonal_element;
-        };
+        IISPHSettings settings;
 
         static void adapt_collection(ParticleCollection &collection);
 
