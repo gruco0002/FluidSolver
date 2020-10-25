@@ -1,5 +1,8 @@
 #include "ImguiHelper.hpp"
 #include "font/RobotoMedium.cpp"
+
+#include <GLFW/glfw3.h>
+
 void ImGuiHelper::Init(GLFWwindow *window) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -8,13 +11,20 @@ void ImGuiHelper::Init(GLFWwindow *window) {
     ImGuiIO &io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15);
+    float scaleX, scaleY;
+    glfwGetWindowContentScale(window, &scaleX, &scaleY);
+    float avgScale = (scaleX+scaleY)/2.0f;
+
+    io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15 * avgScale);
+
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330 core");
     // Setup Dear ImGui style
     ImGui::StyleColorsLight();
+
+    ImGui::GetStyle().ScaleAllSizes(avgScale);
 }
 
 void ImGuiHelper::Uninit() {
