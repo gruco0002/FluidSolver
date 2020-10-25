@@ -49,18 +49,17 @@ def loadParticles() {
 
 def loadEntities(){
 
-    var s = ParticleSpawner();
-    s.parameters.restDensity = scenarioInfo.restDensity;
-    s.parameters.particlesPerSecond = 30;
-    s.parameters.mass = getMass();
-    s.parameters.initialVelocity.x = 0.0f;
-    s.parameters.initialVelocity.y = -1.0f;
-    s.parameters.area.top = 4.0f;
-    s.parameters.area.bottom = 0.0f;
-    s.parameters.area.left = -5.0f;
-    s.parameters.area.right = 5.0f;
+    var s = addParticleSpawner();
+    s.restDensity = scenarioInfo.restDensity;
+    s.particlesPerSecond = 30;
+    s.mass = getMass();
+    s.initialVelocity.x = 0.0f;
+    s.initialVelocity.y = -1.0f;
+    s.area.top = 4.0f;
+    s.area.bottom = 0.0f;
+    s.area.left = -5.0f;
+    s.area.right = 5.0f;
 
-    addEntity(s);
 
 }
 

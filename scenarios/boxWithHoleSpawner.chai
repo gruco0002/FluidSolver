@@ -86,26 +86,24 @@ def loadParticles() {
 
 def loadEntities(){
 
-    var s = ParticleSpawner();
-    s.parameters.restDensity = scenarioInfo.restDensity;
-    s.parameters.particlesPerSecond = 40;
-    s.parameters.mass = getMass();
-    s.parameters.initialVelocity.x = 0.0f;
-    s.parameters.initialVelocity.y = -6.0f;
-    s.parameters.area.top = 25.0f;
-    s.parameters.area.bottom = 22.0f;
-    s.parameters.area.left = -18.0f;
-    s.parameters.area.right = -10.0f;
-    addEntity(s);
+    var s = addParticleSpawner();
+    s.restDensity = scenarioInfo.restDensity;
+    s.particlesPerSecond = 40;
+    s.mass = getMass();
+    s.initialVelocity.x = 0.0f;
+    s.initialVelocity.y = -6.0f;
+    s.area.top = 25.0f;
+    s.area.bottom = 22.0f;
+    s.area.left = -18.0f;
+    s.area.right = -10.0f;
 
 
-    var r = ParticleRemover();
-    r.parameters.area.top = 30.0f;
-    r.parameters.area.bottom = -18.0f;
-    r.parameters.area.left = -25.0f;
-    r.parameters.area.right = 15.0f;
-    r.parameters.remove_if_outside = true;
-    addEntity(r);
+    var r = addParticleRemover();
+    r.area.top = 30.0f;
+    r.area.bottom = -18.0f;
+    r.area.left = -25.0f;
+    r.area.right = 15.0f;
+    r.remove_if_outside = true;
 
 }
 

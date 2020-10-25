@@ -24,6 +24,8 @@ namespace FluidSolver {
 
         std::vector<IEntity *> entities;
 
+        ~ScenarioData();
+
     };
 
 }
