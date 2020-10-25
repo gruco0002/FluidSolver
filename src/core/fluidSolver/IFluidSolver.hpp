@@ -57,9 +57,7 @@ namespace FluidSolver {
 
         NeighborhoodSearch neighborhood_search;
 
-        void prevent_inheritance(){
-            static_assert(false, "You should not use this to inherit from!");
-        }
+        static_assert((sizeof(Kernel) + sizeof(NeighborhoodSearch)) == 0, "You should not use this to inherit from!");
 
     };
 

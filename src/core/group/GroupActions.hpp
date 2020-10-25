@@ -42,10 +42,10 @@ namespace FluidSolver::GroupActions {
     template<typename Group>
     void set_type(const Group &group, ParticleType type) {
         FLUID_ASSERT(group.collection != nullptr)
-        FLUID_ASSERT(group.collection->is_type_present<ParticleInfo>())
+        FLUID_ASSERT(group.collection->template is_type_present<ParticleInfo>())
 
         for (pIndex_t index : group) {
-            group.collection->get<ParticleInfo>(index).type = type;
+            group.collection->template get<ParticleInfo>(index).type = type;
         }
     }
 
