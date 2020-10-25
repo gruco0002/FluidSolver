@@ -9,13 +9,7 @@ namespace FluidSolver {
     public:
 
         struct Parameters {
-            struct Area {
-                float left;
-                float right;
-
-                float bottom;
-                float top;
-            } area = {};
+            Area area = {};
 
             float particles_per_second = 0.0f;
             vec2 initial_velocity = vec2(0.0f);
@@ -27,7 +21,6 @@ namespace FluidSolver {
         void initialize() override;
 
         void execute_simulation_step(pFloat timestep) override;
-
 
 
     private:

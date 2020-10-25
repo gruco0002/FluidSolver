@@ -65,3 +65,19 @@ FluidSolver::RectangleAreaGroup::RectangleAreaGroupIterator FluidSolver::Rectang
     it.current = collection->size();
     return it;
 }
+
+FluidSolver::RectangleAreaGroup::RectangleAreaGroupIterator FluidSolver::RectangleAreaGroup::begin() const {
+    RectangleAreaGroupIterator it;
+    it.current = -1;
+    it.data = this;
+    ++it;
+    return it;
+}
+
+FluidSolver::RectangleAreaGroup::RectangleAreaGroupIterator FluidSolver::RectangleAreaGroup::end() const {
+    FLUID_ASSERT(collection != nullptr)
+    RectangleAreaGroupIterator it;
+    it.data = this;
+    it.current = collection->size();
+    return it;
+}

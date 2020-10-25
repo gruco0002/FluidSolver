@@ -1,0 +1,113 @@
+/*
+Box with hole scenario
+*/
+
+scenarioInfo.scenarioName = "Box with Hole Scenario Spawner";
+scenarioInfo.restDensity = 1.0f;
+scenarioInfo.particleSize = 1.0f;
+
+scenarioViewport.left = -20.0;
+scenarioViewport.right = 10.0;
+scenarioViewport.top = 25.0;
+scenarioViewport.bottom = -20.0;
+
+def getMass() {
+    return scenarioInfo.restDensity * (scenarioInfo.particleSize * scenarioInfo.particleSize);
+}
+
+def loadParticles() {
+
+    // bottom boundary
+    for (var x = -23; x <= 12; ++x) {
+        if (x >= -1 && x <= 1) {
+            // hole
+            continue;
+        }
+
+        var p = Particle();
+        p.x = x;
+        p.y =  -14;
+        p.type = TYPE_BOUNDARY;
+        p.mass = getMass();
+        p.density = scenarioInfo.restDensity;
+        addParticle(p);
+        p.y =  -15;
+        addParticle(p);
+        p.y =  -16;
+        addParticle(p);
+
+    }
+
+    // left boundary
+    for (var y = 20; y >= -13; --y) {
+        var p = Particle();
+        p.x = -21;
+        p.y = y;
+        p.type = TYPE_BOUNDARY;
+        p.mass = getMass();
+        p.density = scenarioInfo.restDensity;
+        addParticle(p);
+        p.x = -22;
+        addParticle(p);
+        p.x = -23;
+        addParticle(p);
+
+    }
+
+    // right boundary
+    for (var y = 20; y >= -13; --y) {
+        var p = Particle();
+        p.x = 10;
+        p.y = y;
+        p.type = TYPE_BOUNDARY;
+        p.mass = getMass();
+        p.density = scenarioInfo.restDensity;
+        addParticle(p);
+        p.x = 11;
+        addParticle(p);
+        p.x = 12;
+        addParticle(p);
+    }
+
+    // normal particles
+    for (var x = -20; x <= 0; ++x) {
+        for (var y = 7; y >= -13; --y) {
+            var p = Particle();
+            p.x = x;
+            p.y = y;
+            p.type = TYPE_NORMAL;
+            p.mass = getMass();
+            p.density = scenarioInfo.restDensity;
+            addParticle(p);
+        }
+    }
+
+}
+
+def loadEntities(){
+
+    var s = ParticleSpawner();
+    s.parameters.restDensity = scenarioInfo.restDensity;
+    s.parameters.particlesPerSecond = 40;
+    s.parameters.mass = getMass();
+    s.parameters.initialVelocity.x = 0.0f;
+    s.parameters.initialVelocity.y = -6.0f;
+    s.parameters.area.top = 25.0f;
+    s.parameters.area.bottom = 22.0f;
+    s.parameters.area.left = -18.0f;
+    s.parameters.area.right = -10.0f;
+    addEntity(s);
+
+
+    var r = ParticleRemover();
+    r.parameters.area.top = 30.0f;
+    r.parameters.area.bottom = -18.0f;
+    r.parameters.area.left = -25.0f;
+    r.parameters.area.right = 15.0f;
+    r.parameters.remove_if_outside = true;
+    addEntity(r);
+
+}
+
+loadParticles();
+loadEntities();

@@ -1,3 +1,4 @@
+#include <core/entities/ParticleRemover.hpp>
 #include "ScriptInterface.hpp"
 #include "chaiscript/chaiscript.hpp"
 #include "core/entities/IEntity.hpp"
@@ -58,19 +59,19 @@ void FluidSolver::ScriptInterface::make_available() {
                                                            });
 
 
-    chaiscript::utility::add_class<ParticleSpawner::Parameters::Area>(*m, "ParticleSpawnerParametersArea",
-                                                                      {
-                                                                      },
-                                                                      {
-                                                                              {chaiscript::fun(
-                                                                                      &ParticleSpawner::Parameters::Area::bottom), "bottom"},
-                                                                              {chaiscript::fun(
-                                                                                      &ParticleSpawner::Parameters::Area::top),    "top"},
-                                                                              {chaiscript::fun(
-                                                                                      &ParticleSpawner::Parameters::Area::left),   "left"},
-                                                                              {chaiscript::fun(
-                                                                                      &ParticleSpawner::Parameters::Area::right),  "right"},
-                                                                      });
+    chaiscript::utility::add_class<Area>(*m, "Area",
+                                         {
+                                         },
+                                         {
+                                                 {chaiscript::fun(
+                                                         &Area::bottom), "bottom"},
+                                                 {chaiscript::fun(
+                                                         &Area::top),    "top"},
+                                                 {chaiscript::fun(
+                                                         &Area::left),   "left"},
+                                                 {chaiscript::fun(
+                                                         &Area::right),  "right"},
+                                         });
 
 
     chaiscript::utility::add_class<ParticleSpawner::Parameters>(*m, "ParticleSpawnerParameters",
@@ -99,6 +100,28 @@ void FluidSolver::ScriptInterface::make_available() {
                                                     });
 
     m->add(chaiscript::base_class<IEntity, ParticleSpawner>());
+
+    chaiscript::utility::add_class<ParticleRemover::Parameters>(*m, "ParticleRemoverParameters",
+                                                                {
+                                                                },
+                                                                {
+                                                                        {chaiscript::fun(
+                                                                                &ParticleRemover::Parameters::area),              "area"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleRemover::Parameters::remove_if_outside), "remove_if_outside"},
+
+                                                                });
+
+    chaiscript::utility::add_class<ParticleRemover>(*m, "ParticleRemover",
+                                                    {
+                                                            chaiscript::constructor<ParticleRemover()>()
+                                                    },
+                                                    {
+                                                            {chaiscript::fun(
+                                                                    &ParticleRemover::parameters), "parameters"},
+                                                    });
+
+    m->add(chaiscript::base_class<IEntity, ParticleRemover>());
 
     auto &chai = getRef(chai_ptr);
     chai.add(m);

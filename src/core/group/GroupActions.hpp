@@ -50,7 +50,7 @@ namespace FluidSolver::GroupActions {
     }
 
     template<typename Group>
-    void remove(const Group &group, ParticleType type) {
+    void remove(const Group &group) {
         set_type<Group>(group, ParticleType::ParticleTypeDead);
     }
 

@@ -19,6 +19,13 @@ namespace FluidSolver {
     using pFloat = float;
     using vec2 = glm::vec2;
 
+    struct Area {
+        float left;
+        float right;
+
+        float bottom;
+        float top;
+    };
 
 }
 

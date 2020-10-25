@@ -8,13 +8,7 @@ namespace FluidSolver {
 
     class RectangleAreaGroup {
     public:
-        struct Rectangle {
-            pFloat left;
-            pFloat right;
-
-            pFloat bottom;
-            pFloat top;
-        } area = {};
+        Area area = {};
 
         bool inside = false;
 
@@ -40,7 +34,7 @@ namespace FluidSolver {
         using reference = T &;
 
         struct RectangleAreaGroupIterator {
-            RectangleAreaGroup *data;
+            const RectangleAreaGroup *data;
             T current;
 
             bool operator==(const RectangleAreaGroupIterator &other) const;
@@ -59,6 +53,9 @@ namespace FluidSolver {
 
         RectangleAreaGroupIterator end();
 
+        RectangleAreaGroupIterator begin() const;
+
+        RectangleAreaGroupIterator end() const;
 
     };
 
