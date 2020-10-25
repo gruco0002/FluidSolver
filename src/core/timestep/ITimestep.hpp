@@ -7,25 +7,20 @@ namespace FluidSolver {
     class ITimestep {
 
     protected:
-        ParticleCollection *particleCollection = nullptr;
 
-        float ParticleSize = 1.0f;
-    public:
-        float getParticleSize() const;
-
-        void setParticleSize(float particleSize);
+        float current_timestep = 0.0f;
 
     public:
+        struct TimestepParameters {
+            ParticleCollection *particle_collection = nullptr;
+            float particle_size = 1.0f;
+        } parameters;
 
-        virtual ParticleCollection *getParticleCollection();
+        virtual void calculate_current_timestep() = 0;
 
-        virtual void setParticleCollection(ParticleCollection *particleCollection);
+        float get_current_timestep() const;
 
-        virtual void CalculateCurrentTimestep() = 0;
-
-        virtual float getCurrentTimestep() = 0;
-
-        virtual ~ITimestep();
+        virtual ~ITimestep() = default;
     };
 }
 

@@ -1,19 +1,5 @@
 #include "ConstantTimestep.hpp"
 
-void FluidSolver::ConstantTimestep::CalculateCurrentTimestep() {
-    // do nothing
+void FluidSolver::ConstantTimestep::calculate_current_timestep() {
+    current_timestep = settings.timestep;
 }
-
-float FluidSolver::ConstantTimestep::getCurrentTimestep() {
-    return Timestep;
-}
-
-float FluidSolver::ConstantTimestep::getTimestep() const {
-    return Timestep;
-}
-
-void FluidSolver::ConstantTimestep::setTimestep(float timestep) {
-    ConstantTimestep::Timestep = Timestep;
-}
-
-FluidSolver::ConstantTimestep::ConstantTimestep(float timestep) : Timestep(timestep) {}

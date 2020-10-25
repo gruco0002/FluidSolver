@@ -5,40 +5,19 @@
 
 namespace FluidSolver {
     class DynamicCFLTimestep : public ITimestep {
-
-    private:
-        float currentTimestep = 0.0f;
-
-
     public:
-        float MaximumTimestep = 0.02f;
-        float MinimumTimestep = 0.0001f;
-        float CFLNumber = 0.8f;
 
-        DynamicCFLTimestep(float maximumTimestep, float minimumTimestep, float cflNumber);
+        struct DynamicCFLTimestepSettings{
+            float max_timestep = 0.02f;
+            float min_timestep = 0.0001f;
+            float cfl_number = 0.8f;
+        }settings;
 
-        explicit DynamicCFLTimestep();
-
-        float getMaximumTimestep() const;
-
-        void setMaximumTimestep(float maximumTimestep);
-
-        float getMinimumTimestep() const;
-
-        void setMinimumTimestep(float minimumTimestep);
-
-        float getCflNumber() const;
-
-        void setCflNumber(float cflNumber);
+        void calculate_current_timestep() override;
 
     private:
 
-        float CalculateMaximumVelocity();
-
-    public:
-        void CalculateCurrentTimestep() override;
-
-        float getCurrentTimestep() override;
+        float calculate_maximum_velocity();
 
     };
 }

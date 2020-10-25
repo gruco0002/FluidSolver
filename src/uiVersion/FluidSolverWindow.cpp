@@ -91,7 +91,7 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
 
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = new FluidSolver::ConstantTimestep(0.01f);
+    simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
     simulation.parameters.visualizer = new ParticleRenderer();
     simulation.parameters.gravity = 9.81f;
     simulation.parameters.invalidate = true;

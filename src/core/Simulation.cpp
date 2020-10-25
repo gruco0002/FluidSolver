@@ -32,8 +32,8 @@ void FluidSolver::Simulation::execute_simulation_step() {
 
 
     // calculate timestep
-    internal_parameters.timestep->CalculateCurrentTimestep();
-    float current_timestep = internal_parameters.timestep->getCurrentTimestep();
+    internal_parameters.timestep->calculate_current_timestep();
+    float current_timestep = internal_parameters.timestep->get_current_timestep();
 
     // simulate
     internal_parameters.fluid_solver->execute_simulation_step(current_timestep);
@@ -70,8 +70,8 @@ void FluidSolver::Simulation::initialize() {
     }
 
     if (internal_parameters.timestep != nullptr) {
-        internal_parameters.timestep->setParticleSize(internal_parameters.particle_size);
-        internal_parameters.timestep->setParticleCollection(internal_parameters.collection);
+        internal_parameters.timestep->parameters.particle_size = internal_parameters.particle_size;
+        internal_parameters.timestep->parameters.particle_collection = internal_parameters.collection;
     }
 
     for (auto ent: internal_parameters.entities) {

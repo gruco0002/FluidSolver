@@ -5,24 +5,15 @@
 
 namespace FluidSolver {
     class ConstantTimestep : public ITimestep {
-
-
     public:
-        float Timestep = 0.001f;
 
-        float getTimestep() const;
+        struct ConstantTimestepSettings {
+            float timestep = 0.001f;
+        } settings;
 
-        void setTimestep(float timestep);
-
-        void CalculateCurrentTimestep() override;
-
-        float getCurrentTimestep() override;
-
-        explicit ConstantTimestep(float timestep);
-
+        void calculate_current_timestep() override;
 
     };
 }
-
 
 #endif //FLUIDSOLVER_CONSTANTTIMESTEP_HPP
