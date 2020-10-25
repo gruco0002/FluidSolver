@@ -10,6 +10,7 @@
 #include <core/scenario/Scenario.hpp>
 #include <uiVersion/userInterface/ScenariosWindow.hpp>
 #include <uiVersion/userInterface/UiLayer.hpp>
+#include <thread>
 
 namespace FluidUi {
     class FluidSolverWindow : public Engine::Window {
