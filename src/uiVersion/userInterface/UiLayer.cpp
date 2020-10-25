@@ -7,6 +7,8 @@
 #include "core/fluidSolver/SESPHFluidSolver.hpp"
 #include "core/fluidSolver/IISPHFluidSolver.hpp"
 
+#include "core/timestep/ConstantTimestep.hpp"
+#include "core/timestep/DynamicCFLTimestep.hpp"
 
 static void BeginSubsection(const std::string &name, const std::function<void()> &fnc) {
     const ImGuiTreeNodeFlags treeNodeFlags =
@@ -125,8 +127,58 @@ void FluidUi::UiLayer::render() {
     });
 
     BeginSubsection("Timestep", [=]() {
-        // TODO
-        ImGui::Text("todo");
+        auto ct = dynamic_cast<FluidSolver::ConstantTimestep *>(window->simulation.parameters.timestep);
+        auto dt = dynamic_cast<FluidSolver::DynamicCFLTimestep *>(window->simulation.parameters.timestep);
+
+        if (ImGui::BeginCombo("Type", ct ? "Constant" : "Dynamic CFL")) {
+            if (ImGui::Selectable("Constant", ct != nullptr)) {
+                if (ct == nullptr) {
+                    ct = nullptr;
+                    dt = nullptr;
+                    delete window->simulation.parameters.timestep;
+
+                    ct = new FluidSolver::ConstantTimestep();
+                    window->simulation.parameters.timestep = ct;
+                    window->simulation.parameters.invalidate = true;
+                }
+            }
+            if (ImGui::Selectable("Dynamic CFL", dt != nullptr)) {
+                if (dt == nullptr) {
+                    ct = nullptr;
+                    dt = nullptr;
+
+                    delete window->simulation.parameters.timestep;
+                    dt = new FluidSolver::DynamicCFLTimestep();
+                    window->simulation.parameters.timestep = dt;
+                    window->simulation.parameters.invalidate = true;
+                }
+            }
+            ImGui::EndCombo();
+        }
+
+        if (ct) {
+            if (ImGui::InputFloat("Timestep", &ct->settings.timestep, 0.0f, 0.0f, "%.5f")) {
+                ct->settings.timestep = std::max(ct->settings.timestep, 0.00001f);
+            }
+            if (ImGui::Button("Reset")) {
+                ct->settings = FluidSolver::ConstantTimestep::ConstantTimestepSettings();
+            }
+        }
+
+        if (dt) {
+            if (ImGui::InputFloat("Min. Timestep", &dt->settings.min_timestep, 0.0f, 0.0f, "%.5f")) {
+                dt->settings.min_timestep = std::max(dt->settings.min_timestep, 0.00001f);
+                dt->settings.max_timestep = std::max(dt->settings.min_timestep, dt->settings.max_timestep);
+            }
+            if (ImGui::InputFloat("Max. Timestep", &dt->settings.max_timestep, 0.0f, 0.0f, "%.5f")) {
+                dt->settings.max_timestep = std::max(dt->settings.max_timestep, 0.00001f);
+                dt->settings.min_timestep = std::min(dt->settings.min_timestep, dt->settings.max_timestep);
+            }
+            ImGui::InputFloat("CFL Number", &dt->settings.cfl_number);
+            if (ImGui::Button("Reset")) {
+                dt->settings = FluidSolver::DynamicCFLTimestep::DynamicCFLTimestepSettings();
+            }
+        }
     });
 
     if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {

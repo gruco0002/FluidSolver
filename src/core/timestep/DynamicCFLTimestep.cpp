@@ -19,7 +19,7 @@ float FluidSolver::DynamicCFLTimestep::calculate_maximum_velocity() {
 
 void FluidSolver::DynamicCFLTimestep::calculate_current_timestep() {
     FLUID_ASSERT(parameters.particle_size > 0.0f)
-    
+
     float maxVelocity = calculate_maximum_velocity();
     float timestep = settings.min_timestep;
     if (maxVelocity > std::numeric_limits<float>::epsilon()) {
