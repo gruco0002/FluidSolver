@@ -11,9 +11,13 @@ void ImGuiHelper::Init(GLFWwindow *window) {
     ImGuiIO &io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
+    #ifdef WIN32
     float scaleX, scaleY;
     glfwGetWindowContentScale(window, &scaleX, &scaleY);
     float avgScale = (scaleX+scaleY)/2.0f;
+    #else
+    float avgScale = 1.0f;
+    #endif
 
     io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15 * avgScale);
 
