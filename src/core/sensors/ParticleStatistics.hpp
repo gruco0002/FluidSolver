@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_PARTICLESTATISTICS_HPP
 
 #include "../fluidSolver/ParticleCollection.hpp"
+#include "ISensor.hpp"
 
 namespace FluidSolver {
     struct ParticleStatistics {
@@ -23,6 +24,14 @@ namespace FluidSolver {
         float max_velocity;
 
        static ParticleStatistics fill_data(ParticleCollection *collection);
+    };
+
+    class ParticleStatisticsSensor : public ISensor{
+    public:
+
+        void initialize() override;
+
+        void calculate_and_store(float timestep) override;
     };
 
 }

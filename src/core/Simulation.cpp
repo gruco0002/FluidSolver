@@ -1,7 +1,7 @@
 #include "Simulation.hpp"
 
-bool FluidSolver::Simulation::SimulationParameters::operator==(
-        const FluidSolver::Simulation::SimulationParameters &other) const {
+bool FluidSolver::SimulationParameters::operator==(
+        const FluidSolver::SimulationParameters &other) const {
     return other.fluid_solver == fluid_solver
            && other.collection == collection
            && other.particle_size == particle_size
@@ -13,8 +13,8 @@ bool FluidSolver::Simulation::SimulationParameters::operator==(
            && other.entities == entities;
 }
 
-bool FluidSolver::Simulation::SimulationParameters::operator!=(
-        const FluidSolver::Simulation::SimulationParameters &other) const {
+bool FluidSolver::SimulationParameters::operator!=(
+        const FluidSolver::SimulationParameters &other) const {
     return !(*this == other);
 }
 

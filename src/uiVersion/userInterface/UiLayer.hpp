@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_UILAYER_HPP
 
 #include "ScenariosWindow.hpp"
+#include "StatisticsUi.hpp"
 
 namespace FluidUi {
     class FluidSolverWindow;
@@ -17,6 +18,7 @@ namespace FluidUi {
 
     private:
         ScenariosWindow scenarios;
+        StatisticsUi statisticsUi;
 
         void render_solver_parameters();
 

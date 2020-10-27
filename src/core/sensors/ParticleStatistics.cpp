@@ -2,6 +2,7 @@
 #include "core/FluidAssert.hpp"
 #include <algorithm>
 
+#include "core/Simulation.hpp"
 
 FluidSolver::ParticleStatistics
 FluidSolver::ParticleStatistics::fill_data(FluidSolver::ParticleCollection *collection) {
@@ -54,4 +55,16 @@ FluidSolver::ParticleStatistics::fill_data(FluidSolver::ParticleCollection *coll
     }
 
     return s;
+}
+
+void FluidSolver::ParticleStatisticsSensor::initialize() {
+    FLUID_ASSERT(simulation_parameters != nullptr)
+    FLUID_ASSERT(storage != nullptr)
+    storage->add_type<ParticleStatistics>("Particle Statistics Data");
+}
+
+void FluidSolver::ParticleStatisticsSensor::calculate_and_store(float timestep) {
+    auto stat = ParticleStatistics::fill_data(simulation_parameters->collection);
+    storage->push_back(stat);
+
 }

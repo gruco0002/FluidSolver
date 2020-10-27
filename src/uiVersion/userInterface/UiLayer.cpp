@@ -30,6 +30,8 @@ static void BeginSubsection(const std::string &name, const std::function<void()>
 
 void FluidUi::UiLayer::render() {
 
+    statisticsUi.render();
+
     ImGui::Begin("Properties");
 
     BeginSubsection("Simulation", [=]() {
@@ -217,6 +219,8 @@ void FluidUi::UiLayer::render() {
 void FluidUi::UiLayer::initialize() {
     scenarios.window = window;
     scenarios.initialize();
+    statisticsUi.window = window;
+    statisticsUi.initialize();
 }
 
 void FluidUi::UiLayer::render_solver_parameters() {

@@ -7,27 +7,29 @@
 #include <core/entities/IEntity.hpp>
 
 namespace FluidSolver {
+    struct SimulationParameters {
+        float particle_size = 1.0f;
+        float rest_density = 1.0f;
+        float gravity = 9.81f;
+        ParticleCollection *collection = nullptr;
+        IFluidSolverBase *fluid_solver = nullptr;
+        ISimulationVisualizer *visualizer = nullptr;
+        ITimestep *timestep = nullptr;
+
+        std::vector<IEntity *> entities;
+
+        bool invalidate = false;
+
+        bool operator==(const SimulationParameters &other) const;
+
+        bool operator!=(const SimulationParameters &other) const;
+
+    };
+
     class Simulation {
 
     public:
-        struct SimulationParameters {
-            float particle_size = 1.0f;
-            float rest_density = 1.0f;
-            float gravity = 9.81f;
-            ParticleCollection *collection = nullptr;
-            IFluidSolverBase *fluid_solver = nullptr;
-            ISimulationVisualizer *visualizer = nullptr;
-            ITimestep *timestep = nullptr;
-
-            std::vector<IEntity *> entities;
-
-            bool invalidate = false;
-
-            bool operator==(const SimulationParameters &other) const;
-
-            bool operator!=(const SimulationParameters &other) const;
-
-        } parameters;
+        SimulationParameters parameters;
 
 
         void execute_simulation_step();

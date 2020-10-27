@@ -137,11 +137,11 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/FluidAssert.hpp
         core/fluidSolver/ParticleCollectionAlgorithm.cpp
         core/fluidSolver/ParticleCollectionAlgorithm.hpp
-        core/statistics/Statistics.cpp
-        core/statistics/Statistics.hpp
-        core/statistics/ParticleStatistics.cpp
-        core/statistics/ParticleStatistics.hpp
-        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp core/group/GroupActions.cpp core/group/GroupActions.hpp core/group/RectangleAreaGroup.cpp core/group/RectangleAreaGroup.hpp core/group/TagGroup.cpp core/group/TagGroup.hpp core/entities/ParticleSpawner.cpp core/entities/ParticleSpawner.hpp core/entities/IEntity.hpp uiVersion/userInterface/UiLayer.cpp uiVersion/userInterface/UiLayer.hpp uiVersion/FluidSolverTypes.cpp uiVersion/FluidSolverTypes.hpp core/entities/ParticleRemover.cpp core/entities/ParticleRemover.hpp)
+        core/sensors/SensorDataStorage.cpp
+        core/sensors/SensorDataStorage.hpp
+        core/sensors/ParticleStatistics.cpp
+        core/sensors/ParticleStatistics.hpp
+        core/FluidTypes.hpp core/FluidInclude.hpp uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp core/scenario/Scenario.cpp core/scenario/Scenario.hpp core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp core/group/GroupActions.cpp core/group/GroupActions.hpp core/group/RectangleAreaGroup.cpp core/group/RectangleAreaGroup.hpp core/group/TagGroup.cpp core/group/TagGroup.hpp core/entities/ParticleSpawner.cpp core/entities/ParticleSpawner.hpp core/entities/IEntity.hpp uiVersion/userInterface/UiLayer.cpp uiVersion/userInterface/UiLayer.hpp uiVersion/FluidSolverTypes.cpp uiVersion/FluidSolverTypes.hpp core/entities/ParticleRemover.cpp core/entities/ParticleRemover.hpp uiVersion/userInterface/StatisticsUi.cpp uiVersion/userInterface/StatisticsUi.hpp core/sensors/ISensor.hpp)
 
 
 add_library(FluidSolver ${FLUID_SOLVER_SOURCE_FILES})

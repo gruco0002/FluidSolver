@@ -7,17 +7,19 @@ void ImGuiHelper::Init(GLFWwindow *window) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
+
 
     ImGuiIO &io = ImGui::GetIO();
     //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-    #ifdef WIN32
+#ifdef WIN32
     float scaleX, scaleY;
     glfwGetWindowContentScale(window, &scaleX, &scaleY);
-    float avgScale = (scaleX+scaleY)/2.0f;
-    #else
+    float avgScale = (scaleX + scaleY) / 2.0f;
+#else
     float avgScale = 1.0f;
-    #endif
+#endif
 
     io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15 * avgScale);
 
@@ -34,6 +36,8 @@ void ImGuiHelper::Init(GLFWwindow *window) {
 void ImGuiHelper::Uninit() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 }
 
