@@ -8,6 +8,7 @@
 
 #include <thread>
 #include <chrono>
+#include <core/sensors/ParticleStatistics.hpp>
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
         &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
@@ -50,7 +51,7 @@ void FluidUi::FluidSolverWindow::render() {
         }
     }
 
-    if(!sim_worker_thread_working && sim_worker_thread_done){
+    if (!sim_worker_thread_working && sim_worker_thread_done) {
         sim_worker_thread_done = false;
     }
 
@@ -84,6 +85,8 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
     simulation.parameters.entities = scenario->data.entities;
     simulation.parameters.invalidate = true;
 
+    simulation.parameters.sensor_storage->clear();
+
     set_visualizer_parameters();
 
     std::cout << "Loaded " << scenario->data.name << std::endl;
@@ -94,9 +97,11 @@ void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
     simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
     simulation.parameters.visualizer = new ParticleRenderer();
     simulation.parameters.gravity = 9.81f;
+
+    simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
+    simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
+
     simulation.parameters.invalidate = true;
-
-
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
