@@ -10,7 +10,9 @@ bool FluidSolver::SimulationParameters::operator==(
            && other.gravity == gravity
            && other.visualizer == visualizer
            && other.invalidate == invalidate
-           && other.entities == entities;
+           && other.entities == entities
+           && other.sensor_storage == sensor_storage
+           && other.sensors == sensors;
 }
 
 bool FluidSolver::SimulationParameters::operator!=(
@@ -43,6 +45,13 @@ void FluidSolver::Simulation::execute_simulation_step() {
         ent->execute_simulation_step(current_timestep);
     }
 
+    // measure sensor data
+    if (internal_parameters.sensor_storage != nullptr) {
+        internal_parameters.sensor_storage->simulation_time += current_timestep;
+    }
+    for (auto sen: internal_parameters.sensors) {
+        sen->calculate_and_store(current_timestep);
+    }
 
 }
 
@@ -75,8 +84,17 @@ void FluidSolver::Simulation::initialize() {
     }
 
     for (auto ent: internal_parameters.entities) {
+        FLUID_ASSERT(ent != nullptr)
         ent->collection = internal_parameters.collection;
         ent->initialize();
+    }
+
+    for (auto sen: internal_parameters.sensors) {
+        FLUID_ASSERT(internal_parameters.sensor_storage != nullptr)
+        FLUID_ASSERT(sen != nullptr)
+        sen->simulation_parameters = &internal_parameters;
+        sen->storage = internal_parameters.sensor_storage;
+        sen->initialize();
     }
 
 }

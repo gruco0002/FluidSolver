@@ -106,6 +106,7 @@ namespace FluidSolver {
             for (auto &[key, value]: data) {
                 value.internal_clear();
             }
+            simulation_time = 0.0f;
         }
 
         template<typename T>

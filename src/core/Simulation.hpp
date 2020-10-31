@@ -5,6 +5,7 @@
 #include <core/fluidSolver/IFluidSolver.hpp>
 #include <core/timestep/ITimestep.hpp>
 #include <core/entities/IEntity.hpp>
+#include <core/sensors/ISensor.hpp>
 
 namespace FluidSolver {
     struct SimulationParameters {
@@ -18,6 +19,9 @@ namespace FluidSolver {
 
         std::vector<IEntity *> entities;
 
+        SensorDataStorage *sensor_storage = nullptr;
+        std::vector<ISensor *> sensors;
+
         bool invalidate = false;
 
         bool operator==(const SimulationParameters &other) const;
@@ -30,7 +34,6 @@ namespace FluidSolver {
 
     public:
         SimulationParameters parameters;
-
 
         void execute_simulation_step();
 
