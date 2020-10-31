@@ -6,6 +6,7 @@
 #include <chrono>
 #include <functional>
 #include <map>
+#include <set>
 
 #include "core/FluidAssert.hpp"
 
@@ -51,6 +52,8 @@ namespace FluidSolver {
 
         std::map<std::pair<size_t, size_t>, TypeStorage> data;
 
+        std::map<size_t, std::set<size_t>> type_id_used_sensor_ids;
+
 
     public:
 
@@ -79,6 +82,7 @@ namespace FluidSolver {
                                     ((std::vector<std::pair<Time, T>> *) data[{type_id, sensor_id}].ptr)->clear();
                                 }
                         };
+                type_id_used_sensor_ids[type_id].insert(sensor_id);
             }
 
         }
@@ -95,7 +99,7 @@ namespace FluidSolver {
         }
 
         template<typename T>
-        size_t size(size_t sensor_id = 0) const {
+        size_t size(size_t sensor_id = 0) {
             size_t type_id = family::type<T>();
             FLUID_ASSERT(data.find({type_id, sensor_id}) != data.end())
             FLUID_ASSERT((data[{type_id, sensor_id}].ptr) != nullptr)
@@ -104,13 +108,15 @@ namespace FluidSolver {
 
         void clear() {
             for (auto &[key, value]: data) {
-                value.internal_clear();
+                value.internal_delete();
             }
+            data.clear();
             simulation_time = 0.0f;
+            type_id_used_sensor_ids.clear();
         }
 
         template<typename T>
-        const std::vector<std::pair<Time, T>> &get(size_t sensor_id = 0) const {
+        const std::vector<std::pair<Time, T>> &get(size_t sensor_id = 0) {
             size_t type_id = family::type<T>();
             FLUID_ASSERT(data.find({type_id, sensor_id}) != data.end())
             FLUID_ASSERT((data[{type_id, sensor_id}].ptr) != nullptr)
@@ -118,7 +124,14 @@ namespace FluidSolver {
         }
 
         template<typename T>
-        bool is_type_present(size_t sensor_id = 0) const {
+        const std::string &get_name(size_t sensor_id = 0) {
+            size_t type_id = family::type<T>();
+            FLUID_ASSERT(data.find({type_id, sensor_id}) != data.end())
+            return data[{type_id, sensor_id}].name;
+        }
+
+        template<typename T>
+        bool is_type_present(size_t sensor_id = 0) {
             size_t type_id = family::type<T>();
             if (data.find({type_id, sensor_id}) == data.end()) return false;
             if (data[{type_id, sensor_id}].ptr == nullptr) return false;
@@ -130,6 +143,12 @@ namespace FluidSolver {
             size_t type_id = family::type<T>();
             FLUID_ASSERT(data.find({type_id, sensor_id}) != data.end())
             data[{type_id, sensor_id}].name = name;
+        }
+
+        template<typename T>
+        const std::set<size_t> &used_sensor_ids() {
+            size_t type_id = family::type<T>();
+            return type_id_used_sensor_ids[type_id];
         }
 
         ~SensorDataStorage() {
