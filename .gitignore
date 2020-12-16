@@ -149,3 +149,5 @@ $RECYCLE.BIN/
 *.lnk
 
 vcpkg_installed
+
+.vs
