@@ -65,6 +65,9 @@ void FluidUi::FluidSolverWindow::render() {
 
     ImGuiHelper::PreRender();
 
+    // creating the dockspace
+    auto id = ImGui::DockSpaceOverViewport();
+
     render_visualization_window();
     uiLayer.render();
 
