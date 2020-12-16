@@ -11,7 +11,7 @@ void ImGuiHelper::Init(GLFWwindow *window) {
 
 
     ImGuiIO &io = ImGui::GetIO();
-    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 #ifdef WIN32
     float scaleX, scaleY;
