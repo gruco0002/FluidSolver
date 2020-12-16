@@ -9,6 +9,7 @@
 #include <thread>
 #include <chrono>
 #include <core/sensors/ParticleStatistics.hpp>
+#include <PATH.hpp>
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
         &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
@@ -21,7 +22,7 @@ void FluidUi::FluidSolverWindow::load() {
 
     ImGuiHelper::Init(this->GetWindowHandler());
     set_default_simulation_parameters();
-    load_scenario("../scenarios/boundaryTest.chai");
+    load_scenario(FLUID_ROOT_DIR + std::string("scenarios/boundaryTest.chai"));
     OnKeyPressed.Subscribe([=](int key) {
         if (key == GLFW_KEY_SPACE) {
             running = !running;

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "PATH.hpp"
 
 namespace FluidUi {
     class FluidSolverWindow;
@@ -20,7 +21,7 @@ namespace FluidUi {
     private:
         std::vector<char *> scenarios;
 
-        std::string path = "../scenarios/";
+        std::string path = FLUID_ROOT_DIR + std::string("scenarios/");
 
         int current_item = 0;
 
