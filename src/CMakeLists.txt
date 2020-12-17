@@ -49,7 +49,7 @@ find_package(implot CONFIG REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(cxxopts CONFIG REQUIRED)
 find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
-
+find_package(fmt CONFIG REQUIRED)
 
   
 
@@ -151,5 +151,4 @@ target_link_libraries(FluidSolver PUBLIC implot::implot)
 target_include_directories(FluidSolver PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
 target_include_directories(FluidSolver PUBLIC ${CHAISCRIPT_INCLUDE_DIRS})
-
-
+target_link_libraries(FluidSolver PUBLIC fmt::fmt)
