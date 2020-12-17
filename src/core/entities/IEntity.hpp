@@ -8,7 +8,15 @@ namespace FluidSolver {
     class IEntity {
     public:
 
-        ParticleCollection *collection;
+        struct SimulationInformation {
+
+            ParticleCollection* collection;
+            float gravity;
+            float particle_size;
+
+        } sim;
+
+        
 
         virtual void initialize() = 0;
 

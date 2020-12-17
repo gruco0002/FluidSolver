@@ -88,14 +88,13 @@ def loadEntities(){
 
     var s = addParticleSpawner();
     s.restDensity = scenarioInfo.restDensity;
-    s.particlesPerSecond = 40;
     s.mass = getMass();
-    s.initialVelocity.x = 0.0f;
-    s.initialVelocity.y = -6.0f;
-    s.area.top = 25.0f;
-    s.area.bottom = 22.0f;
-    s.area.left = -18.0f;
-    s.area.right = -10.0f;
+    s.initialVelocity = 16.0f;
+    s.direction.x = 0.0f;
+    s.direction.y = -1.0f;
+    s.position.x = -14.0f;
+    s.position.y = 25.0f;
+    s.width = 4.0f;
 
 
     var r = addParticleRemover();

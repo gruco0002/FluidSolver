@@ -51,15 +51,13 @@ def loadEntities(){
 
     var s = addParticleSpawner();
     s.restDensity = scenarioInfo.restDensity;
-    s.particlesPerSecond = 30;
     s.mass = getMass();
-    s.initialVelocity.x = 0.0f;
-    s.initialVelocity.y = -1.0f;
-    s.area.top = 4.0f;
-    s.area.bottom = 0.0f;
-    s.area.left = -5.0f;
-    s.area.right = 5.0f;
-
+    s.initialVelocity = 10.0f;
+    s.direction.x = 0.0f;
+    s.direction.y = -1.0f;
+    s.position.x = 0.0f;
+    s.position.y = 8.0f;
+    s.width = 5.0f;
 
 }
 

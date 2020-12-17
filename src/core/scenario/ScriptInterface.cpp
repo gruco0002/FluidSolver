@@ -79,15 +79,17 @@ void FluidSolver::ScriptInterface::make_available() {
                                                                 },
                                                                 {
                                                                         {chaiscript::fun(
-                                                                                &ParticleSpawner::Parameters::rest_density),         "restDensity"},
-                                                                        {chaiscript::fun(
-                                                                                &ParticleSpawner::Parameters::particles_per_second), "particlesPerSecond"},
+                                                                                &ParticleSpawner::Parameters::rest_density),         "restDensity"},                                     
                                                                         {chaiscript::fun(
                                                                                 &ParticleSpawner::Parameters::mass),                 "mass"},
                                                                         {chaiscript::fun(
                                                                                 &ParticleSpawner::Parameters::initial_velocity),     "initialVelocity"},
                                                                         {chaiscript::fun(
-                                                                                &ParticleSpawner::Parameters::area),                 "area"},
+                                                                                &ParticleSpawner::Parameters::direction),                 "direction"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::position),                 "position"},
+                                                                        {chaiscript::fun(
+                                                                                &ParticleSpawner::Parameters::width),                 "width"},
                                                                 });
 
 

@@ -85,7 +85,9 @@ void FluidSolver::Simulation::initialize() {
 
     for (auto ent: internal_parameters.entities) {
         FLUID_ASSERT(ent != nullptr)
-        ent->collection = internal_parameters.collection;
+        ent->sim.collection = internal_parameters.collection;
+        ent->sim.gravity = internal_parameters.gravity;
+        ent->sim.particle_size = internal_parameters.particle_size;
         ent->initialize();
     }
 
