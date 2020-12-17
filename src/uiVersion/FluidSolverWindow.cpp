@@ -10,6 +10,7 @@
 #include <chrono>
 #include <core/sensors/ParticleStatistics.hpp>
 #include <Paths.hpp>
+#include <core/Log.hpp>
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
         &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
@@ -93,7 +94,7 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
 
     set_visualizer_parameters();
 
-    std::cout << "Loaded " << scenario->data.name << std::endl;
+    FluidSolver::Log::message("Loaded " + scenario->data.name);
 }
 
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {

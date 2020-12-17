@@ -3,6 +3,8 @@
 #include "chaiscript/chaiscript.hpp"
 #include "core/entities/IEntity.hpp"
 #include "core/entities/ParticleSpawner.hpp"
+#include "core/Log.hpp"
+
 
 chaiscript::ChaiScript *getPtr(void *ptr) { return (chaiscript::ChaiScript *) ptr; }
 
@@ -163,7 +165,7 @@ void FluidSolver::ScriptInterface::load_file(const std::string &filepath) {
     try {
         chai.eval_file(filepath);
     } catch (const chaiscript::exception::eval_error &e) {
-        std::cerr << "Error\n" << e.pretty_print() << std::endl;
+        Log::error(e.pretty_print());
     }
     transfer_data();
 }

@@ -1,6 +1,7 @@
 #include "uiVersion/FluidSolverWindow.hpp"
 #include "cxxopts.hpp"
 #include <iostream>
+#include <core/Log.hpp>
 // #include <FluidSolverConsole.hpp>
 
 void printHelp(cxxopts::Options &options) {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     catch (cxxopts::option_not_exists_exception &exc) {
-        std::cout << exc.what() << std::endl;
+        FluidSolver::Log::error(exc.what());
         printHelp(options);
         return 2;
     }

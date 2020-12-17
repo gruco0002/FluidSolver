@@ -3,6 +3,7 @@
 
 #include "ScenariosWindow.hpp"
 #include "StatisticsUi.hpp"
+#include <uiVersion/userInterface/LogWindow.hpp>
 
 namespace FluidUi {
     class FluidSolverWindow;
@@ -19,6 +20,7 @@ namespace FluidUi {
     private:
         ScenariosWindow scenarios;
         StatisticsUi statisticsUi;
+        LogWindow logWindow;
 
         void render_solver_parameters();
 
