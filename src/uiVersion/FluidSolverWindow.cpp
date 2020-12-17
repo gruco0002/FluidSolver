@@ -9,7 +9,7 @@
 #include <thread>
 #include <chrono>
 #include <core/sensors/ParticleStatistics.hpp>
-#include <PATH.hpp>
+#include <Paths.hpp>
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
         &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,

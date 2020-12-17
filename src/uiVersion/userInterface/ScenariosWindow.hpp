@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "PATH.hpp"
+#include "Paths.hpp"
 
 namespace FluidUi {
     class FluidSolverWindow;
