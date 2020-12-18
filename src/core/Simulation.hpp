@@ -6,6 +6,7 @@
 #include <core/timestep/ITimestep.hpp>
 #include <core/entities/IEntity.hpp>
 #include <core/sensors/ISensor.hpp>
+#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
 namespace FluidSolver {
     struct SimulationParameters {
@@ -42,6 +43,8 @@ namespace FluidSolver {
     private:
 
         SimulationParameters internal_parameters;
+
+        NeighborhoodInterface neigborhood_interface;
 
         void initialize();
 

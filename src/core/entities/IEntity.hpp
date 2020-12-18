@@ -1,8 +1,9 @@
 #ifndef FLUIDSOLVER_IENTITY_HPP
 #define FLUIDSOLVER_IENTITY_HPP
 
-#include "../FluidInclude.hpp"
-#include "../fluidSolver/ParticleCollection.hpp"
+#include <core/FluidInclude.hpp>
+#include <core/fluidSolver/ParticleCollection.hpp>
+#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
 namespace FluidSolver {
     class IEntity {
@@ -10,9 +11,10 @@ namespace FluidSolver {
 
         struct SimulationInformation {
 
-            ParticleCollection* collection;
-            float gravity;
-            float particle_size;
+            ParticleCollection* collection = nullptr;
+            float gravity = 0.0f;
+            float particle_size = 0.0f;
+            NeighborhoodInterface* neighborhood_interface = nullptr;
 
         } sim;
 

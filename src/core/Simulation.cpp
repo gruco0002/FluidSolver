@@ -70,6 +70,8 @@ void FluidSolver::Simulation::initialize() {
         internal_parameters.fluid_solver->parameters.gravity = parameters.gravity;
         internal_parameters.fluid_solver->collection = parameters.collection;
         internal_parameters.fluid_solver->initialize();
+
+        neigborhood_interface = internal_parameters.fluid_solver->create_neighborhood_interface();
     }
 
     if (internal_parameters.visualizer != nullptr) {
@@ -88,6 +90,7 @@ void FluidSolver::Simulation::initialize() {
         ent->sim.collection = internal_parameters.collection;
         ent->sim.gravity = internal_parameters.gravity;
         ent->sim.particle_size = internal_parameters.particle_size;
+        ent->sim.neighborhood_interface = &neigborhood_interface;
         ent->initialize();
     }
 
