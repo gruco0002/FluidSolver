@@ -3,6 +3,7 @@
 
 #include "ParticleCollection.hpp"
 #include "core/FluidInclude.hpp"
+#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
 namespace FluidSolver {
 
@@ -19,6 +20,8 @@ namespace FluidSolver {
         virtual void initialize() = 0;
 
         virtual ~IFluidSolverBase() = default;
+
+        virtual NeighborhoodInterface create_neighborhood_interface() = 0;
 
         ParticleCollection *collection = nullptr;
     };

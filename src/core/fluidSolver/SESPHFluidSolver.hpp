@@ -26,6 +26,8 @@ namespace FluidSolver {
 
         void initialize() override;
 
+        NeighborhoodInterface create_neighborhood_interface() override;
+
     private:
         pFloat current_timestep = 0.0f;
 
@@ -129,6 +131,12 @@ namespace FluidSolver {
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
         FLUID_ASSERT(collection->is_type_present<ExternalForces>());
+    }
+
+    template<typename Kernel, typename NeighborhoodSearch>
+    inline NeighborhoodInterface SESPHFluidSolver<Kernel, NeighborhoodSearch>::create_neighborhood_interface()
+    {
+        return neighborhood_search.create_interface();
     }
 
     template<typename Kernel, typename NeighborhoodSearch>

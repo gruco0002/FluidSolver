@@ -39,6 +39,8 @@ namespace FluidSolver {
 
         void execute_simulation_step(pFloat timestep) override;
 
+        NeighborhoodInterface create_neighborhood_interface() override;
+
     private:
 
         void CalculateDensity(pIndex_t particleIndex);
@@ -143,6 +145,12 @@ namespace FluidSolver {
         for (pIndex_t i = 0; i < collection->size(); i++) {
             IntegrateParticle(i);
         }
+    }
+
+    template<typename Kernel, typename NeighborhoodSearch>
+    inline NeighborhoodInterface IISPHFluidSolver<Kernel, NeighborhoodSearch>::create_neighborhood_interface()
+    {
+        return neighborhood_search.create_interface();
     }
 
     template<typename Kernel, typename NeighborhoodSearch>
