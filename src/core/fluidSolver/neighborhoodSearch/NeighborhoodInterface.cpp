@@ -75,10 +75,10 @@ FluidSolver::NeighborhoodInterface::NeighborsIterator::~NeighborsIterator()
 
 FluidSolver::NeighborhoodInterface::NeighborsIterator::NeighborsIterator(const NeighborsIterator& to_copy)
 {
-	FLUID_ASSERT(data != nullptr);
-	FLUID_ASSERT(data->iterator_link.iterator_copy != nullptr);
-	FLUID_ASSERT(original_iterator != nullptr);
-	this->original_iterator = data->iterator_link.iterator_copy(to_copy.original_iterator);
+	FLUID_ASSERT(to_copy.data != nullptr);
+	FLUID_ASSERT(to_copy.data->iterator_link.iterator_copy != nullptr);
+	FLUID_ASSERT(to_copy.original_iterator != nullptr);
+	this->original_iterator = to_copy.data->iterator_link.iterator_copy(to_copy.original_iterator);
 	this->data = to_copy.data;
 }
 
