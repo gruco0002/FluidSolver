@@ -55,14 +55,8 @@ find_package(fmt CONFIG REQUIRED)
 
 
 # include directories
-
 include_directories(./)
-include_directories(libraries)
-include_directories(libraries/imgui)
 include_directories(engine)
-include_directories(engine/libraries)
-include_directories(engine/libraries/Glad)
-include_directories(engine/dependencies)
 
 
 set(FLUID_SOLVER_SOURCE_FILES

@@ -18,14 +18,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 # include directories
 
 include_directories(src)
-include_directories(src/dependencies)
-include_directories(src/libraries)
-include_directories(src/libraries/Glad)
-include_directories(src/libraries/imgui)
 include_directories(src/engine)
-include_directories(src/engine/libraries)
-include_directories(src/engine/libraries/Glad)
-include_directories(src/engine/dependencies/GLFW/include)
 
 add_subdirectory(src)
 add_subdirectory(tests)
