@@ -4,8 +4,9 @@
 #include <unordered_map>
 #include <vector>
 #include <list>
-#include "../ParticleCollection.hpp"
-#include "../../FluidInclude.hpp"
+#include "core/fluidSolver/ParticleCollection.hpp"
+#include "core/FluidInclude.hpp"
+#include "NeighborhoodInterface.hpp"
 
 namespace FluidSolver {
 
@@ -58,9 +59,9 @@ namespace FluidSolver {
             bool position_based = false;
             HashedNeighborhoodSearch *data = nullptr;
 
-            NeighborsIterator begin();
+            NeighborsIterator begin() const;
 
-            NeighborsIterator end();
+            NeighborsIterator end() const;
 
         };
 
@@ -74,6 +75,8 @@ namespace FluidSolver {
         Neighbors get_neighbors(const vec2 &position);
 
         void initialize();
+
+        NeighborhoodInterface create_interface();
 
     private:
 

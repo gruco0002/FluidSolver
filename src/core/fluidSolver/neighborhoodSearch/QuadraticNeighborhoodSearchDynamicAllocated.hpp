@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include "../ParticleCollection.hpp"
 #include "core/FluidInclude.hpp"
+#include "NeighborhoodInterface.hpp"
 
 namespace FluidSolver {
 
@@ -37,8 +38,10 @@ namespace FluidSolver {
      *      float search_radius;
      * Functions:
      *      void find_neighbors();
-     *      void get_neighbors(size_t particleIndex);
-     *      void get_neighbors(const glm::vec2 &position);
+     *      Neighbors get_neighbors(size_t particleIndex);
+     *      Neighbors get_neighbors(const glm::vec2 &position);
+     * 
+     *      NeighborhoodInterface create_interface();
      */
     class QuadraticNeighborhoodSearchDynamicAllocated {
     public:
@@ -84,9 +87,9 @@ namespace FluidSolver {
             bool position_based = false;
             QuadraticNeighborhoodSearchDynamicAllocated *data = nullptr;
 
-            NeighborsIterator begin();
+            NeighborsIterator begin() const;
 
-            NeighborsIterator end();
+            NeighborsIterator end() const;
 
         };
 
@@ -101,6 +104,8 @@ namespace FluidSolver {
 
 
         void initialize();
+
+        NeighborhoodInterface create_interface();
 
     private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;
