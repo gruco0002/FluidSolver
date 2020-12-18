@@ -211,7 +211,7 @@ namespace FluidSolver {
 
 	bool HashedNeighborhoodSearch::NeighborsIterator::operator==(
 		const HashedNeighborhoodSearch::NeighborsIterator& other) const {
-		return data == other.data && current == other.current;
+		return data->data == other.data->data && current == other.current;
 	}
 
 	bool HashedNeighborhoodSearch::NeighborsIterator::operator!=(

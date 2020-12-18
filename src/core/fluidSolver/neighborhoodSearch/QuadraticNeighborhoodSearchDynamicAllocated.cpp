@@ -132,7 +132,7 @@ FluidSolver::NeighborhoodInterface FluidSolver::QuadraticNeighborhoodSearchDynam
 
 bool FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::NeighborsIterator::operator==(
         const FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::NeighborsIterator &other) const {
-    return data == other.data && current == other.current;
+    return data->data == other.data->data && current == other.current;
 }
 
 bool FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::NeighborsIterator::operator!=(
