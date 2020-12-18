@@ -34,6 +34,8 @@ namespace FluidSolver {
 
 		void spawn_particle(pIndex_t index, const glm::vec2& position, const glm::vec2& initial_velocity);
 
+		bool is_position_free(const glm::vec2& position);
+
 	};
 
 }

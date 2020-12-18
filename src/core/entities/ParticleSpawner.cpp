@@ -38,6 +38,11 @@ void FluidSolver::ParticleSpawner::execute_simulation_step(FluidSolver::pFloat t
 		for (float x = -width / 2.0f; x <= width / 2.0f; x += sim.particle_size) {
 
 			glm::vec2 pos = parameters.position + orth_direction * x + (time_left_over * parameters.initial_velocity - sim.particle_size) * normalized_direction;
+			
+			// check if the position is free (avoid spawning particles inside each other, as this would represent invalid states)
+			if (!is_position_free(pos))
+				continue;			
+			
 			auto index = get_or_add_particle();
 			spawn_particle(index, pos, initial_velocity);
 		}
@@ -67,7 +72,7 @@ FluidSolver::pIndex_t FluidSolver::ParticleSpawner::get_or_add_particle()
 void FluidSolver::ParticleSpawner::spawn_particle(pIndex_t index, const glm::vec2& position, const glm::vec2& initial_velocity)
 {
 	FLUID_ASSERT(index < sim.collection->size());
-
+	
 	// set the particle type to normal
 	sim.collection->get<ParticleInfo>(index).type = ParticleType::ParticleTypeNormal;;
 
@@ -83,4 +88,26 @@ void FluidSolver::ParticleSpawner::spawn_particle(pIndex_t index, const glm::vec
 	md.acceleration = glm::vec2(0.0f);
 	md.velocity = initial_velocity;
 
+}
+
+bool FluidSolver::ParticleSpawner::is_position_free(const glm::vec2& position)
+{
+	FLUID_ASSERT(sim.neighborhood_interface != nullptr);
+	FLUID_ASSERT(sim.collection != nullptr);
+
+	const float epsilon = 0.95f;
+
+	float min_distance_squared = (sim.particle_size * epsilon) * (sim.particle_size * epsilon);	
+
+	auto neighbors = sim.neighborhood_interface->get_neighbors(position);
+	for (auto& neighbor : neighbors) {
+		auto& neighbor_pos = sim.collection->get<MovementData>(neighbor).position;
+		vec2 diff = neighbor_pos - position;
+		float distance_squared = glm::dot(diff, diff);
+		if (distance_squared < min_distance_squared) {
+			return false;
+		}
+	}
+
+	return true;
 }
