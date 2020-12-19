@@ -133,6 +133,81 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticles) {
 
 }
 
+TYPED_TEST_P(NeighborhoodSearchTest, ParticlesAtOrigin) {
+	auto particleCollection = FluidSolver::ParticleCollection();
+	setup_collection(particleCollection);
+	const float radius = 2.0f;
+
+	// set up uniform sampled region
+	add_positions(particleCollection, GetSampleGrid(-1, 1, 1));
+
+	// set up neighborhood search
+	TypeParam search;
+	search.search_radius = radius;
+	search.collection = &particleCollection;
+	search.initialize();
+
+	search.find_neighbors();
+
+	/*
+		Situation Looks as follows:
+
+		0	1	2
+		3	4	5
+		6	7	8
+
+		Where particle 4 is exactly at the origin (0,0)
+
+	*/
+
+
+
+	auto neighborsParticle0 = search.get_neighbors(0);
+	EXPECT_THAT(neighborsParticle0, BeginEndSizeIs(6));
+	EXPECT_THAT(neighborsParticle0, UnorderedElementsAre(0, 1, 2, 3, 4, 6));
+	EXPECT_THAT(neighborsParticle0, Each(Not(AnyOf(8, 5, 7))));
+
+	auto neighborsParticle1 = search.get_neighbors(1);
+	EXPECT_THAT(neighborsParticle1, BeginEndSizeIs(7));
+	EXPECT_THAT(neighborsParticle1, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 7));
+	EXPECT_THAT(neighborsParticle1, Each(Not(AnyOf(6, 8))));
+
+	auto neighborsParticle2 = search.get_neighbors(2);
+	EXPECT_THAT(neighborsParticle2, BeginEndSizeIs(6));
+	EXPECT_THAT(neighborsParticle2, UnorderedElementsAre(0, 1, 2, 4, 5, 8));
+	EXPECT_THAT(neighborsParticle2, Each(Not(AnyOf(3, 6, 7))));
+
+	auto neighborsParticle3 = search.get_neighbors(3);
+	EXPECT_THAT(neighborsParticle3, BeginEndSizeIs(7));
+	EXPECT_THAT(neighborsParticle3, UnorderedElementsAre(0, 1, 3, 4, 5, 6, 7));
+	EXPECT_THAT(neighborsParticle3, Each(Not(AnyOf(2, 8))));
+
+	auto neighborsParticle4 = search.get_neighbors(4);
+	EXPECT_THAT(neighborsParticle4, BeginEndSizeIs(9));
+	EXPECT_THAT(neighborsParticle4, UnorderedElementsAre(0, 1, 2, 3, 4, 5, 6, 7, 8));
+
+	auto neighborsParticle5 = search.get_neighbors(5);
+	EXPECT_THAT(neighborsParticle5, BeginEndSizeIs(7));
+	EXPECT_THAT(neighborsParticle5, UnorderedElementsAre(1, 2, 3, 4, 5, 7, 8));
+	EXPECT_THAT(neighborsParticle5, Each(Not(AnyOf(0, 6))));
+
+	auto neighborsParticle6 = search.get_neighbors(6);
+	EXPECT_THAT(neighborsParticle6, BeginEndSizeIs(6));
+	EXPECT_THAT(neighborsParticle6, UnorderedElementsAre(0, 3, 4, 6, 7, 8));
+	EXPECT_THAT(neighborsParticle6, Each(Not(AnyOf(1, 2, 5))));
+
+	auto neighborsParticle7 = search.get_neighbors(7);
+	EXPECT_THAT(neighborsParticle7, BeginEndSizeIs(7));
+	EXPECT_THAT(neighborsParticle7, UnorderedElementsAre(1, 3, 4, 5, 6, 7, 8));
+	EXPECT_THAT(neighborsParticle7, Each(Not(AnyOf(0, 2))));
+
+	auto neighborsParticle8 = search.get_neighbors(8);
+	EXPECT_THAT(neighborsParticle8, BeginEndSizeIs(6));
+	EXPECT_THAT(neighborsParticle8, UnorderedElementsAre(2, 4, 5, 6, 7, 8));
+	EXPECT_THAT(neighborsParticle8, Each(Not(AnyOf(0, 1, 3))));
+
+}
+
 TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesScaled) {
 	auto particleCollection = FluidSolver::ParticleCollection();
 	setup_collection(particleCollection);
@@ -249,6 +324,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving) {
 REGISTER_TYPED_TEST_SUITE_P(NeighborhoodSearchTest,
 	ShouldWorkForSingleParticle,
 	UniformSampledParticles,
+	ParticlesAtOrigin,
 	UniformSampledParticlesScaled,
 	UniformSampledParticlesRotated,
 	UniformSampledParticlesMoving
