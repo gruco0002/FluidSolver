@@ -132,7 +132,10 @@ namespace FluidSolver {
 	}
 
 	void HashedNeighborhoodSearch::initialize() {
+		FLUID_ASSERT(collection != nullptr);
+		FLUID_ASSERT(search_radius > 0.0f);
 		grid_cell_size = search_radius;
+		bucketsCreatedUntilIndex = 0;
 		neighbors.clear();
 		currentStatus.clear();
 		gridToParticles.clear();
