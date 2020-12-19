@@ -1,7 +1,31 @@
 project(FluidSolver_tests)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set(GOOGLETEST_VERSION 1.10.0)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+find_package(glm CONFIG REQUIRED)
 find_package(Threads REQUIRED)
+
+set(FluidSolverTests_SOURCE_FILES
+        main.cpp
+        basic_check.cpp
+        CubicSplineKernelTest.cpp
+        # CompactHashingComponentTests/CompactHashingCellStorageTests.cpp 
+        # CompactHashingComponentTests/CompactHashingHashTableTests.cpp
+        NeighborhoodSearchTests.cpp )
+
+
+#set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+#set(GOOGLETEST_VERSION 1.10.0)
+
+# GTest
+enable_testing()
 find_package(GTest CONFIG REQUIRED)
-add_subdirectory(FluidSolverTests)
+include_directories(${GTEST_INCLUDE_DIRS})
+
+# Unit Tests
+# Add test cpp file
+add_executable( runUnitTests ${FluidSolverTests_SOURCE_FILES})
+# Link test executable against gtest & gtest_main
+target_link_libraries(runUnitTests FluidSolver GTest::gtest  GTest::gmock)
+add_test( runUnitTests  runUnitTests )

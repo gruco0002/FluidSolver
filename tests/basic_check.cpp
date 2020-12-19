@@ -4,6 +4,7 @@
 #include "engine/EngineException.hpp"
 
 TEST(basic_check, test_even){
+	EXPECT_EQ(2, 2 * 2 / 2);
 //    EXPECT_EQ(FluidSolverWindow::even(2), true);
  //   EXPECT_EQ(FluidSolverWindow::even(4), true);
  //   EXPECT_EQ(FluidSolverWindow::even(8), true);
