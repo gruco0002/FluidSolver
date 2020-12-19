@@ -60,3 +60,6 @@ text/Font.cpp text/Font.hpp text/TextRenderer.cpp text/TextRenderer.hpp Rectangl
 add_library(ENGINE STATIC ${ENGINE_SOURCE_FILES})
 target_include_directories(ENGINE PUBLIC ${STB_INCLUDE_DIRS})
 target_link_libraries(ENGINE PUBLIC ${ENGINE_SYSTEM_LIBS} glm glad::glad glfw)
+
+# Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_SOURCE_FILES})

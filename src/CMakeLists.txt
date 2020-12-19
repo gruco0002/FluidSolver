@@ -146,3 +146,8 @@ target_include_directories(FluidSolver PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
 target_include_directories(FluidSolver PUBLIC ${CHAISCRIPT_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC fmt::fmt)
+
+
+# Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${FLUID_SOLVER_SOURCE_FILES})
+
