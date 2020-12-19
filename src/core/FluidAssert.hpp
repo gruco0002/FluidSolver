@@ -24,7 +24,7 @@
             }                                                            \
         }
 #else
-    #define FLUID_ASSERT(condition) {(condition);}
+    #define FLUID_ASSERT(condition)
 #endif
 
 
