@@ -5,6 +5,9 @@ namespace FluidSolver {
 
 	void HashedNeighborhoodSearch::find_neighbors() {
 
+		FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+		FLUID_ASSERT(collection->is_type_present<MovementData>());
+
 		// First update the grid
 		UpdateGrid();
 
