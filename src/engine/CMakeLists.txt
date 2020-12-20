@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 project(ENGINE)
 
+find_package(Threads REQUIRED)
+
 find_package(OpenGL REQUIRED)
 set(OpenGL_GL_PREFERENCE GLVND)
 
@@ -36,7 +38,7 @@ if (UNIX AND NOT APPLE)
 
      # note that the order is important for setting the libs
     # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
-    set(ENGINE_SYSTEM_LIBS X11 Xxf86vm GL dl pthread)
+    set(ENGINE_SYSTEM_LIBS X11 Xxf86vm GL dl)
 
 endif ()
 
@@ -59,7 +61,7 @@ text/Font.cpp text/Font.hpp text/TextRenderer.cpp text/TextRenderer.hpp Rectangl
 # linking
 add_library(ENGINE STATIC ${ENGINE_SOURCE_FILES})
 target_include_directories(ENGINE PUBLIC ${STB_INCLUDE_DIRS})
-target_link_libraries(ENGINE PUBLIC ${ENGINE_SYSTEM_LIBS} glm glad::glad glfw)
+target_link_libraries(ENGINE PUBLIC ${ENGINE_SYSTEM_LIBS} Threads::Threads glm glad::glad glfw)
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${ENGINE_SOURCE_FILES})

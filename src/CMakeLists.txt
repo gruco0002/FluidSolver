@@ -1,48 +1,10 @@
 # Add engine
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
-# Setting linker flags and library stuff for the different platforms
 if (WIN32)
-    find_package(OpenMP REQUIRED)
-    set(FLUIDSOLVER_SYSTEM_LIBS OpenMP::OpenMP_CXX)
+    # required, since the chaiscript files become too big
     add_definitions(/bigobj)
 endif ()
-
-if (APPLE)
-
-    # this paths have to be adapted to work with the llvm clang compiler and libraries
-    set(CMAKE_PREFIX_PATH /usr/local/opt/llvm)
-    set(CMAKE_C_COMPILER /usr/local/opt/llvm/bin/clang)
-    set(CMAKE_CXX_COMPILER /usr/local/opt/llvm/bin/clang++)
-    set(openmpDylibPath /usr/local/opt/llvm/lib/libomp.dylib)
-
-    find_package(LLVM REQUIRED CONFIG)
-
-    message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
-    message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-    # Find the libraries that correspond to the LLVM components
-    # that we wish to use
-    llvm_map_components_to_libnames(llvm_libs support core irreader)
-
-    include_directories(${LLVM_INCLUDE_DIRS})
-
-
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fopenmp")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
-
-    set(FLUIDSOLVER_SYSTEM_LIBS ${llvm_libs} ${openmpDylibPath})
-endif ()
-
-if (UNIX AND NOT APPLE)
-    # for Linux, BSD, Solaris, Minix
-
-    find_package(OpenMP REQUIRED)
-
-    set(FLUIDSOLVER_SYSTEM_LIBS pthread OpenMP::OpenMP_CXX)
-
-endif ()
-
 
 find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
@@ -50,8 +12,6 @@ find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(cxxopts CONFIG REQUIRED)
 find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
 find_package(fmt CONFIG REQUIRED)
-
-  
 
 
 # include directories
