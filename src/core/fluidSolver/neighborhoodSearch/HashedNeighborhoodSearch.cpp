@@ -1,7 +1,10 @@
 #include "HashedNeighborhoodSearch.hpp"
 
+#include <core/parallelization/StdParallelForEach.hpp>
 
 namespace FluidSolver {
+
+	using parallel = StdParallelForEach;
 
 	void HashedNeighborhoodSearch::find_neighbors() {
 
@@ -11,54 +14,54 @@ namespace FluidSolver {
 		// First update the grid
 		UpdateGrid();
 
-#pragma omp parallel for
-		for (particleIndex_t particleIndex = 0; particleIndex < collection->size(); particleIndex++) {
-			auto type = collection->get<ParticleInfo>(particleIndex).type;
-			if (type == ParticleType::ParticleTypeBoundary || type == ParticleType::ParticleTypeDead) {
-				continue; // don't calculate unnecessary values for the boundary particles.
-			}
-
-			// get position and grid cell
-			const glm::vec2& position = collection->get<MovementData>(particleIndex).position;
-			GridKey gridCell = GetGridCellByParticleID(particleIndex);
-
-			// determine the grid cells needed to check
-			std::vector<GridKey> toCheck;
-			int32_t radiusInCellsFromTheCenter = ceil(search_radius / grid_cell_size);
-
-			for (int32_t x = gridCell.first - radiusInCellsFromTheCenter;
-				x <= gridCell.first + radiusInCellsFromTheCenter; x++) {
-				for (int32_t y = gridCell.second - radiusInCellsFromTheCenter;
-					y <= gridCell.second + radiusInCellsFromTheCenter; y++) {
-					toCheck.push_back({ x, y });
+		parallel::loop_for(0, collection->size(), [&](particleIndex_t particleIndex)
+			{
+				auto type = collection->get<ParticleInfo>(particleIndex).type;
+				if (type == ParticleType::ParticleTypeBoundary || type == ParticleType::ParticleTypeDead) {
+					return; // don't calculate unnecessary values for the boundary particles.
 				}
-			}
 
+				// get position and grid cell
+				const glm::vec2& position = collection->get<MovementData>(particleIndex).position;
+				GridKey gridCell = GetGridCellByParticleID(particleIndex);
 
-			// reset data
-			neighbors[particleIndex].first = 0;
+				// determine the grid cells needed to check
+				std::vector<GridKey> toCheck;
+				int32_t radiusInCellsFromTheCenter = ceil(search_radius / grid_cell_size);
 
-			// iterate over the grid cells and their particles to check for neighbors
-			for (GridKey& key : toCheck) {
-				if (gridToParticles.find(key) == gridToParticles.end())
-					continue;
-
-				for (particleIndex_t particle : gridToParticles[key]) {
-					glm::vec2 distVec = position - collection->get<MovementData>(particle).position;
-					if (glm::length(distVec) <= search_radius) {
-						// this is a neighbor, add it
-						if (neighbors[particleIndex].second.size() <= neighbors[particleIndex].first) {
-							neighbors[particleIndex].second.push_back(particle);
-						}
-						else {
-							neighbors[particleIndex].second[neighbors[particleIndex].first] = particle;
-						}
-
-						neighbors[particleIndex].first++;
+				for (int32_t x = gridCell.first - radiusInCellsFromTheCenter;
+					x <= gridCell.first + radiusInCellsFromTheCenter; x++) {
+					for (int32_t y = gridCell.second - radiusInCellsFromTheCenter;
+						y <= gridCell.second + radiusInCellsFromTheCenter; y++) {
+						toCheck.push_back({ x, y });
 					}
 				}
-			}
-		}
+
+
+				// reset data
+				neighbors[particleIndex].first = 0;
+
+				// iterate over the grid cells and their particles to check for neighbors
+				for (GridKey& key : toCheck) {
+					if (gridToParticles.find(key) == gridToParticles.end())
+						continue;
+
+					for (particleIndex_t particle : gridToParticles[key]) {
+						glm::vec2 distVec = position - collection->get<MovementData>(particle).position;
+						if (glm::length(distVec) <= search_radius) {
+							// this is a neighbor, add it
+							if (neighbors[particleIndex].second.size() <= neighbors[particleIndex].first) {
+								neighbors[particleIndex].second.push_back(particle);
+							}
+							else {
+								neighbors[particleIndex].second[neighbors[particleIndex].first] = particle;
+							}
+
+							neighbors[particleIndex].first++;
+						}
+					}
+				}
+			});
 	}
 
 	HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(pIndex_t particleIndex) {
