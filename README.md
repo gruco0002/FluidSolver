@@ -13,26 +13,30 @@ The dependencies for this project are managed with [vcpkg](https://github.com/mi
 `vcpkg.json`. Install vcpkg and setup the *toolchain file from vcpkg* for CMake before loading the project. If done so,
 all dependencies will be downloaded automatically with vcpkg while CMake configures the project.
 
+**Currently the `Docking Branch` of the library `Dear ImGui` is used. You (may) need to define an overlay port for vcpkg,
+or provide the library in another way, if you want to use this feature!**
+
 ### Compiling
 Only 64-bit compilation with the C++17 standard is supported. The project may work under other conditions but this is not tested.
 Use CMake to compile the project:
-- `FluidSolver_run` for an runnable executable
+- `FluidSolver_run` for a runnable executable
 - `FluidSolver` for just the core code
-- `runFluidSolverTests` to run the tests
+- `runUnitTests` to run the tests
 
 ### Used dependencies and libraries
 
-- [GLFW](https://www.glfw.org/)
+- [libmorton](https://github.com/Forceflow/libmorton)
+- [ChaiScript](https://github.com/ChaiScript/ChaiScript)
+- [fmt](https://github.com/fmtlib/fmt)
 - [googletest](https://github.com/google/googletest) 
+- [cxxopts](https://github.com/jarro2783/cxxopts) 
+- [GLFW](https://www.glfw.org/)
 - [GLAD](https://github.com/Dav1dde/glad)
 - [GLM](https://glm.g-truc.net/)
 - [stb](https://github.com/nothings/stb)
-- OpenMP (Version 4.5)
-- [cxxopts](https://github.com/jarro2783/cxxopts) 
-- [Dear imgui](https://github.com/ocornut/imgui)
+- [Dear ImGui](https://github.com/ocornut/imgui)
 - [ImPlot](https://github.com/epezent/implot)
-- [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) 
-- [libmorton](https://github.com/Forceflow/libmorton)
+
   
 #### Disclaimer
 The listed libraries are not my own and i take no responsibilities for their content.
@@ -40,17 +44,18 @@ All libraries are loaded with vcpkg. It could be possible (with a certain amount
 manually and adapt the CMake files.
 
 ### Using the Code on OSX (Mac)
-Since the project uses OpenMP (libomp) to parallelize the execution and the current
+~~Since the project uses OpenMP (libomp) to parallelize the execution and the current
 (21th May 2019) clang compiler that ships with OSX/XCode does not support OpenMP, you
-will need to download a newer compiler version of clang by the llvm project.
+will need to download a newer compiler version of clang by the llvm project.~~
 
-The recommended way of downloading it is using brew: `brew install llvm`
+~~The recommended way of downloading it is using brew: `brew install llvm`
 Be sure that you have installed the XCode Command Line Tools for OSX before installing llvm.
-To install those tools execute `xcode-select --install`.
+To install those tools execute `xcode-select --install`.~~
 
-After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
+~~After installation it could be possible, that you have to modify the `src/CMakeLists.txt`.
 Below `if (APPLE)` are paths that have to be adapted to your llvm location. (Normally they should be `/usr/local/opt/llvm/`)
-Please be sure that these paths behind the variable names `CMAKE_PREFIX_PATH`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER` and `openmpDylibPath` are set correctly.
+Please be sure that these paths behind the variable names `CMAKE_PREFIX_PATH`, `CMAKE_C_COMPILER`, `CMAKE_CXX_COMPILER` and `openmpDylibPath` are set correctly.~~
+
 
 ### Using the Code on Linux (Debian / Ubuntu)
 The project uses OpenGL for its visualization. Therefore you have to install required
@@ -79,6 +84,6 @@ An alternative would be to use tools like CLion that automatically create the CM
 config for you. Clion ships with its own version of CMake but requires compilers and
 libraries to be installed on the system by you.
 
-*Important:* Make sure your compiler supports a decent version of OpenMP. (Most modern
-compilers for linux (like gcc) have that built in)
+~~*Important:* Make sure your compiler supports a decent version of OpenMP. (Most modern
+compilers for linux (like gcc) have that built in)~~
 
