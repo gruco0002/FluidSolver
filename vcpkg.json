@@ -21,6 +21,7 @@
         },
         "implot",
         "chaiscript",
-        "fmt"
+        "fmt",
+        "yaml-cpp"
     ]
 }
