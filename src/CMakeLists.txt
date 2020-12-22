@@ -119,6 +119,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "core/parallelization/NoParallelization.hpp" "core/parallelization/NoParallelization.cpp"
         "core/parallelization/StdParallelForEach.hpp" "core/parallelization/StdParallelForEach.cpp"
+        "core/scenario/SimulationSerializer.hpp" "core/scenario/SimulationSerializer.cpp"
         )
 
 
