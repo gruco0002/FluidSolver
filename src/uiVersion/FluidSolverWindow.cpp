@@ -12,183 +12,187 @@
 #include <Paths.hpp>
 #include <core/Log.hpp>
 
-FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height) : sim_worker_thread(
-        &FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
-                                                                  height) {
+FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height) : sim_worker_thread(
+	&FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
+		height) {
 
 }
 
 void FluidUi::FluidSolverWindow::load() {
-    current_type = &solver_types.types[0];
+	current_type = &solver_types.types[0];
 
-    ImGuiHelper::Init(this->GetWindowHandler());
-    set_default_simulation_parameters();
-    load_scenario(FLUID_ROOT_DIR + std::string("scenarios/boundaryTest.chai"));
-    OnKeyPressed.Subscribe([=](int key) {
-        if (key == GLFW_KEY_SPACE) {
-            running = !running;
-        }
-    });
+	ImGuiHelper::Init(this->GetWindowHandler());
+	set_default_simulation_parameters();
+	load_scenario(FLUID_ROOT_DIR + std::string("scenarios/boundaryTest.chai"));
+	OnKeyPressed.Subscribe([=](int key) {
+		if (key == GLFW_KEY_SPACE) {
+			running = !running;
+		}
+		});
 
-    setup_windows();
+	setup_windows();
 }
 
 void FluidUi::FluidSolverWindow::unload() {
-    sim_worker_thread_should_terminate = true;
-    sim_worker_thread.join();
-    delete scenario;
-    ImGuiHelper::Uninit();
+	sim_worker_thread_should_terminate = true;
+	sim_worker_thread.join();
+	delete scenario;
+	ImGuiHelper::Uninit();
 }
 
 void FluidUi::FluidSolverWindow::render() {
 
 
-    if (!sim_worker_thread_working && !sim_worker_thread_done) {
-        if (running) {
-            if (asynchronous_simulation) {
-                sim_worker_thread_working = true;
-            } else {
-                simulation.execute_simulation_step();
-            }
-        }
-    }
+	if (!sim_worker_thread_working && !sim_worker_thread_done) {
+		if (running) {
+			if (asynchronous_simulation) {
+				sim_worker_thread_working = true;
+			}
+			else {
+				simulation.execute_simulation_step();
+			}
+		}
+	}
 
-    if (!sim_worker_thread_working && sim_worker_thread_done) {
-        sim_worker_thread_done = false;
-    }
+	if (!sim_worker_thread_working && sim_worker_thread_done) {
+		sim_worker_thread_done = false;
+	}
 
-    simulation.visualize(!sim_worker_thread_working);
-    glFlush();
+	simulation.visualize(!sim_worker_thread_working);
+	glFlush();
 
-    // render to screen
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
+	// render to screen
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, GetFramebufferWidth(), GetFramebufferHeight());
 
-    ImGuiHelper::PreRender();
+	ImGuiHelper::PreRender();
 
-    // creating the dockspace
-    auto id = ImGui::DockSpaceOverViewport();
+	// creating the dockspace
+	auto id = ImGui::DockSpaceOverViewport();
 
-    render_visualization_window();
-    uiLayer.render();
+	render_visualization_window();
+	uiLayer.render();
 
-    ImGuiHelper::PostRender();
+	ImGuiHelper::PostRender();
 
 }
 
-void FluidUi::FluidSolverWindow::load_scenario(const std::string &filepath) {
-    delete scenario;
-    scenario = nullptr;
-    scenario = new FluidSolver::Scenario(filepath);
-    FLUID_ASSERT(scenario != nullptr)
-    simulation.parameters.collection = nullptr;
+void FluidUi::FluidSolverWindow::load_scenario(const std::string& filepath) {
+	delete scenario;
+	scenario = nullptr;
+	scenario = new FluidSolver::Scenario(filepath);
+	FLUID_ASSERT(scenario != nullptr)
+		simulation.parameters.collection = nullptr;
 
-    simulation.parameters.collection = &scenario->data.collection;
-    simulation.parameters.rest_density = scenario->data.rest_density;
-    simulation.parameters.particle_size = scenario->data.particle_size;
-    simulation.parameters.entities = scenario->data.entities;
-    simulation.parameters.invalidate = true;
+	simulation.parameters.collection = &scenario->data.collection;
+	simulation.parameters.rest_density = scenario->data.rest_density;
+	simulation.parameters.particle_size = scenario->data.particle_size;
+	simulation.parameters.entities = scenario->data.entities;
+	simulation.parameters.invalidate = true;
 
-    simulation.parameters.sensor_storage->clear();
+	simulation.parameters.sensor_storage->clear();
 
-    set_visualizer_parameters();
+	set_visualizer_parameters();
 
-    FluidSolver::Log::message("Loaded " + scenario->data.name);
+	FluidSolver::Log::message("Loaded " + scenario->data.name);
 }
 
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
-    simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
-    simulation.parameters.visualizer = new ParticleRenderer();
-    simulation.parameters.gravity = 9.81f;
+	simulation.parameters.fluid_solver = current_type->create_type();
+	simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
+	simulation.parameters.visualizer = new ParticleRenderer();
+	simulation.parameters.gravity = 9.81f;
 
-    simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
-    simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
+	simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
+	simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
-    simulation.parameters.invalidate = true;
+	simulation.parameters.invalidate = true;
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
-    ImGui::Begin("Simulation Visualization");
+	ImGui::Begin("Simulation Visualization");
 
-    auto glRenderer = dynamic_cast<IOpenGLVisualizer *>(simulation.parameters.visualizer);
-    if (glRenderer == nullptr) {
-        ImGui::Text("No OpenGL compatible visualizer!");
-    } else {
-        auto tex = glRenderer->GetTexture();
-        // render visualization
-        auto maxRegion = ImGui::GetContentRegionMax();
-        maxRegion.x -= 20.0f;
-        maxRegion.y -= 30.0f;
-        float width = 0.0f;
-        float height = 0.0f;
-        if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
-            // height is too small
-            width = maxRegion.x;
-            height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
-        } else {
-            height = maxRegion.y;
-            width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
-        }
+	auto glRenderer = dynamic_cast<IOpenGLVisualizer*>(simulation.parameters.visualizer);
+	if (glRenderer == nullptr) {
+		ImGui::Text("No OpenGL compatible visualizer!");
+	}
+	else {
+		auto tex = glRenderer->GetTexture();
+		// render visualization
+		auto maxRegion = ImGui::GetContentRegionMax();
+		maxRegion.x -= 20.0f;
+		maxRegion.y -= 30.0f;
+		float width = 0.0f;
+		float height = 0.0f;
+		if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
+			// height is too small
+			width = maxRegion.x;
+			height = (float)tex->getHeight() / (float)tex->getWidth() * maxRegion.x;
+		}
+		else {
+			height = maxRegion.y;
+			width = (float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y;
+		}
 
 
-        // im gui image location finder trick
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		// im gui image location finder trick
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 
-        if (ImGui::BeginChild("SimView")) {
+		if (ImGui::BeginChild("SimView")) {
 
-            bool imageHasFocus = ImGui::IsWindowHovered();
-            auto pos = ImGui::GetWindowPos();
-            auto padding = ImGui::GetStyle().WindowPadding;
-            auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
-            auto windowSize = glm::vec2(width, height);
+			bool imageHasFocus = ImGui::IsWindowHovered();
+			auto pos = ImGui::GetWindowPos();
+			auto padding = ImGui::GetStyle().WindowPadding;
+			auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
+			auto windowSize = glm::vec2(width, height);
 
-            ImGui::PushItemWidth(width);
+			ImGui::PushItemWidth(width);
 
-            ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
+			ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
 
-            ImGui::PopItemWidth();
+			ImGui::PopItemWidth();
 
-        }
-        ImGui::EndChild();
+		}
+		ImGui::EndChild();
 
-        ImGui::PopStyleVar(3);
+		ImGui::PopStyleVar(3);
 
-    }
-    ImGui::End();
+	}
+	ImGui::End();
 }
 
 void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
-    FLUID_ASSERT(simulation.parameters.visualizer != nullptr)
-    FLUID_ASSERT(scenario != nullptr);
-    simulation.parameters.visualizer->setSimulationViewArea(
-            {scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right,
-             scenario->data.viewport.bottom});
+	FLUID_ASSERT(simulation.parameters.visualizer != nullptr);
+		FLUID_ASSERT(scenario != nullptr);
+
+	simulation.parameters.visualizer->parameters.viewport = { scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right, scenario->data.viewport.bottom };
+	simulation.parameters.visualizer->parameters.render_targer = { 1920, 1080 };
 }
 
 void FluidUi::FluidSolverWindow::setup_windows() {
-    uiLayer.window = this;
-    uiLayer.initialize();
+	uiLayer.window = this;
+	uiLayer.initialize();
 }
 
 void FluidUi::FluidSolverWindow::sim_worker_thread_main() {
-    using namespace std::chrono_literals;
-    while (!sim_worker_thread_should_terminate) {
-        if (!running || !asynchronous_simulation) {
-            std::this_thread::sleep_for(100ms);
-        } else {
-            if (sim_worker_thread_working) {
-                simulation.execute_simulation_step();
-                sim_worker_thread_done = true;
-                sim_worker_thread_working = false;
-            }
-        }
-    }
+	using namespace std::chrono_literals;
+	while (!sim_worker_thread_should_terminate) {
+		if (!running || !asynchronous_simulation) {
+			std::this_thread::sleep_for(100ms);
+		}
+		else {
+			if (sim_worker_thread_working) {
+				simulation.execute_simulation_step();
+				sim_worker_thread_done = true;
+				sim_worker_thread_working = false;
+			}
+		}
+	}
 }
 
 bool FluidUi::FluidSolverWindow::is_done_working() const {
-    return !sim_worker_thread_working;
+	return !sim_worker_thread_working;
 }

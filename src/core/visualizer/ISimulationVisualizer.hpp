@@ -1,55 +1,51 @@
 #ifndef FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
-// #include <core/selection/IParticleSelection.hpp>
 #include "core/fluidSolver/ParticleCollection.hpp"
 
+
 namespace FluidSolver {
-    class ISimulationVisualizer {
 
-    public:
-        /**
-         * This defines a view area in simulation space. The coordinates are relative to
-         * simulation space origin.
-         */
-        struct SimulationViewArea {
-            float Left = 0.0f;
-            float Top = 0.0f;
 
-            float Right = 0.0f;
-            float Bottom = 0.0f;
-        };
+	class ISimulationVisualizer {
+	public:
 
-    public:
-        virtual void setParticleCollection(ParticleCollection *particleCollection) = 0;
+		struct Viewport {
+			float left = 0.0f;
+			float top = 0.0f;
 
-        virtual ParticleCollection *getParticleCollection() = 0;
+			float right = 0.0f;
+			float bottom = 0.0f;
+		};
 
-        virtual void setParticleSize(float particleSize) = 0;
+		struct Size {
+			size_t width = 0;
+			size_t height = 0;
+		};
 
-        virtual float getParticleSize() = 0;
 
-        virtual float getRestDensity() = 0;
+		struct VisualizerParameter {
+			// viewport is in particle space. Everything inside the viewport should be visible.
+			Viewport viewport;
 
-        virtual void setRestDensity(float restDensity) = 0;
+			// this size specifies how large the render target should be in pixels
+			Size render_targer;
 
-        virtual void UpdateData() = 0;
+			ParticleCollection* collection = nullptr;
+			float rest_density = 0.0f;
+			float particle_size = 0.0f;
 
-        virtual void Render() = 0;
+		} parameters;
 
-        virtual void setSimulationViewArea(SimulationViewArea viewArea) = 0;
+		virtual void initialize() = 0;
 
-        virtual void setRenderTargetSize(size_t width, size_t height) = 0;
+		virtual void update_data() = 0;
 
-        virtual ~ISimulationVisualizer() = default;
+		virtual void render() = 0;
 
-        virtual glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) = 0;
+		virtual ~ISimulationVisualizer() = default;
 
-        //virtual void setParticleSelection(IParticleSelection *particleSelection) = 0;
-
-        //virtual IParticleSelection *getParticleSelection() = 0;
-
-    };
+	};
 }
 
 #endif //FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP

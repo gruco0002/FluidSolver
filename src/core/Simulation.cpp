@@ -73,13 +73,7 @@ void FluidSolver::Simulation::initialize() {
 
         neigborhood_interface = internal_parameters.fluid_solver->create_neighborhood_interface();
     }
-
-    if (internal_parameters.visualizer != nullptr) {
-        internal_parameters.visualizer->setParticleCollection(internal_parameters.collection);
-        internal_parameters.visualizer->setParticleSize(internal_parameters.particle_size);
-        internal_parameters.visualizer->setRestDensity(internal_parameters.rest_density);
-    }
-
+    
     if (internal_parameters.timestep != nullptr) {
         internal_parameters.timestep->parameters.particle_size = internal_parameters.particle_size;
         internal_parameters.timestep->parameters.particle_collection = internal_parameters.collection;
@@ -102,6 +96,14 @@ void FluidSolver::Simulation::initialize() {
         sen->initialize();
     }
 
+    if (internal_parameters.visualizer != nullptr) {
+        internal_parameters.visualizer->parameters.collection = internal_parameters.collection;
+        internal_parameters.visualizer->parameters.particle_size = internal_parameters.particle_size;
+        internal_parameters.visualizer->parameters.rest_density = internal_parameters.rest_density;
+        internal_parameters.visualizer->initialize();
+    }
+
+
 }
 
 void FluidSolver::Simulation::visualize(bool update_data) {
@@ -114,8 +116,8 @@ void FluidSolver::Simulation::visualize(bool update_data) {
     FLUID_ASSERT(internal_parameters.collection != nullptr)
 
     if (update_data) {
-        internal_parameters.visualizer->UpdateData();
+        internal_parameters.visualizer->update_data();
     }
-    internal_parameters.visualizer->Render();
+    internal_parameters.visualizer->render();
 
 }

@@ -1,53 +1,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "ParticleRenderer.hpp"
 
-void ParticleRenderer::Render() {
 
-    // render particles to fbo
-    framebuffer->Bind(true);
-
-    glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    //particleVertexArray->Update(nullptr);
-
-    particleShader->Bind();
-    particleShader->SetValue("projectionMatrix", projectionMatrix);
-    particleShader->SetValue("pointSize", pointSize);
-    particleShader->SetValue("colorSelection", (int) colorSelection);
-    particleShader->SetValue("bottomColor", bottomColor);
-    particleShader->SetValue("bottomValue", bottomValue);
-    particleShader->SetValue("topColor", topColor);
-    particleShader->SetValue("topValue", topValue);
-    particleShader->SetValue("boundaryColor", boundaryParticleColor);
-    //particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
-    particleShader->SetValue("numberOfParticles", (float) this->particleVertexArray->GetVaoParticleCount());
-    particleShader->SetValue("showParticleMemoryLocation", (int) showMemoryLocation);
-
-
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    if (particleVertexArray != nullptr)
-        particleVertexArray->Draw();
-
-    //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
-
-    // finish up
-    framebuffer->Unbind();
-    glFlush();
-}
-
-ParticleRenderer::~ParticleRenderer() {
-    delete particleShader;
-    delete fboColorTex;
-    delete fboDepthTex;
-    delete framebuffer;
-    delete particleVertexArray;
-}
-
+// shader code
 const std::string vertCode = R"(#version 330 core
 layout (location = 0) in vec2 aPosition;
 layout (location = 1) in vec2 aVelocity;
@@ -205,6 +160,41 @@ void main(){
 
 )";
 
+
+
+
+
+
+ParticleRenderer::ParticleRenderer() {
+    Generate();
+    RecreateFBOStuff();
+    CalculateProjectionMatrix();
+}
+
+ParticleRenderer::~ParticleRenderer() {
+    delete particleShader;
+    delete fboColorTex;
+    delete fboDepthTex;
+    delete framebuffer;
+    delete particleVertexArray;
+}
+
+void ParticleRenderer::initialize()
+{
+    delete particleVertexArray;
+    particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
+    this->pointSize = parameters.particle_size;
+
+    
+    if (this->renderTargetWidth != parameters.render_targer.width || this->renderTargetHeight != parameters.render_targer.height) {
+        this->renderTargetWidth = parameters.render_targer.width;
+        this->renderTargetHeight = parameters.render_targer.height;
+        RecreateFBOStuff();
+    }
+    CalculateProjectionMatrix();
+
+}
+
 void ParticleRenderer::Generate() {
     particleShader = new Engine::Graphics::Shader({
                                                           Engine::Graphics::Shader::ProgramPart(
@@ -221,63 +211,57 @@ void ParticleRenderer::Generate() {
 }
 
 
-ParticleRenderer::ParticleRenderer() {
-    Generate();
-    RecreateFBOStuff();
-    CalculateProjectionMatrix();
+void ParticleRenderer::render() {
+
+    // render particles to fbo
+    framebuffer->Bind(true);
+
+    glClearColor(backgroundClearColor.r, backgroundClearColor.g, backgroundClearColor.b, backgroundClearColor.a);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    //particleVertexArray->Update(nullptr);
+
+    particleShader->Bind();
+    particleShader->SetValue("projectionMatrix", projectionMatrix);
+    particleShader->SetValue("pointSize", pointSize);
+    particleShader->SetValue("colorSelection", (int) colorSelection);
+    particleShader->SetValue("bottomColor", bottomColor);
+    particleShader->SetValue("bottomValue", bottomValue);
+    particleShader->SetValue("topColor", topColor);
+    particleShader->SetValue("topValue", topValue);
+    particleShader->SetValue("boundaryColor", boundaryParticleColor);
+    //particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
+    particleShader->SetValue("numberOfParticles", (float) this->particleVertexArray->GetVaoParticleCount());
+    particleShader->SetValue("showParticleMemoryLocation", (int) showMemoryLocation);
+
+
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    if (particleVertexArray != nullptr)
+        particleVertexArray->Draw();
+
+    //glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+
+    // finish up
+    framebuffer->Unbind();
+    glFlush();
 }
+
+
+
 
 glm::mat4 ParticleRenderer::GenerateOrtho(float left, float right, float top, float bottom) {
     return glm::ortho((float) left, (float) right, (float) bottom, (float) top);
 }
 
-void ParticleRenderer::setParticleCollection(FluidSolver::ParticleCollection *particleCollection) {
-    this->ParticleCollection = particleCollection;
-    // delete old and create new vertex array
-    delete particleVertexArray;
-    particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(particleCollection);
-}
-
-FluidSolver::ParticleCollection *ParticleRenderer::getParticleCollection() {
-    return ParticleCollection;
-}
-
-void ParticleRenderer::setParticleSize(float particleSize) {
-    this->pointSize = particleSize;
-}
-
-float ParticleRenderer::getParticleSize() {
-    return this->pointSize;
-}
-
-float ParticleRenderer::getRestDensity() {
-    return RestDensity;
-}
-
-void ParticleRenderer::setRestDensity(float restDensity) {
-    RestDensity = restDensity;
-}
-
-void ParticleRenderer::setSimulationViewArea(FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea) {
-    this->viewArea = viewArea;
-    CalculateProjectionMatrix();
-}
-
-void ParticleRenderer::setRenderTargetSize(size_t width, size_t height) {
-    if (this->renderTargetWidth != width || this->renderTargetHeight != height) {
-        this->renderTargetWidth = width;
-        this->renderTargetHeight = height;
-        RecreateFBOStuff();
-    }
-    CalculateProjectionMatrix();
-
-}
-
 void ParticleRenderer::CalculateProjectionMatrix() {
     // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
 
-    float width = viewArea.Right - viewArea.Left; // particle size is not taken into account
-    float height = viewArea.Top - viewArea.Bottom;
+    float width = parameters.viewport.right - parameters.viewport.left; // particle size is not taken into account
+    float height = parameters.viewport.top - parameters.viewport.bottom;
 
     float fboWidth = renderTargetWidth;
     float fboHeight = renderTargetHeight;
@@ -290,10 +274,10 @@ void ParticleRenderer::CalculateProjectionMatrix() {
 
     // top and bottom is swapped, so that everything is rendered correctly (otherwise, we render it upside down)
     glm::mat4 generated = ParticleRenderer::GenerateOrtho(
-            viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) - width * 0.5f,
-            viewArea.Left + 0.5f * (viewArea.Right - viewArea.Left) + width * 0.5f,
-            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) - height * 0.5f,
-            viewArea.Top - 0.5f * (viewArea.Top - viewArea.Bottom) + height * 0.5f);
+        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) - width * 0.5f,
+        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) + width * 0.5f,
+        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) - height * 0.5f,
+        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) + height * 0.5f);
 
     projectionMatrix = generated;
 
@@ -339,17 +323,7 @@ glm::vec2 ParticleRenderer::ConvertPixelCoordinateToParticleSpace(size_t pixelX,
     return pos;
 }
 
-void ParticleRenderer::UpdateData() {
-    FLUID_ASSERT(particleVertexArray != nullptr)
+void ParticleRenderer::update_data() {
+    FLUID_ASSERT(particleVertexArray != nullptr);
     particleVertexArray->Update(nullptr);
 }
-/*
-void ParticleRenderer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
-    this->particleSelection = particleSelection;
-}
-
-FluidSolver::IParticleSelection *ParticleRenderer::getParticleSelection() {
-    return particleSelection;
-}
-
-*/

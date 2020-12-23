@@ -27,7 +27,9 @@ public:
 
     static glm::mat4 GenerateOrtho(float left, float right, float top, float bottom);
 
-    void Render() override;
+    void render() override;
+
+    void initialize() override;
 
     virtual ~ParticleRenderer();
 
@@ -52,37 +54,16 @@ public:
     bool showMemoryLocation = false;
 
 
-    void setParticleSize(float particleSize) override;
+   
 
-    glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) override;
+    glm::vec2 ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY);
+      
 
-    float getParticleSize() override;
-
-    float getRestDensity() override;
-
-    void setRestDensity(float restDensity) override;
-
-    void setParticleCollection(FluidSolver::ParticleCollection *particleCollection) override;
-
-    FluidSolver::ParticleCollection *getParticleCollection() override;
-
-    void setSimulationViewArea(SimulationViewArea viewArea) override;
-
-    void setRenderTargetSize(size_t width, size_t height) override;
-
-    void UpdateData() override;
+    void update_data() override;
 
 private:
 
-   // FluidSolver::IParticleSelection *particleSelection = nullptr;
-public:
-   // void setParticleSelection(FluidSolver::IParticleSelection *particleSelection) override;
 
-   // FluidSolver::IParticleSelection *getParticleSelection() override;
-
-private:
-
-    SimulationViewArea viewArea;
     size_t renderTargetWidth = 1920;
     size_t renderTargetHeight = 1080;
 
@@ -105,6 +86,7 @@ private:
     void RecreateFBOStuff();
 
     void Generate();
+
 
 
 };
