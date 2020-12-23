@@ -29,7 +29,7 @@ namespace FluidSolver {
 			Viewport viewport;
 
 			// this size specifies how large the render target should be in pixels
-			Size render_targer;
+			Size render_target;
 
 			ParticleCollection* collection = nullptr;
 			float rest_density = 0.0f;

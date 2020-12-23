@@ -186,9 +186,9 @@ void ParticleRenderer::initialize()
     this->pointSize = parameters.particle_size;
 
     
-    if (this->renderTargetWidth != parameters.render_targer.width || this->renderTargetHeight != parameters.render_targer.height) {
-        this->renderTargetWidth = parameters.render_targer.width;
-        this->renderTargetHeight = parameters.render_targer.height;
+    if (this->renderTargetWidth != parameters.render_target.width || this->renderTargetHeight != parameters.render_target.height) {
+        this->renderTargetWidth = parameters.render_target.width;
+        this->renderTargetHeight = parameters.render_target.height;
         RecreateFBOStuff();
     }
     CalculateProjectionMatrix();

@@ -169,7 +169,7 @@ void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
 		FLUID_ASSERT(scenario != nullptr);
 
 	simulation.parameters.visualizer->parameters.viewport = { scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right, scenario->data.viewport.bottom };
-	simulation.parameters.visualizer->parameters.render_targer = { 1920, 1080 };
+	simulation.parameters.visualizer->parameters.render_target = { 1920, 1080 };
 }
 
 void FluidUi::FluidSolverWindow::setup_windows() {
