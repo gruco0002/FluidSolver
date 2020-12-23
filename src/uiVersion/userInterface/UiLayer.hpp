@@ -24,6 +24,8 @@ namespace FluidUi {
 
         void render_solver_parameters();
 
+
+        void render_menu();
     };
 
 }
