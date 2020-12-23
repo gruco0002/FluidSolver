@@ -13,6 +13,7 @@ find_package(cxxopts CONFIG REQUIRED)
 find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
 find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
+find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 
 
 # include directories
@@ -132,6 +133,7 @@ target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
 target_include_directories(FluidSolver PUBLIC ${CHAISCRIPT_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC fmt::fmt)
 target_link_libraries(FluidSolver PUBLIC yaml-cpp)
+target_link_libraries(FluidSolver PUBLIC unofficial::nativefiledialog::nfd)
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.

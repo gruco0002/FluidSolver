@@ -29,6 +29,7 @@ Use CMake to compile the project:
 - [ChaiScript](https://github.com/ChaiScript/ChaiScript)
 - [fmt](https://github.com/fmtlib/fmt)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
+- [nativefiledialog](https://github.com/mlabbe/nativefiledialog)
 - [googletest](https://github.com/google/googletest) 
 - [cxxopts](https://github.com/jarro2783/cxxopts) 
 - [GLFW](https://www.glfw.org/)
