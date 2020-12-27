@@ -517,6 +517,7 @@ namespace FluidSolver {
 		if (!collection.is_type_present<MovementData>())collection.add_type<MovementData>();
 		if (!collection.is_type_present<ParticleData>())collection.add_type<ParticleData>();
 		if (!collection.is_type_present<ParticleInfo>())collection.add_type<ParticleInfo>();
+		if (!collection.is_type_present<ExternalForces>())collection.add_type<ExternalForces>();
 
 		collection.clear();
 
