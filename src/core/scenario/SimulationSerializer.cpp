@@ -12,6 +12,7 @@
 #include <core/fluidSolver/IISPHFluidSolver.hpp>
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
+#include <core/visualizer/GLParticleRenderer.hpp>
 
 namespace YAML {
 	template<>
@@ -30,6 +31,32 @@ namespace YAML {
 			}
 			rhs.x = node[0].as<float>();
 			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
+}
+
+namespace YAML {
+	template<>
+	struct convert<glm::vec4> {
+		static Node encode(const glm::vec4& rhs) {
+			Node node;
+			node.SetStyle(YAML::EmitterStyle::Flow);
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			node.push_back(rhs.z);
+			node.push_back(rhs.w);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec4& rhs) {
+			if (!node.IsSequence() || node.size() != 4) {
+				return false;
+			}
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			rhs.z = node[2].as<float>();
+			rhs.w = node[3].as<float>();
 			return true;
 		}
 	};
@@ -379,15 +406,70 @@ namespace FluidSolver {
 	}
 
 	ISimulationVisualizer* load_visualizer(const YAML::Node& node) {
-		// TODO: implement
-		
+		if (node["type"].as<std::string>() == "gl-particle-renderer") {
+			auto r = new GLParticleRenderer();
+
+			// default parameters
+			r->parameters.viewport.left = node["viewport"]["left"].as<float>();
+			r->parameters.viewport.right = node["viewport"]["right"].as<float>();
+			r->parameters.viewport.top = node["viewport"]["top"].as<float>();
+			r->parameters.viewport.bottom = node["viewport"]["bottom"].as<float>();
+			r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
+			r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
+
+			// custom paramters for the particle renderer
+			r->settings.topValue = node["settings"]["top"]["value"].as<float>();
+			r->settings.topColor = node["settings"]["top"]["color"].as<glm::vec4>();
+			r->settings.bottomValue = node["settings"]["bottom"]["value"].as<float>();
+			r->settings.bottomColor = node["settings"]["bottom"]["color"].as<glm::vec4>();
+			r->settings.colorSelection = (GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"].as<int>();
+			r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].as<glm::vec4>();
+			r->settings.backgroundClearColor = node["settings"]["colors"]["background"].as<glm::vec4>();
+			r->settings.showMemoryLocation = node["settings"]["show-memory-location"].as<bool>();
+
+			return r;
+
+		}
+		else {
+			Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
+		}
+
 		return nullptr;
 	}
 
-	YAML::Node save_visualizer(const ISimulationVisualizer* visualizer) {
-		// TODO: implement
 
-		return YAML::Node("Visualizer");
+
+
+	YAML::Node save_visualizer(const ISimulationVisualizer* visualizer) {
+		YAML::Node node;
+		if (dynamic_cast<const GLParticleRenderer*>(visualizer) != nullptr) {
+			auto r = dynamic_cast<const GLParticleRenderer*>(visualizer);
+			node["type"] = "gl-particle-renderer";
+
+			// default parameters
+			node["viewport"]["left"] = r->parameters.viewport.left;
+			node["viewport"]["right"] = r->parameters.viewport.right;
+			node["viewport"]["top"] = r->parameters.viewport.top;
+			node["viewport"]["bottom"] = r->parameters.viewport.bottom;
+			node["render-target"]["width"] = r->parameters.render_target.width;
+			node["render-target"]["height"] = r->parameters.render_target.height;
+
+			// custom parameters for the particle renderer
+			node["settings"]["top"]["value"] = r->settings.topValue;
+			node["settings"]["top"]["color"] = r->settings.topColor;
+			node["settings"]["bottom"]["value"] = r->settings.bottomValue;
+			node["settings"]["bottom"]["color"] = r->settings.bottomColor;
+			node["settings"]["value-selection"] = (int)r->settings.colorSelection;
+			node["settings"]["colors"]["boundary"] = r->settings.boundaryParticleColor;
+			node["settings"]["colors"]["background"] = r->settings.backgroundClearColor;
+			node["settings"]["show-memory-location"] = r->settings.showMemoryLocation;
+
+		}
+		else {
+			Log::warning("[SAVING] Unsupported visualizer type!");
+		}
+
+		return node;
 	}
 
 	Simulation SimulationSerializer::load_from_file(const std::string& filepath)
