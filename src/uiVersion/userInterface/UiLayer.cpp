@@ -59,9 +59,6 @@ void FluidUi::UiLayer::render() {
 		ImGui::Checkbox("Asynchronous", &window->asynchronous_simulation);
 		});
 
-	BeginSubsection("Scenarios", [=]() {
-		scenarios.render();
-		});
 
 	BeginSubsection("Solver Setup", [=]() {
 
@@ -224,8 +221,6 @@ void FluidUi::UiLayer::render() {
 }
 
 void FluidUi::UiLayer::initialize() {
-	scenarios.window = window;
-	scenarios.initialize();
 	statisticsUi.window = window;
 	statisticsUi.initialize();
 	logWindow.window = window;
@@ -251,9 +246,22 @@ void FluidUi::UiLayer::render_menu()
 
 			bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
 
+			if (ImGui::MenuItem("New", nullptr, false, can_change)) {
+				// create a new scenario
+				window->create_empty_simulation();
+			}
+
 			if (ImGui::MenuItem("Open", nullptr, false, can_change)) {
 				// open scenario
 
+				char* p = nullptr;
+				auto res = NFD_OpenDialog("yaml", nullptr, &p);
+				if (res == NFD_OKAY) {
+					std::string path(p);
+					free(p);
+					window->simulation = FluidSolver::SimulationSerializer::load_from_file(path);
+					window->on_new_simulation();
+				}				
 			}
 
 			if (ImGui::MenuItem("Save", nullptr, false, can_change)) {

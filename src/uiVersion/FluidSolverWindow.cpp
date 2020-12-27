@@ -19,24 +19,25 @@ FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string& title, int widt
 }
 
 void FluidUi::FluidSolverWindow::load() {
+	// set the current fluid solver type
 	current_type = &solver_types.types[0];
+	create_empty_simulation();
 
+	// initialize imgui and window
 	ImGuiHelper::Init(this->GetWindowHandler());
-	set_default_simulation_parameters();
-	load_scenario(FLUID_ROOT_DIR + std::string("scenarios/boundaryTest.chai"));
 	OnKeyPressed.Subscribe([=](int key) {
 		if (key == GLFW_KEY_SPACE) {
 			running = !running;
 		}
 		});
 
+	// setup the windows
 	setup_windows();
 }
 
 void FluidUi::FluidSolverWindow::unload() {
 	sim_worker_thread_should_terminate = true;
 	sim_worker_thread.join();
-	delete scenario;
 	ImGuiHelper::Uninit();
 }
 
@@ -78,36 +79,36 @@ void FluidUi::FluidSolverWindow::render() {
 
 }
 
-void FluidUi::FluidSolverWindow::load_scenario(const std::string& filepath) {
-	delete scenario;
-	scenario = nullptr;
-	scenario = new FluidSolver::Scenario(filepath);
-	FLUID_ASSERT(scenario != nullptr);
-	simulation.parameters.collection = nullptr;
+void FluidUi::FluidSolverWindow::create_empty_simulation()
+{
+	simulation = FluidSolver::Simulation();
 
-	simulation.parameters.collection = &scenario->data.collection;
-	simulation.parameters.rest_density = scenario->data.rest_density;
-	simulation.parameters.particle_size = scenario->data.particle_size;
-	simulation.parameters.entities = scenario->data.entities;
-	simulation.parameters.invalidate = true;
+	simulation.parameters.collection = new FluidSolver::ParticleCollection();
+	simulation.parameters.collection->add_type<FluidSolver::MovementData>();
+	simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
+	simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
+	simulation.parameters.collection->add_type<FluidSolver::ExternalForces>();
+	simulation.parameters.rest_density = 1.0f;
+	simulation.parameters.particle_size = 1.0f;
+	simulation.parameters.gravity = 9.81f;
 
-	simulation.parameters.sensor_storage->clear();
-
-	set_visualizer_parameters();
-
-	FluidSolver::Log::message("Loaded " + scenario->data.name);
-}
-
-void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
 	simulation.parameters.fluid_solver = current_type->create_type();
 	simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
 	simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer();
-	simulation.parameters.gravity = 9.81f;
 
 	simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
 	simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
 	simulation.parameters.invalidate = true;
+
+	FluidSolver::Log::message("Loaded empty scenario");
+
+	on_new_simulation();
+}
+
+void FluidUi::FluidSolverWindow::on_new_simulation()
+{
+	this->current_type = this->solver_types.query_type(simulation.parameters.fluid_solver);
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
@@ -162,14 +163,6 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 
 	}
 	ImGui::End();
-}
-
-void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
-	FLUID_ASSERT(simulation.parameters.visualizer != nullptr);
-	FLUID_ASSERT(scenario != nullptr);
-
-	simulation.parameters.visualizer->parameters.viewport = { scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right, scenario->data.viewport.bottom };
-	simulation.parameters.visualizer->parameters.render_target = { 1920, 1080 };
 }
 
 void FluidUi::FluidSolverWindow::setup_windows() {

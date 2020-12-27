@@ -1,32 +1,30 @@
 #ifndef FLUIDSOLVER_UILAYER_HPP
 #define FLUIDSOLVER_UILAYER_HPP
 
-#include "ScenariosWindow.hpp"
 #include "StatisticsUi.hpp"
 #include <uiVersion/userInterface/LogWindow.hpp>
 
 namespace FluidUi {
-    class FluidSolverWindow;
+	class FluidSolverWindow;
 
-    class UiLayer {
-
-
-    public:
-        FluidSolverWindow* window = nullptr;
-        void render();
-        void initialize();
+	class UiLayer {
 
 
-    private:
-        ScenariosWindow scenarios;
-        StatisticsUi statisticsUi;
-        LogWindow logWindow;
-
-        void render_solver_parameters();
+	public:
+		FluidSolverWindow* window = nullptr;
+		void render();
+		void initialize();
 
 
-        void render_menu();
-    };
+	private:
+		StatisticsUi statisticsUi;
+		LogWindow logWindow;
+
+		void render_solver_parameters();
+
+
+		void render_menu();
+	};
 
 }
 

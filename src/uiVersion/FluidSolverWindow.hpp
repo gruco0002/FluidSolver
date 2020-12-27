@@ -6,8 +6,6 @@
 #include "FluidSolverTypes.hpp"
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>
-#include <core/scenario/Scenario.hpp>
-#include <uiVersion/userInterface/ScenariosWindow.hpp>
 #include <uiVersion/userInterface/UiLayer.hpp>
 #include <thread>
 
@@ -24,13 +22,12 @@ namespace FluidUi {
 
         void load() override;
 
-    public:
+    public:     
 
-        FluidSolver::Scenario *scenario = nullptr;
 
         FluidSolver::Simulation simulation;
 
-        void load_scenario(const std::string &filepath);
+
 
         bool running = false;
 
@@ -42,15 +39,13 @@ namespace FluidUi {
 
         const FluidSolverTypes::FluidSolverType* current_type = nullptr;
 
+        void create_empty_simulation();
+
+        void on_new_simulation();
+
     private:
 
         void render_visualization_window();
-
-        void set_visualizer_parameters();
-
-        void set_default_simulation_parameters();
-
-    private:
 
         void setup_windows();
 

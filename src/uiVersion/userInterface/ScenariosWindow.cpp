@@ -59,7 +59,7 @@ void FluidUi::ScenariosWindow::load() {
     FLUID_ASSERT(current_item >= 0)
     FLUID_ASSERT(current_item < scenarios.size())
     std::string toLoad = path + scenarios[current_item];
-    window->load_scenario(toLoad);
+    //window->load_scenario(toLoad);
 }
 
 FluidUi::ScenariosWindow::~ScenariosWindow() {
