@@ -11,16 +11,16 @@ namespace FluidSolver {
 	public:
 
 		struct Viewport {
-			float left = 0.0f;
-			float top = 0.0f;
+			float left = -10.0f;
+			float top = 10.0f;
 
-			float right = 0.0f;
-			float bottom = 0.0f;
+			float right = 10.0f;
+			float bottom = -10.0f;
 		};
 
 		struct Size {
-			size_t width = 0;
-			size_t height = 0;
+			size_t width = 1920;
+			size_t height = 1080;
 		};
 
 
