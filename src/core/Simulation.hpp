@@ -9,47 +9,48 @@
 #include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
 namespace FluidSolver {
-    struct SimulationParameters {
-        float particle_size = 1.0f;
-        float rest_density = 1.0f;
-        float gravity = 9.81f;
-        ParticleCollection *collection = nullptr;
-        IFluidSolverBase *fluid_solver = nullptr;
-        ISimulationVisualizer *visualizer = nullptr;
-        ITimestep *timestep = nullptr;
+	struct SimulationParameters {
+		float particle_size = 1.0f;
+		float rest_density = 1.0f;
+		float gravity = 9.81f;
+		ParticleCollection* collection = nullptr;
+		IFluidSolverBase* fluid_solver = nullptr;
+		ISimulationVisualizer* visualizer = nullptr;
+		ITimestep* timestep = nullptr;
 
-        std::vector<IEntity *> entities;
+		std::vector<IEntity*> entities;
 
-        SensorDataStorage *sensor_storage = nullptr;
-        std::vector<ISensor *> sensors;
+		SensorDataStorage* sensor_storage = nullptr;
+		std::vector<ISensor*> sensors;
 
-        bool invalidate = false;
+		bool invalidate = false;
 
-        bool operator==(const SimulationParameters &other) const;
+		bool operator==(const SimulationParameters& other) const;
 
-        bool operator!=(const SimulationParameters &other) const;
+		bool operator!=(const SimulationParameters& other) const;
 
-    };
+	};
 
-    class Simulation {
+	class Simulation {
 
-    public:
-        SimulationParameters parameters;
+	public:
+		SimulationParameters parameters;
 
-        void execute_simulation_step();
+		void execute_simulation_step();
 
-        void visualize(bool update_data = false);
-
-    private:
-
-        SimulationParameters internal_parameters;
-
-        NeighborhoodInterface neigborhood_interface;
-
-        void initialize();
+		void visualize(bool update_data = false);
 
 
-    };
+	private:
+
+		SimulationParameters internal_parameters;
+
+		NeighborhoodInterface neigborhood_interface;
+
+		void initialize();
+
+
+	};
 
 }
 
