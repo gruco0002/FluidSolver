@@ -3,7 +3,6 @@
 
 #include <engine/Window.hpp>
 #include <engine/RectangleRenderer.hpp>
-#include "ParticleRenderer.hpp"
 #include "FluidSolverTypes.hpp"
 #include <engine/graphics/Framebuffer.hpp>
 #include <core/Simulation.hpp>

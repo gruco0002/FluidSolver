@@ -5,7 +5,7 @@
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/timestep/ConstantTimestep.hpp>
 #include "ImguiHelper.hpp"
-
+#include <core/visualizer/GLParticleRenderer.hpp>
 #include <thread>
 #include <chrono>
 #include <core/sensors/ParticleStatistics.hpp>
@@ -82,8 +82,8 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string& filepath) {
 	delete scenario;
 	scenario = nullptr;
 	scenario = new FluidSolver::Scenario(filepath);
-	FLUID_ASSERT(scenario != nullptr)
-		simulation.parameters.collection = nullptr;
+	FLUID_ASSERT(scenario != nullptr);
+	simulation.parameters.collection = nullptr;
 
 	simulation.parameters.collection = &scenario->data.collection;
 	simulation.parameters.rest_density = scenario->data.rest_density;
@@ -101,7 +101,7 @@ void FluidUi::FluidSolverWindow::load_scenario(const std::string& filepath) {
 void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
 	simulation.parameters.fluid_solver = current_type->create_type();
 	simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
-	simulation.parameters.visualizer = new ParticleRenderer();
+	simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer();
 	simulation.parameters.gravity = 9.81f;
 
 	simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
@@ -113,12 +113,12 @@ void FluidUi::FluidSolverWindow::set_default_simulation_parameters() {
 void FluidUi::FluidSolverWindow::render_visualization_window() {
 	ImGui::Begin("Simulation Visualization");
 
-	auto glRenderer = dynamic_cast<IOpenGLVisualizer*>(simulation.parameters.visualizer);
+	auto glRenderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer);
 	if (glRenderer == nullptr) {
 		ImGui::Text("No OpenGL compatible visualizer!");
 	}
 	else {
-		auto tex = glRenderer->GetTexture();
+		auto tex = glRenderer->get_render_target();
 		// render visualization
 		auto maxRegion = ImGui::GetContentRegionMax();
 		maxRegion.x -= 20.0f;
@@ -166,7 +166,7 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 
 void FluidUi::FluidSolverWindow::set_visualizer_parameters() {
 	FLUID_ASSERT(simulation.parameters.visualizer != nullptr);
-		FLUID_ASSERT(scenario != nullptr);
+	FLUID_ASSERT(scenario != nullptr);
 
 	simulation.parameters.visualizer->parameters.viewport = { scenario->data.viewport.left, scenario->data.viewport.top, scenario->data.viewport.right, scenario->data.viewport.bottom };
 	simulation.parameters.visualizer->parameters.render_target = { 1920, 1080 };

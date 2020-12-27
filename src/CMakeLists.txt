@@ -32,10 +32,6 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/FluidSolverException.hpp
        # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.cpp
        # core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchGreedyAllocated.hpp
-        uiVersion/ParticleVertexArray.cpp
-        uiVersion/ParticleVertexArray.hpp
-        uiVersion/ParticleRenderer.cpp
-        uiVersion/ParticleRenderer.hpp
         core/fluidSolver/kernel/CubicSplineKernel.cpp
         core/fluidSolver/kernel/CubicSplineKernel.hpp
         core/interface/Constants.hpp
@@ -69,7 +65,6 @@ set(FLUID_SOLVER_SOURCE_FILES
        # uiVersion/ContinousVisualizerOpenGL.hpp
        # uiVersion/userInterface/MainUi.cpp
        # uiVersion/userInterface/MainUi.hpp
-        uiVersion/IOpenGLVisualizer.hpp
        # core/selection/ParticleSelection.cpp
        # core/selection/ParticleSelection.hpp
        # core/selection/IParticleSelection.hpp
@@ -121,6 +116,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/parallelization/NoParallelization.hpp" "core/parallelization/NoParallelization.cpp"
         "core/parallelization/StdParallelForEach.hpp" "core/parallelization/StdParallelForEach.cpp"
         "core/scenario/SimulationSerializer.hpp" "core/scenario/SimulationSerializer.cpp"
+        "core/visualizer/GLParticleRenderer.hpp" "core/visualizer/GLParticleRenderer.cpp"
+        "core/visualizer/GLParticleVertexArray.hpp" "core/visualizer/GLParticleVertexArray.cpp"
         )
 
 
