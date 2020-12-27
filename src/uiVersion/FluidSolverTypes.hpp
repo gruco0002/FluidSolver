@@ -46,6 +46,8 @@ namespace FluidUi {
 
         const FluidSolverType *query_type(const FluidSolverTypeQuery &query) const;
 
+        const FluidSolverType* query_type(const FluidSolver::IFluidSolverBase* query) const;
+
 
     private:
 
