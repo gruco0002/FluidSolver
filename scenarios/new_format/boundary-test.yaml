@@ -1,0 +1,41 @@
+version: 1
+scenario:
+  particles: boundary-test.data
+  gravity: 9.81000042
+  particle-size: 1
+  rest-density: 1
+  sensors:
+    - type: particle-statistics-sensor
+solver:
+  type: sesph
+  neigborhood-search:
+    type: quadratic-dynamic-allocated
+  kernel:
+    type: cubic-spline-kernel
+  stiffness: 100000
+  viscosity: 5
+  timestep:
+    type: constant
+    timestep: 0.00100000005
+visualizer:
+  type: gl-particle-renderer
+  viewport:
+    left: -15
+    right: 15
+    top: 10
+    bottom: -15
+  render-target:
+    width: 1920
+    height: 1080
+  settings:
+    top:
+      value: 2
+      color: [0, 0, 1, 1]
+    bottom:
+      value: 0
+      color: [0, 1, 1, 1]
+    value-selection: 4
+    colors:
+      boundary: [0.5, 0.5, 0.5, 1]
+      background: [0, 0, 0, 0]
+    show-memory-location: false
