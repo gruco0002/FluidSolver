@@ -12,6 +12,8 @@ namespace FluidSolver {
 
 	public:
 		virtual Engine::Graphics::Texture2D* get_render_target() = 0;
+
+		static bool is_opengl_available();
 	};
 
 

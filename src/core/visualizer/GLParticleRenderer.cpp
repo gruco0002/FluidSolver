@@ -316,3 +316,8 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
 	projectionMatrix = generated;
 
 }
+
+bool FluidSolver::GLRenderer::is_opengl_available()
+{
+	return Engine::opengl_context_available();
+}
