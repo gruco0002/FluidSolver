@@ -41,8 +41,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp
         core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp
-       # FluidSolverConsole.cpp
-       # FluidSolverConsole.hpp
+        FluidSolverConsole.cpp
+        FluidSolverConsole.hpp
         core/interface/ISimulationModifier.hpp
        # core/simulationModifiers/DeathBox.cpp
        # core/simulationModifiers/DeathBox.hpp
