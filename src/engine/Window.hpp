@@ -10,6 +10,8 @@ typedef struct GLFWwindow GLFWwindow;
 
 namespace Engine {
 
+    bool opengl_context_available();
+
     /**
      * There can only be one window created.
      */

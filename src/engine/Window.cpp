@@ -17,6 +17,8 @@ namespace Engine {
     EventDelegate<GLFWwindow *, int, int, int, int> Window::onAnyKeyChanged;
     EventDelegate<GLFWwindow *, unsigned int> Window::onAnyTextInput;
 
+    bool v_opengl_context_available = false;
+
     bool Window::windowCreated = false;
 
     Window::Window(std::string title, int width, int height) : title(title), width(width), height(height) {
@@ -62,11 +64,14 @@ namespace Engine {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
         // If texture data isn't returned as expected this line should be changed
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+        v_opengl_context_available = true;
     }
 
     Window::~Window() {
         unsetCallbacks();
         glfwTerminate();
+        v_opengl_context_available = false;
     }
 
 
@@ -322,6 +327,12 @@ namespace Engine {
 
     GLFWwindow *Window::GetWindowHandler() {
         return window;
+    }
+
+
+    bool opengl_context_available()
+    {
+        return v_opengl_context_available;
     }
 
 }

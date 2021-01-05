@@ -1,5 +1,6 @@
 #include "GLParticleRenderer.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <engine/Window.hpp>
 
 // shader code
 const std::string vertCode = R"(#version 330 core
@@ -172,6 +173,9 @@ Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target(
 
 void FluidSolver::GLParticleRenderer::initialize()
 {
+	FLUID_ASSERT(Engine::opengl_context_available());
+
+
 	FLUID_ASSERT(parameters.collection != nullptr);
 	delete particleVertexArray;
 	particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
