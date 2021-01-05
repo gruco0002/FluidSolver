@@ -10,55 +10,55 @@
 #include <thread>
 
 namespace FluidUi {
-    class FluidSolverWindow : public Engine::Window {
+	class FluidSolverWindow : public Engine::Window {
 
-    public:
-        explicit FluidSolverWindow(const std::string &title, int width = 800, int height = 600);
+	public:
+		explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
 
-    protected:
-        void unload() override;
+	protected:
+		void unload() override;
 
-        void render() override;
+		void render() override;
 
-        void load() override;
+		void load() override;
 
-    public:     
-
-
-        FluidSolver::Simulation simulation;
+	public:
 
 
-
-        bool running = false;
-
-        bool asynchronous_simulation = true;
-
-        bool is_done_working() const;
-
-        const FluidSolverTypes solver_types;
-
-        const FluidSolverTypes::FluidSolverType* current_type = nullptr;
-
-        void create_empty_simulation();
-
-        void on_new_simulation();
-
-    private:
-
-        void render_visualization_window();
-
-        void setup_windows();
+		FluidSolver::Simulation simulation;
 
 
-        UiLayer uiLayer;
 
-        void sim_worker_thread_main();
-        std::thread sim_worker_thread;
-        bool sim_worker_thread_working = false;
-        bool sim_worker_thread_done = false;
-        bool sim_worker_thread_should_terminate = false;
+		bool running = false;
 
-    };
+		bool asynchronous_simulation = true;
+
+		bool is_done_working() const;
+
+		const FluidSolverTypes solver_types;
+
+		const FluidSolverTypes::FluidSolverType* current_type = nullptr;
+
+		void create_empty_simulation();
+
+		void on_new_simulation();
+
+	private:
+
+		void render_visualization_window();
+
+		void setup_windows();
+
+
+		UiLayer uiLayer;
+
+		void sim_worker_thread_main();
+		std::thread sim_worker_thread;
+		bool sim_worker_thread_working = false;
+		bool sim_worker_thread_done = false;
+		bool sim_worker_thread_should_terminate = false;
+
+	};
 }
 
 #endif //FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP
