@@ -259,9 +259,16 @@ void FluidUi::UiLayer::render_menu()
 				if (res == NFD_OKAY) {
 					std::string path(p);
 					free(p);
-					window->simulation = FluidSolver::SimulationSerializer::load_from_file(path);
-					window->on_new_simulation();
-				}				
+
+					// load simulation
+					FluidSolver::SimulationSerializer s(path);
+					auto simulation = s.load_from_file();
+					if (!s.has_errors()) {
+						window->simulation = s.load_from_file();
+						window->on_new_simulation();
+					}
+
+				}
 			}
 
 			if (ImGui::MenuItem("Save", nullptr, false, can_change)) {
@@ -318,7 +325,8 @@ void FluidUi::UiLayer::render_menu()
 		ImGui::SameLine();
 		if (ImGui::Button("Save") && path != nullptr) {
 			// Save
-			FluidSolver::SimulationSerializer::save_to_file(window->simulation, path, { save_particle_data, particle_filepath });
+			FluidSolver::SimulationSerializer s(path, { save_particle_data, particle_filepath });
+			s.save_to_file(window->simulation);
 			ImGui::CloseCurrentPopup();
 		}
 

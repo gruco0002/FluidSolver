@@ -17,7 +17,13 @@ void FluidSolverConsole::start(const cxxopts::ParseResult& parseResult) {
 		FluidSolver::Log::message("[Console] Starting in console mode.");
 
 	// Load file
-	auto simulation = FluidSolver::SimulationSerializer::load_from_file(settings.filepath);
+	FluidSolver::SimulationSerializer s(settings.filepath);
+	auto simulation = s.load_from_file();
+	if (s.has_errors()) {
+		FluidSolver::Log::error("[Console] Loading of scenario caused errors!");
+		return;
+	}
+
 
 	// start simulating
 	if (settings.verbose)
