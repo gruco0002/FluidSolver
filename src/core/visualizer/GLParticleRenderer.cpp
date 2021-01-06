@@ -317,6 +317,12 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
 
 }
 
+const FluidSolver::Image& FluidSolver::GLParticleRenderer::get_image_data()
+{
+	// TODO: implement
+	return Image(0, 0);
+}
+
 bool FluidSolver::GLRenderer::is_opengl_available()
 {
 	return Engine::opengl_context_available();
