@@ -118,6 +118,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/scenario/SimulationSerializer.hpp" "core/scenario/SimulationSerializer.cpp"
         "core/visualizer/GLParticleRenderer.hpp" "core/visualizer/GLParticleRenderer.cpp"
         "core/visualizer/GLParticleVertexArray.hpp" "core/visualizer/GLParticleVertexArray.cpp"
+        "core/visualizer/Image.hpp" "core/visualizer/Image.cpp"
         )
 
 

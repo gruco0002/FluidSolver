@@ -2,10 +2,9 @@
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
 #include "core/fluidSolver/ParticleCollection.hpp"
-
+#include "core/visualizer/Image.hpp"
 
 namespace FluidSolver {
-
 
 	class ISimulationVisualizer {
 	public:
@@ -42,6 +41,8 @@ namespace FluidSolver {
 		virtual void update_data() = 0;
 
 		virtual void render() = 0;
+
+		virtual const Image& get_image_data() = 0;
 
 		virtual ~ISimulationVisualizer() = default;
 
