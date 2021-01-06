@@ -59,8 +59,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/timestep/ConstantTimestep.hpp
         core/timestep/DynamicCFLTimestep.cpp
         core/timestep/DynamicCFLTimestep.hpp
-       # core/visualizer/ContinousVisualizer.cpp
-       # core/visualizer/ContinousVisualizer.hpp
+        core/visualizer/ContinousVisualizer.cpp
+        core/visualizer/ContinousVisualizer.hpp
        # uiVersion/ContinousVisualizerOpenGL.cpp
        # uiVersion/ContinousVisualizerOpenGL.hpp
        # uiVersion/userInterface/MainUi.cpp

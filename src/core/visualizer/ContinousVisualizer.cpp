@@ -1,245 +1,139 @@
 #include "ContinousVisualizer.hpp"
 
-void FluidSolver::ContinousVisualizer::setParticleCollection(FluidSolver::IParticleCollection *particleCollection) {
-    ParticleCollection = particleCollection;
-    if (neighborhoodSearch != nullptr) {
-        delete neighborhoodSearch;
-        neighborhoodSearch = nullptr;
-        if (ParticleCollection != nullptr)
-            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, KernelSupport);
-    }
+FluidSolver::ContinousVisualizer::ContinousVisualizer() : image(0, 0), kernel()
+{
 }
 
-FluidSolver::IParticleCollection *FluidSolver::ContinousVisualizer::getParticleCollection() {
-    return ParticleCollection;
+void FluidSolver::ContinousVisualizer::initialize()
+{
+	kernel.kernel_support = parameters.particle_size * 2.0f;
+	image = Image(parameters.render_target.width, parameters.render_target.height);
+	recalculate_viewport();
 }
 
-void FluidSolver::ContinousVisualizer::setParticleSize(float particleSize) {
-    if (this->ParticleSize != particleSize || neighborhoodSearch == nullptr) {
-        delete neighborhoodSearch;
-        neighborhoodSearch = nullptr;
-        if (ParticleCollection != nullptr)
-            neighborhoodSearch = new HashedNeighborhoodSearch(ParticleCollection, KernelSupport);
-    }
-    ParticleSize = particleSize;
+void FluidSolver::ContinousVisualizer::update_data()
+{
 
 }
 
-float FluidSolver::ContinousVisualizer::getParticleSize() {
-    return ParticleSize;
+void FluidSolver::ContinousVisualizer::render()
+{
+	// calculate color for each pixel
+
+	// TODO: parallelize
+	for (size_t i = 0; i < image.size(); i++) {
+		size_t x = i % image.width();
+		size_t y = (i - (i % image.width())) / image.width();
+
+		image.data()[i] = calculate_color_for_pixel(x, y);
+	}
 }
 
-void FluidSolver::ContinousVisualizer::Render() {
-
-
-    // find neighbors for all particles
-    neighborhoodSearch->UpdateGrid();
-
-    // clear data (set everything to clear color) --> clearing is not needed, since we set each pixel value in the loop
-    //std::fill(data.begin(), data.end(), ClearColor);
-
-    // calculate color for each pixel
-#pragma omp parallel for
-    for (pIndex_t i = 0; i < Width * Height; i++) {
-        size_t x = i % Width;
-        size_t y = (i - (i % Width)) / Width;
-
-        data[i] = CalculateColorForPixel(x, y);
-    }
-
-
-    AfterRender(data);
-
+const FluidSolver::Image& FluidSolver::ContinousVisualizer::get_image_data()
+{
+	return image;
 }
 
-float FluidSolver::ContinousVisualizer::getRestDensity() {
-    return RestDensity;
-}
+void FluidSolver::ContinousVisualizer::recalculate_viewport()
+{
+	auto value = parameters.viewport;
 
-void FluidSolver::ContinousVisualizer::setRestDensity(float restDensity) {
-    RestDensity = restDensity;
-    MinimumRenderDensity = 0.4f * restDensity;
-}
+	Viewport res;
+	res.top = value.top;
+	res.left = value.left;
 
-FluidSolver::ContinousVisualizer::ContinousVisualizer(size_t width, size_t height) : Width(width), Height(height) {
-    data = std::vector<Color>(Width * Height);
-    recalculateViewportData();
-}
+	if (value.width() / value.height() * (float)image.height() < (float)image.width()) {
+		// height is okay, width must be larger
 
-FluidSolver::ContinousVisualizer::Color FluidSolver::ContinousVisualizer::CalculateColorForPixel(size_t x, size_t y) {
+		auto height = value.height();
+		auto width = (float)image.width() / (float)image.height() * value.height();
 
-    glm::vec2 position = CalculatePositionForPixel(x, y);
+		// center the additional gained width
+		res.left -= (res.width() - value.width()) / 2.0f;
 
+		// set width and height
+		res.bottom = res.top - height;
+		res.right = res.left + width;
+	}
+	else {
+		// width is okay, height must be larger
+		auto width = value.width();
+		auto height = (float)image.height() / (float)image.width() * value.width();
 
-    // calculate densities
-    float boundaryDensity = 0.0f;
-    float normalDensity = 0.0f;
+		// center the additional gained height
+		res.top += (res.height() - value.height()) / 2.0f;
 
-    // particle selection
-    float maxNormalDensityContribution = 0.0f;
-    bool maxNormalDensityContributerIsSelected = false;
-    float maxBoundaryDensityContribution = 0.0f;
-    bool maxBoundaryDensityContributerIsSelected = false;
+		// set width and height
+		res.bottom = res.top - height;
+		res.right = res.left + width;
+	}
 
-    auto neighbors = neighborhoodSearch->GetNeighbors(position);
-
-    for (uint32_t neighbor : neighbors) {
-        auto type = ParticleCollection->GetParticleType(neighbor);
-        if (type == ParticleTypeDead) {
-            continue; // don*t calculate unnecessary values for dead particles.
-        }
-        glm::vec2 neighborPosition = ParticleCollection->GetPosition(neighbor);
-        float neighborMass = ParticleCollection->GetMass(neighbor);
-        float densityContribution = neighborMass * kernel->GetKernelValue(neighborPosition, position);
-
-        if (type == ParticleTypeNormal) {
-            normalDensity += densityContribution;
-            if (maxNormalDensityContribution <= densityContribution) {
-                maxNormalDensityContribution = densityContribution;
-                maxNormalDensityContributerIsSelected = particleSelection->IsParticleSelected(neighbor,
-                                                                                              ParticleCollection);
-            }
-        } else if (type == ParticleTypeBoundary) {
-            boundaryDensity += densityContribution;
-            if (maxBoundaryDensityContribution <= densityContribution) {
-                maxBoundaryDensityContribution = densityContribution;
-                maxBoundaryDensityContributerIsSelected = particleSelection->IsParticleSelected(neighbor,
-                                                                                                ParticleCollection);
-            }
-        }
-
-    }
-
-    float density = normalDensity + boundaryDensity;
-
-    // if density is too small return nothing
-    if (density < MinimumRenderDensity)
-        return Color(ClearColor);
-
-    // check which type of density is larger and return the corresponding color
-    // first of, boundary density should dominate on a boundary
-    if (boundaryDensity >= MinimumRenderDensity) {
-        // boundary
-        if (this->VisualizeParticleSelection && maxBoundaryDensityContributerIsSelected)
-            return Color(128, 0, 0);
-        return Color(128, 128, 128);
-    } else {
-        // fluid
-        if (this->VisualizeParticleSelection && maxNormalDensityContributerIsSelected)
-            return Color(255, 0, 0);
-        return Color(0, 0, 255);
-    }
+	internal_viewport = res;
 
 }
 
-glm::vec2 FluidSolver::ContinousVisualizer::CalculatePositionForPixel(size_t x, size_t y) {
-    float xCoord = viewport.Left;
-    float yCoord = viewport.Top;
-    xCoord += x / (float) Width * viewport.Width;
-    yCoord -= y / (float) Height * viewport.Height;
-    return glm::vec2(xCoord, yCoord);
-}
+FluidSolver::Image::Color FluidSolver::ContinousVisualizer::calculate_color_for_pixel(size_t x, size_t y)
+{
+	FLUID_ASSERT(parameters.neighborhood_interface != nullptr);
+	FLUID_ASSERT(parameters.collection != nullptr);
+	FLUID_ASSERT(parameters.collection->is_type_present<ParticleInfo>());
+	FLUID_ASSERT(parameters.collection->is_type_present<MovementData>());
+	FLUID_ASSERT(parameters.collection->is_type_present<ParticleData>());
 
-void FluidSolver::ContinousVisualizer::AfterRender(std::vector<Color> &data) {
-    // do nothing, this is meant for other classes
-}
+	glm::vec2 position = calculate_particle_space_position_for_pixel(x, y);
 
-FluidSolver::ContinousVisualizer::Viewport
-FluidSolver::ContinousVisualizer::FitViewportToAspectRation(FluidSolver::ContinousVisualizer::Viewport value) {
-    Viewport res;
-    res.Top = value.Top;
-    res.Left = value.Left;
 
-    if (value.Width / value.Height * (float) Height < (float) Width) {
-        // height is okay, width must be larger
-        res.Height = value.Height;
-        res.Width = (float) Width / (float) Height * value.Height;
+	// calculate densities
+	float boundaryDensity = 0.0f;
+	float normalDensity = 0.0f;
 
-        // center the additional gained width
-        res.Left -= (res.Width - value.Width) / 2.0f;
-    } else {
-        // width is okay, height must be larger
-        res.Width = value.Width;
-        res.Height = (float) Height / (float) Width * value.Width;
+	auto neighbors = parameters.neighborhood_interface->get_neighbors(position);
 
-        // center the additional gained height
-        res.Top += (res.Height - value.Height) / 2.0f;
-    }
+	for (pIndex_t neighbor : neighbors) {
+		const auto& pi = parameters.collection->get<ParticleInfo>(neighbor);
+		if (pi.type == ParticleTypeDead) {
+			continue; // don*t calculate unnecessary values for dead particles.
+		}
 
-    return res;
-}
+		const auto& pm = parameters.collection->get<MovementData>(neighbor);
+		const auto& pd = parameters.collection->get<ParticleData>(neighbor);
 
-size_t FluidSolver::ContinousVisualizer::getWidth() const {
-    return Width;
-}
+		float densityContribution = pd.mass * kernel.GetKernelValue(position, pm.position);
 
-void FluidSolver::ContinousVisualizer::setWidth(size_t width) {
-    Width = width;
-    data.resize(Width * Height);
-    recalculateViewportData();
-}
+		if (pi.type == ParticleTypeNormal) {
+			normalDensity += densityContribution;
+		}
+		else if (pi.type == ParticleTypeBoundary) {
+			boundaryDensity += densityContribution;
+		}
 
-size_t FluidSolver::ContinousVisualizer::getHeight() const {
-    return Height;
-}
+	}
 
-void FluidSolver::ContinousVisualizer::setHeight(size_t height) {
-    Height = height;
-    data.resize(Width * Height);
-    recalculateViewportData();
-}
+	float density = normalDensity + boundaryDensity;
 
-void FluidSolver::ContinousVisualizer::setSimulationViewArea(
-        FluidSolver::ISimulationVisualizer::SimulationViewArea viewArea) {
-    this->viewArea = viewArea;
-    recalculateViewportData();
-}
+	// if density is too small return nothing
+	if (density < settings.minimum_render_density)
+		return settings.clear_color;
 
-void FluidSolver::ContinousVisualizer::setRenderTargetSize(size_t width, size_t height) {
-    Width = width;
-    Height = height;
-    data.resize(Width * Height);
-    recalculateViewportData();
-}
-
-void FluidSolver::ContinousVisualizer::recalculateViewportData() {
-    Viewport port;
-    port.Top = viewArea.Top;
-    port.Left = viewArea.Left;
-    port.Width = viewArea.Right - viewArea.Left;
-    port.Height = viewArea.Top - viewArea.Bottom;
-
-    this->viewport = this->FitViewportToAspectRation(port);
-}
-
-glm::vec2 FluidSolver::ContinousVisualizer::ConvertPixelCoordinateToParticleSpace(size_t pixelX, size_t pixelY) {
-    return CalculatePositionForPixel(pixelX, pixelY);
-}
-
-void FluidSolver::ContinousVisualizer::setParticleSelection(FluidSolver::IParticleSelection *particleSelection) {
-    this->particleSelection = particleSelection;
-}
-
-FluidSolver::IParticleSelection *FluidSolver::ContinousVisualizer::getParticleSelection() {
-    return particleSelection;
-}
-
-FluidSolver::IKernel *FluidSolver::ContinousVisualizer::getKernel() const {
-    return kernel;
-}
-
-void FluidSolver::ContinousVisualizer::setKernel(FluidSolver::IKernel *kernel) {
-    ContinousVisualizer::kernel = kernel;
-}
-
-FluidSolver::ContinousVisualizer::Color::Color(unsigned char r, unsigned char g, unsigned char b) : R(r), G(g), B(b) {}
-
-FluidSolver::ContinousVisualizer::Color::Color() {
+	// check which type of density is larger and return the corresponding color
+	// first of, boundary density should dominate on a boundary
+	if (boundaryDensity >= settings.minimum_render_density) {
+		// boundary
+		return Image::Color(128, 128, 128);
+	}
+	else {
+		// fluid
+		return Image::Color(0, 0, 255);
+	}
 
 }
 
-FluidSolver::ContinousVisualizer::Color::Color(glm::vec3 color) {
-    R = (unsigned char) (color.r * 255.0f);
-    G = (unsigned char) (color.g * 255.0f);
-    B = (unsigned char) (color.b * 255.0f);
+glm::vec2 FluidSolver::ContinousVisualizer::calculate_particle_space_position_for_pixel(size_t x, size_t y)
+{
+	float xCoord = internal_viewport.left;
+	float yCoord = internal_viewport.top;
+	xCoord += x / (float)image.width() * internal_viewport.width();
+	yCoord -= y / (float)image.height() * internal_viewport.height();
+	return glm::vec2(xCoord, yCoord);
 }
+

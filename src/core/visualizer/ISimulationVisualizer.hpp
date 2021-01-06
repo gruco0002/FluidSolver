@@ -3,6 +3,7 @@
 
 #include "core/fluidSolver/ParticleCollection.hpp"
 #include "core/visualizer/Image.hpp"
+#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
 namespace FluidSolver {
 
@@ -15,6 +16,9 @@ namespace FluidSolver {
 
 			float right = 10.0f;
 			float bottom = -10.0f;
+
+			inline float width() { return right - left; }
+			inline float height() { return top - bottom; }
 		};
 
 		struct Size {
@@ -33,6 +37,8 @@ namespace FluidSolver {
 			ParticleCollection* collection = nullptr;
 			float rest_density = 0.0f;
 			float particle_size = 0.0f;
+
+			NeighborhoodInterface* neighborhood_interface = nullptr;
 
 		} parameters;
 

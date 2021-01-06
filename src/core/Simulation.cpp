@@ -100,6 +100,7 @@ void FluidSolver::Simulation::initialize() {
 		internal_parameters.visualizer->parameters.collection = internal_parameters.collection;
 		internal_parameters.visualizer->parameters.particle_size = internal_parameters.particle_size;
 		internal_parameters.visualizer->parameters.rest_density = internal_parameters.rest_density;
+		internal_parameters.visualizer->parameters.neighborhood_interface = &neigborhood_interface;
 		internal_parameters.visualizer->initialize();
 	}
 
