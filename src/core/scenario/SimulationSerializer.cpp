@@ -456,6 +456,9 @@ namespace FluidSolver {
 				return r;
 
 			}
+			else if (node["type"].as<std::string>() == "no-visualizer") {
+				return nullptr;
+			}
 			else {
 				warnings++;
 				Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
@@ -491,6 +494,9 @@ namespace FluidSolver {
 				node["settings"]["colors"]["background"] = r->settings.backgroundClearColor;
 				node["settings"]["show-memory-location"] = r->settings.showMemoryLocation;
 
+			}
+			else if (visualizer == nullptr) {
+				node["type"] = "no-visualizer";
 			}
 			else {
 				warnings++;

@@ -112,7 +112,9 @@ void FluidSolver::Simulation::visualize(bool update_data) {
 		initialize();
 	}
 
-	FLUID_ASSERT(internal_parameters.visualizer != nullptr);
+	if (internal_parameters.visualizer == nullptr)
+		return;
+
 	FLUID_ASSERT(internal_parameters.collection != nullptr);
 
 	if (update_data) {
