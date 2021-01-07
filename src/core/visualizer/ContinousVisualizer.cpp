@@ -1,4 +1,5 @@
 #include "ContinousVisualizer.hpp"
+#include "core/parallelization/StdParallelForEach.hpp"
 
 FluidSolver::ContinousVisualizer::ContinousVisualizer() : image(0, 0), kernel()
 {
@@ -15,13 +16,15 @@ void FluidSolver::ContinousVisualizer::render()
 {
 	// calculate color for each pixel
 
-	// TODO: parallelize
-	for (size_t i = 0; i < image.size(); i++) {
-		size_t x = i % image.width();
-		size_t y = (i - (i % image.width())) / image.width();
+	using par = StdParallelForEach;
 
-		image.data()[i] = calculate_color_for_pixel(x, y);
-	}
+	par::loop_for(0, image.size(), [&](size_t i)
+		{
+			size_t x = i % image.width();
+			size_t y = (i - (i % image.width())) / image.width();
+
+			image.data()[i] = calculate_color_for_pixel(x, y);
+		});
 }
 
 const FluidSolver::Image& FluidSolver::ContinousVisualizer::get_image_data()
@@ -44,11 +47,12 @@ void FluidSolver::ContinousVisualizer::recalculate_viewport()
 		auto width = (float)image.width() / (float)image.height() * value.height();
 
 		// center the additional gained width
-		res.left -= (res.width() - value.width()) / 2.0f;
+		res.left -= (width - value.width()) / 2.0f;
 
 		// set width and height
 		res.bottom = res.top - height;
 		res.right = res.left + width;
+
 	}
 	else {
 		// width is okay, height must be larger
@@ -56,11 +60,12 @@ void FluidSolver::ContinousVisualizer::recalculate_viewport()
 		auto height = (float)image.height() / (float)image.width() * value.width();
 
 		// center the additional gained height
-		res.top += (res.height() - value.height()) / 2.0f;
+		res.top += (height - value.height()) / 2.0f;
 
 		// set width and height
 		res.bottom = res.top - height;
 		res.right = res.left + width;
+
 	}
 
 	internal_viewport = res;
