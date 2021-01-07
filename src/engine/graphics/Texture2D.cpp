@@ -160,7 +160,7 @@ unsigned int Engine::Graphics::Texture2D::GetID() {
     return ID;
 }
 
-void Engine::Graphics::Texture2D::SetData(std::vector<uint8_t> &data) {
+void Engine::Graphics::Texture2D::SetData(const std::vector<uint8_t> &data) {
     SetData(data.data(), data.size());
 }
 
@@ -220,7 +220,7 @@ void Engine::Graphics::Texture2D::FlipYDataOfArray(std::vector<uint8_t> &data) {
     }
 }
 
-void Engine::Graphics::Texture2D::SetData(void *data, size_t length) {
+void Engine::Graphics::Texture2D::SetData(const void *data, size_t length) {
     glBindTexture(GL_TEXTURE_2D, ID);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height,
                     pixelFormat, pixelDataType, data);

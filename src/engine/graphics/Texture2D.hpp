@@ -79,9 +79,9 @@ namespace Engine {
 
             unsigned int GetID();
 
-            void SetData(std::vector<uint8_t> &data);
+            void SetData(const std::vector<uint8_t> &data);
 
-            void SetData(void *data, size_t length);
+            void SetData(const void *data, size_t length);
 
             std::vector<uint8_t> GetData();
 
