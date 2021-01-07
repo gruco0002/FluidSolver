@@ -40,6 +40,8 @@ namespace FluidSolver {
 
 		void visualize();
 
+		void manual_initialize();
+
 
 	private:
 

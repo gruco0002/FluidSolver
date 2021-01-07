@@ -122,4 +122,9 @@ void FluidSolver::Simulation::visualize() {
 
 }
 
+void FluidSolver::Simulation::manual_initialize()
+{
+	initialize();
+}
+
 
