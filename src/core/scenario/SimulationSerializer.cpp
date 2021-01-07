@@ -13,6 +13,7 @@
 #include <core/timestep/ConstantTimestep.hpp>
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/visualizer/GLParticleRenderer.hpp>
+#include <core/visualizer/ContinousVisualizer.hpp>
 
 namespace YAML {
 	template<>
@@ -34,9 +35,7 @@ namespace YAML {
 			return true;
 		}
 	};
-}
 
-namespace YAML {
 	template<>
 	struct convert<glm::vec4> {
 		static Node encode(const glm::vec4& rhs) {
@@ -57,6 +56,30 @@ namespace YAML {
 			rhs.y = node[1].as<float>();
 			rhs.z = node[2].as<float>();
 			rhs.w = node[3].as<float>();
+			return true;
+		}
+	};
+
+	template<>
+	struct convert<FluidSolver::Image::Color> {
+		static Node encode(const FluidSolver::Image::Color& rhs) {
+			Node node;
+			node.SetStyle(YAML::EmitterStyle::Flow);
+			node.push_back(rhs.r);
+			node.push_back(rhs.g);
+			node.push_back(rhs.b);
+			node.push_back(rhs.a);
+			return node;
+		}
+
+		static bool decode(const Node& node, FluidSolver::Image::Color& rhs) {
+			if (!node.IsSequence() || node.size() != 4) {
+				return false;
+			}
+			rhs.r = (uint8_t)node[0].as<int>();
+			rhs.g = (uint8_t)node[1].as<int>();
+			rhs.b = (uint8_t)node[2].as<int>();
+			rhs.a = (uint8_t)node[3].as<int>();
 			return true;
 		}
 	};
@@ -459,6 +482,23 @@ namespace FluidSolver {
 			else if (node["type"].as<std::string>() == "no-visualizer") {
 				return nullptr;
 			}
+			else if (node["type"].as<std::string>() == "continous") {
+				auto r = new ContinousVisualizer();
+
+				// default parameters
+				r->parameters.viewport.left = node["viewport"]["left"].as<float>();
+				r->parameters.viewport.right = node["viewport"]["right"].as<float>();
+				r->parameters.viewport.top = node["viewport"]["top"].as<float>();
+				r->parameters.viewport.bottom = node["viewport"]["bottom"].as<float>();
+				r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
+				r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
+
+				// custom parameters for the continous visualizer
+				r->settings.clear_color = node["settings"]["background"].as<Image::Color>();
+				r->settings.minimum_render_density = node["settings"]["minimum-density"].as<float>();
+
+				return r;
+			}
 			else {
 				warnings++;
 				Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
@@ -497,6 +537,22 @@ namespace FluidSolver {
 			}
 			else if (visualizer == nullptr) {
 				node["type"] = "no-visualizer";
+			}
+			else if (dynamic_cast<const ContinousVisualizer*>(visualizer) != nullptr) {
+				auto r = dynamic_cast<const ContinousVisualizer*>(visualizer);
+				node["type"] = "continous";
+
+				// default parameters
+				node["viewport"]["left"] = r->parameters.viewport.left;
+				node["viewport"]["right"] = r->parameters.viewport.right;
+				node["viewport"]["top"] = r->parameters.viewport.top;
+				node["viewport"]["bottom"] = r->parameters.viewport.bottom;
+				node["render-target"]["width"] = r->parameters.render_target.width;
+				node["render-target"]["height"] = r->parameters.render_target.height;
+
+				// custom parameters for the continous visualizer
+				node["settings"]["background"] = r->settings.clear_color;
+				node["settings"]["minimum-density"] = r->settings.minimum_render_density;
 			}
 			else {
 				warnings++;
