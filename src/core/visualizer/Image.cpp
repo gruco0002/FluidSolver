@@ -51,6 +51,11 @@ FluidSolver::Image::Color* FluidSolver::Image::data()
 	return pixels.data();
 }
 
+const FluidSolver::Image::Color* FluidSolver::Image::data() const
+{
+	return pixels.data();
+}
+
 void FluidSolver::Image::set(size_t x, size_t y, const Color& color)
 {
 	FLUID_ASSERT(x < v_width);

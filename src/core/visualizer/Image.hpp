@@ -41,6 +41,7 @@ namespace FluidSolver {
 		size_t height() const;
 		size_t size() const;
 		Color* data();
+		const Color* data() const;
 
 		void set(size_t x, size_t y, const Color& color);
 		Color& get(size_t x, size_t y);
