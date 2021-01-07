@@ -39,6 +39,9 @@ void FluidUi::FluidSolverWindow::unload() {
 	sim_worker_thread_should_terminate = true;
 	sim_worker_thread.join();
 	ImGuiHelper::Uninit();
+
+	delete rendered_image;
+	rendered_image = nullptr;
 }
 
 void FluidUi::FluidSolverWindow::render() {
@@ -51,6 +54,7 @@ void FluidUi::FluidSolverWindow::render() {
 			}
 			else {
 				simulation.execute_simulation_step();
+				simulation_changed = true;
 			}
 		}
 	}
@@ -58,10 +62,12 @@ void FluidUi::FluidSolverWindow::render() {
 	if (!sim_worker_thread_working && sim_worker_thread_done) {
 		sim_worker_thread_done = false;
 	}
-
-	if (!sim_worker_thread_working) {
+	
+	if (!sim_worker_thread_working && simulation_changed) {
 		simulation.visualize();
 		glFlush();
+		render_image_updated = true;
+		simulation_changed = false;
 	}
 
 	// render to screen
@@ -111,58 +117,105 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
 void FluidUi::FluidSolverWindow::on_new_simulation()
 {
 	this->current_type = this->solver_types.query_type(simulation.parameters.fluid_solver);
+	simulation.manual_initialize();
+	simulation_changed = true;
+	render_image_updated = true;
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
 	ImGui::Begin("Simulation Visualization");
 
 	auto glRenderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer);
-	if (glRenderer == nullptr) {
-		ImGui::Text("No OpenGL compatible visualizer!");
+	if (simulation.parameters.visualizer == nullptr) {
+		ImGui::Text("No visualizer is set!");
 	}
 	else {
-		auto tex = glRenderer->get_render_target();
-		// render visualization
-		auto maxRegion = ImGui::GetContentRegionMax();
-		maxRegion.x -= 20.0f;
-		maxRegion.y -= 30.0f;
-		float width = 0.0f;
-		float height = 0.0f;
-		if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
-			// height is too small
-			width = maxRegion.x;
-			height = (float)tex->getHeight() / (float)tex->getWidth() * maxRegion.x;
+		Engine::Graphics::Texture2D* tex = nullptr;
+		if (glRenderer == nullptr) {
+			// ImGui::Text("No OpenGL compatible visualizer!");
+
+			// Use the slower render mechanism
+			// copy the image data to the gpu and render it as a texture
+			const auto& size = simulation.parameters.visualizer->parameters.render_target;
+
+			if (render_image_updated) {
+
+				// create or recreate the gpu image
+				if (rendered_image == nullptr || rendered_image->getWidth() != size.width || rendered_image->getHeight() != size.height) {
+					delete rendered_image;
+					rendered_image = nullptr;
+
+					// create new image
+					auto color_settings = new Engine::Graphics::Texture2DSettings();
+					color_settings->GenerateMipmaps = false;
+					rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA, Engine::ComponentType::ComponentTypeUnsignedByte);
+				}
+
+				// update the gpu image
+				const auto& image = simulation.parameters.visualizer->get_image_data();
+				rendered_image->SetData(image.data(), image.size());
+
+				render_image_updated = false;
+			}
+
+			tex = rendered_image;
+
 		}
 		else {
-			height = maxRegion.y;
-			width = (float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y;
+			// get the texture from the opengl renderer
+			tex = glRenderer->get_render_target();
+
+			// delete any existing image
+			delete rendered_image;
+			rendered_image = nullptr;
 		}
 
-
-		// im gui image location finder trick
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-		if (ImGui::BeginChild("SimView")) {
-
-			bool imageHasFocus = ImGui::IsWindowHovered();
-			auto pos = ImGui::GetWindowPos();
-			auto padding = ImGui::GetStyle().WindowPadding;
-			auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
-			auto windowSize = glm::vec2(width, height);
-
-			ImGui::PushItemWidth(width);
-
-			ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
-
-			ImGui::PopItemWidth();
-
+		if (tex == nullptr) {
+			ImGui::Text("No OpenGL compatible visualizer!");
 		}
-		ImGui::EndChild();
+		else {
 
-		ImGui::PopStyleVar(3);
+			// render visualization
+			auto maxRegion = ImGui::GetContentRegionMax();
+			maxRegion.x -= 20.0f;
+			maxRegion.y -= 30.0f;
+			float width = 0.0f;
+			float height = 0.0f;
+			if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
+				// height is too small
+				width = maxRegion.x;
+				height = (float)tex->getHeight() / (float)tex->getWidth() * maxRegion.x;
+			}
+			else {
+				height = maxRegion.y;
+				width = (float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y;
+			}
 
+
+			// im gui image location finder trick
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+			if (ImGui::BeginChild("SimView")) {
+
+				bool imageHasFocus = ImGui::IsWindowHovered();
+				auto pos = ImGui::GetWindowPos();
+				auto padding = ImGui::GetStyle().WindowPadding;
+				auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
+				auto windowSize = glm::vec2(width, height);
+
+				ImGui::PushItemWidth(width);
+
+				ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
+
+				ImGui::PopItemWidth();
+
+			}
+			ImGui::EndChild();
+
+			ImGui::PopStyleVar(3);
+		}
 	}
 	ImGui::End();
 }
@@ -183,6 +236,7 @@ void FluidUi::FluidSolverWindow::sim_worker_thread_main() {
 				simulation.execute_simulation_step();
 				sim_worker_thread_done = true;
 				sim_worker_thread_working = false;
+				simulation_changed = true;
 			}
 		}
 	}

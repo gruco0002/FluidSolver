@@ -58,6 +58,10 @@ namespace FluidUi {
 		bool sim_worker_thread_done = false;
 		bool sim_worker_thread_should_terminate = false;
 
+		bool render_image_updated = false;
+		bool simulation_changed = false;
+		Engine::Graphics::Texture2D* rendered_image = nullptr;
+
 	};
 }
 
