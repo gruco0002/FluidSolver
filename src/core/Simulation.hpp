@@ -38,7 +38,7 @@ namespace FluidSolver {
 
 		void execute_simulation_step();
 
-		void visualize(bool update_data = false);
+		void visualize();
 
 
 	private:

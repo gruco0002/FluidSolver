@@ -11,11 +11,6 @@ void FluidSolver::ContinousVisualizer::initialize()
 	recalculate_viewport();
 }
 
-void FluidSolver::ContinousVisualizer::update_data()
-{
-
-}
-
 void FluidSolver::ContinousVisualizer::render()
 {
 	// calculate color for each pixel

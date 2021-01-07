@@ -198,17 +198,12 @@ void FluidSolver::GLParticleRenderer::initialize()
 
 }
 
-void FluidSolver::GLParticleRenderer::update_data()
-{
-	FLUID_ASSERT(particleVertexArray != nullptr);
-	particleVertexArray->Update(nullptr);
-}
-
 void FluidSolver::GLParticleRenderer::render()
 {
 	FLUID_ASSERT(framebuffer != nullptr);
 	FLUID_ASSERT(particleShader != nullptr);
 	FLUID_ASSERT(particleVertexArray != nullptr);
+	particleVertexArray->Update(nullptr);
 
 	// render particles to fbo
 	framebuffer->Bind(true);

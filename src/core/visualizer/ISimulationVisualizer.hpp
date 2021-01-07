@@ -44,8 +44,6 @@ namespace FluidSolver {
 
 		virtual void initialize() = 0;
 
-		virtual void update_data() = 0;
-
 		virtual void render() = 0;
 
 		virtual const Image& get_image_data() = 0;

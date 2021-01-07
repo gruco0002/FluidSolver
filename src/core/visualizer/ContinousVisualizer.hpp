@@ -20,8 +20,6 @@ namespace FluidSolver {
 
 		virtual void initialize() override;
 
-		virtual void update_data() override;
-
 		virtual void render() override;
 
 		virtual const Image& get_image_data() override;

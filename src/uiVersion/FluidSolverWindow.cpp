@@ -59,8 +59,10 @@ void FluidUi::FluidSolverWindow::render() {
 		sim_worker_thread_done = false;
 	}
 
-	simulation.visualize(!sim_worker_thread_working);
-	glFlush();
+	if (!sim_worker_thread_working) {
+		simulation.visualize();
+		glFlush();
+	}
 
 	// render to screen
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
