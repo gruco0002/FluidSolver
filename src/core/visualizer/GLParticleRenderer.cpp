@@ -314,8 +314,18 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
 
 const FluidSolver::Image& FluidSolver::GLParticleRenderer::get_image_data()
 {
-	// TODO: implement
-	return Image(0, 0);
+	FLUID_ASSERT(this->fboColorTex != nullptr);
+	
+	// texture has 3 channels: rgb
+	auto texData = fboColorTex->GetData();
+	
+	Image result(fboColorTex->getWidth(), fboColorTex->getHeight());
+	for (size_t i = 0; i < texData.size() / 3; i++) {
+		FLUID_ASSERT(i < result.size());
+		Image::Color c(texData[i * 3 + 0], texData[i * 3 + 1], texData[i * 3 + 2]);	
+		result.data()[i] = c;
+	}
+	return result;
 }
 
 bool FluidSolver::GLRenderer::is_opengl_available()
