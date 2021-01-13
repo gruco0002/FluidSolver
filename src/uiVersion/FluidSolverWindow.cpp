@@ -14,7 +14,7 @@
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height) : sim_worker_thread(
 	&FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
-		height) {
+		height), render_image_copy(0, 0) {
 
 }
 
@@ -47,27 +47,32 @@ void FluidUi::FluidSolverWindow::unload() {
 void FluidUi::FluidSolverWindow::render() {
 
 
-	if (!sim_worker_thread_working && !sim_worker_thread_done) {
+	if (sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork) {
+		// prevent synchronous and asynchronous steps from happening while the worker thread is working or done working
 		if (running) {
 			if (asynchronous_simulation) {
-				sim_worker_thread_working = true;
+				// async simulation -> invoke the worker thread to execute on step of simulation
+				sim_worker_status = SimWorkerThreadStatus::SimWorkerThreadStatusWork;
 			}
 			else {
-				simulation.execute_simulation_step();
-				simulation_changed = true;
+				// synced simulation (with the main thread) -> directly execute a simulation step
+				execute_one_simulation_step();
 			}
 		}
 	}
+	else if (sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusDone) {
+		// the worker thread has calculated one step of the simulation
 
-	if (!sim_worker_thread_working && sim_worker_thread_done) {
-		sim_worker_thread_done = false;
+		// visualize the simulation if required
+		visualize_simulation();
+
+		// finally let the worker thread accept new work
+		sim_worker_status = SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork;
 	}
-	
-	if (!sim_worker_thread_working && simulation_changed) {
-		simulation.visualize();
-		glFlush();
-		render_image_updated = true;
-		simulation_changed = false;
+
+	if (!running && sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork) {
+		// if the simulation is not running try to visualize nevertheless (the method will only do work if required)
+		visualize_simulation();
 	}
 
 	// render to screen
@@ -118,7 +123,7 @@ void FluidUi::FluidSolverWindow::on_new_simulation()
 {
 	this->current_type = this->solver_types.query_type(simulation.parameters.fluid_solver);
 	simulation.manual_initialize();
-	simulation_changed = true;
+	simulation_changed_compared_to_visualization = true;
 	render_image_updated = true;
 }
 
@@ -136,7 +141,9 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 
 			// Use the slower render mechanism
 			// copy the image data to the gpu and render it as a texture
-			const auto& size = simulation.parameters.visualizer->parameters.render_target;
+			FluidSolver::ISimulationVisualizer::Size size;
+			size.width = render_image_copy.width();
+			size.height = render_image_copy.height();
 
 			if (render_image_updated) {
 
@@ -152,8 +159,7 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 				}
 
 				// update the gpu image
-				const auto& image = simulation.parameters.visualizer->get_image_data();
-				rendered_image->SetData(image.data(), image.size());
+				rendered_image->SetData(render_image_copy.data(), render_image_copy.size());
 
 				render_image_updated = false;
 			}
@@ -225,23 +231,68 @@ void FluidUi::FluidSolverWindow::setup_windows() {
 	uiLayer.initialize();
 }
 
+void FluidUi::FluidSolverWindow::execute_one_simulation_step()
+{
+	simulation.execute_simulation_step();
+	simulation_changed_compared_to_visualization = true;
+}
+
+void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_thread)
+{
+	if (!simulation_changed_compared_to_visualization)
+		return;
+
+
+	bool is_gl_renderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer) != nullptr;
+	if (called_from_worker_thread && is_gl_renderer) {
+		// an opengl renderer has to be called synchronously in the thread of the windows,
+		// since the window owns the required gl context
+		return;
+	}
+
+
+	// visualize the scene	
+	simulation.visualize();
+
+	if (!is_gl_renderer) {
+		// if the visualizer is not an opengl renderer, copy the visualized image to be able to update it in another thread
+		render_image_copy = simulation.parameters.visualizer->get_image_data();
+	}
+
+	// after we are done with the work set the render_image_update flag to true
+	render_image_updated = true;
+
+	// the simulation state is now again in sync with the visualization
+	simulation_changed_compared_to_visualization = false;
+
+
+}
+
 void FluidUi::FluidSolverWindow::sim_worker_thread_main() {
 	using namespace std::chrono_literals;
 	while (!sim_worker_thread_should_terminate) {
 		if (!running || !asynchronous_simulation) {
+			// only work if the simulation is running and if it is set to run asynchronously
 			std::this_thread::sleep_for(100ms);
 		}
 		else {
-			if (sim_worker_thread_working) {
-				simulation.execute_simulation_step();
-				sim_worker_thread_done = true;
-				sim_worker_thread_working = false;
-				simulation_changed = true;
+			if (sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusWork) {
+				// the simulation worker thread should do work
+
+				// execute one simulation step
+				execute_one_simulation_step();
+
+				// visualize this simulation step if possible
+				visualize_simulation(true);
+
+				// state that the thread is done
+				sim_worker_status = SimWorkerThreadStatus::SimWorkerThreadStatusDone;
+
 			}
 		}
 	}
 }
 
 bool FluidUi::FluidSolverWindow::is_done_working() const {
-	return !sim_worker_thread_working;
+	return sim_worker_status != SimWorkerThreadStatus::SimWorkerThreadStatusWork;
 }

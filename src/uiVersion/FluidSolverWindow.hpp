@@ -45,22 +45,32 @@ namespace FluidUi {
 
 	private:
 
+		enum class SimWorkerThreadStatus {
+			SimWorkerThreadStatusWork,
+			SimWorkerThreadStatusDone,
+			SimWorkerThreadStatusWaitForWork,			
+		} sim_worker_status = SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork;
+		void sim_worker_thread_main();
+		std::thread sim_worker_thread;
+		bool sim_worker_thread_should_terminate = false;
+
+
 		void render_visualization_window();
 
 		void setup_windows();
 
+		void execute_one_simulation_step();
+		bool simulation_changed_compared_to_visualization = false;
+
 
 		UiLayer uiLayer;
 
-		void sim_worker_thread_main();
-		std::thread sim_worker_thread;
-		bool sim_worker_thread_working = false;
-		bool sim_worker_thread_done = false;
-		bool sim_worker_thread_should_terminate = false;
 
-		bool render_image_updated = false;
-		bool simulation_changed = false;
+		FluidSolver::Image render_image_copy;
+		bool render_image_updated = false;		
 		Engine::Graphics::Texture2D* rendered_image = nullptr;
+		void visualize_simulation(bool called_from_worker_thread = false);
+
 
 	};
 }

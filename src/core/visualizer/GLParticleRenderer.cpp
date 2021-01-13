@@ -175,31 +175,35 @@ void FluidSolver::GLParticleRenderer::initialize()
 {
 	FLUID_ASSERT(Engine::opengl_context_available());
 
-
-	FLUID_ASSERT(parameters.collection != nullptr);
-	delete particleVertexArray;
-	particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
-
-	delete particleShader;
-	particleShader = new Engine::Graphics::Shader({
-													  Engine::Graphics::Shader::ProgramPart(
-															  Engine::Graphics::Shader::ProgramPartTypeVertex,
-															  vertCode),
-													  Engine::Graphics::Shader::ProgramPart(
-															  Engine::Graphics::Shader::ProgramPartTypeGeometry,
-															  geomCode),
-													  Engine::Graphics::Shader::ProgramPart(
-															  Engine::Graphics::Shader::ProgramPartTypeFragment,
-															  fragCode),
-		});
-
-	create_or_update_fbo();
-	calc_projection_matrix();
-
+	initialize_in_next_render_step = true;
 }
 
 void FluidSolver::GLParticleRenderer::render()
 {
+	if (initialize_in_next_render_step) {
+		initialize_in_next_render_step = false;
+
+		FLUID_ASSERT(parameters.collection != nullptr);
+		delete particleVertexArray;
+		particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
+
+		delete particleShader;
+		particleShader = new Engine::Graphics::Shader({
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeVertex,
+																  vertCode),
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeGeometry,
+																  geomCode),
+														  Engine::Graphics::Shader::ProgramPart(
+																  Engine::Graphics::Shader::ProgramPartTypeFragment,
+																  fragCode),
+			});
+
+		create_or_update_fbo();
+		calc_projection_matrix();
+	}
+
 	FLUID_ASSERT(framebuffer != nullptr);
 	FLUID_ASSERT(particleShader != nullptr);
 	FLUID_ASSERT(particleVertexArray != nullptr);

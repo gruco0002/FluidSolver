@@ -72,6 +72,8 @@ namespace FluidSolver {
 
 		Engine::Graphics::Shader* particleShader = nullptr;
 
+		bool initialize_in_next_render_step = true;
+
 		void create_or_update_fbo();
 
 		void calc_projection_matrix();
