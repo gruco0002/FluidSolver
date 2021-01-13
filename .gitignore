@@ -1,8 +1,12 @@
 imgui.ini
 
 vsbuild.bat
+xcode-build.sh
 
 vcpkg_installed
+
+# xcode build directory
+xbuild
 
 # visual studio
 .vs
