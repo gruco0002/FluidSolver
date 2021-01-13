@@ -56,11 +56,21 @@ public:
 
 void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, const std::function<void(size_t i)>& fn)
 {
+#ifndef __clang__
 	std::for_each(std::execution::par, SizeTIterator(from), SizeTIterator(to), fn);
+#else
+    #warning Apple Clang Compiler does not support StdParallelForEach. Currently using non parallel implementation instead.
+    for(size_t i = from; i < to; i++) fn(i);
+#endif
 }
 
 void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, size_t step, const std::function<void(size_t i)>& fn)
 {
+#ifndef __clang__
 	size_t steps = ((to - 1) - from) / step + 1;
-	std::for_each(std::execution::par, SizeTIterator(0), SizeTIterator(steps), [&fn, from, step](size_t i) {fn(from + i * step); });
+    std::for_each(std::execution::par, SizeTIterator(0), SizeTIterator(steps), [&fn, from, step](size_t i) {fn(from + i * step); });
+#else
+    #warning Apple Clang Compiler does not support StdParallelForEach. Currently using non parallel implementation instead.
+    for(size_t i = from; i < to; i += step) fn(i);
+#endif
 }
