@@ -35,17 +35,17 @@ void FluidUi::StatisticsUi::render_particle_statistics(FluidSolver::ParticleStat
 
 	if (ImPlot::BeginPlot("Density")) {
 
-		ImPlot::PlotLineG("Average Density", [](void* data, int x) {
+		ImPlot::PlotLineG("Avg", [](void* data, int x) {
 			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
 			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_density);
 			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Min Density", [](void* data, int x) {
+		ImPlot::PlotLineG("Min", [](void* data, int x) {
 			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
 			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_density);
 			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Max Density", [](void* data, int x) {
+		ImPlot::PlotLineG("Max", [](void* data, int x) {
 			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
 			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_density);
 			}, (void*)&sensor->data, sensor->data.size());
@@ -53,65 +53,80 @@ void FluidUi::StatisticsUi::render_particle_statistics(FluidSolver::ParticleStat
 		ImPlot::EndPlot();
 	}
 
-	// TODO: implement
+	if (ImPlot::BeginPlot("Pressure")) {
 
-	/*
-		ImPlot::PlotLineG("Average Pressure", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.average_pressure);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Avg", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_pressure);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Min Pressure", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.min_pressure);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Min", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_pressure);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Max Pressure", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.max_pressure);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Max", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_pressure);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Average Velocity", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.average_velocity);
-			}, (void*)data.data(), data.size());
+		ImPlot::EndPlot();
+	}
 
+	if (ImPlot::BeginPlot("Velocity")) {
 
-		ImPlot::PlotLineG("Max Velocity", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.max_velocity);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Avg", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_velocity);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Min Velocity", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.min_velocity);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Min", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_velocity);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Pot. Energy", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.potential_energy);
-			}, (void*)data.data(), data.size());
-		ImPlot::PlotLineG("Kin. Energy", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.kinetic_energy);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Max", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_pressure);
+			}, (void*)&sensor->data, sensor->data.size());
 
-		ImPlot::PlotLineG("Normal Particles", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.normal_particles);
-			}, (void*)data.data(), data.size());
+		ImPlot::EndPlot();
+	}
 
-		ImPlot::PlotLineG("Inactive Particles", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.inactive_particles);
-			}, (void*)data.data(), data.size());
+	if (ImPlot::BeginPlot("Particles")) {
 
-		ImPlot::PlotLineG("Boundary Particles", [](void* data, int x) {
-			pair* tmp = (pair*)data;
-			return ImPlotPoint(tmp[x].first.simulation_time, tmp[x].second.boundary_particles);
-			}, (void*)data.data(), data.size());
+		ImPlot::PlotLineG("Normal", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].normal_particles);
+			}, (void*)&sensor->data, sensor->data.size());
 
+		ImPlot::PlotLineG("Boundary", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].boundary_particles);
+			}, (void*)&sensor->data, sensor->data.size());
 
-	*/
+		ImPlot::PlotLineG("Inactive", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].inactive_particles);
+			}, (void*)&sensor->data, sensor->data.size());
+
+		ImPlot::EndPlot();
+	}
+
+	if (ImPlot::BeginPlot("Energy")) {
+
+		ImPlot::PlotLineG("Kin", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].kinetic_energy);
+			}, (void*)&sensor->data, sensor->data.size());
+
+		ImPlot::PlotLineG("Pot", [](void* data, int x) {
+			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
+			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].potential_energy);
+			}, (void*)&sensor->data, sensor->data.size());
+
+		ImPlot::EndPlot();
+	}
+
 
 }
