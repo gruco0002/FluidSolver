@@ -61,19 +61,15 @@ void FluidUi::FluidSolverWindow::render() {
 		}
 	}
 	else if (sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusDone) {
-		// the worker thread has calculated one step of the simulation
+		// the worker thread has calculated one step of the simulation and is done with its work
 
-		// visualize the simulation if required
-		visualize_simulation();
-
-		// finally let the worker thread accept new work
+		// finally let the worker thread accept new work in the next step
 		sim_worker_status = SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork;
 	}
 
-	if (!running && sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork) {
-		// if the simulation is not running try to visualize nevertheless (the method will only do work if required)
-		visualize_simulation();
-	}
+	// visualize the simulation if required (the method will only do work if required)
+	visualize_simulation();
+	
 
 	// render to screen
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -294,4 +290,9 @@ void FluidUi::FluidSolverWindow::sim_worker_thread_main() {
 
 bool FluidUi::FluidSolverWindow::is_done_working() const {
 	return sim_worker_status != SimWorkerThreadStatus::SimWorkerThreadStatusWork;
+}
+
+bool FluidUi::FluidSolverWindow::is_safe_to_access_simulation_data() const
+{
+	return !asynchronous_simulation || (!running && sim_worker_status != SimWorkerThreadStatus::SimWorkerThreadStatusWork);
 }

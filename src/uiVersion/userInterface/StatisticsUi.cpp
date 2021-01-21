@@ -9,7 +9,7 @@
 void FluidUi::StatisticsUi::render() {
 
 
-	if (window->asynchronous_simulation && window->running) {
+	if (!window->is_safe_to_access_simulation_data()) {
 		return;
 	}
 

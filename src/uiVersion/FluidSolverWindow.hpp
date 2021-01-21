@@ -35,6 +35,8 @@ namespace FluidUi {
 
 		bool is_done_working() const;
 
+		bool is_safe_to_access_simulation_data() const;
+
 		const FluidSolverTypes solver_types;
 
 		const FluidSolverTypes::FluidSolverType* current_type = nullptr;
