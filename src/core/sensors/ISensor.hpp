@@ -1,25 +1,30 @@
 #ifndef FLUIDSOLVER_ISENSOR_HPP
 #define FLUIDSOLVER_ISENSOR_HPP
 
-
-#include "SensorDataStorage.hpp"
+#include "core/timestep/ITimestep.hpp"
 
 namespace FluidSolver {
 
-    struct SimulationParameters;
+	struct SimulationParameters;
 
-    class ISensor {
+	class ISensor {
 
-    public:
-        SensorDataStorage *storage = nullptr;
+	public:
 
-        SimulationParameters *simulation_parameters = nullptr;
+		struct SensorParameters {
+			std::string name;
+			bool save_to_file = false;
+			SimulationParameters* simulation_parameters = nullptr;
+		} parameters;
 
-        virtual void initialize() = 0;
 
-        virtual void calculate_and_store(float timestep) = 0;
+		virtual void initialize() = 0;
 
-    };
+		virtual void calculate_and_store(const Timepoint& timepoint) = 0;
+
+
+
+	};
 }
 
 #endif //FLUIDSOLVER_ISENSOR_HPP

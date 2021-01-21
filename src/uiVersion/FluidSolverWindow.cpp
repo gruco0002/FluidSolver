@@ -109,8 +109,7 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
 	simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
 	simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer();
 
-	simulation.parameters.sensor_storage = new FluidSolver::SensorDataStorage();
-	simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
+	// simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
 	simulation.parameters.invalidate = true;
 

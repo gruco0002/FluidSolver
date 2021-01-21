@@ -11,7 +11,6 @@ bool FluidSolver::SimulationParameters::operator==(
 		&& other.visualizer == visualizer
 		&& other.invalidate == invalidate
 		&& other.entities == entities
-		&& other.sensor_storage == sensor_storage
 		&& other.sensors == sensors;
 }
 
@@ -36,6 +35,9 @@ void FluidSolver::Simulation::execute_simulation_step() {
 	// calculate timestep
 	internal_parameters.timestep->calculate_current_timestep();
 	float current_timestep = internal_parameters.timestep->get_current_timestep();
+	timepoint.system_time = std::chrono::system_clock::now();
+	timepoint.current_time_step = current_timestep;
+
 
 	// simulate
 	internal_parameters.fluid_solver->execute_simulation_step(current_timestep);
@@ -45,12 +47,12 @@ void FluidSolver::Simulation::execute_simulation_step() {
 		ent->execute_simulation_step(current_timestep);
 	}
 
+	// update simulation time
+	timepoint.simulation_time += current_timestep;
+
 	// measure sensor data
-	if (internal_parameters.sensor_storage != nullptr) {
-		internal_parameters.sensor_storage->simulation_time += current_timestep;
-	}
 	for (auto sen : internal_parameters.sensors) {
-		sen->calculate_and_store(current_timestep);
+		sen->calculate_and_store(timepoint);
 	}
 
 }
@@ -89,10 +91,8 @@ void FluidSolver::Simulation::initialize() {
 	}
 
 	for (auto sen : internal_parameters.sensors) {
-		FLUID_ASSERT(internal_parameters.sensor_storage != nullptr);
 		FLUID_ASSERT(sen != nullptr);
-		sen->simulation_parameters = &internal_parameters;
-		sen->storage = internal_parameters.sensor_storage;
+		sen->parameters.simulation_parameters = &internal_parameters;	
 		sen->initialize();
 	}
 

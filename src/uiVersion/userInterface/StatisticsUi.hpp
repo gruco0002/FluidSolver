@@ -1,7 +1,7 @@
 #ifndef FLUIDSOLVER_STATISTICSUI_HPP
 #define FLUIDSOLVER_STATISTICSUI_HPP
 
-#include "core/sensors/SensorDataStorage.hpp"
+#include <core/sensors/ParticleStatistics.hpp>
 
 namespace FluidUi {
     class FluidSolverWindow;
@@ -16,7 +16,7 @@ namespace FluidUi {
         void initialize();
 
     private:
-        void render_particle_statistics(FluidSolver::SensorDataStorage* storage);
+        void render_particle_statistics(FluidSolver::ParticleStatisticsSensor* sensor);
 
     };
 

@@ -21,6 +21,8 @@ scenario:
       remove-if-outside: true
   sensors:
     - type: particle-statistics-sensor
+      name: Sensor 1
+      save-to-file: false
 solver:
   type: sesph
   neigborhood-search:

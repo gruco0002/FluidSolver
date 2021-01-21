@@ -88,8 +88,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/FluidAssert.hpp
         core/fluidSolver/ParticleCollectionAlgorithm.cpp
         core/fluidSolver/ParticleCollectionAlgorithm.hpp
-        core/sensors/SensorDataStorage.cpp
-        core/sensors/SensorDataStorage.hpp
+        core/sensors/SensorData.cpp
+        core/sensors/SensorData.hpp
         core/sensors/ParticleStatistics.cpp
         core/sensors/ParticleStatistics.hpp
         core/FluidTypes.hpp

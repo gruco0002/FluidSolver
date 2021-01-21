@@ -1,38 +1,42 @@
 #ifndef FLUIDSOLVER_PARTICLESTATISTICS_HPP
 #define FLUIDSOLVER_PARTICLESTATISTICS_HPP
 
-#include "../fluidSolver/ParticleCollection.hpp"
+#include "core/fluidSolver/ParticleCollection.hpp"
 #include "ISensor.hpp"
+#include "SensorData.hpp"
 
 namespace FluidSolver {
-    struct ParticleStatistics {
-        float average_density;
-        float max_density;
-        float min_density;
-        float average_pressure;
-        float min_pressure;
-        float max_pressure;
 
-        size_t normal_particles;
-        size_t boundary_particles;
-        size_t inactive_particles;
+	struct ParticleStatistics {
+		float average_density;
+		float max_density;
+		float min_density;
+		float average_pressure;
+		float min_pressure;
+		float max_pressure;
 
-        float potential_energy;
-        float kinetic_energy;
-        float average_velocity;
-        float min_velocity;
-        float max_velocity;
+		size_t normal_particles;
+		size_t boundary_particles;
+		size_t inactive_particles;
 
-       static ParticleStatistics fill_data(ParticleCollection *collection);
-    };
+		float potential_energy;
+		float kinetic_energy;
+		float average_velocity;
+		float min_velocity;
+		float max_velocity;
 
-    class ParticleStatisticsSensor : public ISensor{
-    public:
+		static ParticleStatistics fill_data(ParticleCollection* collection);
+	};
 
-        void initialize() override;
+	class ParticleStatisticsSensor : public ISensor {
+	public:
 
-        void calculate_and_store(float timestep) override;
-    };
+		SensorData<ParticleStatistics> data;
+
+		void initialize() override;
+
+		void calculate_and_store(const Timepoint& timepoint) override;
+	};
 
 }
 #endif //FLUIDSOLVER_PARTICLESTATISTICS_HPP

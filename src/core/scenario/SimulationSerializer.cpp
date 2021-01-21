@@ -153,12 +153,17 @@ namespace FluidSolver {
 			YAML::Node node;
 
 			node["type"] = "particle-statistics-sensor";
+			node["name"] = sen->parameters.name;
+			node["save-to-file"] = sen->parameters.save_to_file;
 
 			return node;
 		}
 
 		ParticleStatisticsSensor* load_particle_statistics_sensor(const YAML::Node& node) {
-			return new ParticleStatisticsSensor();
+			auto res = new ParticleStatisticsSensor();
+			res->parameters.name = node["name"].as<std::string>();
+			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			return res;
 		}
 
 		std::string get_full_particle_data_path() {
@@ -591,7 +596,6 @@ namespace FluidSolver {
 		res.parameters.invalidate = true;
 
 		res.parameters.collection = new ParticleCollection();
-		res.parameters.sensor_storage = new SensorDataStorage();
 
 		// check version
 		YAML::Node config = YAML::LoadFile(filepath);

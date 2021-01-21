@@ -6,6 +6,8 @@ scenario:
   rest-density: 1
   sensors:
     - type: particle-statistics-sensor
+      name: Sensor 1
+      save-to-file: false
 solver:
   type: sesph
   neigborhood-search:

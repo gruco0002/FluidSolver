@@ -19,8 +19,7 @@ namespace FluidSolver {
 		ITimestep* timestep = nullptr;
 
 		std::vector<IEntity*> entities;
-
-		SensorDataStorage* sensor_storage = nullptr;
+		
 		std::vector<ISensor*> sensors;
 
 		bool invalidate = false;
@@ -44,6 +43,8 @@ namespace FluidSolver {
 
 
 	private:
+
+		Timepoint timepoint;
 
 		SimulationParameters internal_parameters;
 
