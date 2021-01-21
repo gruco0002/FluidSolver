@@ -11,7 +11,7 @@ FluidSolver::ParticleStatistics::fill_data(FluidSolver::ParticleCollection* coll
 	FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
 
 
-	ParticleStatistics s = {};
+	ParticleStatistics s;
 	size_t counter = 0;
 
 	for (size_t i = 0; i < collection->size(); i++) {
