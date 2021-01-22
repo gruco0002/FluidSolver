@@ -31,35 +31,112 @@ static void BeginSubsection(const std::string& name, const std::function<void()>
 
 }
 
-void FluidUi::UiLayer::render() {
 
-	render_menu();
+void FluidUi::UiLayer::render_component_panel()
+{
+	if (ImGui::Begin("Components")) {
 
-	statisticsUi.render();
-	logWindow.render();
+		// Draw components
+		render_component_node("Solver", { Component::Kind::Solver, 0 });
+		render_component_node("Visualizer", { Component::Kind::Visualizer, 0 });
+		render_component_node("Timestep", { Component::Kind::Timestep, 0 });
 
-
-	ImGui::Begin("Properties");
-
-	BeginSubsection("Simulation", [=]() {
-
-		if (window->running)
-			ImGui::TextColored(ImColor(0.1f, 0.8f, 0.1f), "Running");
-		else
-			ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Paused");
-
-		if (ImGui::Button("Run")) {
-			this->window->running = true;
-		}
-		ImGui::SameLine();
-		if (ImGui::Button("Pause")) {
-			this->window->running = false;
+		for (size_t i = 0; i < window->simulation.parameters.sensors.size(); i++) {
+			auto sen = window->simulation.parameters.sensors[i];
+			render_component_node(sen->parameters.name.c_str(), { Component::Kind::Sensor, i });
 		}
 
-		ImGui::Checkbox("Asynchronous", &window->asynchronous_simulation);
-		});
 
+		// handle mouse click outside
+		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+			selection = {};
 
+		// right click outside
+		if (ImGui::BeginPopupContextWindow(0, 1, false)) {
+			if (ImGui::MenuItem("Add Sensor"))
+			{
+				// TODO: implement
+			}
+			if (ImGui::MenuItem("Add Entity"))
+			{
+				// TODO: implement
+			}
+			ImGui::EndPopup();
+		}
+	}
+	ImGui::End();
+
+}
+
+void FluidUi::UiLayer::render_simulation_controls()
+{
+	ImGui::Begin("Simulation Controls");
+	if (window->running)
+		ImGui::TextColored(ImColor(0.1f, 0.8f, 0.1f), "Running");
+	else
+		ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Paused");
+
+	if (ImGui::Button("Run")) {
+		this->window->running = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Pause")) {
+		this->window->running = false;
+	}
+
+	ImGui::Checkbox("Asynchronous", &window->asynchronous_simulation);
+	ImGui::End();
+}
+
+void FluidUi::UiLayer::render_component_node(const char* name, const Component& component)
+{
+	ImGuiTreeNodeFlags flags = ((component == selection) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+	flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+
+	bool opened = ImGui::TreeNodeEx((void*)((size_t)name + component.index * 1565412), flags, name);
+
+	if (ImGui::IsItemClicked())
+	{
+		selection = component;
+	}
+
+	bool component_deleted = false;
+	if (ImGui::BeginPopupContextItem())
+	{
+		if (ImGui::MenuItem("Delete Component"))
+			component_deleted = true;
+
+		ImGui::EndPopup();
+	}
+
+	if (opened)
+	{
+		ImGui::TreePop();
+	}
+
+	if (component_deleted)
+	{
+		// reset selction if required
+		if (selection == component)
+			selection = {};
+
+		// remove component
+		// TODO: implement
+	}
+}
+
+void FluidUi::UiLayer::render_component_settings(const Component& component)
+{
+	if (component.kind == Component::Kind::Solver) {
+		render_solver_component();
+	}
+	else if (component.kind == Component::Kind::Timestep) {
+		render_timestep_component();
+	}
+}
+
+void FluidUi::UiLayer::render_solver_component()
+{
 	BeginSubsection("Solver Setup", [=]() {
 
 		bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
@@ -132,6 +209,38 @@ void FluidUi::UiLayer::render() {
 
 		});
 
+	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {
+		BeginSubsection("SESPH", [=]() {
+			auto v = (FluidSolver::SESPHSettings*)window->current_type->get_settings(
+				window->simulation.parameters.fluid_solver);
+			render_solver_parameters();
+			ImGui::Separator();
+			ImGui::InputFloat("Viscosity", &v->Viscosity);
+			ImGui::InputFloat("Stiffness", &v->StiffnessK);
+			});
+	}
+
+	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
+		BeginSubsection("IISPH", [=]() {
+
+			render_solver_parameters();
+			ImGui::Separator();
+
+			auto v = (FluidSolver::IISPHSettings*)window->current_type->get_settings(
+				window->simulation.parameters.fluid_solver);
+
+			ImGui::InputFloat("Viscosity", &v->Viscosity);
+			ImGui::InputFloat("Max. Density Err.", &v->MaxDensityErrorAllowed);
+			ImGui::InputInt("Min. Iterations", (int*)&v->MinNumberOfIterations);
+			ImGui::InputInt("Max. Iterations", (int*)&v->MaxNumberOfIterations);
+			ImGui::InputFloat("Gamma", &v->Gamma);
+			ImGui::InputFloat("Omega", &v->Omega);
+			});
+	}
+}
+
+void FluidUi::UiLayer::render_timestep_component()
+{
 	BeginSubsection("Timestep", [=]() {
 		auto ct = dynamic_cast<FluidSolver::ConstantTimestep*>(window->simulation.parameters.timestep);
 		auto dt = dynamic_cast<FluidSolver::DynamicCFLTimestep*>(window->simulation.parameters.timestep);
@@ -187,36 +296,22 @@ void FluidUi::UiLayer::render() {
 		}
 		});
 
-	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {
-		BeginSubsection("SESPH", [=]() {
-			auto v = (FluidSolver::SESPHSettings*)window->current_type->get_settings(
-				window->simulation.parameters.fluid_solver);
-			render_solver_parameters();
-			ImGui::Separator();
-			ImGui::InputFloat("Viscosity", &v->Viscosity);
-			ImGui::InputFloat("Stiffness", &v->StiffnessK);
-			});
-	}
+}
 
-	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
-		BeginSubsection("IISPH", [=]() {
+void FluidUi::UiLayer::render() {
 
-			render_solver_parameters();
-			ImGui::Separator();
+	render_menu();
+	render_simulation_controls();
 
-			auto v = (FluidSolver::IISPHSettings*)window->current_type->get_settings(
-				window->simulation.parameters.fluid_solver);
 
-			ImGui::InputFloat("Viscosity", &v->Viscosity);
-			ImGui::InputFloat("Max. Density Err.", &v->MaxDensityErrorAllowed);
-			ImGui::InputInt("Min. Iterations", (int*)&v->MinNumberOfIterations);
-			ImGui::InputInt("Max. Iterations", (int*)&v->MaxNumberOfIterations);
-			ImGui::InputFloat("Gamma", &v->Gamma);
-			ImGui::InputFloat("Omega", &v->Omega);
-			});
-	}
+	// render component controls	
+	render_component_panel();
+	render_component_properties_panel();
 
-	ImGui::End();
+	// render other windows
+	statisticsUi.render();
+	logWindow.render();
+
 
 }
 
@@ -226,6 +321,8 @@ void FluidUi::UiLayer::initialize() {
 	logWindow.window = window;
 	logWindow.initialize();
 }
+
+
 
 void FluidUi::UiLayer::render_solver_parameters() {
 	ImGui::InputFloat("Gravity", &window->simulation.parameters.fluid_solver->parameters.gravity);
@@ -339,4 +436,26 @@ void FluidUi::UiLayer::render_menu()
 
 
 
+}
+
+void FluidUi::UiLayer::render_component_properties_panel()
+{
+	if (ImGui::Begin("Properties")) {
+
+		if (selection.kind != Component::Kind::None) {
+			render_component_settings(selection);
+		}
+
+	}
+	ImGui::End();
+}
+
+bool FluidUi::UiLayer::Component::operator==(const Component& other) const
+{
+	return kind == other.kind && index == other.index;
+}
+
+bool FluidUi::UiLayer::Component::operator!=(const Component& other) const
+{
+	return !(*this == other);
 }
