@@ -133,6 +133,9 @@ void FluidUi::UiLayer::render_component_settings(const Component& component)
 	else if (component.kind == Component::Kind::Timestep) {
 		render_timestep_component();
 	}
+	else if (component.kind == Component::Kind::Sensor) {
+		render_sensor_component(component.index);
+	}
 }
 
 void FluidUi::UiLayer::render_solver_component()
@@ -298,11 +301,17 @@ void FluidUi::UiLayer::render_timestep_component()
 
 }
 
+void FluidUi::UiLayer::render_sensor_component(size_t index)
+{
+	if (ImGui::Button("Open Graph")) {
+		statisticsUi.open_sensor_window(index);
+	}
+}
+
 void FluidUi::UiLayer::render() {
 
 	render_menu();
 	render_simulation_controls();
-
 
 	// render component controls	
 	render_component_panel();
@@ -311,8 +320,6 @@ void FluidUi::UiLayer::render() {
 	// render other windows
 	statisticsUi.render();
 	logWindow.render();
-
-
 }
 
 void FluidUi::UiLayer::initialize() {

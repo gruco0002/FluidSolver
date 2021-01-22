@@ -45,7 +45,7 @@ namespace FluidUi {
 		void render_solver_component();
 		void render_solver_parameters();
 		void render_timestep_component();
-
+		void render_sensor_component(size_t index);
 
 	};
 
