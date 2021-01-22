@@ -4,21 +4,23 @@
 #include <core/sensors/ParticleStatistics.hpp>
 
 namespace FluidUi {
-    class FluidSolverWindow;
+	class FluidSolverWindow;
 
-    class StatisticsUi {
+	class StatisticsUi {
 
-    public:
+	public:
 
-        FluidSolverWindow* window = nullptr;
+		FluidSolverWindow* window = nullptr;
 
-        void render();
-        void initialize();
+		void render();
+		void initialize();
 
-    private:
-        void render_particle_statistics(FluidSolver::ParticleStatisticsSensor* sensor);
+	private:
+		void render_density_sensor_graph(FluidSolver::Sensors::GlobalDensitySensor* sensor);
+		void render_pressure_sensor_graph(FluidSolver::Sensors::GlobalPressureSensor* sensor);
+		void render_velocity_sensor_graph(FluidSolver::Sensors::GlobalVelocitySensor* sensor);
 
-    };
+	};
 
 }
 

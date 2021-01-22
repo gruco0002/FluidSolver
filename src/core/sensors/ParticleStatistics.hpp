@@ -8,37 +8,78 @@
 
 namespace FluidSolver {
 
-	struct ParticleStatistics {
-		float average_density = 0.0f;
-		float max_density = std::numeric_limits<float>::min();
-		float min_density = std::numeric_limits<float>::max();
-		float average_pressure = 0.0f;
-		float min_pressure = std::numeric_limits<float>::max();
-		float max_pressure = std::numeric_limits<float>::min();
+	namespace Sensors {
 
-		size_t normal_particles = 0;
-		size_t boundary_particles = 0;
-		size_t inactive_particles = 0;
+		struct MMAData {
+			float average = 0.0f;
+			float maximum = std::numeric_limits<float>::min();
+			float minimum = std::numeric_limits<float>::max();
+		};
 
-		float potential_energy = 0;
-		float kinetic_energy = 0;
+		class GlobalDensitySensor : public ISensor {
+		public:
 
-		float average_velocity = 0;
-		float min_velocity = std::numeric_limits<float>::max();
-		float max_velocity = std::numeric_limits<float>::min();
+			SensorData<MMAData> data;
 
-		static ParticleStatistics fill_data(ParticleCollection* collection);
-	};
+			virtual void initialize() override;
+			virtual void calculate_and_store(const Timepoint& timepoint) override;
+		};
 
-	class ParticleStatisticsSensor : public ISensor {
-	public:
+		class GlobalPressureSensor : public ISensor {
+		public:
 
-		SensorData<ParticleStatistics> data;
+			SensorData<MMAData> data;
 
-		void initialize() override;
+			virtual void initialize() override;
+			virtual void calculate_and_store(const Timepoint& timepoint) override;
+		};
 
-		void calculate_and_store(const Timepoint& timepoint) override;
-	};
+		class GlobalVelocitySensor : public ISensor {
+		public:
+
+			SensorData<MMAData> data;
+
+			virtual void initialize() override;
+			virtual void calculate_and_store(const Timepoint& timepoint) override;
+		};
+
+		class GlobalEnergySensor : public ISensor {
+		public:
+
+
+			struct EnergyData {
+				float potential = 0.0f;
+				float kinetic = 0.0f;
+			};
+
+			struct EnergySensorSettings {
+				float relative_zero_height = 0.0f;
+			} settings;
+
+			SensorData<EnergyData> data;
+
+			virtual void initialize() override;
+			virtual void calculate_and_store(const Timepoint& timepoint) override;
+		};
+
+		class GlobalParticleCountSensor : public ISensor {
+		public:
+
+			struct ParticleCountData {
+				size_t normal_particles = 0;
+				size_t boundary_particles = 0;
+				size_t inactive_particles = 0;
+			};
+
+			SensorData<ParticleCountData> data;
+
+
+			virtual void initialize() override;
+			virtual void calculate_and_store(const Timepoint& timepoint) override;
+		};
+
+
+	}
 
 }
 #endif //FLUIDSOLVER_PARTICLESTATISTICS_HPP

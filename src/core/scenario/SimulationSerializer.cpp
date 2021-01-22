@@ -149,18 +149,88 @@ namespace FluidSolver {
 			return remover;
 		}
 
-		YAML::Node save_particle_statistics_sensor(const ParticleStatisticsSensor* sen) {
+		YAML::Node save_global_density_sensor(const Sensors::GlobalDensitySensor* sen) {
 			YAML::Node node;
 
-			node["type"] = "particle-statistics-sensor";
+			node["type"] = "global-density-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
 
 			return node;
 		}
 
-		ParticleStatisticsSensor* load_particle_statistics_sensor(const YAML::Node& node) {
-			auto res = new ParticleStatisticsSensor();
+		Sensors::GlobalDensitySensor* load_global_density_sensor(const YAML::Node& node) {
+			auto res = new Sensors::GlobalDensitySensor();
+			res->parameters.name = node["name"].as<std::string>();
+			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			return res;
+		}
+
+		YAML::Node save_global_pressure_sensor(const Sensors::GlobalPressureSensor* sen) {
+			YAML::Node node;
+
+			node["type"] = "global-pressure-sensor";
+			node["name"] = sen->parameters.name;
+			node["save-to-file"] = sen->parameters.save_to_file;
+
+			return node;
+		}
+
+		Sensors::GlobalPressureSensor* load_global_pressure_sensor(const YAML::Node& node) {
+			auto res = new Sensors::GlobalPressureSensor();
+			res->parameters.name = node["name"].as<std::string>();
+			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			return res;
+		}
+
+		YAML::Node save_global_velocity_sensor(const Sensors::GlobalVelocitySensor* sen) {
+			YAML::Node node;
+
+			node["type"] = "global-velocity-sensor";
+			node["name"] = sen->parameters.name;
+			node["save-to-file"] = sen->parameters.save_to_file;
+
+			return node;
+		}
+
+		Sensors::GlobalVelocitySensor* load_global_velocity_sensor(const YAML::Node& node) {
+			auto res = new Sensors::GlobalVelocitySensor();
+			res->parameters.name = node["name"].as<std::string>();
+			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			return res;
+		}
+
+		YAML::Node save_global_energy_sensor(const Sensors::GlobalEnergySensor* sen) {
+			YAML::Node node;
+
+			node["type"] = "global-energy-sensor";
+			node["name"] = sen->parameters.name;
+			node["save-to-file"] = sen->parameters.save_to_file;
+			node["relative-zero-height"] = sen->settings.relative_zero_height;
+
+			return node;
+		}
+
+		Sensors::GlobalEnergySensor* load_global_energy_sensor(const YAML::Node& node) {
+			auto res = new Sensors::GlobalEnergySensor();
+			res->parameters.name = node["name"].as<std::string>();
+			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->settings.relative_zero_height = node["relative-zero-height"].as<float>();
+			return res;
+		}
+
+		YAML::Node save_global_particle_count_sensor(const Sensors::GlobalParticleCountSensor* sen) {
+			YAML::Node node;
+
+			node["type"] = "global-particle-count-sensor";
+			node["name"] = sen->parameters.name;
+			node["save-to-file"] = sen->parameters.save_to_file;
+
+			return node;
+		}
+
+		Sensors::GlobalParticleCountSensor* load_global_particle_count_sensor(const YAML::Node& node) {
+			auto res = new Sensors::GlobalParticleCountSensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
 			return res;
@@ -201,9 +271,30 @@ namespace FluidSolver {
 
 			// save sensors
 			for (auto sen : simulation.parameters.sensors) {
-				auto stat = dynamic_cast<ParticleStatisticsSensor*>(sen);
-				if (stat) {
-					res["sensors"].push_back(save_particle_statistics_sensor(stat));
+
+				auto gd = dynamic_cast<Sensors::GlobalDensitySensor*>(sen);
+				if (gd) {
+					res["sensors"].push_back(save_global_density_sensor(gd));
+				}
+
+				auto gp = dynamic_cast<Sensors::GlobalPressureSensor*>(sen);
+				if (gp) {
+					res["sensors"].push_back(save_global_pressure_sensor(gp));
+				}
+
+				auto gv = dynamic_cast<Sensors::GlobalVelocitySensor*>(sen);
+				if (gv) {
+					res["sensors"].push_back(save_global_velocity_sensor(gv));
+				}
+
+				auto ge = dynamic_cast<Sensors::GlobalEnergySensor*>(sen);
+				if (ge) {
+					res["sensors"].push_back(save_global_energy_sensor(ge));
+				}
+
+				auto gc = dynamic_cast<Sensors::GlobalParticleCountSensor*>(sen);
+				if (gc) {
+					res["sensors"].push_back(save_global_particle_count_sensor(gc));
 				}
 			}
 
@@ -238,7 +329,7 @@ namespace FluidSolver {
 					}
 					else {
 						warnings++;
-						Log::warning("[LOADING] Unkown entity type: '" + ent_node["type"].as<std::string>() + "'!");
+						Log::warning("[LOADING] Unknown entity type: '" + ent_node["type"].as<std::string>() + "'!");
 					}
 				}
 			}
@@ -246,12 +337,24 @@ namespace FluidSolver {
 			// loading sensors
 			if (node["sensors"]) {
 				for (auto& sen_node : node["sensors"]) {
-					if (sen_node["type"].as<std::string>() == "particle-statistics-sensor") {
-						simulation.parameters.sensors.push_back(load_particle_statistics_sensor(sen_node));
+					if (sen_node["type"].as<std::string>() == "global-density-sensor") {
+						simulation.parameters.sensors.push_back(load_global_density_sensor(sen_node));
+					}
+					else if (sen_node["type"].as<std::string>() == "global-pressure-sensor") {
+						simulation.parameters.sensors.push_back(load_global_pressure_sensor(sen_node));
+					}
+					else if (sen_node["type"].as<std::string>() == "global-velocity-sensor") {
+						simulation.parameters.sensors.push_back(load_global_velocity_sensor(sen_node));
+					}
+					else if (sen_node["type"].as<std::string>() == "global-energy-sensor") {
+						simulation.parameters.sensors.push_back(load_global_energy_sensor(sen_node));
+					}
+					else if (sen_node["type"].as<std::string>() == "global-particle-count-sensor") {
+						simulation.parameters.sensors.push_back(load_global_particle_count_sensor(sen_node));
 					}
 					else {
 						warnings++;
-						Log::warning("[LOADING] Unkown sensor type '" + sen_node["type"].as<std::string>() + "'!");
+						Log::warning("[LOADING] Unknown sensor type '" + sen_node["type"].as<std::string>() + "'!");
 					}
 				}
 			}

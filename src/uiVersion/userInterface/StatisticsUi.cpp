@@ -16,8 +16,14 @@ void FluidUi::StatisticsUi::render() {
 	for (auto sen : window->simulation.parameters.sensors) {
 		ImGui::Begin(sen->parameters.name.c_str());
 
-		if (dynamic_cast<FluidSolver::ParticleStatisticsSensor*>(sen)) {
-			render_particle_statistics(dynamic_cast<FluidSolver::ParticleStatisticsSensor*>(sen));
+		if (dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen)) {
+			render_density_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen));
+		}
+		else if (dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen)) {
+			render_pressure_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen));
+		}
+		else if (dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen)) {
+			render_velocity_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen));
 		}
 
 		ImGui::End();
@@ -31,102 +37,47 @@ void FluidUi::StatisticsUi::initialize() {
 	FLUID_ASSERT(window != nullptr)
 }
 
-void FluidUi::StatisticsUi::render_particle_statistics(FluidSolver::ParticleStatisticsSensor* sensor) {
+void plot_mmadata(const FluidSolver::SensorData< FluidSolver::Sensors::MMAData>& data) {
 
-	if (ImPlot::BeginPlot("Density")) {
+	ImPlot::PlotLineG("Avg", [](void* data, int x) {
+		auto s = (FluidSolver::SensorData< FluidSolver::Sensors::MMAData>*)data;
+		return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average);
+		}, (void*)&data, data.size());
 
-		ImPlot::PlotLineG("Avg", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_density);
-			}, (void*)&sensor->data, sensor->data.size());
+	ImPlot::PlotLineG("Min", [](void* data, int x) {
+		auto s = (FluidSolver::SensorData< FluidSolver::Sensors::MMAData>*)data;
+		return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].minimum);
+		}, (void*)&data, data.size());
 
-		ImPlot::PlotLineG("Min", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_density);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Max", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_density);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::EndPlot();
-	}
-
-	if (ImPlot::BeginPlot("Pressure")) {
-
-		ImPlot::PlotLineG("Avg", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_pressure);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Min", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_pressure);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Max", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_pressure);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::EndPlot();
-	}
-
-	if (ImPlot::BeginPlot("Velocity")) {
-
-		ImPlot::PlotLineG("Avg", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average_velocity);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Min", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].min_velocity);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Max", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].max_pressure);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::EndPlot();
-	}
-
-	if (ImPlot::BeginPlot("Particles")) {
-
-		ImPlot::PlotLineG("Normal", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].normal_particles);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Boundary", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].boundary_particles);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Inactive", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].inactive_particles);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::EndPlot();
-	}
-
-	if (ImPlot::BeginPlot("Energy")) {
-
-		ImPlot::PlotLineG("Kin", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].kinetic_energy);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::PlotLineG("Pot", [](void* data, int x) {
-			auto s = (FluidSolver::SensorData< FluidSolver::ParticleStatistics>*)data;
-			return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].potential_energy);
-			}, (void*)&sensor->data, sensor->data.size());
-
-		ImPlot::EndPlot();
-	}
-
+	ImPlot::PlotLineG("Max", [](void* data, int x) {
+		auto s = (FluidSolver::SensorData< FluidSolver::Sensors::MMAData>*)data;
+		return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].maximum);
+		}, (void*)&data, data.size());
 
 }
+
+void FluidUi::StatisticsUi::render_density_sensor_graph(FluidSolver::Sensors::GlobalDensitySensor* sensor)
+{
+	if (ImPlot::BeginPlot("Density")) {
+		plot_mmadata(sensor->data);
+		ImPlot::EndPlot();
+	}
+}
+
+void FluidUi::StatisticsUi::render_pressure_sensor_graph(FluidSolver::Sensors::GlobalPressureSensor* sensor)
+{
+	if (ImPlot::BeginPlot("Pressure")) {
+		plot_mmadata(sensor->data);
+		ImPlot::EndPlot();
+	}
+}
+
+void FluidUi::StatisticsUi::render_velocity_sensor_graph(FluidSolver::Sensors::GlobalVelocitySensor* sensor)
+{
+	if (ImPlot::BeginPlot("Velocity")) {
+		plot_mmadata(sensor->data);
+		ImPlot::EndPlot();
+	}
+}
+
+
