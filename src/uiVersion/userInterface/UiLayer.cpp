@@ -264,7 +264,7 @@ void FluidUi::UiLayer::render_menu()
 					FluidSolver::SimulationSerializer s(path);
 					auto simulation = s.load_from_file();
 					if (!s.has_errors()) {
-						window->simulation = s.load_from_file();
+						window->simulation = simulation;
 						window->on_new_simulation();
 					}
 
