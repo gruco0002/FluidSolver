@@ -25,8 +25,8 @@ void FluidUi::FluidSolverWindow::load() {
 
 	// initialize imgui and window
 	ImGuiHelper::Init(this->GetWindowHandler());
-	OnKeyPressed.Subscribe([=](int key) {
-		if (key == GLFW_KEY_SPACE) {
+	OnKeyPressed.Subscribe([&](int key) {
+		if (key == GLFW_KEY_SPACE && simulation_visualization_window_in_foreground) {
 			running = !running;
 		}
 		});
@@ -69,7 +69,7 @@ void FluidUi::FluidSolverWindow::render() {
 
 	// visualize the simulation if required (the method will only do work if required)
 	visualize_simulation();
-	
+
 
 	// render to screen
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -123,7 +123,12 @@ void FluidUi::FluidSolverWindow::on_new_simulation()
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
+
+	bool in_foreground = false;
+
 	ImGui::Begin("Simulation Visualization");
+
+	in_foreground = in_foreground || ImGui::IsWindowFocused();
 
 	auto glRenderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer);
 	if (simulation.parameters.visualizer == nullptr) {
@@ -200,6 +205,8 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 
 			if (ImGui::BeginChild("SimView")) {
 
+				in_foreground = in_foreground || ImGui::IsWindowFocused();
+
 				bool imageHasFocus = ImGui::IsWindowHovered();
 				auto pos = ImGui::GetWindowPos();
 				auto padding = ImGui::GetStyle().WindowPadding;
@@ -219,6 +226,8 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 		}
 	}
 	ImGui::End();
+
+	this->simulation_visualization_window_in_foreground = in_foreground;
 }
 
 void FluidUi::FluidSolverWindow::setup_windows() {
