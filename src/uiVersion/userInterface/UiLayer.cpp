@@ -13,6 +13,8 @@
 #include <nfd.h>
 #include "core/scenario/SimulationSerializer.hpp"
 
+
+
 static void BeginSubsection(const std::string& name, const std::function<void()>& fnc) {
 	const ImGuiTreeNodeFlags treeNodeFlags =
 		ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
@@ -52,10 +54,36 @@ void FluidUi::UiLayer::render_component_panel()
 			selection = {};
 
 		// right click outside
+		bool is_safe = window->is_safe_to_access_simulation_data();
 		if (ImGui::BeginPopupContextWindow(0, 1, false)) {
-			if (ImGui::MenuItem("Add Sensor"))
+			if (ImGui::BeginMenu("Add Sensor"))
 			{
-				// TODO: implement
+				if (ImGui::MenuItem("Global Density", nullptr, nullptr, is_safe)) {
+					auto sen = new FluidSolver::Sensors::GlobalDensitySensor();
+					sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+					window->simulation.parameters.sensors.push_back(sen);
+				}
+				if (ImGui::MenuItem("Global Pressure", nullptr, nullptr, is_safe)) {
+					auto sen = new FluidSolver::Sensors::GlobalPressureSensor();
+					sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+					window->simulation.parameters.sensors.push_back(sen);
+				}
+				if (ImGui::MenuItem("Global Velocity", nullptr, nullptr, is_safe)) {
+					auto sen = new FluidSolver::Sensors::GlobalVelocitySensor();
+					sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+					window->simulation.parameters.sensors.push_back(sen);
+				}
+				if (ImGui::MenuItem("Global Energy", nullptr, nullptr, is_safe)) {
+					auto sen = new FluidSolver::Sensors::GlobalEnergySensor();
+					sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+					window->simulation.parameters.sensors.push_back(sen);
+				}
+				if (ImGui::MenuItem("Global Particle Count", nullptr, nullptr, is_safe)) {
+					auto sen = new FluidSolver::Sensors::GlobalParticleCountSensor();
+					sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+					window->simulation.parameters.sensors.push_back(sen);
+				}
+				ImGui::EndMenu();
 			}
 			if (ImGui::MenuItem("Add Entity"))
 			{
@@ -90,8 +118,8 @@ void FluidUi::UiLayer::render_simulation_controls()
 
 void FluidUi::UiLayer::render_component_node(const char* name, const Component& component)
 {
-	ImGuiTreeNodeFlags flags = ((component == selection) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-	flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+	ImGuiTreeNodeFlags flags = ((component == selection) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow
+		| ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
 
 	bool opened = ImGui::TreeNodeEx((void*)((size_t)name + component.index * 1565412), flags, name);
 
@@ -100,13 +128,17 @@ void FluidUi::UiLayer::render_component_node(const char* name, const Component& 
 		selection = component;
 	}
 
-	bool component_deleted = false;
-	if (ImGui::BeginPopupContextItem())
-	{
-		if (ImGui::MenuItem("Delete Component"))
-			component_deleted = true;
 
-		ImGui::EndPopup();
+	bool component_deleted = false;
+
+	if (component.can_delete()) {
+		if (ImGui::BeginPopupContextItem())
+		{
+			if (ImGui::MenuItem("Delete Component"))
+				component_deleted = true;
+
+			ImGui::EndPopup();
+		}
 	}
 
 	if (opened)
@@ -301,11 +333,51 @@ void FluidUi::UiLayer::render_timestep_component()
 
 }
 
+const char* get_sensor_type_name(FluidSolver::ISensor* sen) {
+
+	if (dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen)) {
+		return "Global Density";
+	}
+	else if (dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen)) {
+		return "Global Pressure";
+	}
+	else if (dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen)) {
+		return "Global Velocity";
+	}
+	else if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen)) {
+		return "Global Energy";
+	}
+	else if (dynamic_cast<FluidSolver::Sensors::GlobalParticleCountSensor*>(sen)) {
+		return "Global Particle Count";
+	}
+	return "UNKNOWN";
+}
+
 void FluidUi::UiLayer::render_sensor_component(size_t index)
 {
-	if (ImGui::Button("Open Graph")) {
-		statisticsUi.open_sensor_window(index);
+	FLUID_ASSERT(window != nullptr);
+	FLUID_ASSERT(index < window->simulation.parameters.sensors.size());
+	auto sen = window->simulation.parameters.sensors[index];
+	BeginSubsection("Sensor", [&]() {
+		ImGui::LabelText("Type", get_sensor_type_name(sen));
+		if (ImGui::Button("Open Graph")) {
+			statisticsUi.open_sensor_window(index);
+		}
+		ImGui::InputText("Name", &sen->parameters.name);
+		ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
+		});
+
+	if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen)) {
+		render_global_energy_sensor_component(dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen));
 	}
+
+}
+
+void FluidUi::UiLayer::render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen)
+{
+	BeginSubsection("Zero-Levels", [&]() {
+		ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height);
+		});
 }
 
 void FluidUi::UiLayer::render() {
@@ -465,4 +537,15 @@ bool FluidUi::UiLayer::Component::operator==(const Component& other) const
 bool FluidUi::UiLayer::Component::operator!=(const Component& other) const
 {
 	return !(*this == other);
+}
+
+bool FluidUi::UiLayer::Component::can_delete() const
+{
+	switch (kind) {
+	case Kind::Sensor:
+		return true;
+
+	}
+
+	return false;
 }

@@ -23,6 +23,7 @@ namespace FluidUi {
 
 			bool operator!=(const Component& other) const;
 
+			bool can_delete() const;
 
 		} selection;
 
@@ -46,6 +47,9 @@ namespace FluidUi {
 		void render_solver_parameters();
 		void render_timestep_component();
 		void render_sensor_component(size_t index);
+
+
+		void render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen);
 
 	};
 
