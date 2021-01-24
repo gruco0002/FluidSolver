@@ -1,10 +1,11 @@
 #ifndef FLUIDSOLVER_IMGUIHELPER_HPP
 #define FLUIDSOLVER_IMGUIHELPER_HPP
 
-#include "imgui.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_impl_glfw.h"
-#include "implot.h"
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
+#include <implot.h>
+#include <imgui_stdlib.h>
 
 #ifdef __linux__
 // linux
@@ -22,13 +23,13 @@
 #endif
 
 
-namespace ImGuiHelper{
+namespace ImGuiHelper {
 
-    void Init(GLFWwindow* window);
-    void Uninit();
+	void Init(GLFWwindow* window);
+	void Uninit();
 
-    void PreRender();
-    void PostRender();
+	void PreRender();
+	void PostRender();
 
 }
 
