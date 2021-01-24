@@ -153,7 +153,7 @@ void FluidUi::UiLayer::render_component_node(const char* name, const Component& 
 			selection = {};
 
 		// remove component
-		// TODO: implement
+		delete_component(component);
 	}
 }
 
@@ -378,6 +378,25 @@ void FluidUi::UiLayer::render_global_energy_sensor_component(FluidSolver::Sensor
 	BeginSubsection("Zero-Levels", [&]() {
 		ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height);
 		});
+}
+
+void FluidUi::UiLayer::delete_component(const Component& component)
+{
+	if (component.kind == Component::Kind::Sensor) {
+		// delete the sensor if existing
+
+		// check for existance
+		if (window->simulation.parameters.sensors.size() <= component.index) {
+			return;
+		}
+
+		// delete the sensor
+		for (size_t i = component.index; i < window->simulation.parameters.sensors.size() - 1; i++) {
+			window->simulation.parameters.sensors[i] = window->simulation.parameters.sensors[i + 1];
+		}
+		window->simulation.parameters.sensors.pop_back();
+
+	}
 }
 
 void FluidUi::UiLayer::render() {
