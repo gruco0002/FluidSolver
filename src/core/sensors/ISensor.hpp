@@ -12,7 +12,7 @@ namespace FluidSolver {
 	public:
 
 		struct SensorParameters {
-			std::string name;
+			std::string name = "Sensor";
 			bool save_to_file = false;
 			SimulationParameters* simulation_parameters = nullptr;
 		} parameters;
