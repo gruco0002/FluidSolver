@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+#include <fstream>
 
 #include "core/FluidInclude.hpp"
 
@@ -16,8 +18,12 @@ namespace FluidSolver {
 	private:
 		bool in_header_mode = true;
 		size_t header_count = 0;
+        std::string filepath;
+        std::ofstream stream;
 
 	public:
+        
+        explicit SensorWriter(const std::string& filepath);
 
 		void push_back_header(const std::string& header, size_t dimensionality = 1);
 		void end_header();

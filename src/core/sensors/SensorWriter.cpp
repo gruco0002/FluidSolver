@@ -93,3 +93,10 @@ FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(int value)
 	push_back(value);
 	return *this;
 }
+
+FluidSolver::SensorWriter::SensorWriter(const std::string &filepath) : filepath(filepath), stream(filepath, std::ios::out) {
+    
+}
+
+
+
