@@ -49,6 +49,7 @@ void FluidSolver::Simulation::execute_simulation_step() {
 
 	// update simulation time
 	timepoint.simulation_time += current_timestep;
+	timepoint.current_time_step++;
 
 	// measure sensor data
 	for (auto sen : internal_parameters.sensors) {
