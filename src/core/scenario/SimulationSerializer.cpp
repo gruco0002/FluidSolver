@@ -155,6 +155,7 @@ namespace FluidSolver {
 			node["type"] = "global-density-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
+			node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
 
 			return node;
 		}
@@ -163,6 +164,8 @@ namespace FluidSolver {
 			auto res = new Sensors::GlobalDensitySensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+
 			return res;
 		}
 
@@ -172,6 +175,7 @@ namespace FluidSolver {
 			node["type"] = "global-pressure-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
+			node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
 
 			return node;
 		}
@@ -180,6 +184,8 @@ namespace FluidSolver {
 			auto res = new Sensors::GlobalPressureSensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+
 			return res;
 		}
 
@@ -189,6 +195,7 @@ namespace FluidSolver {
 			node["type"] = "global-velocity-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
+			node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
 
 			return node;
 		}
@@ -197,6 +204,7 @@ namespace FluidSolver {
 			auto res = new Sensors::GlobalVelocitySensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
 			return res;
 		}
 
@@ -206,6 +214,8 @@ namespace FluidSolver {
 			node["type"] = "global-energy-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
+			node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+
 			node["relative-zero-height"] = sen->settings.relative_zero_height;
 
 			return node;
@@ -215,6 +225,7 @@ namespace FluidSolver {
 			auto res = new Sensors::GlobalEnergySensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
 			res->settings.relative_zero_height = node["relative-zero-height"].as<float>();
 			return res;
 		}
@@ -225,6 +236,7 @@ namespace FluidSolver {
 			node["type"] = "global-particle-count-sensor";
 			node["name"] = sen->parameters.name;
 			node["save-to-file"] = sen->parameters.save_to_file;
+			node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
 
 			return node;
 		}
@@ -233,6 +245,7 @@ namespace FluidSolver {
 			auto res = new Sensors::GlobalParticleCountSensor();
 			res->parameters.name = node["name"].as<std::string>();
 			res->parameters.save_to_file = node["save-to-file"].as<bool>();
+			res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
 			return res;
 		}
 

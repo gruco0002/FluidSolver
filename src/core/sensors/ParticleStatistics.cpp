@@ -43,6 +43,34 @@ void FluidSolver::Sensors::GlobalDensitySensor::calculate_and_store(const Timepo
 
 }
 
+void FluidSolver::Sensors::GlobalDensitySensor::save_data_to_file(SensorWriter& writer)
+{
+
+	if (writer.begin_header()) {
+		writer.push_back_header<Timepoint>("Timepoint");
+		writer.push_back_header<float>("Density Avg");
+		writer.push_back_header<float>("Density Min");
+		writer.push_back_header<float>("Density Max");
+		writer.end_header();
+	}
+
+
+	// data writing
+	for (size_t i = saved_data_until; i < data.size(); i++) {
+		auto& tmp = data.data()[i];
+		writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
+	}
+
+
+
+	if (parameters.keep_data_in_memory_after_saving) {
+		saved_data_until = data.size();
+	}
+	else {
+		data.clear();
+	}
+}
+
 void FluidSolver::Sensors::GlobalPressureSensor::initialize()
 {
 	FLUID_ASSERT(parameters.simulation_parameters != nullptr);
@@ -79,6 +107,33 @@ void FluidSolver::Sensors::GlobalPressureSensor::calculate_and_store(const Timep
 
 	// save the calculated results
 	data.push_back(timepoint, d);
+}
+
+void FluidSolver::Sensors::GlobalPressureSensor::save_data_to_file(SensorWriter& writer)
+{
+	if (writer.begin_header()) {
+		writer.push_back_header<Timepoint>("Timepoint");
+		writer.push_back_header<float>("Pressure Avg");
+		writer.push_back_header<float>("Pressure Min");
+		writer.push_back_header<float>("Pressure Max");
+		writer.end_header();
+	}
+
+
+	// data writing
+	for (size_t i = saved_data_until; i < data.size(); i++) {
+		auto& tmp = data.data()[i];
+		writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
+	}
+
+
+
+	if (parameters.keep_data_in_memory_after_saving) {
+		saved_data_until = data.size();
+	}
+	else {
+		data.clear();
+	}
 }
 
 void FluidSolver::Sensors::GlobalVelocitySensor::initialize()
@@ -118,6 +173,59 @@ void FluidSolver::Sensors::GlobalVelocitySensor::calculate_and_store(const Timep
 
 	// save the calculated results
 	data.push_back(timepoint, d);
+}
+
+void FluidSolver::Sensors::GlobalVelocitySensor::save_data_to_file(SensorWriter& writer)
+{
+	if (writer.begin_header()) {
+		writer.push_back_header<Timepoint>("Timepoint");
+		writer.push_back_header<float>("Velocity Avg");
+		writer.push_back_header<float>("Velocity Min");
+		writer.push_back_header<float>("Velocity Max");
+		writer.end_header();
+	}
+
+
+	// data writing
+	for (size_t i = saved_data_until; i < data.size(); i++) {
+		auto& tmp = data.data()[i];
+		writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
+	}
+
+
+
+	if (parameters.keep_data_in_memory_after_saving) {
+		saved_data_until = data.size();
+	}
+	else {
+		data.clear();
+	}
+}
+
+void FluidSolver::Sensors::GlobalEnergySensor::save_data_to_file(SensorWriter& writer)
+{
+	if (writer.begin_header()) {
+		writer.push_back_header<Timepoint>("Timepoint");
+		writer.push_back_header<float>("Kinetic");
+		writer.push_back_header<float>("Potential");
+		writer.end_header();
+	}
+
+
+	// data writing
+	for (size_t i = saved_data_until; i < data.size(); i++) {
+		auto& tmp = data.data()[i];
+		writer << data.times()[i] << tmp.kinetic << tmp.potential << SensorWriter::Control::Next;
+	}
+
+
+
+	if (parameters.keep_data_in_memory_after_saving) {
+		saved_data_until = data.size();
+	}
+	else {
+		data.clear();
+	}
 }
 
 void FluidSolver::Sensors::GlobalEnergySensor::initialize()
@@ -189,3 +297,31 @@ void FluidSolver::Sensors::GlobalParticleCountSensor::calculate_and_store(const 
 	// save the calculated results
 	data.push_back(timepoint, d);
 }
+
+void FluidSolver::Sensors::GlobalParticleCountSensor::save_data_to_file(SensorWriter& writer)
+{
+	if (writer.begin_header()) {
+		writer.push_back_header<Timepoint>("Timepoint");
+		writer.push_back_header<size_t>("Normal");
+		writer.push_back_header<size_t>("Boundary");
+		writer.push_back_header<size_t>("Inactive");
+		writer.end_header();
+	}
+
+
+	// data writing
+	for (size_t i = saved_data_until; i < data.size(); i++) {
+		auto& tmp = data.data()[i];
+		writer << data.times()[i] << tmp.normal_particles << tmp.boundary_particles << tmp.inactive_particles << SensorWriter::Control::Next;
+	}
+
+
+
+	if (parameters.keep_data_in_memory_after_saving) {
+		saved_data_until = data.size();
+	}
+	else {
+		data.clear();
+	}
+}
+

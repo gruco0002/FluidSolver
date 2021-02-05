@@ -365,6 +365,7 @@ void FluidUi::UiLayer::render_sensor_component(size_t index)
 		}
 		ImGui::InputText("Name", &sen->parameters.name);
 		ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
+		ImGui::Checkbox("Keep Data after Saving", &sen->parameters.keep_data_in_memory_after_saving);
 		});
 
 	if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen)) {

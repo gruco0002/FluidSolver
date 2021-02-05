@@ -2,6 +2,8 @@
 #define FLUIDSOLVER_ISENSOR_HPP
 
 #include "core/timestep/ITimestep.hpp"
+#include "core/sensors/SensorWriter.hpp"
+
 
 namespace FluidSolver {
 
@@ -14,6 +16,7 @@ namespace FluidSolver {
 		struct SensorParameters {
 			std::string name = "Sensor";
 			bool save_to_file = false;
+			bool keep_data_in_memory_after_saving = false;
 			SimulationParameters* simulation_parameters = nullptr;
 		} parameters;
 
@@ -22,7 +25,10 @@ namespace FluidSolver {
 
 		virtual void calculate_and_store(const Timepoint& timepoint) = 0;
 
+		virtual void save_data_to_file(SensorWriter& writer) = 0;
 
+	protected:
+		size_t saved_data_until = 0;
 
 	};
 }

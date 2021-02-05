@@ -23,6 +23,7 @@ namespace FluidSolver {
 
 			virtual void initialize() override;
 			virtual void calculate_and_store(const Timepoint& timepoint) override;
+			virtual void save_data_to_file(SensorWriter& writer) override;
 		};
 
 		class GlobalPressureSensor : public ISensor {
@@ -32,6 +33,7 @@ namespace FluidSolver {
 
 			virtual void initialize() override;
 			virtual void calculate_and_store(const Timepoint& timepoint) override;
+			virtual void save_data_to_file(SensorWriter& writer) override;
 		};
 
 		class GlobalVelocitySensor : public ISensor {
@@ -41,6 +43,7 @@ namespace FluidSolver {
 
 			virtual void initialize() override;
 			virtual void calculate_and_store(const Timepoint& timepoint) override;
+			virtual void save_data_to_file(SensorWriter& writer) override;
 		};
 
 		class GlobalEnergySensor : public ISensor {
@@ -60,6 +63,7 @@ namespace FluidSolver {
 
 			virtual void initialize() override;
 			virtual void calculate_and_store(const Timepoint& timepoint) override;
+			virtual void save_data_to_file(SensorWriter& writer) override;
 		};
 
 		class GlobalParticleCountSensor : public ISensor {
@@ -76,6 +80,7 @@ namespace FluidSolver {
 
 			virtual void initialize() override;
 			virtual void calculate_and_store(const Timepoint& timepoint) override;
+			virtual void save_data_to_file(SensorWriter& writer) override;
 		};
 
 
