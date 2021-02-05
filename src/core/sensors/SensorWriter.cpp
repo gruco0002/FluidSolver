@@ -1,5 +1,8 @@
 #include "SensorWriter.hpp"
 
+#include <fmt/core.h>
+#include <fmt/chrono.h>
+
 void FluidSolver::SensorWriter::push_back_header(const std::string& header, size_t dimensionality)
 {
 	if (!in_header_mode)return;
@@ -20,6 +23,24 @@ void FluidSolver::SensorWriter::push_back_header(const std::string& header, size
 	}
 
 	header_count += dimensionality;
+}
+
+void FluidSolver::SensorWriter::push_back_header(std::initializer_list<std::string> headers) {
+	if (!in_header_mode)return;
+	FLUID_ASSERT(headers.size() > 0);
+
+	for (const auto& header : headers) {
+		if (header_count > 0) stream << SEPERATOR;
+		stream << header;
+		header_count++;
+		dimensionality_info.push_back(headers.size());
+	}
+
+}
+
+bool FluidSolver::SensorWriter::begin_header() const
+{
+	return in_header_mode;
 }
 
 void FluidSolver::SensorWriter::end_header()
@@ -149,11 +170,22 @@ void FluidSolver::SensorWriter::push_back(int value)
 	next_value();
 }
 
+void FluidSolver::SensorWriter::push_back(size_t value)
+{
+	FLUID_ASSERT(!in_header_mode);
+
+	check_correct_dimensionality_at_position(1);
+
+	add_seperator_if_required();
+	stream << value;
+	next_value();
+}
+
 void FluidSolver::SensorWriter::push_back(const FluidSolver::Timepoint& value)
 {
 	FLUID_ASSERT(!in_header_mode);
 
-	check_correct_dimensionality_at_position(3);
+	check_correct_dimensionality_at_position(4);
 
 	add_seperator_if_required();
 	stream << value.timestep_number;
@@ -163,9 +195,9 @@ void FluidSolver::SensorWriter::push_back(const FluidSolver::Timepoint& value)
 	stream << value.simulation_time;
 	next_value();
 
-	/*add_seperator_if_required();
-	stream << value.system_time;
-	next_value();*/
+	add_seperator_if_required();
+	stream << fmt::format("{:%H:%M:%S}", value.system_time);
+	next_value();
 
 	add_seperator_if_required();
 	stream << value.current_time_step;
@@ -229,6 +261,12 @@ FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(Control control
 }
 
 FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(int value)
+{
+	push_back(value);
+	return *this;
+}
+
+FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(size_t value)
 {
 	push_back(value);
 	return *this;
