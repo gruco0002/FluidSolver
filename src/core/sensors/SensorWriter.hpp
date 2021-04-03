@@ -24,7 +24,7 @@ namespace FluidSolver {
 		bool in_header_mode = true;
 		size_t header_count = 0;
 		std::vector<size_t> dimensionality_info;
-		size_t current__row_position = 0;
+		size_t current_row_position = 0;
 		std::string filepath;
 		std::ofstream stream;
 
@@ -35,6 +35,7 @@ namespace FluidSolver {
 	public:
 
 		explicit SensorWriter(const std::string& filepath);
+		~SensorWriter();
 
 		bool begin_header() const;
 		void push_back_header(const std::string& header, size_t dimensionality);

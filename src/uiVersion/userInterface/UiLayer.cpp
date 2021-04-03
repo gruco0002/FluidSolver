@@ -42,6 +42,7 @@ void FluidUi::UiLayer::render_component_panel()
 		render_component_node("Solver", { Component::Kind::Solver, 0 });
 		render_component_node("Visualizer", { Component::Kind::Visualizer, 0 });
 		render_component_node("Timestep", { Component::Kind::Timestep, 0 });
+		render_component_node("Output", { Component::Kind::Output, 0 });
 
 		for (size_t i = 0; i < window->simulation.parameters.sensors.size(); i++) {
 			auto sen = window->simulation.parameters.sensors[i];
@@ -167,6 +168,9 @@ void FluidUi::UiLayer::render_component_settings(const Component& component)
 	}
 	else if (component.kind == Component::Kind::Sensor) {
 		render_sensor_component(component.index);
+	}
+	else if (component.kind == Component::Kind::Output) {
+		render_output_component();
 	}
 }
 
@@ -371,6 +375,25 @@ void FluidUi::UiLayer::render_sensor_component(size_t index)
 	if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen)) {
 		render_global_energy_sensor_component(dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen));
 	}
+
+}
+
+void FluidUi::UiLayer::render_output_component()
+{
+	FLUID_ASSERT(window != nullptr);
+
+	auto& output = window->simulation.parameters.output;
+	BeginSubsection("Output", [&]() {
+
+		ImGui::InputText("Directory", &output.parameters.output_folder);
+		if (ImGui::InputInt("Write Interval", (int*)&output.parameters.timesteps_between_sensor_save)) {
+			if (output.parameters.timesteps_between_sensor_save == 0 || output.parameters.timesteps_between_sensor_save == -1) {
+				output.parameters.timesteps_between_sensor_save = 1;
+			}
+		}
+
+		});
+
 
 }
 

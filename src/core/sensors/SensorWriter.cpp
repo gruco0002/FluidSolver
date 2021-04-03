@@ -2,6 +2,9 @@
 
 #include <fmt/core.h>
 #include <fmt/chrono.h>
+#include "core/Log.hpp"
+#include <filesystem>
+
 
 void FluidSolver::SensorWriter::push_back_header(const std::string& header, size_t dimensionality)
 {
@@ -53,27 +56,46 @@ void FluidSolver::SensorWriter::end_header()
 
 void FluidSolver::SensorWriter::next_value()
 {
-	FLUID_ASSERT(current__row_position < header_count);
+	FLUID_ASSERT(current_row_position < header_count);
 	FLUID_ASSERT(!in_header_mode);
-	current__row_position++;
+	current_row_position++;
 }
 
 void FluidSolver::SensorWriter::add_seperator_if_required()
 {
 	FLUID_ASSERT(!in_header_mode);
-	if (current__row_position > 0)
+	if (current_row_position > 0)
 		stream << SEPERATOR;
 }
 
 void FluidSolver::SensorWriter::check_correct_dimensionality_at_position(size_t dimensionality) const
 {
 	FLUID_ASSERT(!in_header_mode);
-	FLUID_ASSERT(current__row_position < dimensionality_info.size());
+	FLUID_ASSERT(current_row_position < dimensionality_info.size());
 
-	FLUID_ASSERT(dimensionality == dimensionality_info[current__row_position]);
+	FLUID_ASSERT(dimensionality == dimensionality_info[current_row_position]);
 }
 
-FluidSolver::SensorWriter::SensorWriter(const std::string& filepath) : filepath(filepath), stream(filepath, std::ios::out) {
+FluidSolver::SensorWriter::SensorWriter(const std::string& filepath) : filepath(filepath) {
+	stream.open(filepath, std::ios::out | std::ios::binary);
+
+	auto abs = std::filesystem::absolute(filepath).string();
+	if (!stream.is_open()) {
+		Log::error("[SensorWriter] Could not write to \"" + abs + "\"!");
+	}
+	else {
+		Log::message("[SensorWriter] Starting to write to \"" + abs + "\".");
+	}
+}
+
+FluidSolver::SensorWriter::~SensorWriter()
+{
+	if (stream.is_open()) {
+		auto abs = std::filesystem::absolute(filepath).string();
+		Log::message("[SensorWriter] Stopped writing to \"" + abs + "\".");
+		stream.flush();
+		stream.close();
+	}
 
 }
 
@@ -209,13 +231,15 @@ void FluidSolver::SensorWriter::next()
 {
 	FLUID_ASSERT(!in_header_mode);
 
-	if (current__row_position == 0) return;
+	if (current_row_position == 0) return;
 
-	while (current__row_position < header_count) {
+	while (current_row_position < header_count) {
 		add_seperator_if_required();
 		next_value();
 	}
 	stream << NEWLINE;
+
+	current_row_position = 0;
 }
 
 FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(float value)

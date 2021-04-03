@@ -1,12 +1,13 @@
 #ifndef FLUIDSOLVER_SIMULATION_HPP
 #define FLUIDSOLVER_SIMULATION_HPP
 
-#include <core/visualizer/ISimulationVisualizer.hpp>
-#include <core/fluidSolver/IFluidSolver.hpp>
-#include <core/timestep/ITimestep.hpp>
-#include <core/entities/IEntity.hpp>
-#include <core/sensors/ISensor.hpp>
-#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
+#include "core/visualizer/ISimulationVisualizer.hpp"
+#include "core/fluidSolver/IFluidSolver.hpp"
+#include "core/timestep/ITimestep.hpp"
+#include "core/entities/IEntity.hpp"
+#include "core/sensors/ISensor.hpp"
+#include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "core/OutputManager.hpp"
 
 namespace FluidSolver {
 	struct SimulationParameters {
@@ -21,6 +22,8 @@ namespace FluidSolver {
 		std::vector<IEntity*> entities;
 		
 		std::vector<ISensor*> sensors;
+
+		OutputManager output;
 
 		bool invalidate = false;
 

@@ -15,7 +15,8 @@ namespace FluidUi {
 				Solver,
 				Visualizer,
 				Timestep,
-				Sensor
+				Sensor,
+				Output
 			} kind = Kind::None;
 			size_t index = 0;
 
@@ -47,6 +48,7 @@ namespace FluidUi {
 		void render_solver_parameters();
 		void render_timestep_component();
 		void render_sensor_component(size_t index);
+		void render_output_component();
 
 
 		void render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen);

@@ -56,6 +56,9 @@ void FluidSolver::Simulation::execute_simulation_step() {
 		sen->calculate_and_store(timepoint);
 	}
 
+	// call the output manager
+	parameters.output.timestep_happened();
+
 }
 
 void FluidSolver::Simulation::initialize() {
@@ -93,7 +96,7 @@ void FluidSolver::Simulation::initialize() {
 
 	for (auto sen : internal_parameters.sensors) {
 		FLUID_ASSERT(sen != nullptr);
-		sen->parameters.simulation_parameters = &internal_parameters;	
+		sen->parameters.simulation_parameters = &internal_parameters;
 		sen->initialize();
 	}
 
@@ -105,7 +108,10 @@ void FluidSolver::Simulation::initialize() {
 		internal_parameters.visualizer->initialize();
 	}
 
-
+	{
+		parameters.output.parameters.sensors = internal_parameters.sensors;
+		parameters.output.initialize();
+	}
 }
 
 void FluidSolver::Simulation::visualize() {
