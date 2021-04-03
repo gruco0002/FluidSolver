@@ -1,6 +1,6 @@
 #include "FluidSolverConsole.hpp"
-#include <core/Log.hpp>
-#include <core/scenario/SimulationSerializer.hpp>
+#include "core/Log.hpp"
+#include "core/serialization/SimulationSerializer.hpp"
 
 FluidSolverConsole::FluidSolverConsole(cxxopts::Options& options) {
 	setup_options(options);

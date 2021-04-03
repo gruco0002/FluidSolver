@@ -1,16 +1,10 @@
 # Add engine
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 
-if (WIN32)
-    # required, since the chaiscript files become too big
-    add_definitions(/bigobj)
-endif ()
-
 find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(cxxopts CONFIG REQUIRED)
-find_path(CHAISCRIPT_INCLUDE_DIRS "chaiscript/chaiscript.hpp")
 find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
@@ -94,10 +88,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/sensors/ParticleStatistics.hpp
         core/FluidTypes.hpp
         core/FluidInclude.hpp 
-        uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp
-        core/scenario/Scenario.cpp core/scenario/Scenario.hpp
-        core/scenario/ScenarioData.cpp core/scenario/ScenarioData.hpp
-        core/scenario/ScriptInterface.cpp core/scenario/ScriptInterface.hpp
+        uiVersion/ImguiHelper.cpp uiVersion/ImguiHelper.hpp       
         uiVersion/userInterface/ScenariosWindow.cpp uiVersion/userInterface/ScenariosWindow.hpp
         core/group/GroupActions.cpp core/group/GroupActions.hpp core/group/RectangleAreaGroup.cpp
         core/group/RectangleAreaGroup.hpp
@@ -115,7 +106,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "core/parallelization/NoParallelization.hpp" "core/parallelization/NoParallelization.cpp"
         "core/parallelization/StdParallelForEach.hpp" "core/parallelization/StdParallelForEach.cpp"
-        "core/scenario/SimulationSerializer.hpp" "core/scenario/SimulationSerializer.cpp"
+        "core/serialization/SimulationSerializer.hpp" "core/serialization/SimulationSerializer.cpp"
         "core/visualizer/GLParticleRenderer.hpp" "core/visualizer/GLParticleRenderer.cpp"
         "core/visualizer/GLParticleVertexArray.hpp" "core/visualizer/GLParticleVertexArray.cpp"
         "core/visualizer/Image.hpp" "core/visualizer/Image.cpp"
@@ -130,7 +121,6 @@ target_link_libraries(FluidSolver PUBLIC imgui::imgui)
 target_link_libraries(FluidSolver PUBLIC implot::implot)
 target_include_directories(FluidSolver PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
-target_include_directories(FluidSolver PUBLIC ${CHAISCRIPT_INCLUDE_DIRS})
 target_link_libraries(FluidSolver PUBLIC fmt::fmt)
 target_link_libraries(FluidSolver PUBLIC yaml-cpp)
 target_link_libraries(FluidSolver PUBLIC unofficial::nativefiledialog::nfd)

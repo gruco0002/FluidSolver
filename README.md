@@ -26,7 +26,6 @@ Use CMake to compile the project:
 ### Used dependencies and libraries
 
 - [libmorton](https://github.com/Forceflow/libmorton)
-- [ChaiScript](https://github.com/ChaiScript/ChaiScript)
 - [fmt](https://github.com/fmtlib/fmt)
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [nativefiledialog](https://github.com/mlabbe/nativefiledialog)

@@ -11,7 +11,7 @@
 #include "core/timestep/DynamicCFLTimestep.hpp"
 
 #include <nfd.h>
-#include "core/scenario/SimulationSerializer.hpp"
+#include "core/serialization/SimulationSerializer.hpp"
 
 
 
