@@ -12,6 +12,8 @@
 
 #include <nfd.h>
 #include "core/serialization/SimulationSerializer.hpp"
+#include "core/visualizer/GLParticleRenderer.hpp"
+#include "core/visualizer/ContinousVisualizer.hpp"
 
 
 
@@ -171,6 +173,9 @@ void FluidUi::UiLayer::render_component_settings(const Component& component)
 	}
 	else if (component.kind == Component::Kind::Output) {
 		render_output_component();
+	}
+	else if (component.kind == Component::Kind::Visualizer) {
+		render_visualizer_component();
 	}
 }
 
@@ -393,6 +398,76 @@ void FluidUi::UiLayer::render_output_component()
 		}
 
 		});
+
+
+}
+
+void FluidUi::UiLayer::render_visualizer_component()
+{
+	FLUID_ASSERT(window != nullptr);
+
+	BeginSubsection("Visualizer", [&]() {
+		auto visualizer = window->simulation.parameters.visualizer;
+		auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(visualizer);
+		auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(visualizer);
+
+		if (ImGui::BeginCombo("Type", gl ? "Particle Renderer" : "Continous Visualizer")) {
+			if (ImGui::Selectable("Particle Renderer", gl != nullptr)) {
+				if (gl == nullptr) {
+					gl = nullptr;
+					cv = nullptr;
+
+					auto viewport = visualizer->parameters.viewport;
+
+					delete window->simulation.parameters.visualizer;
+					gl = new FluidSolver::GLParticleRenderer();
+					gl->parameters.viewport = viewport;
+					window->simulation.parameters.visualizer = gl;
+					window->simulation.parameters.invalidate = true;
+				}
+			}
+			if (ImGui::Selectable("Continous Visualizer", cv != nullptr)) {
+				if (cv == nullptr) {
+					cv = nullptr;
+					gl = nullptr;
+
+					auto viewport = visualizer->parameters.viewport;
+
+					delete window->simulation.parameters.visualizer;
+
+					cv = new FluidSolver::ContinousVisualizer();
+					cv->parameters.render_target.width = 100;
+					cv->parameters.render_target.height = 100;
+					cv->settings.minimum_render_density = window->simulation.parameters.rest_density * 0.5f;
+					cv->parameters.viewport = viewport;
+					window->simulation.parameters.visualizer = cv;
+					window->simulation.parameters.invalidate = true;
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		// update ptr since it could have changed
+		visualizer = window->simulation.parameters.visualizer;
+
+		if (ImGui::InputInt2("Render Target", (int*)&visualizer->parameters.render_target)) {
+			if (visualizer->parameters.render_target.width == 0 || visualizer->parameters.render_target.width == -1) visualizer->parameters.render_target.width = 1;
+			if (visualizer->parameters.render_target.height == 0 || visualizer->parameters.render_target.height == -1) visualizer->parameters.render_target.height = 1;
+			window->simulation.parameters.invalidate = true;
+		}
+
+		if (ImGui::InputFloat4("Viewport", (float*)&visualizer->parameters.viewport)) {
+			window->simulation.parameters.invalidate = true;
+		}
+
+		});
+
+
+	auto visualizer = window->simulation.parameters.visualizer;
+	FLUID_ASSERT(visualizer != nullptr);
+
+
+
 
 
 }

@@ -49,6 +49,7 @@ namespace FluidUi {
 		void render_timestep_component();
 		void render_sensor_component(size_t index);
 		void render_output_component();
+		void render_visualizer_component();
 
 
 		void render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen);
