@@ -606,7 +606,7 @@ void FluidUi::UiLayer::render_menu()
 	if (ImGui::BeginPopupModal("Save Simulation")) {
 
 		static char* path = nullptr;
-		static char* particle_filepath = new char[1024]{ "particles.data" };
+		static std::string particle_filepath = "particles.data";
 		static bool save_particle_data = true;
 
 
@@ -637,7 +637,7 @@ void FluidUi::UiLayer::render_menu()
 
 		ImGui::Separator();
 		ImGui::Checkbox("Save Particle Data", &save_particle_data);
-		ImGui::InputText("Particle File", particle_filepath, 1024);
+		ImGui::InputText("Particle File", &particle_filepath);
 
 		if (ImGui::Button("Close")) {
 			ImGui::CloseCurrentPopup();
