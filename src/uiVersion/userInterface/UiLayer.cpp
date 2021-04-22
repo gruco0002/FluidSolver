@@ -407,9 +407,9 @@ void FluidUi::UiLayer::render_visualizer_component()
 	FLUID_ASSERT(window != nullptr);
 
 	BeginSubsection("Visualizer", [&]() {
-		auto visualizer = window->simulation.parameters.visualizer;
-		auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(visualizer);
-		auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(visualizer);
+		FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
+		auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
+		auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
 
 		if (ImGui::BeginCombo("Type", gl ? "Particle Renderer" : "Continous Visualizer")) {
 			if (ImGui::Selectable("Particle Renderer", gl != nullptr)) {
@@ -417,7 +417,7 @@ void FluidUi::UiLayer::render_visualizer_component()
 					gl = nullptr;
 					cv = nullptr;
 
-					auto viewport = visualizer->parameters.viewport;
+					auto viewport = window->simulation.parameters.visualizer->parameters.viewport;
 
 					delete window->simulation.parameters.visualizer;
 					gl = new FluidSolver::GLParticleRenderer();
@@ -431,7 +431,7 @@ void FluidUi::UiLayer::render_visualizer_component()
 					cv = nullptr;
 					gl = nullptr;
 
-					auto viewport = visualizer->parameters.viewport;
+					auto viewport = window->simulation.parameters.visualizer->parameters.viewport;
 
 					delete window->simulation.parameters.visualizer;
 
@@ -448,7 +448,7 @@ void FluidUi::UiLayer::render_visualizer_component()
 		}
 
 		// update ptr since it could have changed
-		visualizer = window->simulation.parameters.visualizer;
+		auto visualizer = window->simulation.parameters.visualizer;
 
 		if (ImGui::InputInt2("Render Target", (int*)&visualizer->parameters.render_target)) {
 			if (visualizer->parameters.render_target.width == 0 || visualizer->parameters.render_target.width == -1) visualizer->parameters.render_target.width = 1;
@@ -463,10 +463,36 @@ void FluidUi::UiLayer::render_visualizer_component()
 		});
 
 
-	auto visualizer = window->simulation.parameters.visualizer;
-	FLUID_ASSERT(visualizer != nullptr);
+	auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
+	auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
 
 
+	if (gl != nullptr) {
+		BeginSubsection("Particle Renderer", [&]() {
+			ImGui::ColorEdit4("Background", (float*)&gl->settings.backgroundClearColor);
+			ImGui::ColorEdit4("Boundary", (float*)&gl->settings.boundaryParticleColor);
+			ImGui::Separator();
+
+			static const char* const values[]{ "Velocity", "Acceleration", "Mass", "Pressure", "Density" };
+			ImGui::Combo("Value", (int*)&gl->settings.colorSelection, values, 5);
+
+			ImGui::InputFloat("Lower Bound", &gl->settings.bottomValue);
+			ImGui::ColorEdit4("Lower Color", (float*)&gl->settings.bottomColor);
+
+			ImGui::InputFloat("Upper Bound", &gl->settings.topValue);
+			ImGui::ColorEdit4("Upper Color", (float*)&gl->settings.topColor);
+
+			ImGui::Separator();
+
+			ImGui::Checkbox("Memory Location", &gl->settings.showMemoryLocation);
+			});
+	}
+	else if (cv != nullptr) {
+		BeginSubsection("Continous Visualizer", [&]() {
+			ImGui::ColorEdit4("Background", (float*)&cv->settings.clear_color, ImGuiColorEditFlags_Uint8);
+			ImGui::InputFloat("Min. render density", &cv->settings.minimum_render_density);
+			});
+	}
 
 
 
