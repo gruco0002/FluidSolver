@@ -22,6 +22,10 @@
         "implot",
         "fmt",
         "yaml-cpp",
-        "nativefiledialog"
+        "nativefiledialog",
+        {
+            "name": "tbb",
+            "platform": "linux"
+        }
     ]
 }

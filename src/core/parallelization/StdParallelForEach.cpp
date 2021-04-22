@@ -51,6 +51,14 @@ public:
 		return index - lhs.index;
 	}
 
+	bool operator<(const SizeTIterator &lhs) {
+		return  index < lhs.index;
+	}
+
+	const bool operator<(const SizeTIterator &lhs) const {
+		return  index < lhs.index;
+	}
+
 };
 
 

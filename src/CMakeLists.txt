@@ -9,6 +9,14 @@ find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 
+if (UNIX AND NOT APPLE)
+        # add tbb library for parallelization
+        # TODO: check if the library also works well on mac os, since clang does not support the TS Paralellization
+
+        find_package(TBB CONFIG REQUIRED)
+endif()
+
+
 
 # include directories
 include_directories(./)
@@ -124,6 +132,11 @@ target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
 target_link_libraries(FluidSolver PUBLIC fmt::fmt)
 target_link_libraries(FluidSolver PUBLIC yaml-cpp)
 target_link_libraries(FluidSolver PUBLIC unofficial::nativefiledialog::nfd)
+
+if (UNIX AND NOT APPLE)
+        # add tbb library for parallelization to the link targets
+        target_link_libraries(FluidSolver PUBLIC TBB::tbb)
+endif()
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
