@@ -44,24 +44,7 @@ namespace FluidSolver {
 
 		template<typename T>
 		void push_back_header(const std::string& header) { FLUID_ASSERT(false); }
-		template<>
-		void push_back_header<glm::vec2>(const std::string& header) { push_back_header(header, 2); }
-		template<>
-		void push_back_header<glm::vec3>(const std::string& header) { push_back_header(header, 3); }
-		template<>
-		void push_back_header<glm::vec4>(const std::string& header) { push_back_header(header, 4); }
-		template<>
-		void push_back_header<FluidSolver::Timepoint>(const std::string& header) { push_back_header({ header + " - Number", header + " - Sim Time", header + " - Sys Time", header + " - Timestep" }); }
-		template<>
-		void push_back_header<float>(const std::string& header) { push_back_header(header, 1); }
-		template<>
-		void push_back_header<int>(const std::string& header) { push_back_header(header, 1); }
-		template<>
-		void push_back_header<size_t>(const std::string& header) { push_back_header(header, 1); }
-		template<>
-		void push_back_header<std::string>(const std::string& header) { push_back_header(header, 1); }
-		template<>
-		void push_back_header<char*>(const std::string& header) { push_back_header(header, 1); }
+		
 
 
 
