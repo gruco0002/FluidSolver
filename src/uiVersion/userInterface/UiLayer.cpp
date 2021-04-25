@@ -17,14 +17,15 @@
 
 
 
-static void BeginSubsection(const std::string& name, const std::function<void()>& fnc) {
+static void BeginSubsection(const std::string& name, const std::function<void()>& fnc, void* ptr_id = nullptr) {
 	const ImGuiTreeNodeFlags treeNodeFlags =
 		ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth |
 		ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
 	ImGui::Separator();
-	bool open = ImGui::TreeNodeEx((void*)name.c_str(), treeNodeFlags, name.c_str());
+	if (ptr_id == nullptr) ptr_id = (void*)name.c_str();
+	bool open = ImGui::TreeNodeEx(ptr_id, treeNodeFlags, name.c_str());
 	ImGui::PopStyleVar();
 
 	if (open) {
@@ -485,13 +486,13 @@ void FluidUi::UiLayer::render_visualizer_component()
 			ImGui::Separator();
 
 			ImGui::Checkbox("Memory Location", &gl->settings.showMemoryLocation);
-			});
+			}, (void*)0x54efe);
 	}
 	else if (cv != nullptr) {
 		BeginSubsection("Continous Visualizer", [&]() {
 			ImGui::ColorEdit4("Background", (float*)&cv->settings.clear_color, ImGuiColorEditFlags_Uint8);
 			ImGui::InputFloat("Min. render density", &cv->settings.minimum_render_density);
-			});
+			}, (void*)0x54efa);
 	}
 
 
