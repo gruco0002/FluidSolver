@@ -14,8 +14,7 @@
 
 FluidUi::FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height) : sim_worker_thread(
 	&FluidSolverWindow::sim_worker_thread_main, this), Window(title, width,
-		height), render_image_copy(0, 0) {
-
+		height), render_image_copy(0, 0) {		
 }
 
 void FluidUi::FluidSolverWindow::load() {
@@ -33,6 +32,9 @@ void FluidUi::FluidSolverWindow::load() {
 
 	// setup the windows
 	setup_windows();
+
+	SetWidth((int)(GetScreenWidth() * 0.9f));
+	SetHeight((int)(GetScreenHeight() * 0.9f));
 }
 
 void FluidUi::FluidSolverWindow::unload() {

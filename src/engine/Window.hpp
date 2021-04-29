@@ -50,6 +50,10 @@ namespace Engine {
 
         int GetFramebufferHeight();
 
+        int GetScreenWidth();
+
+        int GetScreenHeight();
+
         void MainLoop();
 
     protected:

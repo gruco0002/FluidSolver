@@ -335,4 +335,16 @@ namespace Engine {
         return v_opengl_context_available;
     }
 
+    int Window::GetScreenWidth() {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        return mode->width;
+    }
+
+    int Window::GetScreenHeight(){
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        return mode->height;
+    }
+
 }
