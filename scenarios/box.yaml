@@ -1,13 +1,9 @@
 version: 1
 scenario:
-  particles: box-with-hole.data
+  particles: box.data
   gravity: 9.81000042
   particle-size: 1
   rest-density: 1
-  sensors:
-    - type: particle-statistics-sensor
-      name: Sensor 1
-      save-to-file: false
 solver:
   type: sesph
   neigborhood-search:

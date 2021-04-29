@@ -1,13 +1,9 @@
 version: 1
 scenario:
-  particles: multiple-hole-scenario.data
+  particles: test.data
   gravity: 9.81000042
   particle-size: 1
   rest-density: 1
-  sensors:
-    - type: particle-statistics-sensor
-      name: Sensor 1
-      save-to-file: false
 solver:
   type: sesph
   neigborhood-search:
@@ -22,10 +18,10 @@ solver:
 visualizer:
   type: gl-particle-renderer
   viewport:
-    left: -192
-    right: 192
-    top: 64
-    bottom: -64
+    left: -15
+    right: 15
+    top: 10
+    bottom: -15
   render-target:
     width: 1920
     height: 1080

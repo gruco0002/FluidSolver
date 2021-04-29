@@ -1,13 +1,24 @@
 version: 1
 scenario:
-  particles: boundary-test.data
+  particles: box-with-hole-spawner.data
   gravity: 9.81000042
   particle-size: 1
   rest-density: 1
-  sensors:
-    - type: particle-statistics-sensor
-      name: Sensor 1
-      save-to-file: false
+  entities:
+    - type: particle-spawner
+      position: [-14, 25]
+      direction: [0, -1]
+      width: 4
+      initial-velocity: 16
+      rest-density: 1
+      mass: 1
+    - type: particle-remover
+      area:
+        left: -25
+        right: 15
+        top: 30
+        bottom: -18
+      remove-if-outside: true
 solver:
   type: sesph
   neigborhood-search:
@@ -22,10 +33,10 @@ solver:
 visualizer:
   type: gl-particle-renderer
   viewport:
-    left: -15
-    right: 15
-    top: 10
-    bottom: -15
+    left: -20
+    right: 10
+    top: 25
+    bottom: -20
   render-target:
     width: 1920
     height: 1080

@@ -1,28 +1,9 @@
 version: 1
 scenario:
-  particles: box-with-hole-spawner.data
+  particles: box-with-hole.data
   gravity: 9.81000042
   particle-size: 1
   rest-density: 1
-  entities:
-    - type: particle-spawner
-      position: [-14, 25]
-      direction: [0, -1]
-      width: 4
-      initial-velocity: 16
-      rest-density: 1
-      mass: 1
-    - type: particle-remover
-      area:
-        left: -25
-        right: 15
-        top: 30
-        bottom: -18
-      remove-if-outside: true
-  sensors:
-    - type: particle-statistics-sensor
-      name: Sensor 1
-      save-to-file: false
 solver:
   type: sesph
   neigborhood-search:
