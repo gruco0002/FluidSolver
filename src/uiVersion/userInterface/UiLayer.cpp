@@ -408,6 +408,11 @@ void FluidUi::UiLayer::render_visualizer_component()
 	FLUID_ASSERT(window != nullptr);
 
 	BeginSubsection("Visualizer", [&]() {
+
+		if(ImGui::Button("Update Visualization")){
+			window->visualizer_parameter_changed();
+		}
+
 		FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
 		auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
 		auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);

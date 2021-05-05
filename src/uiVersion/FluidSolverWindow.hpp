@@ -47,6 +47,8 @@ namespace FluidUi {
 
 		void on_new_simulation();
 
+		void visualizer_parameter_changed();
+
 	private:
 
 		enum class SimWorkerThreadStatus {

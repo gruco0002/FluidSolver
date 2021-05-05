@@ -12,6 +12,16 @@
 namespace FluidSolver
 {
 
+    struct Camera3D{
+        glm::vec3 location;
+        glm::vec3 looking_at;
+        glm::vec3 up;
+
+        glm::mat4 view_matrix;
+        void update_view_matrix();
+    };
+
+
     class GLParticleRenderer3D : public ISimulationVisualizer, public GLRenderer {
 
       public:
@@ -32,7 +42,7 @@ namespace FluidSolver
 
             glm::vec4 background_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
             glm::mat4 view_matrix =
-                glm::lookAt(glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                glm::lookAt(glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
         } settings;
 

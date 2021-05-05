@@ -27,6 +27,8 @@ void main()
     vs_out.discarded = 0;	
    
     vs_out.color = particleColor;
+    vs_out.color.r = abs(aPosition.z) / 4.0f - 1.0f;
+    vs_out.color.g = abs(aPosition.x) / 4.0f;
 
     if(aType == PARTICLE_TYPE_DEAD) {
         vs_out.discarded = 1;
@@ -54,6 +56,8 @@ void main()
 
     FragColor = oColor;
     FragColor.a = mix(1.0, 0.0, edgeMix);	
+    if(FragColor.a <= 0.0)
+        discard;
 
 }
 )";
@@ -146,7 +150,7 @@ void FluidSolver::GLParticleRenderer3D::render()
 
     glClearColor(settings.background_color.r, settings.background_color.g, settings.background_color.b,
                  settings.background_color.a);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
     // set uniforms of particle shader
@@ -213,7 +217,7 @@ void FluidSolver::GLParticleRenderer3D::create_or_update_fbo()
 
 void FluidSolver::GLParticleRenderer3D::calc_projection_matrix()
 {
-    projectionMatrix = glm::perspectiveFov(90.0f, (float)parameters.render_target.width,
+    projectionMatrix = glm::perspectiveFov(3.14f * 0.5f, (float)parameters.render_target.width,
                                            (float)parameters.render_target.height, 0.01f, 100.0f);
 }
 

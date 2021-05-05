@@ -124,7 +124,7 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 
 	simulation.parameters.collection = new FluidSolver::ParticleCollection();
 	simulation.parameters.collection->add_type<FluidSolver::MovementData3D>();
-		simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
+	simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
 	simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
 	simulation.parameters.collection->add_type<FluidSolver::ExternalForces>();
 	simulation.parameters.rest_density = 1.0f;
@@ -141,13 +141,16 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 	// simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
 	
-	for(int x = -3; x <= 3; x++)
+	for(int x = -4; x <= 4; x++)
 	{
-		for(int y = -3; y<=3; y++){
-			for(int z = 5; z <= 4; z++){
+		for(int y = -4; y<=4; y++){
+			for(int z = -8; z <= -4; z++){
 				auto index = simulation.parameters.collection->add();
 				auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
 				pos.position = glm::vec3((float)x, (float)y, (float)z);
+
+				auto& info = simulation.parameters.collection->get<FluidSolver::ParticleInfo>(index);
+				info.type = FluidSolver::ParticleType::ParticleTypeNormal;
 			}
 		}
 	}
@@ -165,6 +168,10 @@ void FluidUi::FluidSolverWindow::on_new_simulation()
 	simulation.manual_initialize();
 	simulation_changed_compared_to_visualization = true;
 	render_image_updated = true;
+}
+
+void FluidUi::FluidSolverWindow::visualizer_parameter_changed(){
+	simulation_changed_compared_to_visualization = true;
 }
 
 void FluidUi::FluidSolverWindow::render_visualization_window() {
