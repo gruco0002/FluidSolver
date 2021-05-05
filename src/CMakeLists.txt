@@ -120,6 +120,9 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/visualizer/Image.hpp" "core/visualizer/Image.cpp"
         "core/sensors/SensorWriter.hpp" "core/sensors/SensorWriter.cpp"
         "core/OutputManager.hpp" "core/OutputManager.cpp"
+        "core/visualizer/GLParticleRenderer3D.hpp" "core/visualizer/GLParticleRenderer3D.cpp"
+        "core/visualizer/GLRenderer.hpp" "core/visualizer/GLRenderer.cpp"
+        "core/visualizer/GLParticleVertexArray3D.hpp" "core/visualizer/GLParticleVertexArray3D.cpp"
         )
 
 

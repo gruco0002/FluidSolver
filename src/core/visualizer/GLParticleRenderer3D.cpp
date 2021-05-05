@@ -1,75 +1,32 @@
-#include "GLParticleRenderer.hpp"
+#include "GLParticleRenderer3D.hpp"
 
 #include <engine/Window.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 // shader code
 const std::string vertCode = R"(#version 330 core
-layout (location = 0) in vec2 aPosition;
-layout (location = 1) in vec2 aVelocity;
-layout (location = 2) in vec2 aAcceleration;
-layout (location = 3) in float aMass;
-layout (location = 4) in float aPressure;
-layout (location = 5) in float aDensity;
-layout (location = 6) in uint aType;
-// layout (location = 7) in int aIsSelected;
-
-
-#define COLOR_SELECTION_VELOCITY 0
-#define COLOR_SELECTION_ACCELERATION 1
-#define COLOR_SELECTION_MASS 2
-#define COLOR_SELECTION_PRESSURE 3
-#define COLOR_SELECTION_DENSITY 4
+layout (location = 1) in vec3 aPosition;
+layout (location = 0) in uint aType;
 
 #define PARTICLE_TYPE_BOUNDARY 1u
 #define PARTICLE_TYPE_DEAD 2u
 
-
-uniform int colorSelection;
-uniform vec4 bottomColor;
-uniform vec4 topColor;
-uniform float bottomValue;
-uniform float topValue;
+uniform vec4 particleColor;
 uniform vec4 boundaryColor;
-uniform int showParticleSelection;
-uniform float numberOfParticles;
-uniform int showParticleMemoryLocation;
 
 
 out VS_OUT {
     vec4 color;
     int discarded;
-	int selected;
 } vs_out;
 
 
 void main()
 {
 
-    vs_out.discarded = 0;
-	vs_out.selected = 0;
-
-    // determine selection
-    //if(showParticleSelection + aIsSelected == 2){
-    //    vs_out.selected = 1;
-    //}
-
-
-    float val = 0.0;
-    if(colorSelection == COLOR_SELECTION_VELOCITY){
-        val = length(aVelocity);
-    } else if(colorSelection == COLOR_SELECTION_ACCELERATION){
-        val = length(aAcceleration);
-    } else if(colorSelection == COLOR_SELECTION_MASS){
-        val = aMass;
-    } else if(colorSelection == COLOR_SELECTION_PRESSURE){
-        val = aPressure;
-    } else if(colorSelection == COLOR_SELECTION_DENSITY){
-        val = aDensity;
-    }
-
-    val = clamp(val - bottomValue, 0.0, (topValue - bottomValue)) / (topValue - bottomValue);
-    vs_out.color = mix(bottomColor, topColor, val);
+    vs_out.discarded = 0;	
+   
+    vs_out.color = particleColor;
 
     if(aType == PARTICLE_TYPE_DEAD) {
         vs_out.discarded = 1;
@@ -77,16 +34,8 @@ void main()
         vs_out.color = boundaryColor;
     }
 
-    if(showParticleMemoryLocation == 1){
-        float vertID = float(gl_VertexID);
-        float third = vertID / (numberOfParticles / 3.0);
-        vs_out.color.r = clamp(third, 0.0, 1.0);
-        vs_out.color.g = clamp(third - 1.0f, 0.0, 1.0);
-        vs_out.color.b = clamp(third - 2.0f, 0.0, 1.0);
-        vs_out.color.a = 1.0;
-    }
-
-    gl_Position =  vec4(aPosition, 0.0, 1.0);
+    
+    gl_Position =  vec4(aPosition, 1.0);
 
 }
 )";
@@ -95,7 +44,6 @@ const std::string fragCode = R"(#version 330 core
 out vec4 FragColor;
 in vec4 oColor;
 in vec2 oTexcoord;
-flat in int oSelected;
 void main()
 {
     const float blurredEdge = 0.025;
@@ -105,11 +53,7 @@ void main()
     float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
 
     FragColor = oColor;
-    FragColor.a = mix(1.0, 0.0, edgeMix);
-
-	if(oSelected == 1){
-		FragColor.r = 1.0;		
-	}
+    FragColor.a = mix(1.0, 0.0, edgeMix);	
 
 }
 )";
@@ -121,15 +65,14 @@ layout (triangle_strip, max_vertices = 4) out;
 
 uniform float pointSize;
 uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
 
 out vec4 oColor;
 out vec2 oTexcoord;
-flat out int oSelected;
 
 in VS_OUT {
     vec4 color;
     int discarded;
-	int selected;
 } gs_in[];
 
 void main(){
@@ -140,7 +83,7 @@ void main(){
 
     oColor = gs_in[0].color;
 	oSelected = gs_in[0].selected;
-    vec4 position = gl_in[0].gl_Position;
+    vec4 position = viewMatrix * gl_in[0].gl_Position;
 
     gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
     oTexcoord = vec2(1.0, 1.0);
@@ -156,25 +99,24 @@ void main(){
     EmitVertex();
     EndPrimitive();
 
-
 }
 
 )";
 
 
-Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target()
+Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_target()
 {
     return fboColorTex;
 }
 
-void FluidSolver::GLParticleRenderer::initialize()
+void FluidSolver::GLParticleRenderer3D::initialize()
 {
     FLUID_ASSERT(Engine::opengl_context_available());
 
     initialize_in_next_render_step = true;
 }
 
-void FluidSolver::GLParticleRenderer::render()
+void FluidSolver::GLParticleRenderer3D::render()
 {
     if (initialize_in_next_render_step)
     {
@@ -182,7 +124,7 @@ void FluidSolver::GLParticleRenderer::render()
 
         FLUID_ASSERT(parameters.collection != nullptr);
         delete particleVertexArray;
-        particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
+        particleVertexArray = ParticleVertexArray3D::CreateFromParticleCollection(parameters.collection);
 
         delete particleShader;
         particleShader = new Engine::Graphics::Shader({
@@ -198,31 +140,25 @@ void FluidSolver::GLParticleRenderer::render()
     FLUID_ASSERT(framebuffer != nullptr);
     FLUID_ASSERT(particleShader != nullptr);
     FLUID_ASSERT(particleVertexArray != nullptr);
-    particleVertexArray->Update(nullptr);
+    particleVertexArray->Update();
 
     // render particles to fbo
     framebuffer->Bind(true);
 
-    glClearColor(settings.backgroundClearColor.r, settings.backgroundClearColor.g, settings.backgroundClearColor.b,
-                 settings.backgroundClearColor.a);
+    glClearColor(settings.background_color.r, settings.background_color.g, settings.background_color.b,
+                 settings.background_color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
 
+    // set uniforms of particle shader
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
+    particleShader->SetValue("viewMatrix", settings.view_matrix);
     particleShader->SetValue("pointSize", parameters.particle_size);
-    particleShader->SetValue("colorSelection", (int)settings.colorSelection);
-    particleShader->SetValue("bottomColor", settings.bottomColor);
-    particleShader->SetValue("bottomValue", settings.bottomValue);
-    particleShader->SetValue("topColor", settings.topColor);
-    particleShader->SetValue("topValue", settings.topValue);
-    particleShader->SetValue("boundaryColor", settings.boundaryParticleColor);
-    // particleShader->SetValue("showParticleSelection", showParticleSelection ? 1 : 0);
-    particleShader->SetValue("numberOfParticles", (float)this->particleVertexArray->GetVaoParticleCount());
-    particleShader->SetValue("showParticleMemoryLocation", (int)settings.showMemoryLocation);
+    particleShader->SetValue("particleColor", settings.fluid_particle_color);
+    particleShader->SetValue("boundaryColor", settings.boundary_particle_color);
 
-
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
@@ -236,7 +172,7 @@ void FluidSolver::GLParticleRenderer::render()
     glFlush();
 }
 
-FluidSolver::GLParticleRenderer::~GLParticleRenderer()
+FluidSolver::GLParticleRenderer3D::~GLParticleRenderer3D()
 {
     // cleanup created components
     delete particleVertexArray;
@@ -246,7 +182,7 @@ FluidSolver::GLParticleRenderer::~GLParticleRenderer()
     delete particleShader;
 }
 
-void FluidSolver::GLParticleRenderer::create_or_update_fbo()
+void FluidSolver::GLParticleRenderer3D::create_or_update_fbo()
 {
     if (this->fboColorTex != nullptr && this->fboColorTex->getWidth() == parameters.render_target.width &&
         this->fboColorTex->getHeight() == parameters.render_target.height)
@@ -281,37 +217,13 @@ glm::mat4 generate_ortho(float left, float right, float top, float bottom)
 }
 
 
-void FluidSolver::GLParticleRenderer::calc_projection_matrix()
+void FluidSolver::GLParticleRenderer3D::calc_projection_matrix()
 {
-
-    // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
-
-    float width = parameters.viewport.right - parameters.viewport.left; // particle size is not taken into account
-    float height = parameters.viewport.top - parameters.viewport.bottom;
-
-    float fboWidth = parameters.render_target.width;
-    float fboHeight = parameters.render_target.height;
-
-    if (width / height * fboHeight > fboWidth)
-    {
-        height = width / fboWidth * fboHeight;
-    }
-    else
-    {
-        width = height / fboHeight * fboWidth;
-    }
-
-    // top and bottom is swapped, so that everything is rendered correctly (otherwise, we render it upside down)
-    glm::mat4 generated = generate_ortho(
-        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) - width * 0.5f,
-        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) + width * 0.5f,
-        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) - height * 0.5f,
-        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) + height * 0.5f);
-
-    projectionMatrix = generated;
+    projectionMatrix = glm::perspectiveFov(90.0f, (float)parameters.render_target.width,
+                                           (float)parameters.render_target.height, 0.01f, 100.0f);
 }
 
-const FluidSolver::Image& FluidSolver::GLParticleRenderer::get_image_data()
+const FluidSolver::Image& FluidSolver::GLParticleRenderer3D::get_image_data()
 {
     FLUID_ASSERT(this->fboColorTex != nullptr);
 
