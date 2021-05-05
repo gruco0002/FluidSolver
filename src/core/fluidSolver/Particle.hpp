@@ -1,38 +1,53 @@
-#ifndef FLUIDSOLVER_PARTICLE_HPP
-#define FLUIDSOLVER_PARTICLE_HPP
+#pragma once
 
+#include "core/FluidInclude.hpp"
 
-#include <core/FluidInclude.hpp>
+namespace FluidSolver
+{
 
-namespace FluidSolver {
-
-    enum ParticleType {
+    enum ParticleType
+    {
         ParticleTypeNormal = 0,
         ParticleTypeBoundary = 1,
         ParticleTypeDead = 2,
     };
 
-    struct MovementData {
+
+    struct MovementData
+    {
         vec2 position;
         vec2 velocity;
         vec2 acceleration;
     };
 
-    struct ParticleData {
+    struct MovementData3D
+    {
+        vec3 position;
+        vec3 velocity;
+        vec3 acceleration;
+    };
+
+    struct ParticleData
+    {
         pFloat mass;
         pFloat pressure;
         pFloat density;
     };
 
-    struct ParticleInfo {
+    struct ParticleInfo
+    {
         pTag_t tag;
         uint8_t type;
     };
 
-    struct ExternalForces {
+    struct ExternalForces
+    {
         vec2 non_pressure_acceleration;
     };
 
-}
+    struct ExternalForces3D
+    {
+        vec3 non_pressure_acceleration;
+    };
 
-#endif //FLUIDSOLVER_PARTICLE_HPP
+} // namespace FluidSolver

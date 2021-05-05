@@ -1,25 +1,22 @@
-#ifndef FLUIDSOLVER_FLUIDTYPES_HPP
-#define FLUIDSOLVER_FLUIDTYPES_HPP
+#pragma once
 
-#include <cstdint>
 #include "glm/glm.hpp"
 
-namespace FluidSolver {
+#include <cstdint>
 
-#ifdef WIN32
-    // openmp on windows only supports signed integers
+namespace FluidSolver
+{
 
-    using pIndex_t = int64_t;
-    using pTag_t = int32_t;
-#else
+
     using pIndex_t = size_t;
     using pTag_t = uint32_t;
-#endif
 
     using pFloat = float;
     using vec2 = glm::vec2;
+    using vec3 = glm::vec3;
 
-    struct Area {
+    struct Area
+    {
         float left;
         float right;
 
@@ -27,6 +24,4 @@ namespace FluidSolver {
         float top;
     };
 
-}
-
-#endif //FLUIDSOLVER_FLUIDTYPES_HPP
+} // namespace FluidSolver
