@@ -82,7 +82,6 @@ void main(){
     }
 
     oColor = gs_in[0].color;
-	oSelected = gs_in[0].selected;
     vec4 position = viewMatrix * gl_in[0].gl_Position;
 
     gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
@@ -209,11 +208,6 @@ void FluidSolver::GLParticleRenderer3D::create_or_update_fbo()
         new Engine::Graphics::Texture2D(parameters.render_target.width, parameters.render_target.height, colorSettings,
                                         GL_RGB, Engine::ComponentType::ComponentTypeUnsignedByte);
     framebuffer->AddAttachment(GL_COLOR_ATTACHMENT0, fboColorTex);
-}
-
-glm::mat4 generate_ortho(float left, float right, float top, float bottom)
-{
-    return glm::ortho((float)left, (float)right, (float)bottom, (float)top);
 }
 
 

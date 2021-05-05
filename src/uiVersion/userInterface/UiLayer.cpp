@@ -599,6 +599,17 @@ void FluidUi::UiLayer::render_menu()
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Test")) {
+
+			bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
+
+			if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
+				window->create_3d_test_simulation();
+			}			
+
+			ImGui::EndMenu();
+		}
+
 
 		ImGui::EndMainMenuBar();
 	}

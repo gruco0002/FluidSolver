@@ -5,7 +5,9 @@
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/timestep/ConstantTimestep.hpp>
 #include "ImguiHelper.hpp"
+#include <core/visualizer/GLRenderer.hpp>
 #include <core/visualizer/GLParticleRenderer.hpp>
+#include <core/visualizer/GLParticleRenderer3D.hpp>
 #include <thread>
 #include <chrono>
 #include <core/sensors/ParticleStatistics.hpp>
@@ -115,6 +117,47 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
 
 	on_new_simulation();
 }
+
+void FluidUi::FluidSolverWindow::create_3d_test_simulation()
+{
+	simulation = FluidSolver::Simulation();
+
+	simulation.parameters.collection = new FluidSolver::ParticleCollection();
+	simulation.parameters.collection->add_type<FluidSolver::MovementData3D>();
+		simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
+	simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
+	simulation.parameters.collection->add_type<FluidSolver::ExternalForces>();
+	simulation.parameters.rest_density = 1.0f;
+	simulation.parameters.particle_size = 1.0f;
+	simulation.parameters.gravity = 9.81f;
+
+	// add movement data to supress errors of 2d modules that do not have a 3d counterpart
+	simulation.parameters.collection->add_type<FluidSolver::MovementData>();
+
+	simulation.parameters.fluid_solver = current_type->create_type();
+	simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
+	simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer3D();
+
+	// simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
+
+	
+	for(int x = -3; x <= 3; x++)
+	{
+		for(int y = -3; y<=3; y++){
+			for(int z = 5; z <= 4; z++){
+				auto index = simulation.parameters.collection->add();
+				auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
+				pos.position = glm::vec3((float)x, (float)y, (float)z);
+			}
+		}
+	}
+
+
+	FluidSolver::Log::message("Loaded 3d test data scenario");
+
+	on_new_simulation();
+}
+
 
 void FluidUi::FluidSolverWindow::on_new_simulation()
 {
