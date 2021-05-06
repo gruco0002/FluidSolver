@@ -1,6 +1,8 @@
 #include "GLParticleRenderer3D.hpp"
 
-#include <engine/Window.hpp>
+#include "core/Log.hpp"
+#include "engine/Window.hpp"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 // shader code
@@ -27,8 +29,8 @@ void main()
     vs_out.discarded = 0;	
    
     vs_out.color = particleColor;
-    vs_out.color.r = abs(aPosition.z) / 4.0f - 1.0f;
-    vs_out.color.g = abs(aPosition.x) / 4.0f;
+    // vs_out.color.r = abs(aPosition.z) / 4.0f - 1.0f;
+    // vs_out.color.g = abs(aPosition.x) / 4.0f;
 
     if(aType == PARTICLE_TYPE_DEAD) {
         vs_out.discarded = 1;
@@ -43,9 +45,15 @@ void main()
 )";
 
 const std::string fragCode = R"(#version 330 core
-out vec4 FragColor;
 in vec4 oColor;
 in vec2 oTexcoord;
+
+uniform vec3 lightDirection;
+uniform mat4 viewMatrix;
+uniform float ambientLightFactor;
+
+out vec4 FragColor;
+
 void main()
 {
     const float blurredEdge = 0.025;
@@ -54,9 +62,15 @@ void main()
     float len = length(moved);
     float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
 
-    FragColor = oColor;
+    vec4 lightDirCameraSpace = viewMatrix * vec4(lightDirection, 0.0);
+
+    vec3 normal = normalize(vec3(moved.x, moved.y, 1.0 - len)); // TODO: implement correctly
+
+    float lightFactor = clamp(ambientLightFactor + clamp(dot(normal, lightDirCameraSpace.xyz), 0.0, 1.0), 0.0, 1.0); 
+
+    FragColor = oColor * lightFactor;
     FragColor.a = mix(1.0, 0.0, edgeMix);	
-    if(FragColor.a <= 0.0)
+    if(FragColor.a <= 0.02)
         discard;
 
 }
@@ -130,11 +144,20 @@ void FluidSolver::GLParticleRenderer3D::render()
         particleVertexArray = ParticleVertexArray3D::CreateFromParticleCollection(parameters.collection);
 
         delete particleShader;
-        particleShader = new Engine::Graphics::Shader({
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex, vertCode),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry, geomCode),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment, fragCode),
-        });
+        try
+        {
+            particleShader = new Engine::Graphics::Shader({
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex, vertCode),
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry, geomCode),
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment, fragCode),
+            });
+        }
+        catch (const Engine::EngineException& e)
+        {
+            FluidSolver::Log::error("[GLParticleRenderer3D] Could not generate shader for 3D renderer: " + e.msg);
+            particleShader = nullptr;
+        }
+
 
         create_or_update_fbo();
         calc_projection_matrix();
@@ -160,6 +183,8 @@ void FluidSolver::GLParticleRenderer3D::render()
     particleShader->SetValue("pointSize", parameters.particle_size);
     particleShader->SetValue("particleColor", settings.fluid_particle_color);
     particleShader->SetValue("boundaryColor", settings.boundary_particle_color);
+    particleShader->SetValue("lightDirection", glm::normalize(settings.light_direction));
+    particleShader->SetValue("ambientLightFactor", 0.1f);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);

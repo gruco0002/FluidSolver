@@ -12,7 +12,8 @@
 namespace FluidSolver
 {
 
-    struct Camera3D{
+    struct Camera3D
+    {
         glm::vec3 location;
         glm::vec3 looking_at;
         glm::vec3 up;
@@ -43,6 +44,8 @@ namespace FluidSolver
             glm::vec4 background_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
             glm::mat4 view_matrix =
                 glm::lookAt(glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+            glm::vec3 light_direction = glm::vec3(8.0f, 12.0f, 1.0f);
 
         } settings;
 
