@@ -37,6 +37,7 @@ Use CMake to compile the project:
 - [stb](https://github.com/nothings/stb)
 - [Dear ImGui](https://github.com/ocornut/imgui)
 - [ImPlot](https://github.com/epezent/implot)
+- [incbin](https://github.com/graphitemaster/incbin)
 
   
 #### Disclaimer
