@@ -46,10 +46,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         FluidSolverConsole.cpp
         FluidSolverConsole.hpp
         core/interface/ISimulationModifier.hpp
-       # core/simulationModifiers/DeathBox.cpp
-       # core/simulationModifiers/DeathBox.hpp
-       # core/simulationModifiers/SpawnArea.cpp
-       # core/simulationModifiers/SpawnArea.hpp
+       
         core/Simulation.cpp core/Simulation.hpp
        # core/interface/IExternalForce.hpp
         core/visualizer/ISimulationVisualizer.hpp
@@ -62,27 +59,13 @@ set(FLUID_SOLVER_SOURCE_FILES
         core/timestep/DynamicCFLTimestep.cpp
         core/timestep/DynamicCFLTimestep.hpp
         core/visualizer/ContinousVisualizer.cpp
-        core/visualizer/ContinousVisualizer.hpp
-       # uiVersion/ContinousVisualizerOpenGL.cpp
-       # uiVersion/ContinousVisualizerOpenGL.hpp
-       # uiVersion/userInterface/MainUi.cpp
-       # uiVersion/userInterface/MainUi.hpp
-       # core/selection/ParticleSelection.cpp
-       # core/selection/ParticleSelection.hpp
-       # core/selection/IParticleSelection.hpp
-       # core/selection/NormalParticleSelection.cpp
-       # core/selection/NormalParticleSelection.hpp
-       # core/selection/AllParticleSelection.cpp
-       # core/selection/AllParticleSelection.hpp
+        core/visualizer/ContinousVisualizer.hpp      
+    
         core/interface/TypeDefinitions.hpp
        # core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.cpp
        # core/fluidSolver/neighborhoodSearch/CompactHashingNeighborhoodSearch.hpp
        # core/fluidSolver/particleCollection/ZIndexGridSorter.cpp
        # core/fluidSolver/particleCollection/ZIndexGridSorter.hpp
-       # uiVersion/userInterface/NeighborhoodSearch.cpp
-       # uiVersion/userInterface/NeighborhoodSearch.hpp
-       # uiVersion/userInterface/Kernel.cpp
-       # uiVersion/userInterface/Kernel.hpp
         core/fluidSolver/ParticleCollection.cpp
         core/fluidSolver/ParticleCollection.hpp
         core/fluidSolver/Particle.cpp
