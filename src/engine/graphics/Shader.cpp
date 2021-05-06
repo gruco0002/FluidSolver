@@ -152,8 +152,18 @@ uint32_t Engine::Graphics::Shader::CompileShader(Engine::Graphics::Shader::Progr
         std::vector<GLchar> errorLog(maxLength);
         glGetShaderInfoLog(shaderID, maxLength, &maxLength, &errorLog[0]);
 
+        std::string program_type("Undefined");
+
+        if(part.type == ProgramPartType::ProgramPartTypeVertex){
+program_type = "Vertex Shader";
+        }else if(part.type == ProgramPartType::ProgramPartTypeGeometry){
+            program_type = "Geometry Shader";
+        }else if(part.type == ProgramPartType::ProgramPartTypeFragment){
+            program_type = "Fragment Shader";
+        } 
+
         throw EngineException(
-                ("Shader Error: Error compiling the shader program part! " + std::string(errorLog.data())).c_str());
+                ("Shader Error: Error compiling the " + program_type + " program part! " + std::string(errorLog.data())).c_str());
     }
 
     return shaderID;
