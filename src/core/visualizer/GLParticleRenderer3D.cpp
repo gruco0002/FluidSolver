@@ -6,9 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <incbin/incbin_helper.hpp>
 
-INCBIN(vertex_shader, "core/visualizer/shader/GLParticleRenderer3D.vert.glsl");
-INCBIN(geometry_shader, "core/visualizer/shader/GLParticleRenderer3D.geom.glsl");
-INCBIN(fragment_shader, "core/visualizer/shader/GLParticleRenderer3D.frag.glsl");
+INCBIN(gl_particle_renderer_3d_vertex_shader, "core/visualizer/shader/GLParticleRenderer3D.vert.glsl");
+INCBIN(gl_particle_renderer_3d_geometry_shader, "core/visualizer/shader/GLParticleRenderer3D.geom.glsl");
+INCBIN(gl_particle_renderer_3d_fragment_shader, "core/visualizer/shader/GLParticleRenderer3D.frag.glsl");
 
 
 Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_target()
@@ -38,11 +38,14 @@ void FluidSolver::GLParticleRenderer3D::render()
         {
             particleShader = new Engine::Graphics::Shader({
                 Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex,
-                                                      incbin_as_string(g_vertex_shader_data, g_vertex_shader_size)),
+                                                      incbin_as_string(g_gl_particle_renderer_3d_vertex_shader_data,
+                                                                       g_gl_particle_renderer_3d_vertex_shader_size)),
                 Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                                                      incbin_as_string(g_geometry_shader_data, g_geometry_shader_size)),
+                                                      incbin_as_string(g_gl_particle_renderer_3d_geometry_shader_data,
+                                                                       g_gl_particle_renderer_3d_geometry_shader_size)),
                 Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment,
-                                                      incbin_as_string(g_fragment_shader_data, g_fragment_shader_size)),
+                                                      incbin_as_string(g_gl_particle_renderer_3d_fragment_shader_data,
+                                                                       g_gl_particle_renderer_3d_fragment_shader_size)),
             });
         }
         catch (const Engine::EngineException& e)

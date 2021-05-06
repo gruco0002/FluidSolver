@@ -2,165 +2,11 @@
 
 #include <engine/Window.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <incbin/incbin_helper.hpp>
 
-// shader code
-const std::string vertCode = R"(#version 330 core
-layout (location = 0) in vec2 aPosition;
-layout (location = 1) in vec2 aVelocity;
-layout (location = 2) in vec2 aAcceleration;
-layout (location = 3) in float aMass;
-layout (location = 4) in float aPressure;
-layout (location = 5) in float aDensity;
-layout (location = 6) in uint aType;
-// layout (location = 7) in int aIsSelected;
-
-
-#define COLOR_SELECTION_VELOCITY 0
-#define COLOR_SELECTION_ACCELERATION 1
-#define COLOR_SELECTION_MASS 2
-#define COLOR_SELECTION_PRESSURE 3
-#define COLOR_SELECTION_DENSITY 4
-
-#define PARTICLE_TYPE_BOUNDARY 1u
-#define PARTICLE_TYPE_DEAD 2u
-
-
-uniform int colorSelection;
-uniform vec4 bottomColor;
-uniform vec4 topColor;
-uniform float bottomValue;
-uniform float topValue;
-uniform vec4 boundaryColor;
-uniform int showParticleSelection;
-uniform float numberOfParticles;
-uniform int showParticleMemoryLocation;
-
-
-out VS_OUT {
-    vec4 color;
-    int discarded;
-	int selected;
-} vs_out;
-
-
-void main()
-{
-
-    vs_out.discarded = 0;
-	vs_out.selected = 0;
-
-    // determine selection
-    //if(showParticleSelection + aIsSelected == 2){
-    //    vs_out.selected = 1;
-    //}
-
-
-    float val = 0.0;
-    if(colorSelection == COLOR_SELECTION_VELOCITY){
-        val = length(aVelocity);
-    } else if(colorSelection == COLOR_SELECTION_ACCELERATION){
-        val = length(aAcceleration);
-    } else if(colorSelection == COLOR_SELECTION_MASS){
-        val = aMass;
-    } else if(colorSelection == COLOR_SELECTION_PRESSURE){
-        val = aPressure;
-    } else if(colorSelection == COLOR_SELECTION_DENSITY){
-        val = aDensity;
-    }
-
-    val = clamp(val - bottomValue, 0.0, (topValue - bottomValue)) / (topValue - bottomValue);
-    vs_out.color = mix(bottomColor, topColor, val);
-
-    if(aType == PARTICLE_TYPE_DEAD) {
-        vs_out.discarded = 1;
-    } else if(aType == PARTICLE_TYPE_BOUNDARY) {
-        vs_out.color = boundaryColor;
-    }
-
-    if(showParticleMemoryLocation == 1){
-        float vertID = float(gl_VertexID);
-        float third = vertID / (numberOfParticles / 3.0);
-        vs_out.color.r = clamp(third, 0.0, 1.0);
-        vs_out.color.g = clamp(third - 1.0f, 0.0, 1.0);
-        vs_out.color.b = clamp(third - 2.0f, 0.0, 1.0);
-        vs_out.color.a = 1.0;
-    }
-
-    gl_Position =  vec4(aPosition, 0.0, 1.0);
-
-}
-)";
-
-const std::string fragCode = R"(#version 330 core
-out vec4 FragColor;
-in vec4 oColor;
-in vec2 oTexcoord;
-flat in int oSelected;
-void main()
-{
-    const float blurredEdge = 0.025;
-
-    vec2 moved = oTexcoord - vec2(0.5);
-    float len = length(moved);
-    float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
-
-    FragColor = oColor;
-    FragColor.a = mix(1.0, 0.0, edgeMix);
-
-	if(oSelected == 1){
-		FragColor.r = 1.0;		
-	}
-
-}
-)";
-
-const std::string geomCode = R"(#version 330 core
-
-layout (points) in;
-layout (triangle_strip, max_vertices = 4) out;
-
-uniform float pointSize;
-uniform mat4 projectionMatrix;
-
-out vec4 oColor;
-out vec2 oTexcoord;
-flat out int oSelected;
-
-in VS_OUT {
-    vec4 color;
-    int discarded;
-	int selected;
-} gs_in[];
-
-void main(){
-
-    if(gs_in[0].discarded == 1) {
-        return;
-    }
-
-    oColor = gs_in[0].color;
-	oSelected = gs_in[0].selected;
-    vec4 position = gl_in[0].gl_Position;
-
-    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(1.0, 1.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(0.0, 1.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(1.0, 0.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(0.0, 0.0);
-    EmitVertex();
-    EndPrimitive();
-
-
-}
-
-)";
-
+INCBIN(gl_particle_renderer_vertex_shader, "core/visualizer/shader/GLParticleRenderer.vert.glsl");
+INCBIN(gl_particle_renderer_geometry_shader, "core/visualizer/shader/GLParticleRenderer.geom.glsl");
+INCBIN(gl_particle_renderer_fragment_shader, "core/visualizer/shader/GLParticleRenderer.frag.glsl");
 
 Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target()
 {
@@ -186,9 +32,15 @@ void FluidSolver::GLParticleRenderer::render()
 
         delete particleShader;
         particleShader = new Engine::Graphics::Shader({
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex, vertCode),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry, geomCode),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment, fragCode),
+            Engine::Graphics::Shader::ProgramPart(
+                Engine::Graphics::Shader::ProgramPartTypeVertex,
+                incbin_as_string(g_gl_particle_renderer_vertex_shader_data, g_gl_particle_renderer_vertex_shader_size)),
+            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                                                  incbin_as_string(g_gl_particle_renderer_geometry_shader_data,
+                                                                   g_gl_particle_renderer_geometry_shader_size)),
+            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment,
+                                                  incbin_as_string(g_gl_particle_renderer_fragment_shader_data,
+                                                                   g_gl_particle_renderer_fragment_shader_size)),
         });
 
         create_or_update_fbo();
