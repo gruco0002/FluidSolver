@@ -107,6 +107,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/visualizer/GLRenderer.hpp" "core/visualizer/GLRenderer.cpp"
         "core/visualizer/GLParticleVertexArray3D.hpp" "core/visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h" "incbin/incbin.c"
+        "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
         )
 
 

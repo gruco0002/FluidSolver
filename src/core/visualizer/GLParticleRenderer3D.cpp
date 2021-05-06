@@ -4,121 +4,11 @@
 #include "engine/Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <incbin/incbin_helper.hpp>
 
-// shader code
-const std::string vertCode = R"(#version 330 core
-layout (location = 1) in vec3 aPosition;
-layout (location = 0) in uint aType;
-
-#define PARTICLE_TYPE_BOUNDARY 1u
-#define PARTICLE_TYPE_DEAD 2u
-
-uniform vec4 particleColor;
-uniform vec4 boundaryColor;
-
-
-out VS_OUT {
-    vec4 color;
-    int discarded;
-} vs_out;
-
-
-void main()
-{
-
-    vs_out.discarded = 0;	
-   
-    vs_out.color = particleColor;
-    // vs_out.color.r = abs(aPosition.z) / 4.0f - 1.0f;
-    // vs_out.color.g = abs(aPosition.x) / 4.0f;
-
-    if(aType == PARTICLE_TYPE_DEAD) {
-        vs_out.discarded = 1;
-    } else if(aType == PARTICLE_TYPE_BOUNDARY) {
-        vs_out.color = boundaryColor;
-    }
-
-    
-    gl_Position =  vec4(aPosition, 1.0);
-
-}
-)";
-
-const std::string fragCode = R"(#version 330 core
-in vec4 oColor;
-in vec2 oTexcoord;
-
-uniform vec3 lightDirection;
-uniform mat4 viewMatrix;
-uniform float ambientLightFactor;
-
-out vec4 FragColor;
-
-void main()
-{
-    const float blurredEdge = 0.025;
-
-    vec2 moved = oTexcoord - vec2(0.5);
-    float len = length(moved);
-    float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
-
-    vec4 lightDirCameraSpace = viewMatrix * vec4(lightDirection, 0.0);
-
-    vec3 normal = normalize(vec3(moved.x, moved.y, 1.0 - len)); // TODO: implement correctly
-
-    float lightFactor = clamp(ambientLightFactor + clamp(dot(normal, lightDirCameraSpace.xyz), 0.0, 1.0), 0.0, 1.0); 
-
-    FragColor = oColor * lightFactor;
-    FragColor.a = mix(1.0, 0.0, edgeMix);	
-    if(FragColor.a <= 0.02)
-        discard;
-
-}
-)";
-
-const std::string geomCode = R"(#version 330 core
-
-layout (points) in;
-layout (triangle_strip, max_vertices = 4) out;
-
-uniform float pointSize;
-uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-
-out vec4 oColor;
-out vec2 oTexcoord;
-
-in VS_OUT {
-    vec4 color;
-    int discarded;
-} gs_in[];
-
-void main(){
-
-    if(gs_in[0].discarded == 1) {
-        return;
-    }
-
-    oColor = gs_in[0].color;
-    vec4 position = viewMatrix * gl_in[0].gl_Position;
-
-    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(1.0, 1.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, -0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(0.0, 1.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(1.0, 0.0);
-    EmitVertex();
-    gl_Position = projectionMatrix * (position + vec4(-0.5 * pointSize, 0.5 * pointSize, 0.0, 0.0));
-    oTexcoord = vec2(0.0, 0.0);
-    EmitVertex();
-    EndPrimitive();
-
-}
-
-)";
+INCBIN(vertex_shader, "core/visualizer/shader/GLParticleRenderer3D.vert.glsl");
+INCBIN(geometry_shader, "core/visualizer/shader/GLParticleRenderer3D.geom.glsl");
+INCBIN(fragment_shader, "core/visualizer/shader/GLParticleRenderer3D.frag.glsl");
 
 
 Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_target()
@@ -147,9 +37,12 @@ void FluidSolver::GLParticleRenderer3D::render()
         try
         {
             particleShader = new Engine::Graphics::Shader({
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex, vertCode),
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry, geomCode),
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment, fragCode),
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex,
+                                                      incbin_as_string(g_vertex_shader_data, g_vertex_shader_size)),
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                                                      incbin_as_string(g_geometry_shader_data, g_geometry_shader_size)),
+                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment,
+                                                      incbin_as_string(g_fragment_shader_data, g_fragment_shader_size)),
             });
         }
         catch (const Engine::EngineException& e)
