@@ -778,36 +778,110 @@ namespace FluidSolver {
 
 	void SimulationSerializer::load_particles(ParticleCollection& collection, const std::string& filepath)
 	{
-		if (!collection.is_type_present<MovementData>())collection.add_type<MovementData>();
-		if (!collection.is_type_present<ParticleData>())collection.add_type<ParticleData>();
-		if (!collection.is_type_present<ParticleInfo>())collection.add_type<ParticleInfo>();
-		if (!collection.is_type_present<ExternalForces>())collection.add_type<ExternalForces>();
-
-		collection.clear();
-
+		// reading in file data
 		std::ifstream data(filepath, std::ios::in | std::ios::binary);
+		nlohmann::json j = nlohmann::json::from_msgpack(data);
+		
+		// getting metadata
+		size_t count = j["count"];		
+		collection.resize(count);
 
-		size_t size;
-		data.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-		collection.resize(size);
-
-		for (size_t i = 0; i < size; i++) {
-			auto& m = collection.get<MovementData>(i);
-			auto& d = collection.get<ParticleData>(i);
-			auto& p = collection.get<ParticleInfo>(i);
-
-			data.read(reinterpret_cast<char*>(&m.position), sizeof(m.position));
-			data.read(reinterpret_cast<char*>(&m.velocity), sizeof(m.velocity));
-			data.read(reinterpret_cast<char*>(&m.acceleration), sizeof(m.acceleration));
-
-			data.read(reinterpret_cast<char*>(&d.mass), sizeof(d.mass));
-			data.read(reinterpret_cast<char*>(&d.density), sizeof(d.density));
-			data.read(reinterpret_cast<char*>(&d.pressure), sizeof(d.pressure));
-
-			data.read(reinterpret_cast<char*>(&p.type), sizeof(p.tag));
-
+		// adding types if needed
+		if(j["data"].contains("movementData")){
+			if(j["data"]["movementData"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient movementData available!");
+			}
+			if (!collection.is_type_present<MovementData>())collection.add_type<MovementData>();
 		}
+
+		if(j["data"].contains("movementData3D")){
+			if(j["data"]["movementData3D"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient movementData3D available!");
+			}
+			if (!collection.is_type_present<MovementData3D>())collection.add_type<MovementData3D>();
+		}
+
+		if(j["data"].contains("particleInfo")){
+			if(j["data"]["particleInfo"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient particleInfo available!");
+			}
+			if (!collection.is_type_present<ParticleInfo>())collection.add_type<ParticleInfo>();
+		}
+
+		if(j["data"].contains("particleData")){
+			if(j["data"]["particleData"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient particleData available!");
+			}
+			if (!collection.is_type_present<ParticleData>())collection.add_type<ParticleData>();
+		}
+
+		if(j["data"].contains("externalForces")){
+			if(j["data"]["externalForces"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient externalForces available!");
+			}
+			if (!collection.is_type_present<ExternalForces>())collection.add_type<ExternalForces>();
+		}
+
+		if(j["data"].contains("externalForces3D")){
+			if(j["data"]["externalForces3D"].size() != count){
+				Log::error("[LOADING] Particle data has insufficient externalForces3D available!");
+			}
+			if (!collection.is_type_present<ExternalForces3D>())collection.add_type<ExternalForces3D>();
+		}
+
+
+		// load data from particles
+		for(size_t i = 0; i < collection.size(); i++){
+			if(collection.is_type_present<MovementData>()){
+				auto& m = collection.get<MovementData>(i);
+				
+				m.position.x = j["data"]["movementData"][i]["p"][0];				
+				m.position.y = j["data"]["movementData"][i]["p"][1];
+				m.velocity.x = j["data"]["movementData"][i]["v"][0];				
+				m.velocity.y = j["data"]["movementData"][i]["v"][1];
+				m.acceleration.x = j["data"]["movementData"][i]["a"][0];				
+				m.acceleration.y = j["data"]["movementData"][i]["a"][1];
+			}
+
+			if(collection.is_type_present<MovementData3D>()){
+				auto& m = collection.get<MovementData3D>(i);				
+				m.position.x = j["data"]["movementData3D"][i]["p"][0];				
+				m.position.y = j["data"]["movementData3D"][i]["p"][1];
+				m.position.z = j["data"]["movementData3D"][i]["p"][2];
+				m.velocity.x = j["data"]["movementData3D"][i]["v"][0];				
+				m.velocity.y = j["data"]["movementData3D"][i]["v"][1];
+				m.velocity.z = j["data"]["movementData3D"][i]["v"][2];
+				m.acceleration.x = j["data"]["movementData3D"][i]["a"][0];				
+				m.acceleration.y = j["data"]["movementData3D"][i]["a"][1];
+				m.acceleration.z = j["data"]["movementData3D"][i]["a"][2];
+			}
+
+			if(collection.is_type_present<ParticleInfo>()){
+				auto& p = collection.get<ParticleInfo>(i);				
+				p.tag =  j["data"]["particleInfo"][i]["t"];
+				p.type =  j["data"]["particleInfo"][i]["k"];
+			}
+
+			if(collection.is_type_present<ParticleData>()){
+				auto& d = collection.get<ParticleData>(i);
+				d.density =  j["data"]["particleData"][i]["d"];
+				d.mass =  j["data"]["particleData"][i]["m"];
+				d.pressure =  j["data"]["particleData"][i]["p"];
+			}
+
+			if(collection.is_type_present<ExternalForces>()){
+				auto& e = collection.get<ExternalForces>(i);
+				e.non_pressure_acceleration.x =  j["data"]["externalForces"][i]["n"][0];
+				e.non_pressure_acceleration.y =  j["data"]["externalForces"][i]["n"][1];				
+			}
+
+			if(collection.is_type_present<ExternalForces3D>()){
+				auto& e = collection.get<ExternalForces3D>(i);
+				e.non_pressure_acceleration.x =  j["data"]["externalForces"][i]["n"][0];
+				e.non_pressure_acceleration.y =  j["data"]["externalForces"][i]["n"][1];
+				e.non_pressure_acceleration.z =  j["data"]["externalForces"][i]["n"][2];
+			}
+		}	
 
 	}
 
@@ -838,6 +912,14 @@ namespace FluidSolver {
 
 		if(collection.is_type_present<ParticleData>()){
 			j["data"]["particleData"] = nlohmann::json::array();
+		}
+
+		if(collection.is_type_present<ExternalForces>()){
+			j["data"]["externalForces"] = nlohmann::json::array();
+		}
+
+		if(collection.is_type_present<ExternalForces3D>()){
+			j["data"]["externalForces3D"] = nlohmann::json::array();
 		}
 
 
@@ -876,6 +958,20 @@ namespace FluidSolver {
 					{"d", d.density},
 					{"m", d.mass},
 					{"p", d.pressure}
+				});
+			}
+
+			if(collection.is_type_present<ExternalForces>()){
+				auto& e = collection.get<ExternalForces>(i);
+				j["data"]["externalForces"].push_back({
+					{ "n", {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y}}	
+				});
+			}
+
+			if(collection.is_type_present<ExternalForces3D>()){
+				auto& e = collection.get<ExternalForces3D>(i);
+				j["data"]["externalForces3D"].push_back({
+					{ "n", {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y, e.non_pressure_acceleration.z}}	
 				});
 			}
 
