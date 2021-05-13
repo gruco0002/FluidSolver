@@ -2,6 +2,7 @@
 #include "uiVersion/ImguiHelper.hpp"
 #include <string>
 #include <functional>
+#include <filesystem>
 #include "uiVersion/FluidSolverWindow.hpp"
 
 #include "core/fluidSolver/SESPHFluidSolver.hpp"
@@ -638,6 +639,7 @@ void FluidUi::UiLayer::render_menu()
 			if (res == NFD_OKAY) {
 				if (path != nullptr) free(path);
 				path = p;
+				particle_filepath = std::filesystem::path(path).filename().replace_extension(".data").string();
 			}
 			else {
 				free(p);
