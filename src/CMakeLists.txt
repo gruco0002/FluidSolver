@@ -8,6 +8,7 @@ find_package(cxxopts CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 if (UNIX AND NOT APPLE)
         # add tbb library for parallelization
@@ -120,6 +121,7 @@ target_link_libraries(FluidSolver PUBLIC cxxopts::cxxopts)
 target_link_libraries(FluidSolver PUBLIC fmt::fmt)
 target_link_libraries(FluidSolver PUBLIC yaml-cpp)
 target_link_libraries(FluidSolver PUBLIC unofficial::nativefiledialog::nfd)
+target_link_libraries(FluidSolver PUBLIC nlohmann_json)
 
 if (UNIX AND NOT APPLE)
         # add tbb library for parallelization to the link targets

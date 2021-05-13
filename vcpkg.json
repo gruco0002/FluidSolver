@@ -26,6 +26,7 @@
         {
             "name": "tbb",
             "platform": "linux"
-        }
+        },
+        "nlohmann-json"
     ]
 }

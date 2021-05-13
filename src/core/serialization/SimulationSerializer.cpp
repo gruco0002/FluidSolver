@@ -14,6 +14,7 @@
 #include <core/timestep/DynamicCFLTimestep.hpp>
 #include <core/visualizer/GLParticleRenderer.hpp>
 #include <core/visualizer/ContinousVisualizer.hpp>
+#include <nlohmann/json.hpp>
 
 namespace YAML {
 	template<>
@@ -812,33 +813,80 @@ namespace FluidSolver {
 
 	void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath)
 	{
-		FLUID_ASSERT(collection.is_type_present<MovementData>());
-		FLUID_ASSERT(collection.is_type_present<ParticleInfo>());
-		FLUID_ASSERT(collection.is_type_present<ParticleData>());
 
-		std::ofstream data(filepath, std::ios::out | std::ios::binary);
+		// create header information
+		nlohmann::json j;
 
-		// size of the collection	
-		size_t size = collection.size();
-		data.write(reinterpret_cast<char*>(&size), sizeof(size));
+		j["type"] = "particle-data-file";
+		j["version"] = 1;
 
+		j["count"] = collection.size();
+		j["data"] = nlohmann::json::object();	
+
+		// create all fields for the respective types
+		if(collection.is_type_present<MovementData>()){
+			j["data"]["movementData"] = nlohmann::json::array();
+		}
+
+		if(collection.is_type_present<MovementData3D>()){
+			j["data"]["movementData3D"] = nlohmann::json::array();
+		}
+
+		if(collection.is_type_present<ParticleInfo>()){
+			j["data"]["particleInfo"] = nlohmann::json::array();
+		}
+
+		if(collection.is_type_present<ParticleData>()){
+			j["data"]["particleData"] = nlohmann::json::array();
+		}
+
+
+		// write particle data		
 		for (size_t i = 0; i < collection.size(); i++) {
 
-			auto& m = collection.get<MovementData>(i);
-			auto& d = collection.get<ParticleData>(i);
-			auto& p = collection.get<ParticleInfo>(i);
+			if(collection.is_type_present<MovementData>()){
+				auto& m = collection.get<MovementData>(i);
+				j["data"]["movementData"].push_back({
+					{"p", {m.position.x, m.position.y}},
+					{"v", {m.velocity.x, m.velocity.y}},
+					{"a", {m.acceleration.x, m.acceleration.y}},
+				});
+			}
 
-			data.write(reinterpret_cast<char*>(&m.position), sizeof(m.position));
-			data.write(reinterpret_cast<char*>(&m.velocity), sizeof(m.velocity));
-			data.write(reinterpret_cast<char*>(&m.acceleration), sizeof(m.acceleration));
+			if(collection.is_type_present<MovementData3D>()){
+				auto& m = collection.get<MovementData3D>(i);
+				j["data"]["movementData3D"].push_back({
+					{"p", {m.position.x, m.position.y, m.position.z}},
+					{"v", {m.velocity.x, m.velocity.y, m.velocity.z}},
+					{"a", {m.acceleration.x, m.acceleration.y, m.acceleration.z}},
+				});
+			}
 
-			data.write(reinterpret_cast<char*>(&d.mass), sizeof(d.mass));
-			data.write(reinterpret_cast<char*>(&d.density), sizeof(d.density));
-			data.write(reinterpret_cast<char*>(&d.pressure), sizeof(d.pressure));
+			if(collection.is_type_present<ParticleInfo>()){
+				auto& p = collection.get<ParticleInfo>(i);
+				j["data"]["particleInfo"].push_back({
+					{"t", p.tag},
+					{"k", p.type}
+				});
+			}
 
-			data.write(reinterpret_cast<char*>(&p.type), sizeof(p.tag));
+			if(collection.is_type_present<ParticleData>()){
+				auto& d = collection.get<ParticleData>(i);
+				j["data"]["particleData"].push_back({
+					{"d", d.density},
+					{"m", d.mass},
+					{"p", d.pressure}
+				});
+			}
 
 		}
+
+
+		// write to file
+		auto binary_data = nlohmann::json::to_msgpack(j);
+		std::ofstream data(filepath, std::ios::out | std::ios::binary);
+		data.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
+
 
 	}
 
