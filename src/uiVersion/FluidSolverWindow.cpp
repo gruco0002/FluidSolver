@@ -126,6 +126,7 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 	simulation.parameters.collection->add_type<FluidSolver::MovementData3D>();
 	simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
 	simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
+	simulation.parameters.collection->add_type<FluidSolver::ExternalForces3D>();
 	simulation.parameters.collection->add_type<FluidSolver::ExternalForces>();
 	simulation.parameters.rest_density = 1.0f;
 	simulation.parameters.particle_size = 1.0f;
