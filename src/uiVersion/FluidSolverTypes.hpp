@@ -11,7 +11,8 @@ namespace FluidUi {
     public:
         enum SolverSettingsType {
             SolverSettingsTypeIISPH,
-            SolverSettingsTypeSESPH
+            SolverSettingsTypeSESPH,
+            SolverSettingsTypeSESPH3D
         };
 
         struct FluidSolverType {
@@ -43,8 +44,15 @@ namespace FluidUi {
 
         FluidSolverTypes();
 
+        enum class QueryMainFocus{
+            None,
+            Solver,
+            NeighborhoodSearch,
+            Kernel
+        };
 
-        const FluidSolverType *query_type(const FluidSolverTypeQuery &query) const;
+
+        const FluidSolverType *query_type(const FluidSolverTypeQuery &query, QueryMainFocus focus = QueryMainFocus::None) const;
 
         const FluidSolverType* query_type(const FluidSolver::IFluidSolverBase* query) const;
 

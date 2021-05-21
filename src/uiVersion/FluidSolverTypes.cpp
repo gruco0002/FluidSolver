@@ -2,6 +2,7 @@
 
 #include "core/fluidSolver/SESPHFluidSolver.hpp"
 #include "core/fluidSolver/IISPHFluidSolver.hpp"
+#include "core/fluidSolver/SESPHFluidSolver3D.hpp"
 
 #include "core/fluidSolver/kernel/CubicSplineKernel.hpp"
 
@@ -85,11 +86,76 @@ void FluidUi::FluidSolverTypes::add_types() {
 								return &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch> *>(b)->settings;
 							}
 		});
+
+	types.push_back({
+							"SESPH-3D",
+							"QuadraticNeighborhoodSearch3D",
+							"CubicSplineKernel3D",
+							[]() {
+								return new SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>();
+							},
+							[](const IFluidSolverBase* b) {
+								return dynamic_cast<const SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D> *>(b) !=
+									   nullptr;
+							},
+							SolverSettingsTypeSESPH3D,
+							[](IFluidSolverBase* b) {
+								return &dynamic_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D> *>(b)->settings;
+							}
+		});
+		
 }
 
 const FluidUi::FluidSolverTypes::FluidSolverType*
-FluidUi::FluidSolverTypes::query_type(const FluidUi::FluidSolverTypes::FluidSolverTypeQuery& query) const {
+FluidUi::FluidSolverTypes::query_type(const FluidUi::FluidSolverTypes::FluidSolverTypeQuery& query, QueryMainFocus focus) const {
+
+	const FluidUi::FluidSolverTypes::FluidSolverType* best_so_far = nullptr;
+	int matched_factors = 0;
+
 	for (auto& t : types) {
+		if(focus != QueryMainFocus::None){
+			int current_matched_factors = 0;
+			if(focus == QueryMainFocus::Solver){
+				if(t.name_solver == query.name_solver){
+					current_matched_factors = 1;
+					if (t.name_neighborhood_search == query.name_neighborhood_search) {
+						current_matched_factors++;	
+					}
+					if (t.name_kernel == query.name_kernel) {
+						current_matched_factors++;	
+					}
+					
+				}
+			}else if(focus == QueryMainFocus::NeighborhoodSearch){
+				if(t.name_neighborhood_search == query.name_neighborhood_search){
+					current_matched_factors = 1;
+					if (t.name_solver == query.name_solver) {
+						current_matched_factors++;	
+					}
+					if (t.name_kernel == query.name_kernel) {
+						current_matched_factors++;	
+					}
+					
+				}
+			}else if(focus == QueryMainFocus::Kernel){
+				if(t.name_kernel == query.name_kernel){
+					current_matched_factors = 1;
+					if (t.name_neighborhood_search == query.name_neighborhood_search) {
+						current_matched_factors++;	
+					}
+					if (t.name_solver == query.name_solver) {
+						current_matched_factors++;	
+					}
+					
+				}
+			}
+
+			if(current_matched_factors > matched_factors){
+				matched_factors = current_matched_factors;
+				best_so_far = &t;
+			}
+		}
+
 		if (t.name_solver == query.name_solver) {
 			if (t.name_neighborhood_search == query.name_neighborhood_search) {
 				if (t.name_kernel == query.name_kernel) {
@@ -98,7 +164,7 @@ FluidUi::FluidSolverTypes::query_type(const FluidUi::FluidSolverTypes::FluidSolv
 			}
 		}
 	}
-	return nullptr;
+	return best_so_far;
 }
 
 const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::query_type(const FluidSolver::IFluidSolverBase* query) const

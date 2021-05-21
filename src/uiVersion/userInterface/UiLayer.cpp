@@ -7,6 +7,7 @@
 
 #include "core/fluidSolver/SESPHFluidSolver.hpp"
 #include "core/fluidSolver/IISPHFluidSolver.hpp"
+#include "core/fluidSolver/SESPHFluidSolver3D.hpp"
 
 #include "core/timestep/ConstantTimestep.hpp"
 #include "core/timestep/DynamicCFLTimestep.hpp"
@@ -194,7 +195,7 @@ void FluidUi::UiLayer::render_solver_component()
 					q.name_solver = name;
 					q.name_neighborhood_search = window->current_type->name_neighborhood_search;
 					q.name_kernel = window->current_type->name_kernel;
-					auto t = window->solver_types.query_type(q);
+					auto t = window->solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Solver);
 					if (t && can_change) {
 						window->current_type = t;
 
@@ -214,7 +215,7 @@ void FluidUi::UiLayer::render_solver_component()
 					q.name_solver = window->current_type->name_solver;
 					q.name_neighborhood_search = name;
 					q.name_kernel = window->current_type->name_kernel;
-					auto t = window->solver_types.query_type(q);
+					auto t = window->solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::NeighborhoodSearch);
 					if (t && can_change) {
 						window->current_type = t;
 
@@ -234,7 +235,7 @@ void FluidUi::UiLayer::render_solver_component()
 					q.name_solver = window->current_type->name_solver;
 					q.name_neighborhood_search = window->current_type->name_neighborhood_search;
 					q.name_kernel = name;
-					auto t = window->solver_types.query_type(q);
+					auto t = window->solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Kernel);
 					if (t && can_change) {
 						window->current_type = t;
 
@@ -253,7 +254,7 @@ void FluidUi::UiLayer::render_solver_component()
 				"Since you are running the simulation in asynchronous mode, you cannot change the solver setup if the simulation is running or has not stopped running!");
 		}
 
-		});
+		}, (void*)0x37af7de);
 
 	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {
 		BeginSubsection("SESPH", [=]() {
@@ -281,6 +282,17 @@ void FluidUi::UiLayer::render_solver_component()
 			ImGui::InputInt("Max. Iterations", (int*)&v->MaxNumberOfIterations);
 			ImGui::InputFloat("Gamma", &v->Gamma);
 			ImGui::InputFloat("Omega", &v->Omega);
+			});
+	}
+
+	if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH3D) {
+		BeginSubsection("3D SESPH", [=]() {
+			auto v = (FluidSolver::SESPHSettings3D*)window->current_type->get_settings(
+				window->simulation.parameters.fluid_solver);
+			render_solver_parameters();
+			ImGui::Separator();
+			ImGui::InputFloat("Viscosity", &v->Viscosity);
+			ImGui::InputFloat("Stiffness", &v->StiffnessK);
 			});
 	}
 }
