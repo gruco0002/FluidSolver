@@ -109,6 +109,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/visualizer/GLParticleVertexArray3D.hpp" "core/visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h" "incbin/incbin.c"
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
+        "core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
+        "core/fluidSolver/kernel/CubicSplineKernel3D.hpp" "core/fluidSolver/kernel/CubicSplineKernel3D.cpp"
         )
 
 
