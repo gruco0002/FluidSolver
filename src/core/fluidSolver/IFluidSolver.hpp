@@ -30,7 +30,7 @@ namespace FluidSolver {
      * Interface for a fluid solver.
      * This is only there to define how every fluid solver should be structured.
      *
-     * @tparam Kernel 2D SPH Kernel
+     * @tparam Kernel 2D/3D SPH Kernel
      * @tparam NeighborhoodSearch An object that implements a neighborhood search on the particle collection
      * The objects has to implement the following behaviour:
      * Types:
@@ -48,7 +48,7 @@ namespace FluidSolver {
      * Functions:
      *      void find_neighbors();
      *      Neighbors get_neighbors(size_t particleIndex);
-     *      Neighbors get_neighbors(const glm::vec2 &position);
+     *      Neighbors get_neighbors(const glm::vec2 &position); (or in the case of 3d glm::vec3)
      *      void initialize();
      * 
      *      NeighborhoodInterface create_interface();
