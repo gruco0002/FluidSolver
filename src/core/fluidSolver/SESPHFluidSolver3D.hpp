@@ -35,11 +35,11 @@ namespace FluidSolver
 
         pFloat ComputeDensity(pIndex_t particleIndex);
 
-        vec2 ComputeNonPressureAcceleration(pIndex_t particleIndex);
+        vec3 ComputeNonPressureAcceleration(pIndex_t particleIndex);
 
-        vec2 ComputePressureAcceleration(pIndex_t particleIndex);
+        vec3 ComputePressureAcceleration(pIndex_t particleIndex);
 
-        vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
+        vec3 ComputeViscosityAcceleration(pIndex_t particleIndex);
 
 
       public:
