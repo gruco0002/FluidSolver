@@ -86,12 +86,14 @@ namespace FluidSolver {
 		Neighbors get_neighbors(particleIndex_t particleIndex);
 
 		Neighbors get_neighbors(const vec2& position);
+		Neighbors get_neighbors(const vec3& position);
 
 
 
 		struct Interface {
 			std::function< Neighbors(particleIndex_t particleIndex)> get_by_index;
 			std::function< Neighbors(const vec2& position)> get_by_position;
+			std::function< Neighbors(const vec3& position)> get_by_position_3d;
 		} link;
 
 	};

@@ -63,6 +63,11 @@ FluidSolver::NeighborhoodInterface::Neighbors FluidSolver::NeighborhoodInterface
 	FLUID_ASSERT(link.get_by_position != nullptr);
 	return link.get_by_position(position);
 }
+FluidSolver::NeighborhoodInterface::Neighbors FluidSolver::NeighborhoodInterface::get_neighbors(const vec3& position)
+{
+	FLUID_ASSERT(link.get_by_position_3d != nullptr);
+	return link.get_by_position_3d(position);
+}
 
 FluidSolver::NeighborhoodInterface::NeighborsIterator::~NeighborsIterator()
 {
