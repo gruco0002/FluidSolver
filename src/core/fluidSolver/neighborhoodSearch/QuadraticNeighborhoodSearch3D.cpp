@@ -43,7 +43,9 @@ namespace FluidSolver
 
                 auto& mv_j = collection->get<MovementData3D>(j);
 
-                if (glm::dot(mv_i.position, mv_j.position) <= search_radius_squared)
+                vec3 difference = mv_i.position - mv_j.position;
+
+                if (glm::dot(difference, difference) <= search_radius_squared)
                 {
                     // the particle is a neighbor
                     if (data.neighbor_indices.size() <= data.size)
