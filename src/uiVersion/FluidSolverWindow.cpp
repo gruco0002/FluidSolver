@@ -152,6 +152,30 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 
 				auto& info = simulation.parameters.collection->get<FluidSolver::ParticleInfo>(index);
 				info.type = FluidSolver::ParticleType::ParticleTypeNormal;
+
+				auto &data = simulation.parameters.collection->get<FluidSolver::ParticleData>(index);
+				data.density = 1.0f;
+				data.mass = 1.0f;
+				data.pressure = 0.0f;
+			}
+		}
+	}
+
+	for(int x = -8; x <= 8; x++)
+	{
+		for(int y = -8; y<=-5; y++){
+			for(int z = -11; z <= -1; z++){
+				auto index = simulation.parameters.collection->add();
+				auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
+				pos.position = glm::vec3((float)x, (float)y, (float)z);
+
+				auto& info = simulation.parameters.collection->get<FluidSolver::ParticleInfo>(index);
+				info.type = FluidSolver::ParticleType::ParticleTypeBoundary;
+
+				auto &data = simulation.parameters.collection->get<FluidSolver::ParticleData>(index);
+				data.density = 1.0f;
+				data.mass = 1.0f;
+				data.pressure = 0.0f;
 			}
 		}
 	}
