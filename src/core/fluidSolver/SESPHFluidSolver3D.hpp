@@ -112,12 +112,9 @@ namespace FluidSolver
             }
 
             // integrate using euler cromer
-            collection->get<MovementData3D>(i).velocity =
-                collection->get<MovementData3D>(i).velocity +
-                current_timestep * collection->get<MovementData3D>(i).acceleration;
-            collection->get<MovementData3D>(i).position =
-                collection->get<MovementData3D>(i).position +
-                current_timestep * collection->get<MovementData3D>(i).velocity;
+            auto & mv = collection->get<MovementData3D>(i);
+            mv.velocity = mv.velocity + current_timestep * mv.acceleration;
+            mv.position = mv.position + current_timestep * mv.velocity;
         });
     }
 
