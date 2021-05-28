@@ -4,6 +4,7 @@
 #include "core/visualizer/ISimulationVisualizer.hpp"
 #include <vector>
 #include "core/fluidSolver/kernel/CubicSplineKernel.hpp"
+#include "core/visualizer/Viewport2D.hpp"
 
 namespace FluidSolver {
 	class ContinousVisualizer : public ISimulationVisualizer {
@@ -13,6 +14,7 @@ namespace FluidSolver {
 		ContinousVisualizer();
 
 		struct Settings {
+			Viewport2D viewport;
 			Image::Color clear_color = Image::Color(0, 0, 0);
 			float minimum_render_density = 0.0f;
 		} settings;
@@ -30,7 +32,7 @@ namespace FluidSolver {
 
 		Image image;
 
-		Viewport internal_viewport;
+		Viewport2D internal_viewport;
 
 		CubicSplineKernel kernel;
 

@@ -34,9 +34,9 @@ FluidSolver::Image FluidSolver::ContinousVisualizer::get_image_data()
 
 void FluidSolver::ContinousVisualizer::recalculate_viewport()
 {
-	auto value = parameters.viewport;
+	auto value = settings.viewport;
 
-	Viewport res;
+	Viewport2D res;
 	res.top = value.top;
 	res.left = value.left;
 

@@ -6,6 +6,7 @@
 #include "engine/graphics/Framebuffer.hpp"
 #include "engine/graphics/Shader.hpp"
 #include "engine/graphics/Texture2D.hpp"
+#include "core/visualizer/Viewport2D.hpp"
 
 namespace FluidSolver
 {
@@ -51,6 +52,8 @@ namespace FluidSolver
             glm::vec4 backgroundClearColor = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
             bool showMemoryLocation = false;
+
+            Viewport2D viewport;
 
 
         } settings;

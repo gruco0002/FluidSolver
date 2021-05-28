@@ -581,10 +581,10 @@ namespace FluidSolver {
 				auto r = new GLParticleRenderer();
 
 				// default parameters
-				r->parameters.viewport.left = node["viewport"]["left"].as<float>();
-				r->parameters.viewport.right = node["viewport"]["right"].as<float>();
-				r->parameters.viewport.top = node["viewport"]["top"].as<float>();
-				r->parameters.viewport.bottom = node["viewport"]["bottom"].as<float>();
+				r->settings.viewport.left = node["viewport"]["left"].as<float>();
+				r->settings.viewport.right = node["viewport"]["right"].as<float>();
+				r->settings.viewport.top = node["viewport"]["top"].as<float>();
+				r->settings.viewport.bottom = node["viewport"]["bottom"].as<float>();
 				r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
 				r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
 
@@ -608,10 +608,10 @@ namespace FluidSolver {
 				auto r = new ContinousVisualizer();
 
 				// default parameters
-				r->parameters.viewport.left = node["viewport"]["left"].as<float>();
-				r->parameters.viewport.right = node["viewport"]["right"].as<float>();
-				r->parameters.viewport.top = node["viewport"]["top"].as<float>();
-				r->parameters.viewport.bottom = node["viewport"]["bottom"].as<float>();
+				r->settings.viewport.left = node["viewport"]["left"].as<float>();
+				r->settings.viewport.right = node["viewport"]["right"].as<float>();
+				r->settings.viewport.top = node["viewport"]["top"].as<float>();
+				r->settings.viewport.bottom = node["viewport"]["bottom"].as<float>();
 				r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
 				r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
 
@@ -639,10 +639,10 @@ namespace FluidSolver {
 				node["type"] = "gl-particle-renderer";
 
 				// default parameters
-				node["viewport"]["left"] = r->parameters.viewport.left;
-				node["viewport"]["right"] = r->parameters.viewport.right;
-				node["viewport"]["top"] = r->parameters.viewport.top;
-				node["viewport"]["bottom"] = r->parameters.viewport.bottom;
+				node["viewport"]["left"] = r->settings.viewport.left;
+				node["viewport"]["right"] = r->settings.viewport.right;
+				node["viewport"]["top"] = r->settings.viewport.top;
+				node["viewport"]["bottom"] = r->settings.viewport.bottom;
 				node["render-target"]["width"] = r->parameters.render_target.width;
 				node["render-target"]["height"] = r->parameters.render_target.height;
 
@@ -665,10 +665,10 @@ namespace FluidSolver {
 				node["type"] = "continous";
 
 				// default parameters
-				node["viewport"]["left"] = r->parameters.viewport.left;
-				node["viewport"]["right"] = r->parameters.viewport.right;
-				node["viewport"]["top"] = r->parameters.viewport.top;
-				node["viewport"]["bottom"] = r->parameters.viewport.bottom;
+				node["viewport"]["left"] = r->settings.viewport.left;
+				node["viewport"]["right"] = r->settings.viewport.right;
+				node["viewport"]["top"] = r->settings.viewport.top;
+				node["viewport"]["bottom"] = r->settings.viewport.bottom;
 				node["render-target"]["width"] = r->parameters.render_target.width;
 				node["render-target"]["height"] = r->parameters.render_target.height;
 

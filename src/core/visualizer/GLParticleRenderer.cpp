@@ -138,8 +138,8 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
 
     // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
 
-    float width = parameters.viewport.right - parameters.viewport.left; // particle size is not taken into account
-    float height = parameters.viewport.top - parameters.viewport.bottom;
+    float width = settings.viewport.right - settings.viewport.left; // particle size is not taken into account
+    float height = settings.viewport.top - settings.viewport.bottom;
 
     float fboWidth = parameters.render_target.width;
     float fboHeight = parameters.render_target.height;
@@ -155,10 +155,10 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
 
     // top and bottom is swapped, so that everything is rendered correctly (otherwise, we render it upside down)
     glm::mat4 generated = generate_ortho(
-        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) - width * 0.5f,
-        parameters.viewport.left + 0.5f * (parameters.viewport.right - parameters.viewport.left) + width * 0.5f,
-        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) - height * 0.5f,
-        parameters.viewport.top - 0.5f * (parameters.viewport.top - parameters.viewport.bottom) + height * 0.5f);
+        settings.viewport.left + 0.5f * (settings.viewport.right - settings.viewport.left) - width * 0.5f,
+        settings.viewport.left + 0.5f * (settings.viewport.right - settings.viewport.left) + width * 0.5f,
+        settings.viewport.top - 0.5f * (settings.viewport.top - settings.viewport.bottom) - height * 0.5f,
+        settings.viewport.top - 0.5f * (settings.viewport.top - settings.viewport.bottom) + height * 0.5f);
 
     projectionMatrix = generated;
 }

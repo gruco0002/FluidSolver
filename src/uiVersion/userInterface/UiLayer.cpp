@@ -16,7 +16,7 @@
 #include "core/serialization/SimulationSerializer.hpp"
 #include "core/visualizer/GLParticleRenderer.hpp"
 #include "core/visualizer/ContinousVisualizer.hpp"
-
+#include "core/visualizer/GLParticleRenderer3D.hpp"
 
 
 static void BeginSubsection(const std::string& name, const std::function<void()>& fnc, void* ptr_id = nullptr) {
@@ -429,18 +429,18 @@ void FluidUi::UiLayer::render_visualizer_component()
 		FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
 		auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
 		auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
+		auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(window->simulation.parameters.visualizer);
 
-		if (ImGui::BeginCombo("Type", gl ? "Particle Renderer" : "Continous Visualizer")) {
+		if (ImGui::BeginCombo("Type", gl ? "Particle Renderer" : (cv ? "Continous Visualizer" : "Particle Renderer 3d"))) {
 			if (ImGui::Selectable("Particle Renderer", gl != nullptr)) {
 				if (gl == nullptr) {
 					gl = nullptr;
 					cv = nullptr;
+					gl3d = nullptr;
 
-					auto viewport = window->simulation.parameters.visualizer->parameters.viewport;
-
+				
 					delete window->simulation.parameters.visualizer;
-					gl = new FluidSolver::GLParticleRenderer();
-					gl->parameters.viewport = viewport;
+					gl = new FluidSolver::GLParticleRenderer();			
 					window->simulation.parameters.visualizer = gl;
 					window->simulation.parameters.invalidate = true;
 				}
@@ -449,17 +449,31 @@ void FluidUi::UiLayer::render_visualizer_component()
 				if (cv == nullptr) {
 					cv = nullptr;
 					gl = nullptr;
+					gl3d = nullptr;
 
-					auto viewport = window->simulation.parameters.visualizer->parameters.viewport;
-
+				
 					delete window->simulation.parameters.visualizer;
 
 					cv = new FluidSolver::ContinousVisualizer();
 					cv->parameters.render_target.width = 100;
 					cv->parameters.render_target.height = 100;
 					cv->settings.minimum_render_density = window->simulation.parameters.rest_density * 0.5f;
-					cv->parameters.viewport = viewport;
 					window->simulation.parameters.visualizer = cv;
+					window->simulation.parameters.invalidate = true;
+				}
+			}
+			if(ImGui::Selectable("Particle Renderer 3d", gl3d != nullptr)){
+				if(gl3d == nullptr){
+					cv = nullptr;
+					gl = nullptr;
+					gl3d = nullptr;
+
+					delete window->simulation.parameters.visualizer;
+
+					gl3d = new FluidSolver::GLParticleRenderer3D();
+					gl3d->parameters.render_target.width = 1920;
+					gl3d->parameters.render_target.height = 1080;			
+					window->simulation.parameters.visualizer = gl3d;
 					window->simulation.parameters.invalidate = true;
 				}
 			}
@@ -475,9 +489,9 @@ void FluidUi::UiLayer::render_visualizer_component()
 			window->simulation.parameters.invalidate = true;
 		}
 
-		if (ImGui::InputFloat4("Viewport", (float*)&visualizer->parameters.viewport)) {
+	/*	if (ImGui::InputFloat4("Viewport", (float*)&visualizer->settings.viewport)) {
 			window->simulation.parameters.invalidate = true;
-		}
+		}*/
 
 		});
 
@@ -489,6 +503,7 @@ void FluidUi::UiLayer::render_visualizer_component()
 
 	auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
 	auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
+	auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(window->simulation.parameters.visualizer);
 	
 	if (gl != nullptr) {
 		BeginSubsection("Particle Renderer", [&]() {
@@ -516,6 +531,15 @@ void FluidUi::UiLayer::render_visualizer_component()
 			ImGui::InputFloat("Min. render density", &cv->settings.minimum_render_density);
 			}, (void*)0x54efa);
 	}
+	else if(gl3d != nullptr){
+	BeginSubsection("Colors", [&]() {
+						
+			ImGui::ColorEdit4("Background", (float*)&gl3d->settings.background_color, ImGuiColorEditFlags_Uint8);
+			
+			
+			}, (void*)0x54efb);
+	}
+
 
 
 

@@ -10,16 +10,7 @@ namespace FluidSolver {
 	class ISimulationVisualizer {
 	public:
 
-		struct Viewport {
-			float left = -10.0f;
-			float top = 10.0f;
-
-			float right = 10.0f;
-			float bottom = -10.0f;
-
-			inline float width() { return right - left; }
-			inline float height() { return top - bottom; }
-		};
+	
 
 		struct Size {
 			uint32_t width = 1920;
@@ -28,9 +19,6 @@ namespace FluidSolver {
 
 
 		struct VisualizerParameter {
-			// viewport is in particle space. Everything inside the viewport should be visible.
-			Viewport viewport;
-
 			// this size specifies how large the render target should be in pixels
 			Size render_target;
 
