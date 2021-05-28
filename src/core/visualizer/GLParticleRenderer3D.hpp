@@ -32,7 +32,7 @@ namespace FluidSolver
 
         virtual void render() override;
 
-        virtual const Image& get_image_data() override;
+        virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer3D() override;
 
@@ -45,7 +45,7 @@ namespace FluidSolver
             glm::mat4 view_matrix =
                 glm::lookAt(glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-            glm::vec3 light_direction = glm::vec3(8.0f, 12.0f, 1.0f);
+            glm::vec3 light_direction = glm::vec3(8.0f, -12.0f, 1.0f);
 
         } settings;
 

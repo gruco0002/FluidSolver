@@ -163,7 +163,7 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix()
     projectionMatrix = generated;
 }
 
-const FluidSolver::Image& FluidSolver::GLParticleRenderer::get_image_data()
+FluidSolver::Image FluidSolver::GLParticleRenderer::get_image_data()
 {
     FLUID_ASSERT(this->fboColorTex != nullptr);
 

@@ -20,7 +20,7 @@ namespace FluidSolver
 
         virtual void render() override;
 
-        virtual const Image& get_image_data() override;
+        virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer() override;
 

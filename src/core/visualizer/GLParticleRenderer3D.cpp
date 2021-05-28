@@ -138,11 +138,15 @@ void FluidSolver::GLParticleRenderer3D::create_or_update_fbo()
 
 void FluidSolver::GLParticleRenderer3D::calc_projection_matrix()
 {
-    projectionMatrix = glm::perspectiveFov(3.14f * 0.5f, (float)parameters.render_target.width,
-                                           (float)parameters.render_target.height, 0.01f, 100.0f);
+    auto flipY =
+        glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
+
+    // we want to mirror the image at the y-axis, such that it comes out in a "correct" way (we avoid flipping it later)
+    projectionMatrix = flipY * glm::perspectiveFov(3.14f * 0.5f, (float)parameters.render_target.width,
+                                                   (float)parameters.render_target.height, 0.01f, 100.0f);
 }
 
-const FluidSolver::Image& FluidSolver::GLParticleRenderer3D::get_image_data()
+FluidSolver::Image FluidSolver::GLParticleRenderer3D::get_image_data()
 {
     FLUID_ASSERT(this->fboColorTex != nullptr);
 

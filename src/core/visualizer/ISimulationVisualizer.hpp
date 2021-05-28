@@ -46,7 +46,7 @@ namespace FluidSolver {
 
 		virtual void render() = 0;
 
-		virtual const Image& get_image_data() = 0;
+		virtual Image get_image_data() = 0;
 
 		virtual ~ISimulationVisualizer() = default;
 

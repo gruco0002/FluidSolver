@@ -27,7 +27,7 @@ void FluidSolver::ContinousVisualizer::render()
 		});
 }
 
-const FluidSolver::Image& FluidSolver::ContinousVisualizer::get_image_data()
+FluidSolver::Image FluidSolver::ContinousVisualizer::get_image_data()
 {
 	return image;
 }
