@@ -1,7 +1,8 @@
 #include "TagGroup.hpp"
 
 
-bool FluidSolver::TagGroup::is_member(pIndex_t index) const {
+bool FluidSolver::TagGroup::is_member(pIndex_t index) const
+{
     FLUID_ASSERT(collection != nullptr)
     FLUID_ASSERT(collection->is_type_present<ParticleInfo>())
     FLUID_ASSERT(collection->size() > index)
@@ -9,7 +10,8 @@ bool FluidSolver::TagGroup::is_member(pIndex_t index) const {
     return tags.find(tag) != tags.end();
 }
 
-FluidSolver::TagGroup::iterator FluidSolver::TagGroup::begin() {
+FluidSolver::TagGroup::iterator FluidSolver::TagGroup::begin()
+{
     iterator it;
     it.current = -1;
     it.data = this;
@@ -17,7 +19,8 @@ FluidSolver::TagGroup::iterator FluidSolver::TagGroup::begin() {
     return it;
 }
 
-FluidSolver::TagGroup::iterator FluidSolver::TagGroup::end() {
+FluidSolver::TagGroup::iterator FluidSolver::TagGroup::end()
+{
     FLUID_ASSERT(collection != nullptr)
     iterator it;
     it.data = this;
@@ -25,23 +28,28 @@ FluidSolver::TagGroup::iterator FluidSolver::TagGroup::end() {
     return it;
 }
 
-bool FluidSolver::TagGroup::TagGroupIterator::operator!=(const FluidSolver::TagGroup::iterator &other) const {
+bool FluidSolver::TagGroup::TagGroupIterator::operator!=(const FluidSolver::TagGroup::iterator& other) const
+{
     return !(*this == other);
 }
 
-bool FluidSolver::TagGroup::TagGroupIterator::operator==(const FluidSolver::TagGroup::iterator &other) const {
+bool FluidSolver::TagGroup::TagGroupIterator::operator==(const FluidSolver::TagGroup::iterator& other) const
+{
     return other.data == data && other.current == current;
 }
 
-FluidSolver::TagGroup::T &FluidSolver::TagGroup::TagGroupIterator::operator*() {
+FluidSolver::TagGroup::T& FluidSolver::TagGroup::TagGroupIterator::operator*()
+{
     return current;
 }
 
-FluidSolver::TagGroup::iterator &FluidSolver::TagGroup::TagGroupIterator::operator++() {
+FluidSolver::TagGroup::iterator& FluidSolver::TagGroup::TagGroupIterator::operator++()
+{
     FLUID_ASSERT(data != nullptr)
     FLUID_ASSERT(data->collection != nullptr)
     current++;
-    while (current < data->collection->size()) {
+    while (current < data->collection->size())
+    {
         if (data->is_member(current))
             break;
         current++;
@@ -49,7 +57,8 @@ FluidSolver::TagGroup::iterator &FluidSolver::TagGroup::TagGroupIterator::operat
     return *this;
 }
 
-const FluidSolver::TagGroup::iterator FluidSolver::TagGroup::TagGroupIterator::operator++(int) {
+const FluidSolver::TagGroup::iterator FluidSolver::TagGroup::TagGroupIterator::operator++(int)
+{
     FLUID_ASSERT(data != nullptr)
     FLUID_ASSERT(data->collection != nullptr)
     TagGroup::TagGroupIterator copy = *this;

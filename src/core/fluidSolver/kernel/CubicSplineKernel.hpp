@@ -4,23 +4,23 @@
 
 #include <core/FluidInclude.hpp>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class CubicSplineKernel {
 
-    public:
+      public:
         pFloat kernel_support;
 
-        pFloat GetKernelValue(const vec2 &position) const;
+        pFloat GetKernelValue(const vec2& position) const;
 
-        vec2 GetKernelDerivativeValue(const vec2 &position) const;
+        vec2 GetKernelDerivativeValue(const vec2& position) const;
 
-        pFloat GetKernelValue(const vec2 &neighborPosition, const vec2 &position) const;
+        pFloat GetKernelValue(const vec2& neighborPosition, const vec2& position) const;
 
-        vec2 GetKernelDerivativeValue(const vec2 &neighborPosition, const vec2 &position) const;
+        vec2 GetKernelDerivativeValue(const vec2& neighborPosition, const vec2& position) const;
 
-        vec2 GetKernelDerivativeReversedValue(const vec2 &neighborPosition, const vec2 &position) const;
-
+        vec2 GetKernelDerivativeReversedValue(const vec2& neighborPosition, const vec2& position) const;
     };
-}
+} // namespace FluidSolver
 
-#endif //FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
+#endif // FLUIDSOLVER_CUBICSPLINEKERNEL_HPP

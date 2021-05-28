@@ -55,5 +55,4 @@ void ImGuiHelper::PostRender()
     // Render dear imgui into screen
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 }

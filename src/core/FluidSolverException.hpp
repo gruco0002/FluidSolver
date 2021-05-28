@@ -4,17 +4,17 @@
 #include <exception>
 #include <string>
 
-namespace FluidSolver {
-class FluidSolverException : public std::exception {
-public:
+namespace FluidSolver
+{
+    class FluidSolverException : public std::exception {
+      public:
+        std::string text;
 
-    std::string text;
+        explicit FluidSolverException(std::string text);
 
-    explicit FluidSolverException(std::string text);
-
-    const char *what() const noexcept override;
-};
-}
+        const char* what() const noexcept override;
+    };
+} // namespace FluidSolver
 
 
-#endif //FLUIDSOLVER_FLUIDSOLVEREXCEPTION_HPP
+#endif // FLUIDSOLVER_FLUIDSOLVEREXCEPTION_HPP

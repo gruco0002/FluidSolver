@@ -6,4 +6,4 @@
 #include "core/interface/Constants.hpp"
 
 
-#endif //FLUIDSOLVER_FLUIDINCLUDE_HPP
+#endif // FLUIDSOLVER_FLUIDINCLUDE_HPP

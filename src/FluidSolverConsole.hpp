@@ -6,24 +6,23 @@
 
 class FluidSolverConsole {
 
-public:
-	explicit FluidSolverConsole(cxxopts::Options& options);
+  public:
+    explicit FluidSolverConsole(cxxopts::Options& options);
 
-	void start(const cxxopts::ParseResult& parseResult);
+    void start(const cxxopts::ParseResult& parseResult);
 
-	struct {
-		float simulation_length = 1.0f;
-		bool verbose = false;
-		std::string filepath;
-	} settings;
+    struct
+    {
+        float simulation_length = 1.0f;
+        bool verbose = false;
+        std::string filepath;
+    } settings;
 
-private:
+  private:
+    void setup_options(cxxopts::Options& options);
 
-	void setup_options(cxxopts::Options& options);
-
-	void read_settings(const cxxopts::ParseResult& parseResult);
-
+    void read_settings(const cxxopts::ParseResult& parseResult);
 };
 
 
-#endif //FLUIDSOLVER_FLUIDSOLVERCONSOLE_HPP
+#endif // FLUIDSOLVER_FLUIDSOLVERCONSOLE_HPP

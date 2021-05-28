@@ -2,39 +2,38 @@
 
 #include <core/Simulation.hpp>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
 
-	class SimulationSerializer {
-	private:
+    class SimulationSerializer {
+      private:
+        size_t error_count = 0;
+        size_t warning_count = 0;
 
-		size_t error_count = 0;
-		size_t warning_count = 0;
+      public:
+        std::string filepath;
 
-	public:
+        struct Settings
+        {
+            bool save_particle_data = true;
+            std::string particle_data_relative_filepath = "particles.data";
+        } settings;
 
-		std::string filepath;
+        explicit SimulationSerializer(const std::string& filepath);
 
-		struct Settings {
-			bool save_particle_data = true;
-			std::string particle_data_relative_filepath = "particles.data";
-		} settings;
+        SimulationSerializer(const std::string& filepath, const Settings& settings);
 
-		explicit SimulationSerializer(const std::string& filepath);
+        bool has_errors() const;
+        bool has_warnings() const;
 
-		SimulationSerializer(const std::string& filepath, const Settings& settings);
+        Simulation load_from_file();
 
-		bool has_errors() const;
-		bool has_warnings() const;
+        void save_to_file(const Simulation& simulation);
 
-		Simulation load_from_file();
+      public:
+        static void load_particles(ParticleCollection& collection, const std::string& filepath);
 
-		void save_to_file(const Simulation& simulation);
+        static void save_particles(ParticleCollection& collection, const std::string& filepath);
+    };
 
-	public:
-		static void load_particles(ParticleCollection& collection, const std::string& filepath);
-
-		static void save_particles(ParticleCollection& collection, const std::string& filepath);
-
-	};
-
-}
+} // namespace FluidSolver

@@ -1,16 +1,18 @@
 #ifndef FLUIDSOLVER_SCENARIOSWINDOW_HPP
 #define FLUIDSOLVER_SCENARIOSWINDOW_HPP
 
-#include <vector>
-#include <string>
 #include "Paths.hpp"
 
-namespace FluidUi {
+#include <string>
+#include <vector>
+
+namespace FluidUi
+{
     class FluidSolverWindow;
 
     class ScenariosWindow {
-    public:
-        FluidSolverWindow *window = nullptr;
+      public:
+        FluidSolverWindow* window = nullptr;
 
         void render();
 
@@ -18,8 +20,8 @@ namespace FluidUi {
 
         ~ScenariosWindow();
 
-    private:
-        std::vector<char *> scenarios;
+      private:
+        std::vector<char*> scenarios;
 
         std::string path = FLUID_ROOT_DIR + std::string("scenarios/");
 
@@ -30,9 +32,7 @@ namespace FluidUi {
         void update_path();
 
         void load();
-
-
     };
-}
+} // namespace FluidUi
 
-#endif //FLUIDSOLVER_SCENARIOSWINDOW_HPP
+#endif // FLUIDSOLVER_SCENARIOSWINDOW_HPP

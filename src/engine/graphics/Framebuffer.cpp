@@ -1,24 +1,29 @@
-#include "../EngineException.hpp"
 #include "Framebuffer.hpp"
 
-uint32_t  Engine::Graphics::Framebuffer::currentlyBound = 0;
+#include "../EngineException.hpp"
 
-Engine::Graphics::Framebuffer::Framebuffer(uint32_t width, uint32_t height) {
+uint32_t Engine::Graphics::Framebuffer::currentlyBound = 0;
+
+Engine::Graphics::Framebuffer::Framebuffer(uint32_t width, uint32_t height)
+{
     this->width = width;
     this->height = height;
     GenerateFramebuffer();
 }
 
-Engine::Graphics::Framebuffer::~Framebuffer() {
+Engine::Graphics::Framebuffer::~Framebuffer()
+{
     DeleteFramebuffer();
 }
 
-void Engine::Graphics::Framebuffer::Bind(bool resizeViewport) {
+void Engine::Graphics::Framebuffer::Bind(bool resizeViewport)
+{
 
     if (currentlyBound == ID)
         return;
 
-    if (resizeViewport) {
+    if (resizeViewport)
+    {
         glViewport(0, 0, width, height);
     }
 
@@ -26,51 +31,58 @@ void Engine::Graphics::Framebuffer::Bind(bool resizeViewport) {
     currentlyBound = ID;
 }
 
-void Engine::Graphics::Framebuffer::Unbind() {
+void Engine::Graphics::Framebuffer::Unbind()
+{
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     currentlyBound = 0;
 }
 
-void Engine::Graphics::Framebuffer::AddAttachment(GLenum attachment, Engine::Graphics::Texture2D *texture) {
+void Engine::Graphics::Framebuffer::AddAttachment(GLenum attachment, Engine::Graphics::Texture2D* texture)
+{
     Bind();
 
     // check if existing, if yes throw error
-    if(attachments.find(attachment) != attachments.end())
+    if (attachments.find(attachment) != attachments.end())
         throw EngineException("Framebuffer Exception: Attachment already exists!");
 
     // check size
-    if(this->width != texture->getWidth() || this->height != texture->getHeight())
+    if (this->width != texture->getWidth() || this->height != texture->getHeight())
         throw EngineException("Framebuffer Exception: Texture does not have the same size as the framebuffer!");
 
     // add to attachments
     attachments[attachment] = texture;
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture->GetID(), 0);
 
-    if(attachment >= GL_COLOR_ATTACHMENT0 && attachment <= GL_COLOR_ATTACHMENT15)
+    if (attachment >= GL_COLOR_ATTACHMENT0 && attachment <= GL_COLOR_ATTACHMENT15)
         drawBuffers.push_back(attachment);
 
     SetDrawBuffers();
     CheckFramebufferStatus();
 }
 
-void Engine::Graphics::Framebuffer::SetDrawBuffers() {
+void Engine::Graphics::Framebuffer::SetDrawBuffers()
+{
     Bind();
     glDrawBuffers(drawBuffers.size(), drawBuffers.data());
 }
 
-void Engine::Graphics::Framebuffer::CheckFramebufferStatus() {
+void Engine::Graphics::Framebuffer::CheckFramebufferStatus()
+{
     Bind();
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         throw EngineException("Framebuffer Exception: Framebuffer is not complete!");
 }
 
-void Engine::Graphics::Framebuffer::GenerateFramebuffer() {
+void Engine::Graphics::Framebuffer::GenerateFramebuffer()
+{
     glGenFramebuffers(1, &ID);
 }
 
-void Engine::Graphics::Framebuffer::DeleteFramebuffer() {
+void Engine::Graphics::Framebuffer::DeleteFramebuffer()
+{
     Unbind();
-    for (auto tex : createdInternal) {
+    for (auto tex : createdInternal)
+    {
         delete tex;
     }
     glDeleteFramebuffers(1, &ID);

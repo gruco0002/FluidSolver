@@ -1,14 +1,14 @@
 #ifndef FLUIDSOLVER_IEXTERNALFORCE_HPP
 #define FLUIDSOLVER_IEXTERNALFORCE_HPP
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class IExternalForce {
 
-    public:
-        virtual void Apply(IParticleCollection *particleCollection) = 0;
-
+      public:
+        virtual void Apply(IParticleCollection* particleCollection) = 0;
     };
 
-}
+} // namespace FluidSolver
 
-#endif //FLUIDSOLVER_IEXTERNALFORCE_HPP
+#endif // FLUIDSOLVER_IEXTERNALFORCE_HPP

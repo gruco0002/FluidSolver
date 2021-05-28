@@ -5,11 +5,12 @@
 #include <core/fluidSolver/ParticleCollection.hpp>
 #include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class IEntity {
-    public:
-
-        struct SimulationInformation {
+      public:
+        struct SimulationInformation
+        {
 
             ParticleCollection* collection = nullptr;
             float gravity = 0.0f;
@@ -18,16 +19,14 @@ namespace FluidSolver {
 
         } sim;
 
-        
 
         virtual void initialize() = 0;
 
         virtual void execute_simulation_step(pFloat timestep) = 0;
 
         virtual ~IEntity() = default;
-
     };
-}
+} // namespace FluidSolver
 
 
-#endif //FLUIDSOLVER_IENTITY_HPP
+#endif // FLUIDSOLVER_IENTITY_HPP

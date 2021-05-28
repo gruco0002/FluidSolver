@@ -3,10 +3,10 @@
 #include "GLRenderer.hpp"
 #include "core/visualizer/GLParticleVertexArray.hpp"
 #include "core/visualizer/ISimulationVisualizer.hpp"
+#include "core/visualizer/Viewport2D.hpp"
 #include "engine/graphics/Framebuffer.hpp"
 #include "engine/graphics/Shader.hpp"
 #include "engine/graphics/Texture2D.hpp"
-#include "core/visualizer/Viewport2D.hpp"
 
 namespace FluidSolver
 {
@@ -74,7 +74,6 @@ namespace FluidSolver
 
         void calc_projection_matrix();
     };
-
 
 
 } // namespace FluidSolver

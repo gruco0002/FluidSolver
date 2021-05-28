@@ -1,45 +1,48 @@
 #pragma once
 
-#include<vector>
 #include "core/timestep/ITimestep.hpp"
 
-namespace FluidSolver {
+#include <vector>
 
-	template <typename T>
-	class SensorData {
+namespace FluidSolver
+{
 
-	private:
-		std::vector<T> values;
-		std::vector<Timepoint> timepoints;
+    template <typename T> class SensorData {
 
-	public:
+      private:
+        std::vector<T> values;
+        std::vector<Timepoint> timepoints;
 
-		const  T* data() const {
-			FLUID_ASSERT(values.size() == timepoints.size());
-			return values.data();
-		}
+      public:
+        const T* data() const
+        {
+            FLUID_ASSERT(values.size() == timepoints.size());
+            return values.data();
+        }
 
-		const Timepoint* times() const {
-			FLUID_ASSERT(values.size() == timepoints.size());
-			return timepoints.data();
-		}
+        const Timepoint* times() const
+        {
+            FLUID_ASSERT(values.size() == timepoints.size());
+            return timepoints.data();
+        }
 
-		void push_back(const Timepoint& time, const T& value) {
-			timepoints.push_back(time);
-			values.push_back(value);
-		}
+        void push_back(const Timepoint& time, const T& value)
+        {
+            timepoints.push_back(time);
+            values.push_back(value);
+        }
 
-		void clear() {
-			timepoints.clear();
-			values.clear();
-		}
+        void clear()
+        {
+            timepoints.clear();
+            values.clear();
+        }
 
-		size_t size() const {
-			FLUID_ASSERT(values.size() == timepoints.size());
-			return values.size();
-		}
+        size_t size() const
+        {
+            FLUID_ASSERT(values.size() == timepoints.size());
+            return values.size();
+        }
+    };
 
-
-	};
-
-}
+} // namespace FluidSolver

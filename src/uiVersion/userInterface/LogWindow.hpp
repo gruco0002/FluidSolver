@@ -1,15 +1,16 @@
 #pragma once
 
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace FluidUi {
+namespace FluidUi
+{
 
     class FluidSolverWindow;
 
-	class LogWindow {
+    class LogWindow {
 
-    public:
+      public:
         FluidSolverWindow* window = nullptr;
 
         void render();
@@ -18,9 +19,8 @@ namespace FluidUi {
 
         bool scroll_to_bottom = true;
 
-    private:
+      private:
         std::vector<std::string> messages;
+    };
 
-	};
-
-}
+} // namespace FluidUi

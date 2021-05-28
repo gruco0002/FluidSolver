@@ -2,21 +2,22 @@
 #define FLUIDSOLVER_COMPACTHASHINGNEIGHBORHOODSEARCH_HPP
 
 #include "INeighborhoodSearch.hpp"
-#include <iostream>
-#include <core/fluidSolver/particleCollection/ZIndexGridSorter.hpp>
 
-namespace FluidSolver {
+#include <core/fluidSolver/particleCollection/ZIndexGridSorter.hpp>
+#include <iostream>
+
+namespace FluidSolver
+{
 
     class CompactHashingNeighborhoodSearch : public INeighborhoodSearch {
-    public:
-        INeighborhoodSearch *CreateCopy(IParticleCollection *particleCollection, float radius) override;
+      public:
+        INeighborhoodSearch* CreateCopy(IParticleCollection* particleCollection, float radius) override;
 
-    public:
-
+      public:
         int sinceLargeSort = -1;
         ZIndexGridSorter sorter;
 
-        CompactHashingNeighborhoodSearch(IParticleCollection *particleCollection, float radius);
+        CompactHashingNeighborhoodSearch(IParticleCollection* particleCollection, float radius);
 
         void FindNeighbors() override;
 
@@ -24,10 +25,9 @@ namespace FluidSolver {
 
         NeighborsCompactData GetNeighbors(glm::vec2 position) override;
 
-        std::ostream& PrintToStream(std::ostream &os) const;
+        std::ostream& PrintToStream(std::ostream& os) const;
 
-    private:
-
+      private:
         void UpdateDataStructure();
 
         void RegenerateAllDataStructures();
@@ -37,15 +37,15 @@ namespace FluidSolver {
         size_t particleCollectionIndicesChangedCounter;
         bool initStructure;
 
-    public:
-
-        struct GridCell {
+      public:
+        struct GridCell
+        {
             int32_t x = 0;
             int32_t y = 0;
 
-            bool operator==(const GridCell &rhs) const;
+            bool operator==(const GridCell& rhs) const;
 
-            bool operator!=(const GridCell &rhs) const;
+            bool operator!=(const GridCell& rhs) const;
 
             GridCell() = default;
 
@@ -54,57 +54,56 @@ namespace FluidSolver {
 
 
         class HashTable {
-        public:
-
+          public:
             typedef size_t mappedTo_t;
             typedef GridCell key_t;
             typedef size_t hash_t;
 
             class HashTableIterator {
-            public:
-                HashTableIterator(size_t currentIndex, HashTable *table);
+              public:
+                HashTableIterator(size_t currentIndex, HashTable* table);
 
-                bool operator==(const HashTableIterator &other) const;
+                bool operator==(const HashTableIterator& other) const;
 
-                bool operator!=(const HashTableIterator &other) const;
+                bool operator!=(const HashTableIterator& other) const;
 
-                key_t &operator*();
+                key_t& operator*();
 
-                HashTableIterator &operator++();
+                HashTableIterator& operator++();
 
                 const HashTableIterator operator++(int);
 
-            private:
+              private:
                 size_t currentIndex;
-                HashTable *table;
+                HashTable* table;
             };
 
 
             explicit HashTable(size_t hashTableSize);
 
-            bool GetValueByKey(const key_t &gridCell, mappedTo_t &value);
+            bool GetValueByKey(const key_t& gridCell, mappedTo_t& value);
 
-            void RemoveKey(const key_t &gridCell);
+            void RemoveKey(const key_t& gridCell);
 
-            void SetValueByKey(const key_t &gridCell, mappedTo_t value);
+            void SetValueByKey(const key_t& gridCell, mappedTo_t value);
 
             HashTableIterator begin();
             HashTableIterator end();
 
-            
-            std::ostream& PrintToStream(std::ostream &os) const;
+
+            std::ostream& PrintToStream(std::ostream& os) const;
 
 
-        private:
-
-
+          private:
             size_t hashTableSize = 0;
 
-            struct HashTableHandle {
+            struct HashTableHandle
+            {
                 mappedTo_t storageSectionMappedTo = 0;
                 key_t gridCellUsingThis;
                 union {
-                    struct {
+                    struct
+                    {
                         unsigned hashCollisionHappened : 1;
                         unsigned hasAValue : 1;
                         unsigned relativeHashCollisionNextEntry : 6;
@@ -115,28 +114,30 @@ namespace FluidSolver {
 
             std::vector<HashTableHandle> hashTable;
 
-            hash_t CalculateHashValue(const key_t &gridCell);
+            hash_t CalculateHashValue(const key_t& gridCell);
 
 
-            bool GetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, mappedTo_t &value);
+            bool GetValueByKeyInternal(hash_t hashValue, const key_t& gridCell, mappedTo_t& value);
 
-            void SetValueByKeyInternal(hash_t hashValue, const key_t &gridCell, const mappedTo_t value);
+            void SetValueByKeyInternal(hash_t hashValue, const key_t& gridCell, const mappedTo_t value);
 
-            void RemoveKeyInternal(hash_t hashValue, const key_t &gridCell, hash_t previousHashValue);
-
+            void RemoveKeyInternal(hash_t hashValue, const key_t& gridCell, hash_t previousHashValue);
         };
-private:
+
+      private:
         float cellSize;
         HashTable hashTable;
 
-public:
+      public:
         class CellStorage {
 
-        public:
-            struct GridCellParticleHandle {
+          public:
+            struct GridCellParticleHandle
+            {
                 union {
                     particleIndex_t value = 0;
-                    struct {
+                    struct
+                    {
                         unsigned count : 8;
                         unsigned relativeLink : 24;
                     } internal;
@@ -147,33 +148,30 @@ public:
 
             class CellStorageIterator {
 
-            public:
-
-                CellStorageIterator(CellStorage *storage, size_t originalStorageSection, size_t currentStorageSection,
+              public:
+                CellStorageIterator(CellStorage* storage, size_t originalStorageSection, size_t currentStorageSection,
                                     uint8_t currentStorageSectionElement);
 
-                bool operator==(const CellStorageIterator &other) const;
+                bool operator==(const CellStorageIterator& other) const;
 
-                bool operator!=(const CellStorageIterator &other) const;
+                bool operator!=(const CellStorageIterator& other) const;
 
-                GridCellParticleHandle &operator*();
+                GridCellParticleHandle& operator*();
 
-                CellStorageIterator &operator++();
+                CellStorageIterator& operator++();
 
                 const CellStorageIterator operator++(int);
 
-            private:
-
-                CellStorage *internalCellStorage;
+              private:
+                CellStorage* internalCellStorage;
                 size_t originalStorageSection;
                 size_t currentStorageSection;
                 uint8_t currentStorageSectionElement;
-
             };
 
 
-            void
-            AddParticleToStorageSection(size_t storageSection, particleIndex_t particleIndex, const GridCell &gridCell);
+            void AddParticleToStorageSection(size_t storageSection, particleIndex_t particleIndex,
+                                             const GridCell& gridCell);
 
             void RemoveParticleFromStorageSection(size_t storageSection, particleIndex_t particleIndex);
 
@@ -193,18 +191,17 @@ public:
 
             CellStorage(uint8_t oneSectionParticleSize);
 
-            std::ostream& PrintToStream(std::ostream &os) const;
+            std::ostream& PrintToStream(std::ostream& os) const;
 
-        private:
-
+          private:
             // This function can cause a resize of the arrays. Be sure to refresh reference objects and pointers to the
             // data after using this function as memory corruptions could be happening otherwise.
             size_t GetEmptyStorageSection(size_t minimumStorageSectionValue);
 
             // points towards the first element (not the header) of the storage section
-            GridCellParticleHandle *GetStorageSectionElementsDataPtr(size_t storageSection);
+            GridCellParticleHandle* GetStorageSectionElementsDataPtr(size_t storageSection);
 
-            GridCellParticleHandle *GetStorageSectionHeader(size_t storageSection);
+            GridCellParticleHandle* GetStorageSectionHeader(size_t storageSection);
 
             void RemoveParticleFromStorageSectionInternal(size_t storageSection, size_t storageSectionBefore,
                                                           particleIndex_t particleIndex);
@@ -216,36 +213,40 @@ public:
 
             /**
              * The size of the storage is always a multiple of oneSectionTotalSize.
-             * The section storage is divided into sections of the oneSectionTotalSize size.
-             * The first element of each section is called the header and its particle index represents the internal data like the count and the link to another section.
-             * The particleGridCell of the header represents the grid cell this storage is responsible for.
-             * The remaining oneSectionParticleSize entries represent the actual particles of this storage cell, but only
-             * as many as the header count variable states. The particleGridCell variable of these particles is used whilst
-             * updating the structure. At any other times this fields data should not be read as it would eventually
-             * represent wrong data.
+             * The
+             * section storage is divided into sections of the oneSectionTotalSize size.
+             * The first
+             * element of each section is called the header and its particle index represents the internal data like the
+             * count and the link to another section.
+             * The particleGridCell of the header represents the
+             * grid cell this storage is responsible for.
+             * The remaining oneSectionParticleSize entries
+             * represent the actual particles of this storage cell, but only
+             * as many as the header count
+             * variable states. The particleGridCell variable of these particles is used whilst
+             * updating
+             * the structure. At any other times this fields data should not be read as it would eventually
+
+             * * represent wrong data.
              */
             std::vector<GridCellParticleHandle> data;
-
-
         };
 
-private:
-
+      private:
         CellStorage cellStorage;
 
         GridCell CalculateCellCoordinates(particleIndex_t particleIndex);
 
         class NeighborStorage {
 
-        public:
-
+          public:
             NeighborStorage(particleAmount_t neighborStorageSizePerParticle, particleAmount_t totalParticleCount);
 
             void SetCount(particleIndex_t particleIndex, particleAmount_t count);
 
             particleAmount_t GetCount(particleIndex_t particleIndex);
 
-            particleIndex_t *GetDataPtr(particleIndex_t particleIndex);
+            particleIndex_t* GetDataPtr(particleIndex_t particleIndex);
 
             particleAmount_t GetNeighborStorageSizePerParticle();
 
@@ -255,37 +256,31 @@ private:
 
             void setTotalParticleCount(particleAmount_t totalParticleCount);
 
-        private:
+          private:
             particleAmount_t neighborStorageSizePerParticle;
             particleAmount_t totalParticleCount;
 
             void ResizeVector();
 
             std::vector<particleIndex_t> neighbors;
-
         };
 
         NeighborStorage storage;
 
-        void FindNeighborsForCellForParticle(const glm::vec2 &particlePosition, const GridCell &gridCell,
-                                             particleAmount_t &neighborCount, particleIndex_t *data);
-
+        void FindNeighborsForCellForParticle(const glm::vec2& particlePosition, const GridCell& gridCell,
+                                             particleAmount_t& neighborCount, particleIndex_t* data);
     };
 
 
+} // namespace FluidSolver
+
+std::ostream& operator<<(std::ostream& os, FluidSolver::CompactHashingNeighborhoodSearch::HashTable const& m);
+
+std::ostream& operator<<(std::ostream& os, FluidSolver::CompactHashingNeighborhoodSearch::CellStorage const& m);
+
+std::ostream& operator<<(std::ostream& os, FluidSolver::CompactHashingNeighborhoodSearch const& m);
+
+std::ostream& operator<<(std::ostream& os, FluidSolver::CompactHashingNeighborhoodSearch::GridCell const& m);
 
 
-}
-
-std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::HashTable const &m);
-
-std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::CellStorage const &m) ;
-
-std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch const &m) ;
-
-std::ostream &operator<<(std::ostream &os, FluidSolver::CompactHashingNeighborhoodSearch::GridCell const &m);
-
-
-
-
-#endif //FLUIDSOLVER_COMPACTHASHINGNEIGHBORHOODSEARCH_HPP
+#endif // FLUIDSOLVER_COMPACTHASHINGNEIGHBORHOODSEARCH_HPP

@@ -15,11 +15,13 @@ namespace FluidSolver
 	 * @verbatim
 	 *
      *
-     * Layout-Location  type    name
+
+     * * Layout-Location  type    name
 	 * 0                uint8   type
 	 * 1                vec3    position	 
 	 * 2
-     * vec3    velocity
+
+     * * vec3    velocity
 	 * 3                vec3    acceleration
 	 * 
 	 * @endverbatim
@@ -45,8 +47,10 @@ namespace FluidSolver
 		 * @return Vao particle count.
 		 * @note The particle count
 
-         * * does not reflect the real buffer sizes (in terms of elements) of the index or selection
+
+         * * * does not reflect the real buffer sizes (in terms of elements) of the index or selection
 		 * buffer.
+
 
 
          */
@@ -57,7 +61,8 @@ namespace FluidSolver
 
         /**
 		 * This function is called during update after the index and selection buffer and the vao particle
-         * count
+
+         * * count
          * field are
 		 * updated.
 		 */
@@ -67,9 +72,11 @@ namespace FluidSolver
 		 * This function is called once during generation after the index and selection buffer are generated.
 
 
-         * * * The function has to create the vao according to its specification and should create any other buffers
 
-         * * needed.
+         * * * * The function has to create the vao according to its specification and should create any other buffers
+
+
+         * * * needed.
 		 */
         virtual void OnGenerate() = 0;
 
@@ -77,28 +84,30 @@ namespace FluidSolver
 		 * The default constructor. Should be called by derived classes.
 		 * @param particleCollection The
 
-         * * particle collection that the vao represents.
+
+         * * * particle collection that the vao represents.
 		 */
         explicit ParticleVertexArray3D(FluidSolver::ParticleCollection* particleCollection);
 
         /**
 		 * Returns the buffer object containing the indices for the point primitives that will be drawed.
 
-         * *
+
+         * * *
          * @return Index buffer
 		 */
         Engine::Graphics::Buffer::IndexBuffer<uint32_t>* GetIndexBuffer();
-
-       
 
 
         /**
 		 * The underlying opengl vao object. This object should be created by the derived class in the
 
-         * * OnGenerate function.
+
+         * * * OnGenerate function.
 		 * The object is deleted by the base class and must not be deleted by a derived
 
-         * * class.
+
+         * * * class.
 		 */
         Engine::Graphics::Buffer::VertexArray* vao = nullptr;
 
@@ -106,10 +115,8 @@ namespace FluidSolver
         uint32_t vaoParticleCount = 0;
         FluidSolver::ParticleCollection* particleCollection = nullptr;
 
-     
 
         Engine::Graphics::Buffer::IndexBuffer<uint32_t>* indexBuffer = nullptr;
-
     };
 
     /**
@@ -135,4 +142,3 @@ namespace FluidSolver
         Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleInfo>* infoBuffer = nullptr;
     };
 } // namespace FluidSolver
-

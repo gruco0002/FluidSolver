@@ -1,12 +1,15 @@
-#include <core/group/RectangleAreaGroup.hpp>
-#include <core/group/GroupActions.hpp>
 #include "ParticleRemover.hpp"
 
-void FluidSolver::ParticleRemover::initialize() {
+#include <core/group/GroupActions.hpp>
+#include <core/group/RectangleAreaGroup.hpp>
+
+void FluidSolver::ParticleRemover::initialize()
+{
     return;
 }
 
-void FluidSolver::ParticleRemover::execute_simulation_step(FluidSolver::pFloat timestep) {
+void FluidSolver::ParticleRemover::execute_simulation_step(FluidSolver::pFloat timestep)
+{
     RectangleAreaGroup group;
     group.area = parameters.area;
     group.collection = sim.collection;

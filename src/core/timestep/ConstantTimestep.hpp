@@ -3,17 +3,17 @@
 
 #include "ITimestep.hpp"
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class ConstantTimestep : public ITimestep {
-    public:
-
-        struct ConstantTimestepSettings {
+      public:
+        struct ConstantTimestepSettings
+        {
             float timestep = 0.001f;
         } settings;
 
         void calculate_current_timestep() override;
-
     };
-}
+} // namespace FluidSolver
 
-#endif //FLUIDSOLVER_CONSTANTTIMESTEP_HPP
+#endif // FLUIDSOLVER_CONSTANTTIMESTEP_HPP

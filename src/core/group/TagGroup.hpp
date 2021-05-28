@@ -3,18 +3,20 @@
 
 #include "../FluidInclude.hpp"
 #include "../fluidSolver/ParticleCollection.hpp"
+
 #include <unordered_set>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class TagGroup {
-    public:
+      public:
         std::unordered_set<pTag_t> tags;
 
-        ParticleCollection *collection = nullptr;
+        ParticleCollection* collection = nullptr;
 
         bool is_member(pIndex_t index) const;
 
-    public:
+      public:
         struct TagGroupIterator;
 
 
@@ -25,31 +27,31 @@ namespace FluidSolver {
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
-        using pointer = T *;
-        using const_pointer = const T *;
-        using reference = T &;
+        using pointer = T*;
+        using const_pointer = const T*;
+        using reference = T&;
 
-        struct TagGroupIterator {
-            TagGroup *data;
+        struct TagGroupIterator
+        {
+            TagGroup* data;
             T current;
 
-            bool operator==(const iterator &other) const;
+            bool operator==(const iterator& other) const;
 
-            bool operator!=(const iterator &other) const;
+            bool operator!=(const iterator& other) const;
 
-            T &operator*();
+            T& operator*();
 
-            iterator &operator++();
+            iterator& operator++();
 
             const iterator operator++(int);
-
         };
 
         iterator begin();
 
         iterator end();
     };
-}
+} // namespace FluidSolver
 
 
-#endif //FLUIDSOLVER_TAGGROUP_HPP
+#endif // FLUIDSOLVER_TAGGROUP_HPP

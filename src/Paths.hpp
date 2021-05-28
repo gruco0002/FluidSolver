@@ -5,4 +5,3 @@ constexpr auto FLUID_ROOT_DIR = "../";
 
 
 #endif // !PATHS_HPP
-

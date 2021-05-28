@@ -3,17 +3,18 @@
 
 #include "core/fluidSolver/particleCollection/IParticleCollection.hpp"
 
-namespace FluidSolver{
+namespace FluidSolver
+{
 
     /**
      * An interface providing Simulation modification.
      */
-    class ISimulationModifier{
+    class ISimulationModifier {
 
 
-    public:
-
-        struct SimulationInfo{
+      public:
+        struct SimulationInfo
+        {
             float timeStep;
             float restDensity;
             float particleSize;
@@ -21,13 +22,12 @@ namespace FluidSolver{
 
         /**
          * This function will be called after advecting all particles.
-         * @param collection The particle Collection.
+         * @param collection The
+         * particle Collection.
          */
-        virtual void ModifySimulation(IParticleCollection* collection, SimulationInfo &info) = 0;
-
-
+        virtual void ModifySimulation(IParticleCollection* collection, SimulationInfo& info) = 0;
     };
 
-}
+} // namespace FluidSolver
 
-#endif //FLUIDSOLVER_ISIMULATIONMODIFIER_HPP
+#endif // FLUIDSOLVER_ISIMULATIONMODIFIER_HPP

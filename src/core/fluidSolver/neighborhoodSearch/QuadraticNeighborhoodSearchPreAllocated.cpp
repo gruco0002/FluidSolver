@@ -1,18 +1,24 @@
 #include "QuadraticNeighborhoodSearchPreAllocated.hpp"
+
 #include "core/FluidSolverException.hpp"
 
-void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
+void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors()
+{
 
     // start by checking sizes
     auto particleCount = particleCollection->GetSize();
-    if (neighborsCount.size() < particleCount) neighborsCount.resize(particleCount);
-    if (neighborsStart.size() < particleCount) neighborsStart.resize(particleCount);
+    if (neighborsCount.size() < particleCount)
+        neighborsCount.resize(particleCount);
+    if (neighborsStart.size() < particleCount)
+        neighborsStart.resize(particleCount);
 
-    // calculate neighbor count
+        // calculate neighbor count
 #pragma omp parallel for
-    for (particleIndex_t i = 0; i < particleCount; i++) {
+    for (particleIndex_t i = 0; i < particleCount; i++)
+    {
 
-        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary) {
+        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary)
+        {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
 
@@ -21,9 +27,11 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
 
         // for the particle i, find all neighbors j
 #pragma omp parallel for
-        for (particleIndex_t j = 0; j < particleCount; j++) {
+        for (particleIndex_t j = 0; j < particleCount; j++)
+        {
             glm::vec2 distVec = position - particleCollection->GetPosition(j);
-            if (glm::length(distVec) <= radius) {
+            if (glm::length(distVec) <= radius)
+            {
                 // this is a neighbor, increase count
                 count++;
             }
@@ -35,9 +43,11 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
 
     // calculate neighbor start
 #pragma omp parallel for
-    for (particleIndex_t i = 0; i < particleCount; i++) {
+    for (particleIndex_t i = 0; i < particleCount; i++)
+    {
         particleAmount_t sum = 0;
-        for (particleAmount_t j = 0; j < i; j++) {
+        for (particleAmount_t j = 0; j < i; j++)
+        {
             sum = sum + neighborsCount[j];
         }
         neighborsStart[i] = sum;
@@ -47,13 +57,16 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
     particleAmount_t totalNeighborCount = neighborsStart[particleCount - 1] + neighborsCount[particleCount - 1];
 
     // check if storage is enough and resize it if necessary
-    if (neighbors.size() < totalNeighborCount) neighbors.resize(totalNeighborCount);
+    if (neighbors.size() < totalNeighborCount)
+        neighbors.resize(totalNeighborCount);
 
-    // find neighbors and insert them into the neighbor array
+        // find neighbors and insert them into the neighbor array
 #pragma omp parallel for
-    for (particleIndex_t i = 0; i < particleCount; i++) {
+    for (particleIndex_t i = 0; i < particleCount; i++)
+    {
 
-        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary) {
+        if (particleCollection->GetParticleType(i) == ParticleTypeBoundary)
+        {
             continue; // don't calculate unnecessary values for the boundary particles.
         }
 
@@ -61,35 +74,39 @@ void FluidSolver::QuadraticNeighborhoodSearchPreAllocated::FindNeighbors() {
         size_t currentArrayPosition = neighborsStart[i];
 
         // for the particle i, find all neighbors j
-        for (particleIndex_t j = 0; j < particleCount; j++) {
+        for (particleIndex_t j = 0; j < particleCount; j++)
+        {
             glm::vec2 distVec = position - particleCollection->GetPosition(j);
-            if (glm::length(distVec) <= radius) {
+            if (glm::length(distVec) <= radius)
+            {
                 // this is a neighbor, add it to the list
                 neighbors[currentArrayPosition] = j;
                 currentArrayPosition++;
             }
         }
-
     }
 }
 
-FluidSolver::NeighborsCompact
-FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(FluidSolver::particleIndex_t particleIndex) {
+FluidSolver::NeighborsCompact FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(
+    FluidSolver::particleIndex_t particleIndex)
+{
     return NeighborsCompact(&neighbors[neighborsStart[particleIndex]], neighborsCount[particleIndex]);
 }
 
-FluidSolver::NeighborsCompactData
-FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 position) {
+FluidSolver::NeighborsCompactData FluidSolver::QuadraticNeighborhoodSearchPreAllocated::GetNeighbors(glm::vec2 position)
+{
     // TODO: implement
     throw std::logic_error("Not implemented");
 }
 
 FluidSolver::QuadraticNeighborhoodSearchPreAllocated::QuadraticNeighborhoodSearchPreAllocated(
-        FluidSolver::IParticleCollection *particleCollection, float radius) : INeighborhoodSearch(particleCollection,
-                                                                                                  radius) {}
+    FluidSolver::IParticleCollection* particleCollection, float radius)
+    : INeighborhoodSearch(particleCollection, radius)
+{
+}
 
-FluidSolver::INeighborhoodSearch *
-FluidSolver::QuadraticNeighborhoodSearchPreAllocated::CreateCopy(FluidSolver::IParticleCollection *particleCollection,
-                                                                 float radius) {
+FluidSolver::INeighborhoodSearch* FluidSolver::QuadraticNeighborhoodSearchPreAllocated::CreateCopy(
+    FluidSolver::IParticleCollection* particleCollection, float radius)
+{
     return new QuadraticNeighborhoodSearchPreAllocated(particleCollection, radius);
 }

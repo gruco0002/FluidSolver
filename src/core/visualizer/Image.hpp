@@ -1,55 +1,52 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <glm/glm.hpp>
+#include <string>
+#include <vector>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
 
-	class Image {
-	public:
+    class Image {
+      public:
+        struct Color
+        {
+            unsigned char r = 0;
+            unsigned char g = 0;
+            unsigned char b = 0;
+            unsigned char a = 0;
 
-		struct Color {
-			unsigned char r = 0;
-			unsigned char g = 0;
-			unsigned char b = 0;
-			unsigned char a = 0;
+            Color(unsigned char r, unsigned char g, unsigned char b);
 
-			Color(unsigned char r, unsigned char g, unsigned char b);
+            Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
-			Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+            Color() = default;
 
-			Color() = default;
+            Color(const glm::vec3& color);
 
-			Color(const glm::vec3& color);
+            Color(const glm::vec4& color);
+        };
 
-			Color(const glm::vec4& color);
+      private:
+        size_t v_width;
+        size_t v_height;
 
-		};
+        std::vector<Color> pixels;
 
-	private:
-		size_t v_width;
-		size_t v_height;
+      public:
+        Image(size_t width, size_t height);
 
-		std::vector<Color> pixels;
+        size_t width() const;
+        size_t height() const;
+        size_t size() const;
+        Color* data();
+        const Color* data() const;
 
-	public:
+        void set(size_t x, size_t y, const Color& color);
+        Color& get(size_t x, size_t y);
 
-		Image(size_t width, size_t height);
-
-		size_t width() const;
-		size_t height() const;
-		size_t size() const;
-		Color* data();
-		const Color* data() const;
-
-		void set(size_t x, size_t y, const Color& color);
-		Color& get(size_t x, size_t y);
-
-		void save_as_png(const std::string& filepath) const;
-
-
-	};
+        void save_as_png(const std::string& filepath) const;
+    };
 
 
-}
+} // namespace FluidSolver

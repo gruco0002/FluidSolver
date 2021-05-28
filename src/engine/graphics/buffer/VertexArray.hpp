@@ -1,39 +1,49 @@
 #ifndef ENGINE_VERTEXARRAY_HPP
 #define ENGINE_VERTEXARRAY_HPP
 
-#include <vector>
-#include <set>
 #include "../Enums.hpp"
 #include "Buffer.hpp"
 #include "IndexBuffer.hpp"
 
-namespace Engine {
-    namespace Graphics {
-        namespace Buffer {
+#include <set>
+#include <vector>
+
+namespace Engine
+{
+    namespace Graphics
+    {
+        namespace Buffer
+        {
             class VertexArray {
 
-            public:
-
-
+              public:
                 /**
-                 * Data for a buffer binding. There can be bindings to multiple buffers and / or multiple bindings to one buffer in one vertex array object.
-                 * @note For an index buffer there is no need to specify any field besides the Buffer* buffer field.
+                 * Data for a buffer binding. There can be bindings to multiple buffers and / or
+                 * multiple bindings to one buffer in one vertex array object.
+                 * @note For an index
+                 * buffer there is no need to specify any field besides the Buffer* buffer field.
+                 *
                  * @warning Each attribute index can be only used once per vertex array.
-                 * @note The buffer consists of an array of elements. In an vertex array, you gain the possibility to subdivide
-                 *       the whole array at nearly arbitary positions. This partitioning results in attribute elements, which are
-                 *       divided further into components. E.g. an attribute element represents a 4D-Vector, so it consists of
+                 * @note The
+                 * buffer consists of an array of elements. In an vertex array, you gain the possibility to subdivide
+
+                 * *       the whole array at nearly arbitary positions. This partitioning results in attribute
+                 * elements, which are
+                 *       divided further into components. E.g. an attribute
+                 * element represents a 4D-Vector, so it consists of
                  *       four components.
-                 */
-                struct BufferBinding {
-                    Buffer *buffer = nullptr;
-                    uint8_t attributeIndex = 0; // aka attribute location
-                    uint8_t numberOfComponentsPerAttributeElement = 1; //aka size
-                    size_t byteOffsetToFirstAttributeElement = 0; // aka pointer
-                    size_t byteOffsetBetweenAttributeElement = 4; // aka stride
-                    ComponentType componentType = ComponentTypeFloat; // aka type
+ */
+                struct BufferBinding
+                {
+                    Buffer* buffer = nullptr;
+                    uint8_t attributeIndex = 0;                        // aka attribute location
+                    uint8_t numberOfComponentsPerAttributeElement = 1; // aka size
+                    size_t byteOffsetToFirstAttributeElement = 0;      // aka pointer
+                    size_t byteOffsetBetweenAttributeElement = 4;      // aka stride
+                    ComponentType componentType = ComponentTypeFloat;  // aka type
                     bool isInstanced = false;
 
-                    BufferBinding(Buffer *buffer, uint8_t attributeIndex = 0,
+                    BufferBinding(Buffer* buffer, uint8_t attributeIndex = 0,
                                   uint8_t numberOfComponentsPerAttributeElement = 1,
                                   size_t byteOffsetToFirstAttributeElement = 0,
                                   size_t byteOffsetBetweenAttributeElement = 4,
@@ -43,7 +53,7 @@ namespace Engine {
                 };
 
 
-            public:
+              public:
                 VertexArray(std::vector<BufferBinding> bufferBindings);
 
                 void Bind();
@@ -52,17 +62,17 @@ namespace Engine {
 
                 virtual ~VertexArray();
 
-                Buffer *GetIndexBuffer();
+                Buffer* GetIndexBuffer();
 
                 /**
                  * Draws the vao using the index buffer.
                  * @param primitiveType
-                 * @param count Number of indices that should be used for drawing
+
+                 * * @param count Number of indices that should be used for drawing
                  */
                 virtual void Draw(GLenum primitiveType, uint32_t count);
 
-            private:
-
+              private:
                 uint32_t ID;
 
                 void Generate();
@@ -75,12 +85,11 @@ namespace Engine {
 
                 std::set<uint8_t> boundLocations;
 
-                Buffer *indexBuffer;
-
+                Buffer* indexBuffer;
             };
 
-        }
-    }
-}
+        } // namespace Buffer
+    }     // namespace Graphics
+} // namespace Engine
 
-#endif //ENGINE_VERTEXARRAY_HPP
+#endif // ENGINE_VERTEXARRAY_HPP

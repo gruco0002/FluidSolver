@@ -4,22 +4,22 @@
 #include "../FluidInclude.hpp"
 #include "../fluidSolver/ParticleCollection.hpp"
 
-namespace FluidSolver {
+namespace FluidSolver
+{
 
     class RectangleAreaGroup {
-    public:
+      public:
         Area area = {};
 
         bool inside = false;
 
-        ParticleCollection *collection = nullptr;
+        ParticleCollection* collection = nullptr;
 
         bool is_inside(pIndex_t index) const;
 
         bool is_member(pIndex_t index) const;
 
-    public:
-
+      public:
         struct RectangleAreaGroupIterator;
 
         // iterator defines
@@ -29,24 +29,24 @@ namespace FluidSolver {
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
-        using pointer = T *;
-        using const_pointer = const T *;
-        using reference = T &;
+        using pointer = T*;
+        using const_pointer = const T*;
+        using reference = T&;
 
-        struct RectangleAreaGroupIterator {
-            const RectangleAreaGroup *data;
+        struct RectangleAreaGroupIterator
+        {
+            const RectangleAreaGroup* data;
             T current;
 
-            bool operator==(const RectangleAreaGroupIterator &other) const;
+            bool operator==(const RectangleAreaGroupIterator& other) const;
 
-            bool operator!=(const RectangleAreaGroupIterator &other) const;
+            bool operator!=(const RectangleAreaGroupIterator& other) const;
 
-            T &operator*();
+            T& operator*();
 
-            RectangleAreaGroupIterator &operator++();
+            RectangleAreaGroupIterator& operator++();
 
             const RectangleAreaGroupIterator operator++(int);
-
         };
 
         RectangleAreaGroupIterator begin();
@@ -56,11 +56,10 @@ namespace FluidSolver {
         RectangleAreaGroupIterator begin() const;
 
         RectangleAreaGroupIterator end() const;
-
     };
 
 
-}
+} // namespace FluidSolver
 
 
-#endif //FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
+#endif // FLUIDSOLVER_RECTANGLEAREAGROUP_HPP

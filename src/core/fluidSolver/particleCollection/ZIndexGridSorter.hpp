@@ -3,17 +3,18 @@
 
 #include "IParticleCollection.hpp"
 
-namespace FluidSolver {
+namespace FluidSolver
+{
     class ZIndexGridSorter {
 
-    public:
+      public:
         float GridCellSize;
 
-        ZIndexGridSorter(float gridCellSize, IParticleCollection *particleCollection);
+        ZIndexGridSorter(float gridCellSize, IParticleCollection* particleCollection);
 
-        void CalculateGridCoordinates(particleIndex_t particleIndex, int32_t &gridX, int32_t &gridY);
+        void CalculateGridCoordinates(particleIndex_t particleIndex, int32_t& gridX, int32_t& gridY);
 
-        void CalculateGridCoordinatesUnsigned(particleIndex_t particleIndex, uint32_t &gridX, uint32_t &gridY);
+        void CalculateGridCoordinatesUnsigned(particleIndex_t particleIndex, uint32_t& gridX, uint32_t& gridY);
 
         uint64_t CalculateSortKey(particleIndex_t particleIndex);
 
@@ -28,12 +29,10 @@ namespace FluidSolver {
          */
         void Sort();
 
-    private:
-
-        IParticleCollection *particleCollection = nullptr;
-
+      private:
+        IParticleCollection* particleCollection = nullptr;
     };
-}
+} // namespace FluidSolver
 
 
-#endif //FLUIDSOLVER_ZINDEXGRIDSORTER_HPP
+#endif // FLUIDSOLVER_ZINDEXGRIDSORTER_HPP

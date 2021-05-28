@@ -2,57 +2,56 @@
 #define ENGINE_FRAMEBUFFER_HPP
 
 #include <glad/glad.h>
+
 #include "Texture2D.hpp"
+
 #include <map>
 #include <vector>
 
-namespace Engine{
-    namespace  Graphics{
+namespace Engine
+{
+    namespace Graphics
+    {
 
-class Framebuffer {
-
-
-public:
-
-    Framebuffer(uint32_t width, uint32_t height);
-
-    ~Framebuffer();
-
-    void Bind(bool resizeViewport = false);
-
-    void Unbind();
-
-    void AddAttachment(GLenum attachment, Texture2D* texture);
+        class Framebuffer {
 
 
-private:
+          public:
+            Framebuffer(uint32_t width, uint32_t height);
 
-    static uint32_t  currentlyBound;
+            ~Framebuffer();
 
-    uint32_t ID;
+            void Bind(bool resizeViewport = false);
 
-    uint32_t  width;
-    uint32_t  height;
+            void Unbind();
 
-    std::vector<GLenum> drawBuffers;
-
-    std::map<GLenum, Texture2D*> attachments;
-
-    std::vector<Texture2D*> createdInternal;
-
-    void SetDrawBuffers();
-
-    void CheckFramebufferStatus();
-
-    void GenerateFramebuffer();
-
-    void DeleteFramebuffer();
+            void AddAttachment(GLenum attachment, Texture2D* texture);
 
 
+          private:
+            static uint32_t currentlyBound;
 
-};
+            uint32_t ID;
 
-    }
-}
+            uint32_t width;
+            uint32_t height;
 
-#endif //ENGINE_FRAMEBUFFER_HPP
+            std::vector<GLenum> drawBuffers;
+
+            std::map<GLenum, Texture2D*> attachments;
+
+            std::vector<Texture2D*> createdInternal;
+
+            void SetDrawBuffers();
+
+            void CheckFramebufferStatus();
+
+            void GenerateFramebuffer();
+
+            void DeleteFramebuffer();
+        };
+
+    } // namespace Graphics
+} // namespace Engine
+
+#endif // ENGINE_FRAMEBUFFER_HPP

@@ -3,7 +3,8 @@
 
 #include <stdexcept>
 
-namespace FluidSolver {
+namespace FluidSolver
+{
 
 
 #ifdef WIN32
@@ -17,6 +18,6 @@ namespace FluidSolver {
 
 
     typedef size_t particleAmount_t;
-}
+} // namespace FluidSolver
 
-#endif //FLUIDSOLVER_TYPEDEFINITIONS_HPP
+#endif // FLUIDSOLVER_TYPEDEFINITIONS_HPP

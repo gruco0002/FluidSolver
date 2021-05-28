@@ -1,4 +1,5 @@
 #include "GLRenderer.hpp"
+
 #include "engine/Window.hpp"
 
 bool FluidSolver::GLRenderer::is_opengl_available()

@@ -5,17 +5,17 @@
 #include <exception>
 #include <string>
 
-namespace Engine {
+namespace Engine
+{
     class EngineException : public std::exception {
 
-    public:
-
+      public:
         EngineException(std::string msg);
 
         std::string msg;
 
-        const char *what() const noexcept override;
+        const char* what() const noexcept override;
     };
 
-}
-#endif //ENGINE_ENGINEEXCEPTION_HPP
+} // namespace Engine
+#endif // ENGINE_ENGINEEXCEPTION_HPP
