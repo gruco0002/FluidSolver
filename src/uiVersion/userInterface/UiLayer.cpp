@@ -481,11 +481,15 @@ void FluidUi::UiLayer::render_visualizer_component()
 
 		});
 
+	if(ImGui::Button("Save Image")){
+		auto data = window->simulation.parameters.visualizer->get_image_data();
+		data.save_as_png("visualizer-output.png");
+	}
+
 
 	auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
 	auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
-
-
+	
 	if (gl != nullptr) {
 		BeginSubsection("Particle Renderer", [&]() {
 			ImGui::ColorEdit4("Background", (float*)&gl->settings.backgroundClearColor);
