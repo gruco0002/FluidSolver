@@ -3,17 +3,18 @@
 #include "FluidSolverWindow.hpp"
 
 #include "ImguiHelper.hpp"
+#include "core/Log.hpp"
+#include "core/sensors/ParticleStatistics.hpp"
+#include "core/timestep/ConstantTimestep.hpp"
+#include "core/timestep/DynamicCFLTimestep.hpp"
+#include "core/visualizer/ContinousVisualizer.hpp"
+#include "core/visualizer/GLParticleRenderer.hpp"
+#include "core/visualizer/GLParticleRenderer3D.hpp"
+#include "core/visualizer/GLRenderer.hpp"
 
 #include <GLFW/glfw3.h>
 #include <Paths.hpp>
 #include <chrono>
-#include <core/Log.hpp>
-#include <core/sensors/ParticleStatistics.hpp>
-#include <core/timestep/ConstantTimestep.hpp>
-#include <core/timestep/DynamicCFLTimestep.hpp>
-#include <core/visualizer/GLParticleRenderer.hpp>
-#include <core/visualizer/GLParticleRenderer3D.hpp>
-#include <core/visualizer/GLRenderer.hpp>
 #include <iostream>
 #include <thread>
 
@@ -36,7 +37,50 @@ void FluidUi::FluidSolverWindow::load()
         {
             running = !running;
         }
+
+        if (simulation_visualization_window_in_foreground)
+        {
+            if (key == GLFW_KEY_W)
+            {
+                current_camera_movement = MovementDirection::Top;
+            }
+            else if (key == GLFW_KEY_S)
+            {
+                current_camera_movement = MovementDirection::Bottom;
+            }
+            else if (key == GLFW_KEY_A)
+            {
+                current_camera_movement = MovementDirection::Left;
+            }
+            else if (key == GLFW_KEY_D)
+            {
+                current_camera_movement = MovementDirection::Right;
+            }
+        }
     });
+
+    OnKeyRelease.Subscribe([&](int key) {
+        if (simulation_visualization_window_in_foreground)
+        {
+            if (key == GLFW_KEY_W && current_camera_movement == MovementDirection::Top)
+            {
+                current_camera_movement = MovementDirection::NoMovement;
+            }
+            else if (key == GLFW_KEY_S && current_camera_movement == MovementDirection::Bottom)
+            {
+                current_camera_movement = MovementDirection::NoMovement;
+            }
+            else if (key == GLFW_KEY_A && current_camera_movement == MovementDirection::Left)
+            {
+                current_camera_movement = MovementDirection::NoMovement;
+            }
+            else if (key == GLFW_KEY_D && current_camera_movement == MovementDirection::Right)
+            {
+                current_camera_movement = MovementDirection::NoMovement;
+            }
+        }
+    });
+
 
     // setup the windows
     setup_windows();
@@ -57,7 +101,6 @@ void FluidUi::FluidSolverWindow::unload()
 
 void FluidUi::FluidSolverWindow::render()
 {
-
 
     if (sim_worker_status == SimWorkerThreadStatus::SimWorkerThreadStatusWaitForWork)
     {
@@ -102,6 +145,9 @@ void FluidUi::FluidSolverWindow::render()
     uiLayer.render();
 
     ImGuiHelper::PostRender();
+
+    // update the camera
+    update_camera();
 }
 
 void FluidUi::FluidSolverWindow::create_empty_simulation()
@@ -418,4 +464,96 @@ bool FluidUi::FluidSolverWindow::is_safe_to_access_simulation_data() const
 {
     return !asynchronous_simulation ||
            (!running && sim_worker_status != SimWorkerThreadStatus::SimWorkerThreadStatusWork);
+}
+
+void FluidUi::FluidSolverWindow::update_camera()
+{
+    constexpr float CAM_SPEED = 5.0f;
+
+    if (!simulation_visualization_window_in_foreground)
+    {
+        current_camera_movement = MovementDirection::NoMovement;
+        return;
+    }
+
+    if (simulation.parameters.visualizer == nullptr)
+        return;
+
+    if (current_camera_movement == MovementDirection::NoMovement)
+        return;
+
+    auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(simulation.parameters.visualizer);
+    auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(simulation.parameters.visualizer);
+    auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(simulation.parameters.visualizer);
+
+    if (gl != nullptr)
+    {
+        if (current_camera_movement == MovementDirection::Top)
+        {
+            gl->settings.viewport.bottom += GetLastFrameTime() * CAM_SPEED;
+            gl->settings.viewport.top += GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Bottom)
+        {
+            gl->settings.viewport.bottom -= GetLastFrameTime() * CAM_SPEED;
+            gl->settings.viewport.top -= GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Left)
+        {
+            gl->settings.viewport.left -= GetLastFrameTime() * CAM_SPEED;
+            gl->settings.viewport.right -= GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Right)
+        {
+            gl->settings.viewport.left += GetLastFrameTime() * CAM_SPEED;
+            gl->settings.viewport.right += GetLastFrameTime() * CAM_SPEED;
+        }
+    }
+
+    if (cv != nullptr)
+    {
+        if (current_camera_movement == MovementDirection::Top)
+        {
+            cv->settings.viewport.bottom += GetLastFrameTime() * CAM_SPEED;
+            cv->settings.viewport.top += GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Bottom)
+        {
+            cv->settings.viewport.bottom -= GetLastFrameTime() * CAM_SPEED;
+            cv->settings.viewport.top -= GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Left)
+        {
+            cv->settings.viewport.left -= GetLastFrameTime() * CAM_SPEED;
+            cv->settings.viewport.right -= GetLastFrameTime() * CAM_SPEED;
+        }
+        else if (current_camera_movement == MovementDirection::Right)
+        {
+            cv->settings.viewport.left += GetLastFrameTime() * CAM_SPEED;
+            cv->settings.viewport.right += GetLastFrameTime() * CAM_SPEED;
+        }
+    }
+
+    if (gl3d != nullptr)
+    {
+        if (current_camera_movement == MovementDirection::Top)
+        {
+            gl3d->settings.camera.move_forward(GetLastFrameTime() * CAM_SPEED);
+        }
+        else if (current_camera_movement == MovementDirection::Bottom)
+        {
+            gl3d->settings.camera.move_forward(-GetLastFrameTime() * CAM_SPEED);
+        }
+        else if (current_camera_movement == MovementDirection::Left)
+        {
+            gl3d->settings.camera.move_right(-GetLastFrameTime() * CAM_SPEED);
+        }
+        else if (current_camera_movement == MovementDirection::Right)
+        {
+            gl3d->settings.camera.move_right(GetLastFrameTime() * CAM_SPEED);
+        }
+    }
+
+
+    this->visualizer_parameter_changed();
 }

@@ -49,6 +49,9 @@ namespace FluidUi
         void visualizer_parameter_changed();
 
       private:
+
+
+
         enum class SimWorkerThreadStatus
         {
             SimWorkerThreadStatusWork,
@@ -77,6 +80,12 @@ namespace FluidUi
         void visualize_simulation(bool called_from_worker_thread = false);
 
         bool simulation_visualization_window_in_foreground = false;
+
+        enum class MovementDirection{
+            Left, Right, Top, Bottom, NoMovement
+        } current_camera_movement;
+
+        void update_camera();
     };
 } // namespace FluidUi
 
