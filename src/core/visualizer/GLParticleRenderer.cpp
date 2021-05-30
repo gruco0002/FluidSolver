@@ -44,8 +44,10 @@ void FluidSolver::GLParticleRenderer::render()
         });
 
         create_or_update_fbo();
-        calc_projection_matrix();
+        
     }
+    calc_projection_matrix();
+
 
     FLUID_ASSERT(framebuffer != nullptr);
     FLUID_ASSERT(particleShader != nullptr);

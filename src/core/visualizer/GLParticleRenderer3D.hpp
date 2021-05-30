@@ -17,10 +17,26 @@ namespace FluidSolver
         glm::vec3 location;
         glm::vec3 looking_at;
         glm::vec3 up;
-        
+
         inline glm::mat4 view_matrix() const
         {
             return glm::lookAt(location, looking_at, up);
+        }
+
+        inline void move_forward(float amount)
+        {
+            glm::vec3 forward_vector = glm::normalize(looking_at - location);
+            location += amount * forward_vector;
+            looking_at += amount * forward_vector;
+        }
+
+        inline void move_right(float amount)
+        {
+            glm::vec3 forward_vector = glm::normalize(looking_at - location);
+            glm::vec3 normalized_up = glm::normalize(up);
+            glm::vec3 sidwards_vector = glm::cross(forward_vector, normalized_up);
+            location += amount * sidwards_vector;
+            looking_at += amount * sidwards_vector;
         }
     };
 
@@ -45,7 +61,7 @@ namespace FluidSolver
 
             glm::vec4 background_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-            Camera3D camera {glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
+            Camera3D camera{glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
 
             glm::vec3 light_direction = glm::vec3(8.0f, -12.0f, 1.0f);
 
