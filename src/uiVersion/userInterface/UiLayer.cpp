@@ -537,8 +537,9 @@ void FluidUi::UiLayer::render_visualizer_component()
             }
             ImGui::EndCombo();
         }
+    });
 
-        // update ptr since it could have changed
+    BeginSubsection("Output", [&] {
         auto visualizer = window->simulation.parameters.visualizer;
 
         if (ImGui::InputInt2("Render Target", (int*)&visualizer->parameters.render_target))
@@ -550,66 +551,68 @@ void FluidUi::UiLayer::render_visualizer_component()
             window->simulation.parameters.invalidate = true;
         }
 
-        /*	if (ImGui::InputFloat4("Viewport", (float*)&visualizer->settings.viewport)) {
-
-         * window->simulation.parameters.invalidate = true;
-		}*/
+        if (ImGui::Button("Save Image"))
+        {
+            auto data = window->simulation.parameters.visualizer->get_image_data();
+            data.save_as_png("visualizer-output.png");
+        }
     });
-
-    if (ImGui::Button("Save Image"))
-    {
-        auto data = window->simulation.parameters.visualizer->get_image_data();
-        data.save_as_png("visualizer-output.png");
-    }
 
 
     auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
     auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
     auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(window->simulation.parameters.visualizer);
 
-    if (gl != nullptr)
-    {
-        BeginSubsection(
-            "Particle Renderer",
-            [&]() {
-                ImGui::ColorEdit4("Background", (float*)&gl->settings.backgroundClearColor);
-                ImGui::ColorEdit4("Boundary", (float*)&gl->settings.boundaryParticleColor);
-                ImGui::Separator();
+    BeginSubsection("Colors", [&] {
+        if (gl != nullptr)
+        {
+            ImGui::ColorEdit4("Background", (float*)&gl->settings.backgroundClearColor);
+            ImGui::ColorEdit4("Boundary", (float*)&gl->settings.boundaryParticleColor);
+            ImGui::Separator();
 
-                static const char* const values[]{"Velocity", "Acceleration", "Mass", "Pressure", "Density"};
-                ImGui::Combo("Value", (int*)&gl->settings.colorSelection, values, 5);
+            static const char* const values[]{"Velocity", "Acceleration", "Mass", "Pressure", "Density"};
+            ImGui::Combo("Value", (int*)&gl->settings.colorSelection, values, 5);
 
-                ImGui::InputFloat("Lower Bound", &gl->settings.bottomValue);
-                ImGui::ColorEdit4("Lower Color", (float*)&gl->settings.bottomColor);
+            ImGui::InputFloat("Lower Bound", &gl->settings.bottomValue);
+            ImGui::ColorEdit4("Lower Color", (float*)&gl->settings.bottomColor);
 
-                ImGui::InputFloat("Upper Bound", &gl->settings.topValue);
-                ImGui::ColorEdit4("Upper Color", (float*)&gl->settings.topColor);
+            ImGui::InputFloat("Upper Bound", &gl->settings.topValue);
+            ImGui::ColorEdit4("Upper Color", (float*)&gl->settings.topColor);
 
-                ImGui::Separator();
+            ImGui::Separator();
 
-                ImGui::Checkbox("Memory Location", &gl->settings.showMemoryLocation);
-            },
-            (void*)0x54efe);
-    }
-    else if (cv != nullptr)
-    {
-        BeginSubsection(
-            "Continous Visualizer",
-            [&]() {
-                ImGui::ColorEdit4("Background", (float*)&cv->settings.clear_color, ImGuiColorEditFlags_Uint8);
-                ImGui::InputFloat("Min. render density", &cv->settings.minimum_render_density);
-            },
-            (void*)0x54efa);
-    }
-    else if (gl3d != nullptr)
-    {
-        BeginSubsection(
-            "Colors",
-            [&]() {
-                ImGui::ColorEdit4("Background", (float*)&gl3d->settings.background_color, ImGuiColorEditFlags_Uint8);
-            },
-            (void*)0x54efb);
-    }
+            ImGui::Checkbox("Memory Location", &gl->settings.showMemoryLocation);
+        }
+
+        if (cv != nullptr)
+        {
+            ImGui::ColorEdit4("Background", (float*)&cv->settings.clear_color, ImGuiColorEditFlags_Uint8);
+            ImGui::InputFloat("Min. render density", &cv->settings.minimum_render_density);
+        }
+
+        if (gl3d != nullptr)
+        {
+            ImGui::ColorEdit4("Background", (float*)&gl3d->settings.background_color, ImGuiColorEditFlags_Uint8);
+            ImGui::ColorEdit4("Fluid", (float*)&gl3d->settings.fluid_particle_color, ImGuiColorEditFlags_Uint8);
+            ImGui::ColorEdit4("Boundary", (float*)&gl3d->settings.boundary_particle_color, ImGuiColorEditFlags_Uint8);
+        }
+    });
+
+    BeginSubsection("View", [&] {
+        if (gl != nullptr)
+        {
+            ImGui::InputFloat4("Viewport", (float*)&gl->settings.viewport);
+        }
+
+        if (cv != nullptr)
+        {
+            ImGui::InputFloat4("Viewport", (float*)&cv->settings.viewport);
+        }
+
+        if (gl3d != nullptr)
+        {
+        }
+    });
 }
 
 void FluidUi::UiLayer::render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen)
