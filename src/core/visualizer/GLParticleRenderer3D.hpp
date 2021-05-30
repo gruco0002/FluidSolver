@@ -17,9 +17,11 @@ namespace FluidSolver
         glm::vec3 location;
         glm::vec3 looking_at;
         glm::vec3 up;
-
-        glm::mat4 view_matrix;
-        void update_view_matrix();
+        
+        inline glm::mat4 view_matrix() const
+        {
+            return glm::lookAt(location, looking_at, up);
+        }
     };
 
 
@@ -42,8 +44,8 @@ namespace FluidSolver
             glm::vec4 fluid_particle_color = glm::vec4(0.5f, 0.5f, 1.0f, 1.0f);
 
             glm::vec4 background_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-            glm::mat4 view_matrix =
-                glm::lookAt(glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+            Camera3D camera {glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
 
             glm::vec3 light_direction = glm::vec3(8.0f, -12.0f, 1.0f);
 

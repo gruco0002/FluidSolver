@@ -18,7 +18,7 @@
 #include <string>
 
 
-static void BeginSubsection(const std::string& name, const std::function<void()>& fnc, void* ptr_id = nullptr)
+static void BeginSubsection(const char* name, const std::function<void()>& fnc, void* ptr_id = nullptr)
 {
     const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed |
                                              ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap |
@@ -27,8 +27,8 @@ static void BeginSubsection(const std::string& name, const std::function<void()>
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{4, 4});
     ImGui::Separator();
     if (ptr_id == nullptr)
-        ptr_id = (void*)name.c_str();
-    bool open = ImGui::TreeNodeEx(ptr_id, treeNodeFlags, name.c_str());
+        ptr_id = (void*)name;
+    bool open = ImGui::TreeNodeEx(ptr_id, treeNodeFlags, name);
     ImGui::PopStyleVar();
 
     if (open)
@@ -611,6 +611,18 @@ void FluidUi::UiLayer::render_visualizer_component()
 
         if (gl3d != nullptr)
         {
+            if (ImGui::InputFloat3("Camera Location", (float*)&gl3d->settings.camera.location))
+            {
+                window->visualizer_parameter_changed();
+            }
+            if (ImGui::InputFloat3("Looking at", (float*)&gl3d->settings.camera.looking_at))
+            {
+                window->visualizer_parameter_changed();
+            }
+            if (ImGui::InputFloat3("Up Vector", (float*)&gl3d->settings.camera.up))
+            {
+                window->visualizer_parameter_changed();
+            }
         }
     });
 }
