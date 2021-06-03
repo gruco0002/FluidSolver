@@ -17,7 +17,7 @@ void main()
     float len = length(moved);
     float edgeMix = clamp(len - (0.5 - blurredEdge), 0.0, blurredEdge) / blurredEdge;
 
-    vec4 lightDirCameraSpace = viewMatrix * vec4(lightDirection, 0.0);
+    vec4 lightDirCameraSpace = vec4(lightDirection, 0.0);
 
     vec3 normal = normalize(vec3(moved.x, moved.y, 1.0 - len));
 
