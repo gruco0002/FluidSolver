@@ -59,6 +59,7 @@ namespace FluidUi
         void render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen);
 
         void delete_component(const Component& component);
+
     };
 
 } // namespace FluidUi

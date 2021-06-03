@@ -81,6 +81,32 @@ void FluidUi::FluidSolverWindow::load()
         }
     });
 
+    // mouse events
+    OnMouseDown.Subscribe([&](auto mb) {
+        if (mb == MouseButton::LeftButton)
+        {
+            left_mouse_button_down = true;
+            if (simulation_visualization_window_in_foreground)
+            {
+                is_dragging_viewport = true;
+                last_drag_location = {GetMousePositionX(), GetMousePositionY()};
+            }
+        }
+    });
+    OnMouseUp.Subscribe([&](auto mb) {
+        if (mb == MouseButton::LeftButton)
+        {
+            left_mouse_button_down = false;
+            is_dragging_viewport = false;
+        }
+    });
+    OnCursorPositionChanged.Subscribe([&](double x, double y) {
+        if (is_dragging_viewport)
+        {
+            this->drag_viewport(x, y);
+        }
+    });
+
 
     // setup the windows
     setup_windows();
@@ -335,6 +361,8 @@ void FluidUi::FluidSolverWindow::render_visualization_window()
             auto maxRegion = ImGui::GetContentRegionMax();
             maxRegion.x -= 20.0f;
             maxRegion.y -= 30.0f;
+            visualizer_window_size.width = maxRegion.x;
+            visualizer_window_size.height = maxRegion.y;
             float width = 0.0f;
             float height = 0.0f;
             if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x)
@@ -552,6 +580,71 @@ void FluidUi::FluidSolverWindow::update_camera()
         {
             gl3d->settings.camera.move_right(GetLastFrameTime() * CAM_SPEED);
         }
+    }
+
+
+    this->visualizer_parameter_changed();
+}
+
+
+void FluidUi::FluidSolverWindow::drag_viewport(double newX, double newY)
+{
+    if (!is_dragging_viewport)
+    {
+        return;
+    }
+    if (!simulation_visualization_window_in_foreground)
+    {
+        is_dragging_viewport = false;
+        return;
+    }
+
+    // calculate the delta
+    double deltaX = newX - last_drag_location.x;
+    double deltaY = newY - last_drag_location.y;
+
+    last_drag_location = {newX, newY};
+
+    // update the viewport accordingly
+    if (simulation.parameters.visualizer == nullptr)
+        return;
+
+    auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(simulation.parameters.visualizer);
+    auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(simulation.parameters.visualizer);
+    auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(simulation.parameters.visualizer);
+
+
+    if (gl != nullptr)
+    {
+        float camera_speed_x = gl->settings.viewport.width() / visualizer_window_size.width;
+        float camera_speed_y = gl->settings.viewport.height() / visualizer_window_size.height;
+
+        gl->settings.viewport.bottom += deltaY * camera_speed_y;
+        gl->settings.viewport.top += deltaY * camera_speed_y;
+        gl->settings.viewport.left -= deltaX * camera_speed_x;
+        gl->settings.viewport.right -= deltaX * camera_speed_x;
+    }
+
+    if (cv != nullptr)
+    {
+        float camera_speed_x = cv->settings.viewport.width() / visualizer_window_size.width;
+        float camera_speed_y = cv->settings.viewport.height() / visualizer_window_size.height;
+
+        cv->settings.viewport.bottom += deltaY * camera_speed_y;
+        cv->settings.viewport.top += deltaY * camera_speed_y;
+        cv->settings.viewport.left -= deltaX * camera_speed_x;
+        cv->settings.viewport.right -= deltaX * camera_speed_x;
+    }
+
+    if (gl3d != nullptr)
+    {
+        constexpr float CAM_SPEED = 0.01f;
+
+        float camera_speed_x = gl3d->parameters.render_target.width / visualizer_window_size.width * CAM_SPEED;
+        float camera_speed_y = gl3d->parameters.render_target.height / visualizer_window_size.height * CAM_SPEED;
+
+        gl3d->settings.camera.rotate_horizontal(camera_speed_x * -deltaX);
+        gl3d->settings.camera.rotate_vertical(camera_speed_y * -deltaY);
     }
 
 

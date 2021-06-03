@@ -19,7 +19,7 @@ void main()
 
     vec4 lightDirCameraSpace = viewMatrix * vec4(lightDirection, 0.0);
 
-    vec3 normal = normalize(vec3(moved.x, moved.y, 1.0 - len)); // TODO: implement correctly
+    vec3 normal = normalize(vec3(moved.x, moved.y, 1.0 - len));
 
     float lightFactor = clamp(ambientLightFactor + clamp(dot(normal, lightDirCameraSpace.xyz), 0.0, 1.0), 0.0, 1.0); 
 
@@ -28,4 +28,5 @@ void main()
     if(FragColor.a <= 0.02)
         discard;
 
+    FragColor.a = 1.0;
 }

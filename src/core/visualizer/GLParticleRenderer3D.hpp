@@ -8,6 +8,7 @@
 #include "engine/graphics/Texture2D.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 
 namespace FluidSolver
 {
@@ -37,6 +38,26 @@ namespace FluidSolver
             glm::vec3 sidwards_vector = glm::cross(forward_vector, normalized_up);
             location += amount * sidwards_vector;
             looking_at += amount * sidwards_vector;
+        }
+
+        inline void rotate_horizontal(float amount)
+        {
+            glm::mat4 rotation = glm::rotate(amount, up);
+            glm::vec3 view_vector = looking_at - location;
+            glm::vec4 rotated = rotation * glm::vec4(view_vector, 0.0f);
+            looking_at = location + glm::vec3(rotated.x, rotated.y, rotated.z);
+        }
+
+        inline void rotate_vertical(float amount)
+        {
+            glm::vec3 forward_vector = glm::normalize(looking_at - location);
+            glm::vec3 normalized_up = glm::normalize(up);
+            glm::vec3 sidwards_vector = glm::cross(forward_vector, normalized_up);
+
+            glm::mat4 rotation = glm::rotate(amount, sidwards_vector);
+            glm::vec3 view_vector = looking_at - location;
+            glm::vec4 rotated = rotation * glm::vec4(view_vector, 0.0f);
+            looking_at = location + glm::vec3(rotated.x, rotated.y, rotated.z);
         }
     };
 
