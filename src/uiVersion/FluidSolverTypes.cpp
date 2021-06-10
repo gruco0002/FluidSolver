@@ -5,6 +5,7 @@
 #include "core/fluidSolver/SESPHFluidSolver3D.hpp"
 #include "core/fluidSolver/kernel/CubicSplineKernel.hpp"
 #include "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
+#include "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "core/fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
 
 #include <set>
@@ -78,6 +79,18 @@ void FluidUi::FluidSolverTypes::add_types()
          SolverSettingsTypeSESPH3D,
          [](IFluidSolverBase* b) {
              return &dynamic_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>*>(b)->settings;
+         }});
+
+    types.push_back(
+        {"SESPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D",
+         []() { return new SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>(); },
+         [](const IFluidSolverBase* b) {
+             return dynamic_cast<const SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>*>(b) !=
+                    nullptr;
+         },
+         SolverSettingsTypeSESPH3D,
+         [](IFluidSolverBase* b) {
+             return &dynamic_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>*>(b)->settings;
          }});
 }
 

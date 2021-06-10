@@ -113,6 +113,8 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/fluidSolver/kernel/CubicSplineKernel3D.hpp" "core/fluidSolver/kernel/CubicSplineKernel3D.cpp"
         "core/fluidSolver/SESPHFluidSolver3D.hpp"
         "core/visualizer/Viewport2D.hpp"
+        "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp" "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.cpp"
+        "core/helper/ProtectedUnorderedMap.hpp"
         )
 
 
