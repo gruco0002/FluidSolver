@@ -28,25 +28,30 @@ void FluidUi::StatisticsUi::render()
             if (ImGui::Begin(sen->parameters.name.c_str(), sensor_window_open_ptr(i)))
             {
 
-                if (dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen))
+                if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalDensitySensor>(sen))
                 {
-                    render_density_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen));
+                    render_density_sensor_graph(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalDensitySensor>(sen));
                 }
-                else if (dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen))
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalPressureSensor>(sen))
                 {
-                    render_pressure_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen));
+                    render_pressure_sensor_graph(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalPressureSensor>(sen));
                 }
-                else if (dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen))
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalVelocitySensor>(sen))
                 {
-                    render_velocity_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen));
+                    render_velocity_sensor_graph(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalVelocitySensor>(sen));
                 }
-                else if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen))
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen))
                 {
-                    render_energy_sensor_graph(dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen));
+                    render_energy_sensor_graph(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen));
                 }
-                else if (dynamic_cast<FluidSolver::Sensors::GlobalParticleCountSensor*>(sen))
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen))
                 {
-                    render_particle_count_sensor(dynamic_cast<FluidSolver::Sensors::GlobalParticleCountSensor*>(sen));
+                    render_particle_count_sensor(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen));
                 }
             }
 
@@ -111,7 +116,8 @@ bool* FluidUi::StatisticsUi::sensor_window_open_ptr(size_t index)
     return (bool*)&(open_sensor_windows[index]);
 }
 
-void FluidUi::StatisticsUi::render_density_sensor_graph(FluidSolver::Sensors::GlobalDensitySensor* sensor)
+void FluidUi::StatisticsUi::render_density_sensor_graph(
+    std::shared_ptr<FluidSolver::Sensors::GlobalDensitySensor> sensor)
 {
     if (ImPlot::BeginPlot("Density"))
     {
@@ -120,7 +126,8 @@ void FluidUi::StatisticsUi::render_density_sensor_graph(FluidSolver::Sensors::Gl
     }
 }
 
-void FluidUi::StatisticsUi::render_pressure_sensor_graph(FluidSolver::Sensors::GlobalPressureSensor* sensor)
+void FluidUi::StatisticsUi::render_pressure_sensor_graph(
+    std::shared_ptr<FluidSolver::Sensors::GlobalPressureSensor> sensor)
 {
     if (ImPlot::BeginPlot("Pressure"))
     {
@@ -129,7 +136,8 @@ void FluidUi::StatisticsUi::render_pressure_sensor_graph(FluidSolver::Sensors::G
     }
 }
 
-void FluidUi::StatisticsUi::render_velocity_sensor_graph(FluidSolver::Sensors::GlobalVelocitySensor* sensor)
+void FluidUi::StatisticsUi::render_velocity_sensor_graph(
+    std::shared_ptr<FluidSolver::Sensors::GlobalVelocitySensor> sensor)
 {
     if (ImPlot::BeginPlot("Velocity"))
     {
@@ -138,7 +146,7 @@ void FluidUi::StatisticsUi::render_velocity_sensor_graph(FluidSolver::Sensors::G
     }
 }
 
-void FluidUi::StatisticsUi::render_energy_sensor_graph(FluidSolver::Sensors::GlobalEnergySensor* sensor)
+void FluidUi::StatisticsUi::render_energy_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sensor)
 {
     if (ImPlot::BeginPlot("Energy"))
     {
@@ -163,7 +171,8 @@ void FluidUi::StatisticsUi::render_energy_sensor_graph(FluidSolver::Sensors::Glo
     }
 }
 
-void FluidUi::StatisticsUi::render_particle_count_sensor(FluidSolver::Sensors::GlobalParticleCountSensor* sensor)
+void FluidUi::StatisticsUi::render_particle_count_sensor(
+    std::shared_ptr<FluidSolver::Sensors::GlobalParticleCountSensor> sensor)
 {
     if (ImPlot::BeginPlot("Energy"))
     {

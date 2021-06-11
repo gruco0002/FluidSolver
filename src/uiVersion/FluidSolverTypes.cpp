@@ -21,76 +21,91 @@ void FluidUi::FluidSolverTypes::add_types()
     using namespace FluidSolver;
     types.push_back(
         {"SESPH", "QuadraticNeighborhoodSearchDynamicAllocated", "CubicSplineKernel",
-         []() { return new SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<
-                        const SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>*>(b) !=
+         []() {
+             return std::make_shared<
+                 SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
+         },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b) !=
                     nullptr;
          },
          SolverSettingsTypeSESPH,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>*>(b)
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<
+                         SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b)
                          ->settings;
          }});
 
     types.push_back(
         {"SESPH", "HashedNeighborhoodSearch", "CubicSplineKernel",
-         []() { return new SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<const SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>*>(b) != nullptr;
+         []() { return std::make_shared<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<const SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b) !=
+                    nullptr;
          },
          SolverSettingsTypeSESPH,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>*>(b)->settings;
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b)
+                         ->settings;
          }});
 
     types.push_back(
         {"IISPH", "QuadraticNeighborhoodSearchDynamicAllocated", "CubicSplineKernel",
-         []() { return new IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<
-                        const IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>*>(b) !=
+         []() {
+             return std::make_shared<
+                 IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
+         },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b) !=
                     nullptr;
          },
          SolverSettingsTypeIISPH,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>*>(b)
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<
+                         IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b)
                          ->settings;
          }});
 
     types.push_back(
         {"IISPH", "HashedNeighborhoodSearch", "CubicSplineKernel",
-         []() { return new IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<const IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>*>(b) != nullptr;
+         []() { return std::make_shared<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<const IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b) !=
+                    nullptr;
          },
          SolverSettingsTypeIISPH,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>*>(b)->settings;
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b)
+                         ->settings;
          }});
 
     types.push_back(
         {"SESPH-3D", "QuadraticNeighborhoodSearch3D", "CubicSplineKernel3D",
-         []() { return new SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<const SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>*>(b) !=
-                    nullptr;
+         []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(b) != nullptr;
          },
          SolverSettingsTypeSESPH3D,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>*>(b)->settings;
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(
+                         b)
+                         ->settings;
          }});
 
     types.push_back(
         {"SESPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D",
-         []() { return new SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>(); },
-         [](const IFluidSolverBase* b) {
-             return dynamic_cast<const SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>*>(b) !=
-                    nullptr;
+         []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b) != nullptr;
          },
          SolverSettingsTypeSESPH3D,
-         [](IFluidSolverBase* b) {
-             return &dynamic_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>*>(b)->settings;
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b)
+                         ->settings;
          }});
 }
 
@@ -174,7 +189,7 @@ const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::que
 }
 
 const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::query_type(
-    const FluidSolver::IFluidSolverBase* query) const
+    const std::shared_ptr<FluidSolver::IFluidSolverBase>& query) const
 {
     for (auto& t : types)
     {

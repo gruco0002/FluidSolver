@@ -27,7 +27,6 @@ FluidSolver::OutputManager::~OutputManager()
     // close and delete sensor writers
     for (auto& [key, value] : sensor_writers)
     {
-        delete value;
         value = nullptr;
     }
     sensor_writers.clear();
@@ -40,14 +39,13 @@ void FluidSolver::OutputManager::save_sensor_data()
 
     {
         // remove unneeded sensor writers
-        std::set<FluidSolver::ISensor*> sensor_set(parameters.sensors.begin(), parameters.sensors.end());
-        std::vector<FluidSolver::ISensor*> to_remove;
+        std::set<std::shared_ptr<FluidSolver::ISensor>> sensor_set(parameters.sensors.begin(), parameters.sensors.end());
+        std::vector<std::shared_ptr<FluidSolver::ISensor>> to_remove;
         for (auto& [key, value] : sensor_writers)
         {
             if (sensor_set.find(key) == sensor_set.end())
             {
                 to_remove.push_back(key);
-                delete value;
                 value = nullptr;
             }
         }

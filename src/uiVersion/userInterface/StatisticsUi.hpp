@@ -1,7 +1,9 @@
 #ifndef FLUIDSOLVER_STATISTICSUI_HPP
 #define FLUIDSOLVER_STATISTICSUI_HPP
 
-#include <core/sensors/ParticleStatistics.hpp>
+#include "core/sensors/ParticleStatistics.hpp"
+
+#include <memory>
 #include <vector>
 
 namespace FluidUi
@@ -25,11 +27,11 @@ namespace FluidUi
 
         bool* sensor_window_open_ptr(size_t index);
 
-        void render_density_sensor_graph(FluidSolver::Sensors::GlobalDensitySensor* sensor);
-        void render_pressure_sensor_graph(FluidSolver::Sensors::GlobalPressureSensor* sensor);
-        void render_velocity_sensor_graph(FluidSolver::Sensors::GlobalVelocitySensor* sensor);
-        void render_energy_sensor_graph(FluidSolver::Sensors::GlobalEnergySensor* sensor);
-        void render_particle_count_sensor(FluidSolver::Sensors::GlobalParticleCountSensor* sensor);
+        void render_density_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalDensitySensor> sensor);
+        void render_pressure_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalPressureSensor> sensor);
+        void render_velocity_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalVelocitySensor> sensor);
+        void render_energy_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sensor);
+        void render_particle_count_sensor(std::shared_ptr<FluidSolver::Sensors::GlobalParticleCountSensor> sensor);
     };
 
 } // namespace FluidUi

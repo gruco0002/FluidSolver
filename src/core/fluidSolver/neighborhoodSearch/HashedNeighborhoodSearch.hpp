@@ -6,6 +6,7 @@
 #include "core/fluidSolver/ParticleCollection.hpp"
 
 #include <list>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -67,7 +68,7 @@ namespace FluidSolver
             NeighborsIterator end() const;
         };
 
-        ParticleCollection* collection = nullptr;
+        std::shared_ptr<ParticleCollection> collection = nullptr;
         pFloat search_radius = 0.0f;
 
         void find_neighbors();

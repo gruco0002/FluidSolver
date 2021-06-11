@@ -18,7 +18,7 @@ namespace FluidSolver
             std::string output_folder = "output/";
 
             size_t timesteps_between_sensor_save = 10;
-            std::vector<ISensor*> sensors;
+            std::vector<std::shared_ptr<ISensor>> sensors;
         } parameters;
 
         void initialize();
@@ -32,7 +32,7 @@ namespace FluidSolver
       private:
         size_t timesteps_since_last_sensor_save = 0;
 
-        std::map<ISensor*, SensorWriter*> sensor_writers;
+        std::map<std::shared_ptr<ISensor>, std::shared_ptr<SensorWriter>> sensor_writers;
 
         void save_sensor_data();
 

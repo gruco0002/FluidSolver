@@ -5,7 +5,7 @@
 namespace FluidSolver
 {
 
-    ParticleVertexArray::ParticleVertexArray(FluidSolver::ParticleCollection* particleCollection)
+    ParticleVertexArray::ParticleVertexArray(std::shared_ptr<FluidSolver::ParticleCollection> particleCollection)
     {
         this->particleCollection = particleCollection;
     }
@@ -115,7 +115,7 @@ namespace FluidSolver
     }
 
     ParticleVertexArray* ParticleVertexArray::CreateFromParticleCollection(
-        FluidSolver::ParticleCollection* particleCollection)
+        std::shared_ptr<FluidSolver::ParticleCollection> particleCollection)
     {
         return new ParticleVertexArrayForCollection(particleCollection);
 
@@ -212,7 +212,7 @@ namespace FluidSolver
         }
     }
 
-    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(FluidSolver::ParticleCollection* collection)
+    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(std::shared_ptr<FluidSolver::ParticleCollection> collection)
         : ParticleVertexArray(collection)
     {
         this->stripedParticleCollection = collection;

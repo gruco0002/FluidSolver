@@ -1,8 +1,10 @@
 #ifndef FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
 #define FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
 
-#include "../FluidInclude.hpp"
-#include "../fluidSolver/ParticleCollection.hpp"
+#include "core/FluidInclude.hpp"
+#include "core/fluidSolver/ParticleCollection.hpp"
+
+#include <memory>
 
 namespace FluidSolver
 {
@@ -13,7 +15,7 @@ namespace FluidSolver
 
         bool inside = false;
 
-        ParticleCollection* collection = nullptr;
+        std::shared_ptr<ParticleCollection> collection = nullptr;
 
         bool is_inside(pIndex_t index) const;
 

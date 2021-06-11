@@ -3,8 +3,9 @@
 
 #include "ParticleCollection.hpp"
 #include "core/FluidInclude.hpp"
+#include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 
-#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
+#include <memory>
 
 namespace FluidSolver
 {
@@ -26,7 +27,7 @@ namespace FluidSolver
 
         virtual NeighborhoodInterface create_neighborhood_interface() = 0;
 
-        ParticleCollection* collection = nullptr;
+        std::shared_ptr<ParticleCollection> collection = nullptr;
     };
 
     /**
@@ -63,7 +64,7 @@ namespace FluidSolver
      * Neighbors get_neighbors(const glm::vec2 &position); (or in the case of 3d glm::vec3)
      *      void
      * initialize();
-     * 
+     *
      *      NeighborhoodInterface create_interface();
      *
      */

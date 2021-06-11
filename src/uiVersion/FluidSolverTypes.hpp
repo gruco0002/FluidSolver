@@ -4,6 +4,7 @@
 #include "core/fluidSolver/IFluidSolver.hpp"
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <tuple>
 
@@ -25,12 +26,12 @@ namespace FluidUi
             std::string name_neighborhood_search;
             std::string name_kernel;
 
-            std::function<FluidSolver::IFluidSolverBase*()> create_type;
+            std::function<std::shared_ptr<FluidSolver::IFluidSolverBase>()> create_type;
 
-            std::function<bool(const FluidSolver::IFluidSolverBase*)> is_type;
+            std::function<bool(const std::shared_ptr<FluidSolver::IFluidSolverBase>&)> is_type;
 
             SolverSettingsType settings_type;
-            std::function<void*(FluidSolver::IFluidSolverBase*)> get_settings;
+            std::function<void*(std::shared_ptr<FluidSolver::IFluidSolverBase>)> get_settings;
         };
 
         struct FluidSolverTypeQuery
@@ -60,7 +61,7 @@ namespace FluidUi
         const FluidSolverType* query_type(const FluidSolverTypeQuery& query,
                                           QueryMainFocus focus = QueryMainFocus::None) const;
 
-        const FluidSolverType* query_type(const FluidSolver::IFluidSolverBase* query) const;
+        const FluidSolverType* query_type(const std::shared_ptr<FluidSolver::IFluidSolverBase>& query) const;
 
 
       private:

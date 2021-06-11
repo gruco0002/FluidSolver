@@ -9,6 +9,9 @@
 #include "core/timestep/ITimestep.hpp"
 #include "core/visualizer/ISimulationVisualizer.hpp"
 
+#include <memory>
+
+
 namespace FluidSolver
 {
     struct SimulationParameters
@@ -16,14 +19,14 @@ namespace FluidSolver
         float particle_size = 1.0f;
         float rest_density = 1.0f;
         float gravity = 9.81f;
-        ParticleCollection* collection = nullptr;
-        IFluidSolverBase* fluid_solver = nullptr;
-        ISimulationVisualizer* visualizer = nullptr;
-        ITimestep* timestep = nullptr;
+        std::shared_ptr<ParticleCollection> collection = nullptr;
+        std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
+        std::shared_ptr<ISimulationVisualizer> visualizer = nullptr;
+        std::shared_ptr<ITimestep> timestep = nullptr;
 
-        std::vector<IEntity*> entities;
+        std::vector<std::shared_ptr<IEntity>> entities;
 
-        std::vector<ISensor*> sensors;
+        std::vector<std::shared_ptr<ISensor>> sensors;
 
         OutputManager output;
 

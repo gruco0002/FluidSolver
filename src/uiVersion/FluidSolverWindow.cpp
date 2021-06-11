@@ -180,7 +180,7 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
 {
     simulation = FluidSolver::Simulation();
 
-    simulation.parameters.collection = new FluidSolver::ParticleCollection();
+    simulation.parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
     simulation.parameters.collection->add_type<FluidSolver::MovementData>();
     simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
     simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
@@ -190,8 +190,8 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
     simulation.parameters.gravity = 9.81f;
 
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
-    simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
@@ -206,7 +206,7 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 {
     simulation = FluidSolver::Simulation();
 
-    simulation.parameters.collection = new FluidSolver::ParticleCollection();
+    simulation.parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
     simulation.parameters.collection->add_type<FluidSolver::MovementData3D>();
     simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
     simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
@@ -220,8 +220,8 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
     simulation.parameters.collection->add_type<FluidSolver::MovementData>();
 
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = new FluidSolver::ConstantTimestep();
-    simulation.parameters.visualizer = new FluidSolver::GLParticleRenderer3D();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
@@ -297,7 +297,7 @@ void FluidUi::FluidSolverWindow::render_visualization_window()
 
     in_foreground = in_foreground || ImGui::IsWindowFocused();
 
-    auto glRenderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer);
+    auto glRenderer = std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.parameters.visualizer);
     if (simulation.parameters.visualizer == nullptr)
     {
         ImGui::Text("No visualizer is set!");
@@ -428,7 +428,7 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
         return;
 
 
-    bool is_gl_renderer = dynamic_cast<FluidSolver::GLRenderer*>(simulation.parameters.visualizer) != nullptr;
+    bool is_gl_renderer = std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.parameters.visualizer) != nullptr;
     if (called_from_worker_thread && is_gl_renderer)
     {
         // an opengl renderer has to be called synchronously in the thread of the windows,
@@ -510,9 +510,9 @@ void FluidUi::FluidSolverWindow::update_camera()
     if (current_camera_movement == MovementDirection::NoMovement)
         return;
 
-    auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(simulation.parameters.visualizer);
-    auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(simulation.parameters.visualizer);
-    auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(simulation.parameters.visualizer);
+    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulation.parameters.visualizer);
+    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulation.parameters.visualizer);
+    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulation.parameters.visualizer);
 
     if (gl != nullptr)
     {
@@ -609,9 +609,9 @@ void FluidUi::FluidSolverWindow::drag_viewport(double newX, double newY)
     if (simulation.parameters.visualizer == nullptr)
         return;
 
-    auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(simulation.parameters.visualizer);
-    auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(simulation.parameters.visualizer);
-    auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(simulation.parameters.visualizer);
+    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulation.parameters.visualizer);
+    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulation.parameters.visualizer);
+    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulation.parameters.visualizer);
 
 
     if (gl != nullptr)

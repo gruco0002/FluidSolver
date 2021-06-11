@@ -5,6 +5,7 @@
 #include "NeighborhoodInterface.hpp"
 #include "core/FluidInclude.hpp"
 
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -56,7 +57,7 @@ namespace FluidSolver
      *      Neighbors get_neighbors(size_t particleIndex);
      *
      * Neighbors get_neighbors(const glm::vec2 &position);
-     * 
+     *
      *      NeighborhoodInterface
      * create_interface();
      */
@@ -110,7 +111,7 @@ namespace FluidSolver
             NeighborsIterator end() const;
         };
 
-        ParticleCollection* collection = nullptr;
+        std::shared_ptr<ParticleCollection> collection = nullptr;
         float search_radius = 0.0f;
 
         void find_neighbors();

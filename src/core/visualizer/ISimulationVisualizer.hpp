@@ -2,9 +2,10 @@
 #define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
 
 #include "core/fluidSolver/ParticleCollection.hpp"
+#include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "core/visualizer/Image.hpp"
 
-#include <core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp>
+#include <memory>
 
 namespace FluidSolver
 {
@@ -23,7 +24,7 @@ namespace FluidSolver
             // this size specifies how large the render target should be in pixels
             Size render_target;
 
-            ParticleCollection* collection = nullptr;
+            std::shared_ptr<ParticleCollection> collection = nullptr;
             float rest_density = 0.0f;
             float particle_size = 0.0f;
 

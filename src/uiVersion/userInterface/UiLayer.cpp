@@ -69,31 +69,31 @@ void FluidUi::UiLayer::render_component_panel()
             {
                 if (ImGui::MenuItem("Global Density", nullptr, nullptr, is_safe))
                 {
-                    auto sen = new FluidSolver::Sensors::GlobalDensitySensor();
+                    auto sen = std::make_shared<FluidSolver::Sensors::GlobalDensitySensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Pressure", nullptr, nullptr, is_safe))
                 {
-                    auto sen = new FluidSolver::Sensors::GlobalPressureSensor();
+                    auto sen = std::make_shared<FluidSolver::Sensors::GlobalPressureSensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Velocity", nullptr, nullptr, is_safe))
                 {
-                    auto sen = new FluidSolver::Sensors::GlobalVelocitySensor();
+                    auto sen = std::make_shared<FluidSolver::Sensors::GlobalVelocitySensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Energy", nullptr, nullptr, is_safe))
                 {
-                    auto sen = new FluidSolver::Sensors::GlobalEnergySensor();
+                    auto sen = std::make_shared<FluidSolver::Sensors::GlobalEnergySensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Particle Count", nullptr, nullptr, is_safe))
                 {
-                    auto sen = new FluidSolver::Sensors::GlobalParticleCountSensor();
+                    auto sen = std::make_shared<FluidSolver::Sensors::GlobalParticleCountSensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
@@ -221,7 +221,6 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            delete window->simulation.parameters.fluid_solver;
                             window->simulation.parameters.fluid_solver = t->create_type();
                         }
                     }
@@ -246,7 +245,6 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            delete window->simulation.parameters.fluid_solver;
                             window->simulation.parameters.fluid_solver = t->create_type();
                         }
                     }
@@ -270,7 +268,6 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            delete window->simulation.parameters.fluid_solver;
                             window->simulation.parameters.fluid_solver = t->create_type();
                         }
                     }
@@ -333,8 +330,8 @@ void FluidUi::UiLayer::render_solver_component()
 void FluidUi::UiLayer::render_timestep_component()
 {
     BeginSubsection("Timestep", [=]() {
-        auto ct = dynamic_cast<FluidSolver::ConstantTimestep*>(window->simulation.parameters.timestep);
-        auto dt = dynamic_cast<FluidSolver::DynamicCFLTimestep*>(window->simulation.parameters.timestep);
+        auto ct = std::dynamic_pointer_cast<FluidSolver::ConstantTimestep>(window->simulation.parameters.timestep);
+        auto dt = std::dynamic_pointer_cast<FluidSolver::DynamicCFLTimestep>(window->simulation.parameters.timestep);
 
         if (ImGui::BeginCombo("Type", ct ? "Constant" : "Dynamic CFL"))
         {
@@ -344,9 +341,8 @@ void FluidUi::UiLayer::render_timestep_component()
                 {
                     ct = nullptr;
                     dt = nullptr;
-                    delete window->simulation.parameters.timestep;
 
-                    ct = new FluidSolver::ConstantTimestep();
+                    ct = std::make_shared<FluidSolver::ConstantTimestep>();
                     window->simulation.parameters.timestep = ct;
                     window->simulation.parameters.invalidate = true;
                 }
@@ -358,8 +354,7 @@ void FluidUi::UiLayer::render_timestep_component()
                     ct = nullptr;
                     dt = nullptr;
 
-                    delete window->simulation.parameters.timestep;
-                    dt = new FluidSolver::DynamicCFLTimestep();
+                    dt = std::make_shared<FluidSolver::DynamicCFLTimestep>();
                     window->simulation.parameters.timestep = dt;
                     window->simulation.parameters.invalidate = true;
                 }
@@ -400,26 +395,26 @@ void FluidUi::UiLayer::render_timestep_component()
     });
 }
 
-const char* get_sensor_type_name(FluidSolver::ISensor* sen)
+const char* get_sensor_type_name(const std::shared_ptr<FluidSolver::ISensor>& sen)
 {
 
-    if (dynamic_cast<FluidSolver::Sensors::GlobalDensitySensor*>(sen))
+    if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalDensitySensor>(sen))
     {
         return "Global Density";
     }
-    else if (dynamic_cast<FluidSolver::Sensors::GlobalPressureSensor*>(sen))
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalPressureSensor>(sen))
     {
         return "Global Pressure";
     }
-    else if (dynamic_cast<FluidSolver::Sensors::GlobalVelocitySensor*>(sen))
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalVelocitySensor>(sen))
     {
         return "Global Velocity";
     }
-    else if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen))
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen))
     {
         return "Global Energy";
     }
-    else if (dynamic_cast<FluidSolver::Sensors::GlobalParticleCountSensor*>(sen))
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen))
     {
         return "Global Particle Count";
     }
@@ -442,9 +437,9 @@ void FluidUi::UiLayer::render_sensor_component(size_t index)
         ImGui::Checkbox("Keep Data after Saving", &sen->parameters.keep_data_in_memory_after_saving);
     });
 
-    if (dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen))
+    if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen))
     {
-        render_global_energy_sensor_component(dynamic_cast<FluidSolver::Sensors::GlobalEnergySensor*>(sen));
+        render_global_energy_sensor_component(std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen));
     }
 }
 
@@ -477,9 +472,10 @@ void FluidUi::UiLayer::render_visualizer_component()
         }
 
         FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
-        auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
-        auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
-        auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(window->simulation.parameters.visualizer);
+        auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(window->simulation.parameters.visualizer);
+        auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(window->simulation.parameters.visualizer);
+        auto gl3d =
+            std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(window->simulation.parameters.visualizer);
 
         if (ImGui::BeginCombo("Type",
                               gl ? "Particle Renderer" : (cv ? "Continous Visualizer" : "Particle Renderer 3d")))
@@ -493,8 +489,7 @@ void FluidUi::UiLayer::render_visualizer_component()
                     gl3d = nullptr;
 
 
-                    delete window->simulation.parameters.visualizer;
-                    gl = new FluidSolver::GLParticleRenderer();
+                    gl = std::make_shared<FluidSolver::GLParticleRenderer>();
                     window->simulation.parameters.visualizer = gl;
                     window->simulation.parameters.invalidate = true;
                 }
@@ -508,9 +503,7 @@ void FluidUi::UiLayer::render_visualizer_component()
                     gl3d = nullptr;
 
 
-                    delete window->simulation.parameters.visualizer;
-
-                    cv = new FluidSolver::ContinousVisualizer();
+                    cv = std::make_shared<FluidSolver::ContinousVisualizer>();
                     cv->parameters.render_target.width = 100;
                     cv->parameters.render_target.height = 100;
                     cv->settings.minimum_render_density = window->simulation.parameters.rest_density * 0.5f;
@@ -526,9 +519,8 @@ void FluidUi::UiLayer::render_visualizer_component()
                     gl = nullptr;
                     gl3d = nullptr;
 
-                    delete window->simulation.parameters.visualizer;
 
-                    gl3d = new FluidSolver::GLParticleRenderer3D();
+                    gl3d = std::make_shared<FluidSolver::GLParticleRenderer3D>();
                     gl3d->parameters.render_target.width = 1920;
                     gl3d->parameters.render_target.height = 1080;
                     window->simulation.parameters.visualizer = gl3d;
@@ -559,9 +551,9 @@ void FluidUi::UiLayer::render_visualizer_component()
     });
 
 
-    auto gl = dynamic_cast<FluidSolver::GLParticleRenderer*>(window->simulation.parameters.visualizer);
-    auto cv = dynamic_cast<FluidSolver::ContinousVisualizer*>(window->simulation.parameters.visualizer);
-    auto gl3d = dynamic_cast<FluidSolver::GLParticleRenderer3D*>(window->simulation.parameters.visualizer);
+    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(window->simulation.parameters.visualizer);
+    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(window->simulation.parameters.visualizer);
+    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(window->simulation.parameters.visualizer);
 
     BeginSubsection("Colors", [&] {
         if (gl != nullptr)
@@ -627,7 +619,8 @@ void FluidUi::UiLayer::render_visualizer_component()
     });
 }
 
-void FluidUi::UiLayer::render_global_energy_sensor_component(FluidSolver::Sensors::GlobalEnergySensor* sen)
+void FluidUi::UiLayer::render_global_energy_sensor_component(
+    std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sen)
 {
     BeginSubsection("Zero-Levels", [&]() { ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height); });
 }

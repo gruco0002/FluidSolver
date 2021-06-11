@@ -4,6 +4,7 @@
 #include "core/fluidSolver/ParticleCollection.hpp"
 
 #include <chrono>
+#include <memory>
 
 namespace FluidSolver
 {
@@ -24,7 +25,7 @@ namespace FluidSolver
       public:
         struct TimestepParameters
         {
-            ParticleCollection* particle_collection = nullptr;
+            std::shared_ptr<ParticleCollection> particle_collection = nullptr;
             float particle_size = 1.0f;
         } parameters;
 
