@@ -161,7 +161,7 @@ namespace FluidSolver
                     for (int dz = -1; dz <= 1; dz++)
                     {
                         // calculate the cell location of the current cube cell
-                        GridCellLocation cell_to_check{state.current.x + dx, state.current.y + dx,
+                        GridCellLocation cell_to_check{state.current.x + dx, state.current.y + dy,
                                                        state.current.z + dz};
 
                         // iterate over the particles of the cube cell
