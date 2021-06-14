@@ -1,6 +1,7 @@
 #ifndef FLUIDSOLVER_ITIMESTEP_HPP
 #define FLUIDSOLVER_ITIMESTEP_HPP
 
+#include "core/Compatibility.hpp"
 #include "core/fluidSolver/ParticleCollection.hpp"
 
 #include <chrono>
@@ -34,6 +35,8 @@ namespace FluidSolver
         float get_current_timestep() const;
 
         virtual ~ITimestep() = default;
+
+        virtual Compatibility check() = 0;
     };
 } // namespace FluidSolver
 

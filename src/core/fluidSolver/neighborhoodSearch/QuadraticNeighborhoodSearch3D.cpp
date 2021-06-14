@@ -9,10 +9,33 @@ namespace FluidSolver
 
     void QuadraticNeighborhoodSearch3D::initialize()
     {
-        FLUID_ASSERT(collection != nullptr);
-        FLUID_ASSERT(collection->is_type_present<MovementData3D>());
-        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
-        FLUID_ASSERT(search_radius > 0.0f);
+    }
+
+    Compatibility QuadraticNeighborhoodSearch3D::check()
+    {
+        Compatibility c;
+        if (collection == nullptr)
+        {
+            c.add_issue({"QuadraticNeighborhoodSearch3D", "ParticleCollection is null."});
+        }
+        else
+        {
+            if (!collection->is_type_present<MovementData3D>())
+            {
+                c.add_issue({"QuadraticNeighborhoodSearch3D", "Particles are missing the MovementData3D attribute."});
+            }
+            if (!collection->is_type_present<ParticleInfo>())
+            {
+                c.add_issue({"QuadraticNeighborhoodSearch3D", "Particles are missing the ParticleInfo attribute."});
+            }
+        }
+
+        if (search_radius <= 0.0f)
+        {
+            c.add_issue({"QuadraticNeighborhoodSearch3D", "Search radius is smaller or equal to zero."});
+        }
+
+        return c;
     }
 
     void QuadraticNeighborhoodSearch3D::find_neighbors()

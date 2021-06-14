@@ -1,9 +1,10 @@
 #ifndef FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 #define FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
 
-#include "NeighborhoodInterface.hpp"
+#include "core/Compatibility.hpp"
 #include "core/FluidInclude.hpp"
 #include "core/fluidSolver/ParticleCollection.hpp"
+#include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 
 #include <list>
 #include <memory>
@@ -80,6 +81,8 @@ namespace FluidSolver
         void initialize();
 
         NeighborhoodInterface create_interface();
+
+        Compatibility check();
 
       private:
         pFloat grid_cell_size = 0.0f;

@@ -4,9 +4,9 @@
 
 float FluidSolver::DynamicCFLTimestep::calculate_maximum_velocity()
 {
-    FLUID_ASSERT(parameters.particle_collection != nullptr)
-    FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>())
-    FLUID_ASSERT(parameters.particle_collection->is_type_present<ParticleInfo>())
+    FLUID_ASSERT(parameters.particle_collection != nullptr);
+    FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>());
+    FLUID_ASSERT(parameters.particle_collection->is_type_present<ParticleInfo>());
 
     float maximum = 0.0f;
     for (uint32_t i = 0; i < parameters.particle_collection->size(); i++)
@@ -33,4 +33,31 @@ void FluidSolver::DynamicCFLTimestep::calculate_current_timestep()
         timestep = std::min(settings.max_timestep, std::max(settings.min_timestep, timestep));
     }
     current_timestep = timestep;
+}
+
+FluidSolver::Compatibility FluidSolver::DynamicCFLTimestep::check()
+{
+    Compatibility c;
+    if (parameters.particle_collection == nullptr)
+    {
+        c.add_issue({"DynamicCFLTimestep", "ParticleCollection is null."});
+    }
+    else
+    {
+        if (!parameters.particle_collection->is_type_present<MovementData>())
+        {
+            c.add_issue({"DynamicCFLTimestep", "Particles are missing the MovementData attribute."});
+        }
+        if (!parameters.particle_collection->is_type_present<ParticleInfo>())
+        {
+            c.add_issue({"DynamicCFLTimestep", "Particles are missing the ParticleInfo attribute."});
+        }
+    }
+
+    if (parameters.particle_size <= 0.0f)
+    {
+        c.add_issue({"DynamicCFLTimestep", "Particle size is smaller or equal to zero."});
+    }
+
+    return c;
 }

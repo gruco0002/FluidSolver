@@ -28,6 +28,8 @@ namespace FluidSolver
 
         NeighborhoodInterface create_neighborhood_interface() override;
 
+        Compatibility check() override;
+
       private:
         pFloat current_timestep = 0.0f;
 
@@ -127,12 +129,43 @@ namespace FluidSolver
         neighborhood_search.search_radius = parameters.particle_size * 2.0f;
         neighborhood_search.initialize();
         kernel.kernel_support = parameters.particle_size * 2.0f;
-
-        FLUID_ASSERT(collection->is_type_present<MovementData3D>());
-        FLUID_ASSERT(collection->is_type_present<ParticleData>());
-        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
-        FLUID_ASSERT(collection->is_type_present<ExternalForces3D>());
     }
+
+    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
+    Compatibility SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::check()
+    {
+        Compatibility c;
+        if (collection == nullptr)
+        {
+            c.add_issue({"SESPHFluidSolver3D", "ParticleCollection is null."});
+        }
+        else
+        {
+            if (!collection->is_type_present<MovementData3D>())
+            {
+                c.add_issue({"SESPHFluidSolver3D", "Particles are missing the MovementData3D attribute."});
+            }
+            if (!collection->is_type_present<ParticleData>())
+            {
+                c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ParticleData attribute."});
+            }
+            if (!collection->is_type_present<ParticleInfo>())
+            {
+                c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ParticleInfo attribute."});
+            }
+            if (!collection->is_type_present<ExternalForces3D>())
+            {
+                c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ExternalForces3D attribute."});
+            }
+        }
+
+
+        c.add_compatibility(neighborhood_search.check());
+        c.add_compatibility(kernel.check());
+
+        return c;
+    }
+
 
     template <typename Kernel, typename NeighborhoodSearch, typename parallel>
     inline NeighborhoodInterface SESPHFluidSolver3D<Kernel, NeighborhoodSearch,

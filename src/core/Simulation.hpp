@@ -8,6 +8,7 @@
 #include "core/sensors/ISensor.hpp"
 #include "core/timestep/ITimestep.hpp"
 #include "core/visualizer/ISimulationVisualizer.hpp"
+#include "core/Compatibility.hpp"
 
 #include <memory>
 
@@ -47,6 +48,8 @@ namespace FluidSolver
         void visualize();
 
         void manual_initialize();
+
+        Compatibility check();
 
 
       private:

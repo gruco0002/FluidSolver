@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/Compatibility.hpp"
 #include "core/FluidInclude.hpp"
 #include "core/fluidSolver/ParticleCollection.hpp"
 #include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
@@ -90,6 +91,8 @@ namespace FluidSolver
         void initialize();
 
         NeighborhoodInterface create_interface();
+
+        Compatibility check();
 
       private:
         struct NeighborData

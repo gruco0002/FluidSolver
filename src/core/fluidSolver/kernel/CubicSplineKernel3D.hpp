@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/Compatibility.hpp"
 #include "core/FluidInclude.hpp"
 
 namespace FluidSolver
@@ -18,6 +19,8 @@ namespace FluidSolver
         vec3 GetKernelDerivativeValue(const vec3& neighborPosition, const vec3& position) const;
 
         vec3 GetKernelDerivativeReversedValue(const vec3& neighborPosition, const vec3& position) const;
+
+        Compatibility check();
     };
 
 

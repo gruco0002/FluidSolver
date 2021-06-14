@@ -1,7 +1,7 @@
 #ifndef FLUIDSOLVER_CONSTANTTIMESTEP_HPP
 #define FLUIDSOLVER_CONSTANTTIMESTEP_HPP
 
-#include "ITimestep.hpp"
+#include "core/timestep/ITimestep.hpp"
 
 namespace FluidSolver
 {
@@ -13,6 +13,8 @@ namespace FluidSolver
         } settings;
 
         void calculate_current_timestep() override;
+
+        Compatibility check() override;
     };
 } // namespace FluidSolver
 

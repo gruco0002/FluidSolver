@@ -10,15 +10,43 @@ namespace FluidSolver
     void HashedNeighborhoodSearch3D::initialize()
     {
         FLUID_ASSERT(collection != nullptr);
-        FLUID_ASSERT(collection->is_type_present<MovementData3D>());
-        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
-        FLUID_ASSERT(search_radius > 0.0f);
         if (!collection->is_type_present<GridCellState>())
         {
             collection->add_type<GridCellState>();
         }
         grid_rebuild_required = true;
         grid.auto_initialize_protection_enabled = true;
+    }
+
+    Compatibility HashedNeighborhoodSearch3D::check()
+    {
+        Compatibility c;
+        if (collection == nullptr)
+        {
+            c.add_issue({"HashedNeighborhoodSearch3D", "ParticleCollection is null."});
+        }
+        else
+        {
+            if (!collection->is_type_present<MovementData3D>())
+            {
+                c.add_issue({"HashedNeighborhoodSearch3D", "Particles are missing the MovementData3D attribute."});
+            }
+            if (!collection->is_type_present<ParticleInfo>())
+            {
+                c.add_issue({"HashedNeighborhoodSearch3D", "Particles are missing the ParticleInfo attribute."});
+            }
+            if (!collection->is_type_present<GridCellState>())
+            {
+                c.add_issue({"HashedNeighborhoodSearch3D", "Particles are missing the GridCellState attribute."});
+            }
+        }
+
+        if (search_radius <= 0.0f)
+        {
+            c.add_issue({"HashedNeighborhoodSearch3D", "Search radius is smaller or equal to zero."});
+        }
+
+        return c;
     }
 
     bool HashedNeighborhoodSearch3D::GridCellLocation::operator==(const GridCellLocation& other) const

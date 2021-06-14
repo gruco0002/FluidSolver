@@ -74,3 +74,13 @@ FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeReversedV
 {
     return this->GetKernelDerivativeValue(neighborPosition, position) * -1.0f;
 }
+
+FluidSolver::Compatibility FluidSolver::CubicSplineKernel3D::check()
+{
+    Compatibility c;
+    if (kernel_support <= 0.0f)
+    {
+        c.add_issue({"CubicSplineKernel3D", "Kernel support radius is smaller or equal to zero!"});
+    }
+    return c;
+}

@@ -137,3 +137,38 @@ void FluidSolver::Simulation::manual_initialize()
 {
     initialize();
 }
+
+FluidSolver::Compatibility FluidSolver::Simulation::check()
+{
+    Compatibility c;
+
+    if (parameters.collection == nullptr)
+    {
+        c.add_issue({"Simulation", "Particle collection is null."});
+    }
+
+    if (parameters.fluid_solver == nullptr)
+    {
+        c.add_issue({"Simulation", "Fluid solver is null."});
+    }
+    else
+    {
+        c.add_compatibility(parameters.fluid_solver->check());
+    }
+
+    if (parameters.timestep == nullptr)
+    {
+        c.add_issue({"Simulation", "Timestep is null."});
+    }
+    else
+    {
+        c.add_compatibility(parameters.timestep->check());
+    }
+
+    if (parameters.visualizer != nullptr)
+    {
+        c.add_compatibility(parameters.visualizer->check());
+    }
+
+    return c;
+}

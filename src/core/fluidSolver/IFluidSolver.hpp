@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_IFLUIDSOLVER_HPP
 
 #include "ParticleCollection.hpp"
+#include "core/Compatibility.hpp"
 #include "core/FluidInclude.hpp"
 #include "core/fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 
@@ -26,6 +27,8 @@ namespace FluidSolver
         virtual ~IFluidSolverBase() = default;
 
         virtual NeighborhoodInterface create_neighborhood_interface() = 0;
+
+        virtual Compatibility check() = 0;
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
     };

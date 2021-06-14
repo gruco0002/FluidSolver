@@ -24,6 +24,8 @@ namespace FluidSolver
 
         virtual void initialize() override;
 
+         virtual Compatibility check() override;
+
         virtual void render() override;
 
         virtual Image get_image_data() override;

@@ -1,6 +1,7 @@
 #include "QuadraticNeighborhoodSearchDynamicAllocated.hpp"
 
-#include <core/parallelization/StdParallelForEach.hpp>
+#include "core/parallelization/StdParallelForEach.hpp"
+
 #include <functional>
 
 using parallel = FluidSolver::StdParallelForEach;
@@ -60,6 +61,36 @@ FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::Neighbors FluidSolver:
 
 void FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::initialize()
 {
+}
+
+FluidSolver::Compatibility FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::check()
+{
+
+    Compatibility c;
+    if (collection == nullptr)
+    {
+        c.add_issue({"QuadraticNeighborhoodSearchDynamicAllocated", "ParticleCollection is null."});
+    }
+    else
+    {
+        if (!collection->is_type_present<MovementData>())
+        {
+            c.add_issue(
+                {"QuadraticNeighborhoodSearchDynamicAllocated", "Particles are missing the MovementData attribute."});
+        }
+        if (!collection->is_type_present<ParticleInfo>())
+        {
+            c.add_issue(
+                {"QuadraticNeighborhoodSearchDynamicAllocated", "Particles are missing the ParticleInfo attribute."});
+        }
+    }
+
+    if (search_radius <= 0.0f)
+    {
+        c.add_issue({"QuadraticNeighborhoodSearchDynamicAllocated", "Search radius is smaller or equal to zero."});
+    }
+
+    return c;
 }
 
 FluidSolver::NeighborhoodInterface FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated::create_interface()

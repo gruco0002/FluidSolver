@@ -1,9 +1,10 @@
 #ifndef FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 #define FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
 
-#include "../ParticleCollection.hpp"
 #include "NeighborhoodInterface.hpp"
 #include "core/FluidInclude.hpp"
+#include "core/fluidSolver/ParticleCollection.hpp"
+#include "core/Compatibility.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -124,6 +125,8 @@ namespace FluidSolver
         void initialize();
 
         NeighborhoodInterface create_interface();
+
+        Compatibility check();
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;

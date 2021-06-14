@@ -115,6 +115,7 @@ set(FLUID_SOLVER_SOURCE_FILES
         "core/visualizer/Viewport2D.hpp"
         "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp" "core/fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.cpp"
         "core/helper/ProtectedUnorderedMap.hpp"
+        "core/Compatibility.hpp" "core/Compatibility.cpp"
         )
 
 

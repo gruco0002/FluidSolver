@@ -154,12 +154,38 @@ namespace FluidSolver
     void HashedNeighborhoodSearch::initialize()
     {
         FLUID_ASSERT(collection != nullptr);
-        FLUID_ASSERT(search_radius > 0.0f);
         grid_cell_size = search_radius;
         bucketsCreatedUntilIndex = 0;
         neighbors.clear();
         currentStatus.clear();
         gridToParticles.clear();
+    }
+
+    Compatibility HashedNeighborhoodSearch::check()
+    {
+        Compatibility c;
+        if (collection == nullptr)
+        {
+            c.add_issue({"HashedNeighborhoodSearch", "ParticleCollection is null."});
+        }
+        else
+        {
+            if (!collection->is_type_present<MovementData>())
+            {
+                c.add_issue({"HashedNeighborhoodSearch", "Particles are missing the MovementData attribute."});
+            }
+            if (!collection->is_type_present<ParticleInfo>())
+            {
+                c.add_issue({"HashedNeighborhoodSearch", "Particles are missing the ParticleInfo attribute."});
+            }
+        }
+
+        if (search_radius <= 0.0f)
+        {
+            c.add_issue({"HashedNeighborhoodSearch", "Search radius is smaller or equal to zero."});
+        }
+
+        return c;
     }
 
     NeighborhoodInterface HashedNeighborhoodSearch::create_interface()

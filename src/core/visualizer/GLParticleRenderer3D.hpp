@@ -71,6 +71,8 @@ namespace FluidSolver
 
         virtual void render() override;
 
+        virtual Compatibility check() override;
+
         virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer3D() override;

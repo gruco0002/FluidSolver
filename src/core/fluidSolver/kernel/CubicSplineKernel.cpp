@@ -73,3 +73,14 @@ glm::vec2 FluidSolver::CubicSplineKernel::GetKernelDerivativeReversedValue(const
 {
     return this->GetKernelDerivativeValue(neighborPosition, position) * -1.0f;
 }
+
+
+FluidSolver::Compatibility FluidSolver::CubicSplineKernel::check()
+{
+    Compatibility c;
+    if (kernel_support <= 0.0f)
+    {
+        c.add_issue({"CubicSplineKernel", "Kernel support radius is smaller or equal to zero!"});
+    }
+    return c;
+}

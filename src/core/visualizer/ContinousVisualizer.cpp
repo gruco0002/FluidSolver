@@ -13,6 +13,42 @@ void FluidSolver::ContinousVisualizer::initialize()
     recalculate_viewport();
 }
 
+FluidSolver::Compatibility FluidSolver::ContinousVisualizer::check()
+{
+    Compatibility c;
+
+    if (parameters.collection == nullptr)
+    {
+        c.add_issue({"ContinousVisualizer", "ParticleCollection is null."});
+    }
+    else
+    {
+        if (!parameters.collection->is_type_present<MovementData>())
+        {
+            c.add_issue({"ContinousVisualizer", "Particles are missing the MovementData attribute."});
+        }
+        if (!parameters.collection->is_type_present<ParticleData>())
+        {
+            c.add_issue({"ContinousVisualizer", "Particles are missing the ParticleData attribute."});
+        }
+        if (!parameters.collection->is_type_present<ParticleInfo>())
+        {
+            c.add_issue({"ContinousVisualizer", "Particles are missing the ParticleInfo attribute."});
+        }
+    }
+
+    if (parameters.particle_size <= 0.0f)
+    {
+        c.add_issue({"ContinousVisualizer", "Particle size is smaller or equal to zero."});
+    }
+    if (parameters.neighborhood_interface == nullptr)
+    {
+        c.add_issue({"ContinousVisualizer", "Neighborhood search interface is null."});
+    }
+
+    return c;
+}
+
 void FluidSolver::ContinousVisualizer::render()
 {
     // calculate color for each pixel

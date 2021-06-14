@@ -17,7 +17,38 @@ void FluidSolver::GLParticleRenderer::initialize()
 {
     FLUID_ASSERT(Engine::opengl_context_available());
 
-    initialize_in_next_render_step = true;
+    if (!this->check().has_issues())
+    {
+        initialize_in_next_render_step = true;
+    }
+}
+
+FluidSolver::Compatibility FluidSolver::GLParticleRenderer::check()
+{
+    Compatibility c;
+
+    if (parameters.collection == nullptr)
+    {
+        c.add_issue({"GLParticleRenderer", "ParticleCollection is null."});
+    }
+    else
+    {
+        if (!parameters.collection->is_type_present<MovementData>())
+        {
+            c.add_issue({"GLParticleRenderer", "Particles are missing the MovementData attribute."});
+        }
+        if (!parameters.collection->is_type_present<ParticleData>())
+        {
+            c.add_issue({"GLParticleRenderer", "Particles are missing the ParticleData attribute."});
+        }
+        if (!parameters.collection->is_type_present<ParticleInfo>())
+        {
+            c.add_issue({"GLParticleRenderer", "Particles are missing the ParticleInfo attribute."});
+        }
+    }
+
+
+    return c;
 }
 
 void FluidSolver::GLParticleRenderer::render()
@@ -44,7 +75,6 @@ void FluidSolver::GLParticleRenderer::render()
         });
 
         create_or_update_fbo();
-        
     }
     calc_projection_matrix();
 
