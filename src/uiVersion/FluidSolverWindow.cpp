@@ -197,6 +197,7 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
 
     simulation.parameters.invalidate = true;
 
+
     FluidSolver::Log::message("Loaded empty scenario");
 
     on_new_simulation();
@@ -211,13 +212,10 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
     simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
     simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
     simulation.parameters.collection->add_type<FluidSolver::ExternalForces3D>();
-    simulation.parameters.collection->add_type<FluidSolver::ExternalForces>();
     simulation.parameters.rest_density = 1.0f;
     simulation.parameters.particle_size = 1.0f;
     simulation.parameters.gravity = 9.81f;
 
-    // add movement data to supress errors of 2d modules that do not have a 3d counterpart
-    simulation.parameters.collection->add_type<FluidSolver::MovementData>();
 
     simulation.parameters.fluid_solver = current_type->create_type();
     simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
@@ -279,6 +277,11 @@ void FluidUi::FluidSolverWindow::on_new_simulation()
 {
     this->current_type = this->solver_types.query_type(simulation.parameters.fluid_solver);
     simulation.manual_initialize();
+    auto compatibility_report = simulation.check();
+    if (compatibility_report.has_issues())
+    {
+        compatibility_report.log_issues();
+    }
     simulation_changed_compared_to_visualization = true;
     render_image_updated = true;
 }
@@ -418,6 +421,16 @@ void FluidUi::FluidSolverWindow::setup_windows()
 
 void FluidUi::FluidSolverWindow::execute_one_simulation_step()
 {
+    simulation.check_for_initialization();
+
+    auto compatibility_report = simulation.check();
+    if (compatibility_report.has_issues())
+    {
+        compatibility_report.log_issues();
+        running = false;
+        return;
+    }
+
     simulation.execute_simulation_step();
     simulation_changed_compared_to_visualization = true;
 }
@@ -427,8 +440,18 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
     if (!simulation_changed_compared_to_visualization)
         return;
 
+    simulation.check_for_initialization();
 
-    bool is_gl_renderer = std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.parameters.visualizer) != nullptr;
+    auto compatibility_report = simulation.check();
+    if (compatibility_report.has_issues())
+    {
+        compatibility_report.log_issues();
+        simulation_changed_compared_to_visualization = false;
+        return;
+    }
+
+    bool is_gl_renderer =
+        std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.parameters.visualizer) != nullptr;
     if (called_from_worker_thread && is_gl_renderer)
     {
         // an opengl renderer has to be called synchronously in the thread of the windows,

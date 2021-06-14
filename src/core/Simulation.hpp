@@ -49,6 +49,8 @@ namespace FluidSolver
 
         void manual_initialize();
 
+        void check_for_initialization();
+
         Compatibility check();
 
 

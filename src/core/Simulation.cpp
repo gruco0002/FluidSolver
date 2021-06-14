@@ -13,13 +13,18 @@ bool FluidSolver::SimulationParameters::operator!=(const FluidSolver::Simulation
     return !(*this == other);
 }
 
-void FluidSolver::Simulation::execute_simulation_step()
+void FluidSolver::Simulation::check_for_initialization()
 {
-
     if (internal_parameters != parameters)
     {
         initialize();
     }
+}
+
+void FluidSolver::Simulation::execute_simulation_step()
+{
+
+    check_for_initialization();
 
     FLUID_ASSERT(internal_parameters.fluid_solver != nullptr);
     FLUID_ASSERT(internal_parameters.collection != nullptr);
@@ -120,10 +125,7 @@ void FluidSolver::Simulation::initialize()
 void FluidSolver::Simulation::visualize()
 {
 
-    if (internal_parameters != parameters)
-    {
-        initialize();
-    }
+    check_for_initialization();
 
     if (internal_parameters.visualizer == nullptr)
         return;
