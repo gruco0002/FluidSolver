@@ -22,12 +22,13 @@ set(FluidSolverTests_SOURCE_FILES
 enable_testing()
 find_package(GTest CONFIG REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
+include_directories(../src/libFluid)
 
 # Unit Tests
 # Add test cpp file
 add_executable( runUnitTests ${FluidSolverTests_SOURCE_FILES})
 # Link test executable against gtest & gtest_main
-target_link_libraries(runUnitTests FluidSolver GTest::gtest  GTest::gmock)
+target_link_libraries(runUnitTests libFluid GTest::gtest  GTest::gmock)
 add_test( runUnitTests  runUnitTests )
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
