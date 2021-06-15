@@ -1,100 +1,20 @@
 #include "SimulationSerializer.hpp"
 
-#include <Log.hpp>
-#include <entities/ParticleRemover.hpp>
-#include <entities/ParticleSpawner.hpp>
-#include <fluidSolver/IISPHFluidSolver.hpp>
-#include <fluidSolver/SESPHFluidSolver.hpp>
-#include <fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp>
-#include <sensors/ParticleStatistics.hpp>
-#include <timestep/ConstantTimestep.hpp>
-#include <timestep/DynamicCFLTimestep.hpp>
-#include <visualizer/ContinousVisualizer.hpp>
-//#include <visualizer/GLParticleRenderer.hpp> // TODO: think of a fix!
+#include "Log.hpp"
+#include "entities/ParticleRemover.hpp"
+#include "entities/ParticleSpawner.hpp"
+#include "fluidSolver/IISPHFluidSolver.hpp"
+#include "fluidSolver/SESPHFluidSolver.hpp"
+#include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
+#include "sensors/ParticleStatistics.hpp"
+#include "serialization/YamlHelpers.hpp"
+#include "timestep/ConstantTimestep.hpp"
+#include "timestep/DynamicCFLTimestep.hpp"
+#include "visualizer/ContinousVisualizer.hpp"
+
 #include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include <yaml-cpp/yaml.h>
-
-namespace YAML
-{
-    template <> struct convert<glm::vec2>
-    {
-        static Node encode(const glm::vec2& rhs)
-        {
-            Node node;
-            node.SetStyle(YAML::EmitterStyle::Flow);
-            node.push_back(rhs.x);
-            node.push_back(rhs.y);
-            return node;
-        }
-
-        static bool decode(const Node& node, glm::vec2& rhs)
-        {
-            if (!node.IsSequence() || node.size() != 2)
-            {
-                return false;
-            }
-            rhs.x = node[0].as<float>();
-            rhs.y = node[1].as<float>();
-            return true;
-        }
-    };
-
-    template <> struct convert<glm::vec4>
-    {
-        static Node encode(const glm::vec4& rhs)
-        {
-            Node node;
-            node.SetStyle(YAML::EmitterStyle::Flow);
-            node.push_back(rhs.x);
-            node.push_back(rhs.y);
-            node.push_back(rhs.z);
-            node.push_back(rhs.w);
-            return node;
-        }
-
-        static bool decode(const Node& node, glm::vec4& rhs)
-        {
-            if (!node.IsSequence() || node.size() != 4)
-            {
-                return false;
-            }
-            rhs.x = node[0].as<float>();
-            rhs.y = node[1].as<float>();
-            rhs.z = node[2].as<float>();
-            rhs.w = node[3].as<float>();
-            return true;
-        }
-    };
-
-    template <> struct convert<FluidSolver::Image::Color>
-    {
-        static Node encode(const FluidSolver::Image::Color& rhs)
-        {
-            Node node;
-            node.SetStyle(YAML::EmitterStyle::Flow);
-            node.push_back(rhs.r);
-            node.push_back(rhs.g);
-            node.push_back(rhs.b);
-            node.push_back(rhs.a);
-            return node;
-        }
-
-        static bool decode(const Node& node, FluidSolver::Image::Color& rhs)
-        {
-            if (!node.IsSequence() || node.size() != 4)
-            {
-                return false;
-            }
-            rhs.r = (uint8_t)node[0].as<int>();
-            rhs.g = (uint8_t)node[1].as<int>();
-            rhs.b = (uint8_t)node[2].as<int>();
-            rhs.a = (uint8_t)node[3].as<int>();
-            return true;
-        }
-    };
-} // namespace YAML
 
 
 namespace FluidSolver
@@ -652,42 +572,44 @@ namespace FluidSolver
             simulation.parameters.timestep = load_timestep(node["timestep"]);
         }
 
-        std::shared_ptr<ISimulationVisualizer> load_visualizer(const YAML::Node& node)
+        std::shared_ptr<ISimulationVisualizer> load_visualizer(const YAML::Node& node, SimulationSerializer& serializer)
         {
-            if (node["type"].as<std::string>() == "gl-particle-renderer")
-            {
-                /*if (!GLRenderer::is_opengl_available())
-                {
-                    errors++;
-                    Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not initialized but "
-                               "visualizer requires OpenGL!");
-                    return nullptr;
-                }
-                auto r = std::make_shared<GLParticleRenderer>();
+            /* if (node["type"].as<std::string>() == "gl-particle-renderer")
+             {
+                 if (!GLRenderer::is_opengl_available())
+                 {
+                     errors++;
+                     Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not initialized but "
+                                "visualizer requires OpenGL!");
+                     return nullptr;
+                 }
+                 auto r = std::make_shared<GLParticleRenderer>();
 
-                // default parameters
-                r->settings.viewport.left = node["viewport"]["left"].as<float>();
-                r->settings.viewport.right = node["viewport"]["right"].as<float>();
-                r->settings.viewport.top = node["viewport"]["top"].as<float>();
-                r->settings.viewport.bottom = node["viewport"]["bottom"].as<float>();
-                r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
-                r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
+                 // default parameters
+                 r->settings.viewport.left = node["viewport"]["left"].as<float>();
+                 r->settings.viewport.right = node["viewport"]["right"].as<float>();
+                 r->settings.viewport.top = node["viewport"]["top"].as<float>();
+                 r->settings.viewport.bottom = node["viewport"]["bottom"].as<float>();
+                 r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
+                 r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
 
-                // custom paramters for the particle renderer
-                r->settings.topValue = node["settings"]["top"]["value"].as<float>();
-                r->settings.topColor = node["settings"]["top"]["color"].as<glm::vec4>();
-                r->settings.bottomValue = node["settings"]["bottom"]["value"].as<float>();
-                r->settings.bottomColor = node["settings"]["bottom"]["color"].as<glm::vec4>();
-                r->settings.colorSelection =
-                    (GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"].as<int>();
-                r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].as<glm::vec4>();
-                r->settings.backgroundClearColor = node["settings"]["colors"]["background"].as<glm::vec4>();
-                r->settings.showMemoryLocation = node["settings"]["show-memory-location"].as<bool>();
+                 // custom paramters for the particle renderer
+                 r->settings.topValue = node["settings"]["top"]["value"].as<float>();
+                 r->settings.topColor = node["settings"]["top"]["color"].as<glm::vec4>();
+                 r->settings.bottomValue = node["settings"]["bottom"]["value"].as<float>();
+                 r->settings.bottomColor = node["settings"]["bottom"]["color"].as<glm::vec4>();
+                 r->settings.colorSelection =
+                     (GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"].as<int>();
+                 r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].as<glm::vec4>();
+                 r->settings.backgroundClearColor = node["settings"]["colors"]["background"].as<glm::vec4>();
+                 r->settings.showMemoryLocation = node["settings"]["show-memory-location"].as<bool>();
 
-                return r;*/ // TODO: fix
-                return nullptr;
-            }
-            else if (node["type"].as<std::string>() == "no-visualizer")
+                 return r; // TODO: fix
+                 return nullptr;
+             }
+             else*/
+
+            if (node["type"].as<std::string>() == "no-visualizer")
             {
                 return nullptr;
             }
@@ -711,43 +633,28 @@ namespace FluidSolver
             }
             else
             {
-                warnings++;
-                Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
+                auto res = serializer.deserialize_unknown_visualizer(node);
+                if (res != nullptr)
+                {
+                    return res;
+                }
+                else
+                {
+                    warnings++;
+                    Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
+                }
             }
 
             return nullptr;
         }
 
 
-        YAML::Node save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer)
+        YAML::Node save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer,
+                                   SimulationSerializer& serializer)
         {
             YAML::Node node;
-            /*if (std::dynamic_pointer_cast<const GLParticleRenderer>(visualizer) != nullptr)
-            {
-                auto r = std::dynamic_pointer_cast<const GLParticleRenderer>(visualizer);
-                node["type"] = "gl-particle-renderer";
 
-                // default parameters
-                node["viewport"]["left"] = r->settings.viewport.left;
-                node["viewport"]["right"] = r->settings.viewport.right;
-                node["viewport"]["top"] = r->settings.viewport.top;
-                node["viewport"]["bottom"] = r->settings.viewport.bottom;
-                node["render-target"]["width"] = r->parameters.render_target.width;
-                node["render-target"]["height"] = r->parameters.render_target.height;
-
-                // custom parameters for the particle renderer
-                node["settings"]["top"]["value"] = r->settings.topValue;
-                node["settings"]["top"]["color"] = r->settings.topColor;
-                node["settings"]["bottom"]["value"] = r->settings.bottomValue;
-                node["settings"]["bottom"]["color"] = r->settings.bottomColor;
-                node["settings"]["value-selection"] = (int)r->settings.colorSelection;
-                node["settings"]["colors"]["boundary"] = r->settings.boundaryParticleColor;
-                node["settings"]["colors"]["background"] = r->settings.backgroundClearColor;
-                node["settings"]["show-memory-location"] = r->settings.showMemoryLocation;
-            }
-            else*/ // TODO: fix
-            
-             if (visualizer == nullptr)
+            if (visualizer == nullptr)
             {
                 node["type"] = "no-visualizer";
             }
@@ -770,8 +677,16 @@ namespace FluidSolver
             }
             else
             {
-                warnings++;
-                Log::warning("[SAVING] Unsupported visualizer type!");
+                auto res = serializer.serialize_unknown_visualizer(visualizer);
+                if (res.has_value())
+                {
+                    node = std::move(res.value());
+                }
+                else
+                {
+                    warnings++;
+                    Log::warning("[SAVING] Unsupported visualizer type!");
+                }
             }
 
             return node;
@@ -826,7 +741,7 @@ namespace FluidSolver
         {
             s.load_scenario(config["scenario"], res);
             s.load_solver(res, config["solver"]);
-            res.parameters.visualizer = s.load_visualizer(config["visualizer"]);
+            res.parameters.visualizer = s.load_visualizer(config["visualizer"], *this);
         }
         catch (const std::exception& e)
         {
@@ -859,7 +774,7 @@ namespace FluidSolver
         // save values
         config["scenario"] = s.save_scenario(simulation);
         config["solver"] = s.save_solver(simulation);
-        config["visualizer"] = s.save_visualizer(simulation.parameters.visualizer);
+        config["visualizer"] = s.save_visualizer(simulation.parameters.visualizer, *this);
 
         // transfer error information
         this->error_count = s.errors;
@@ -1104,6 +1019,17 @@ namespace FluidSolver
         auto binary_data = nlohmann::json::to_msgpack(j);
         std::ofstream data(filepath, std::ios::out | std::ios::binary);
         data.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
+    }
+
+
+    std::shared_ptr<ISimulationVisualizer> SimulationSerializer::deserialize_unknown_visualizer(const YAML::Node& node)
+    {
+        return nullptr;
+    }
+    std::optional<YAML::Node> SimulationSerializer::serialize_unknown_visualizer(
+        const std::shared_ptr<ISimulationVisualizer>& visualizer)
+    {
+        return {};
     }
 
 

@@ -88,6 +88,7 @@ set(LIB_FLUID_SOURCE_FILES
         "helper/ProtectedUnorderedMap.hpp"
         "Compatibility.hpp" "Compatibility.cpp"
         "helper/stb_implementation.cpp"
+        "serialization/YamlHelpers.hpp"
         )
 
 

@@ -1,16 +1,16 @@
 #include "UiLayer.hpp"
 
+#include "FluidSolverWindow.hpp"
+#include "ImguiHelper.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
-#include "serialization/SimulationSerializer.hpp"
+#include "ExtendedSimulationSerializer.hpp"
 #include "timestep/ConstantTimestep.hpp"
 #include "timestep/DynamicCFLTimestep.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
-#include "FluidSolverWindow.hpp"
-#include "ImguiHelper.hpp"
 
 #include <filesystem>
 #include <functional>
@@ -471,7 +471,7 @@ void FluidUi::UiLayer::render_visualizer_component()
             window->visualizer_parameter_changed();
         }
 
-        FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
+
         auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(window->simulation.parameters.visualizer);
         auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(window->simulation.parameters.visualizer);
         auto gl3d =
@@ -530,6 +530,13 @@ void FluidUi::UiLayer::render_visualizer_component()
             ImGui::EndCombo();
         }
     });
+
+    if (window->simulation.parameters.visualizer == nullptr)
+    {
+        return;
+    }
+
+    FLUID_ASSERT(window->simulation.parameters.visualizer != nullptr);
 
     BeginSubsection("Output", [&] {
         auto visualizer = window->simulation.parameters.visualizer;
@@ -709,7 +716,7 @@ void FluidUi::UiLayer::render_menu()
                     free(p);
 
                     // load simulation
-                    FluidSolver::SimulationSerializer s(path);
+                    FluidUi::ExtendedSimulationSerializer s(path);
                     auto simulation = s.load_from_file();
                     if (!s.has_errors())
                     {
@@ -799,7 +806,7 @@ void FluidUi::UiLayer::render_menu()
         if (ImGui::Button("Save") && path != nullptr)
         {
             // Save
-            FluidSolver::SimulationSerializer s(path, {save_particle_data, particle_filepath});
+            FluidUi::ExtendedSimulationSerializer s(path, {save_particle_data, particle_filepath});
             s.save_to_file(window->simulation);
             ImGui::CloseCurrentPopup();
         }

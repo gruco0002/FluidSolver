@@ -29,7 +29,8 @@ set(FLUID_STUDIO_SOURCE_FILES
         "visualizer/GLRenderer.hpp" "visualizer/GLRenderer.cpp"
         "visualizer/GLParticleVertexArray3D.hpp" "visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h"
-        "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"        
+        "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
+        "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         )
 
 

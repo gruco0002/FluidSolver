@@ -463,7 +463,7 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
     // visualize the scene
     simulation.visualize();
 
-    if (!is_gl_renderer)
+    if (!is_gl_renderer && simulation.parameters.visualizer != nullptr)
     {
         // if the visualizer is not an opengl renderer, copy the visualized image to be able to update it in another
         // thread
