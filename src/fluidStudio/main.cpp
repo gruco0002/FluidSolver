@@ -2,7 +2,7 @@
 
 int main(int argc, char** args)
 {
-    FluidUi::FluidSolverWindow window("FluidSolver");
+    FluidUi::FluidSolverWindow window("FluidStudio");
     window.MainLoop();
     return 0;
 }
