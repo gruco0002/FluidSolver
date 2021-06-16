@@ -5,8 +5,10 @@
 namespace FluidSolver::Helper
 {
 
-    template <typename _Key, typename _Value, typename _Hash = std::hash<_Key>>
-    class ProtectedUnorderedMap : public std::unordered_map<_Key, _Value, _Hash> {
+    template <typename _Key, typename _Value, typename _Hash = std::hash<_Key>> class ProtectedUnorderedMap {
+
+      private:
+        std::unordered_map<_Key, _Value, _Hash> data;
 
       public:
         bool auto_initialize_protection_enabled = false;
@@ -20,16 +22,16 @@ namespace FluidSolver::Helper
 
         _Value& operator[](const _Key& _key)
         {
-            auto casted = static_cast<std::unordered_map<_Key, _Value, _Hash>*>(this);
+
             if (!auto_initialize_protection_enabled)
             {
-                return (*casted)[_key];
+                return data[_key];
             }
             else
             {
-                if (casted->find(_key) != casted->end())
+                if (data.find(_key) != data.end())
                 {
-                    return (*casted)[_key];
+                    return data[_key];
                 }
                 else
                 {
@@ -37,6 +39,11 @@ namespace FluidSolver::Helper
                     return fallback_empty_value;
                 }
             }
+        }
+
+        void clear()
+        {
+            data.clear();
         }
     };
 
