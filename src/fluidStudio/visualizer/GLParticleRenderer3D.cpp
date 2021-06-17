@@ -1,14 +1,10 @@
 #include "GLParticleRenderer3D.hpp"
 
+#include "Assets.hpp"
 #include "Log.hpp"
 #include "engine/Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <incbin/incbin_helper.hpp>
-
-INCBIN(gl_particle_renderer_3d_vertex_shader, "visualizer/shader/GLParticleRenderer3D.vert.glsl");
-INCBIN(gl_particle_renderer_3d_geometry_shader, "visualizer/shader/GLParticleRenderer3D.geom.glsl");
-INCBIN(gl_particle_renderer_3d_fragment_shader, "visualizer/shader/GLParticleRenderer3D.frag.glsl");
 
 
 Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_target()
@@ -63,15 +59,15 @@ void FluidSolver::GLParticleRenderer3D::render()
         try
         {
             particleShader = new Engine::Graphics::Shader({
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeVertex,
-                                                      incbin_as_string(g_gl_particle_renderer_3d_vertex_shader_data,
-                                                                       g_gl_particle_renderer_3d_vertex_shader_size)),
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                                                      incbin_as_string(g_gl_particle_renderer_3d_geometry_shader_data,
-                                                                       g_gl_particle_renderer_3d_geometry_shader_size)),
-                Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment,
-                                                      incbin_as_string(g_gl_particle_renderer_3d_fragment_shader_data,
-                                                                       g_gl_particle_renderer_3d_fragment_shader_size)),
+                Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeVertex,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DVertexShader)),
+                Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DGeometryShader)),
+                Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeFragment,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DFragmentShader)),
             });
         }
         catch (const Engine::EngineException& e)

@@ -20,8 +20,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         "userInterface/ScenariosWindow.cpp" "userInterface/ScenariosWindow.hpp"
         "userInterface/UiLayer.cpp" "userInterface/UiLayer.hpp"
         "FluidSolverTypes.cpp" "FluidSolverTypes.hpp"
-        "userInterface/StatisticsUi.cpp" "userInterface/StatisticsUi.hpp"       
-        "Paths.hpp"     
+        "userInterface/StatisticsUi.cpp" "userInterface/StatisticsUi.hpp"
         "userInterface/LogWindow.cpp" "userInterface/LogWindow.hpp"
         "visualizer/GLParticleRenderer.hpp" "visualizer/GLParticleRenderer.cpp"
         "visualizer/GLParticleVertexArray.hpp" "visualizer/GLParticleVertexArray.cpp"
@@ -31,6 +30,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         "incbin/incbin.h"
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
         "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
+        "Assets.hpp" "Assets.cpp"
         )
 
 

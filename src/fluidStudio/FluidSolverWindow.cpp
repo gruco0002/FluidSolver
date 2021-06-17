@@ -13,7 +13,6 @@
 #include "visualizer/GLRenderer.hpp"
 
 #include <GLFW/glfw3.h>
-#include <Paths.hpp>
 #include <chrono>
 #include <iostream>
 #include <thread>

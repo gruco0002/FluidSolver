@@ -1,8 +1,6 @@
 #ifndef FLUIDSOLVER_SCENARIOSWINDOW_HPP
 #define FLUIDSOLVER_SCENARIOSWINDOW_HPP
 
-#include "Paths.hpp"
-
 #include <string>
 #include <vector>
 
@@ -23,7 +21,7 @@ namespace FluidUi
       private:
         std::vector<char*> scenarios;
 
-        std::string path = FLUID_ROOT_DIR + std::string("scenarios/");
+        std::string path = "../scenarios/";
 
         int current_item = 0;
 

@@ -1,12 +1,9 @@
 #include "GLParticleRenderer.hpp"
 
+#include "Assets.hpp"
+
 #include <engine/Window.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <incbin/incbin_helper.hpp>
-
-INCBIN(gl_particle_renderer_vertex_shader, "visualizer/shader/GLParticleRenderer.vert.glsl");
-INCBIN(gl_particle_renderer_geometry_shader, "visualizer/shader/GLParticleRenderer.geom.glsl");
-INCBIN(gl_particle_renderer_fragment_shader, "visualizer/shader/GLParticleRenderer.frag.glsl");
 
 Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target()
 {
@@ -65,13 +62,13 @@ void FluidSolver::GLParticleRenderer::render()
         particleShader = new Engine::Graphics::Shader({
             Engine::Graphics::Shader::ProgramPart(
                 Engine::Graphics::Shader::ProgramPartTypeVertex,
-                incbin_as_string(g_gl_particle_renderer_vertex_shader_data, g_gl_particle_renderer_vertex_shader_size)),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                                                  incbin_as_string(g_gl_particle_renderer_geometry_shader_data,
-                                                                   g_gl_particle_renderer_geometry_shader_size)),
-            Engine::Graphics::Shader::ProgramPart(Engine::Graphics::Shader::ProgramPartTypeFragment,
-                                                  incbin_as_string(g_gl_particle_renderer_fragment_shader_data,
-                                                                   g_gl_particle_renderer_fragment_shader_size)),
+                FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererVertexShader)),
+            Engine::Graphics::Shader::ProgramPart(
+                Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererGeometryShader)),
+            Engine::Graphics::Shader::ProgramPart(
+                Engine::Graphics::Shader::ProgramPartTypeFragment,
+                FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererFragmentShader)),
         });
 
         create_or_update_fbo();
