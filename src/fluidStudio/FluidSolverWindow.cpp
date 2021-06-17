@@ -224,11 +224,11 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
 
-    for (int x = -4; x <= 4; x++)
+    for (int x = -5; x < 5; x++)
     {
-        for (int y = -4; y <= 4; y++)
+        for (int y = -5; y < 5; y++)
         {
-            for (int z = -8; z <= -4; z++)
+            for (int z = -5; z < 5; z++)
             {
                 auto index = simulation.parameters.collection->add();
                 auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
@@ -245,23 +245,76 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
         }
     }
 
-    for (int x = -8; x <= 8; x++)
+    auto emit_boundary = [&](float x, float y, float z) {
+        auto index = simulation.parameters.collection->add();
+        auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
+        pos.position = glm::vec3((float)x, (float)y, (float)z);
+
+        auto& info = simulation.parameters.collection->get<FluidSolver::ParticleInfo>(index);
+        info.type = FluidSolver::ParticleType::ParticleTypeBoundary;
+
+        auto& data = simulation.parameters.collection->get<FluidSolver::ParticleData>(index);
+        data.density = 1.0f;
+        data.mass = 1.0f;
+        data.pressure = 0.0f;
+    };
+
+    // ground
+    for (int x = -8; x < 8; x++)
     {
-        for (int y = -8; y <= -5; y++)
+        for (int y = -8; y < -5; y++)
         {
-            for (int z = -11; z <= -1; z++)
+            for (int z = -8; z < 20; z++)
             {
-                auto index = simulation.parameters.collection->add();
-                auto& pos = simulation.parameters.collection->get<FluidSolver::MovementData3D>(index);
-                pos.position = glm::vec3((float)x, (float)y, (float)z);
+                emit_boundary(x, y, z);
+            }
+        }
+    }
 
-                auto& info = simulation.parameters.collection->get<FluidSolver::ParticleInfo>(index);
-                info.type = FluidSolver::ParticleType::ParticleTypeBoundary;
+    // -z wall
+    for (int x = -8; x < 8; x++)
+    {
+        for (int y = -5; y < 10; y++)
+        {
+            for (int z = -8; z < -5; z++)
+            {
+                emit_boundary(x, y, z);
+            }
+        }
+    }
 
-                auto& data = simulation.parameters.collection->get<FluidSolver::ParticleData>(index);
-                data.density = 1.0f;
-                data.mass = 1.0f;
-                data.pressure = 0.0f;
+    // z-wall
+    for (int x = -8; x < 8; x++)
+    {
+        for (int y = -5; y < 10; y++)
+        {
+            for (int z = 17; z < 20; z++)
+            {
+                emit_boundary(x, y, z);
+            }
+        }
+    }
+
+    // -x wall
+    for (int x = -8; x < -5; x++)
+    {
+        for (int y = -5; y < 10; y++)
+        {
+            for (int z = -5; z < 17; z++)
+            {
+                emit_boundary(x, y, z);
+            }
+        }
+    }
+
+    // x wall
+    for (int x = 5; x < 8; x++)
+    {
+        for (int y = -5; y < 10; y++)
+        {
+            for (int z = -5; z < 17; z++)
+            {
+                emit_boundary(x, y, z);
             }
         }
     }
