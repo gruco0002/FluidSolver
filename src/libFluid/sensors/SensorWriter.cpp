@@ -6,46 +6,6 @@
 #include <fmt/chrono.h>
 #include <fmt/core.h>
 
-namespace FluidSolver
-{
-    template <> void SensorWriter::push_back_header<glm::vec2>(const std::string& header)
-    {
-        push_back_header(header, 2);
-    }
-    template <> void SensorWriter::push_back_header<glm::vec3>(const std::string& header)
-    {
-        push_back_header(header, 3);
-    }
-    template <> void SensorWriter::push_back_header<glm::vec4>(const std::string& header)
-    {
-        push_back_header(header, 4);
-    }
-    template <> void SensorWriter::push_back_header<FluidSolver::Timepoint>(const std::string& header)
-    {
-        push_back_header(
-            {header + " - Number", header + " - Sim Time", header + " - Sys Time", header + " - Timestep"});
-    }
-    template <> void SensorWriter::push_back_header<float>(const std::string& header)
-    {
-        push_back_header(header, 1);
-    }
-    template <> void SensorWriter::push_back_header<int>(const std::string& header)
-    {
-        push_back_header(header, 1);
-    }
-    template <> void SensorWriter::push_back_header<size_t>(const std::string& header)
-    {
-        push_back_header(header, 1);
-    }
-    template <> void SensorWriter::push_back_header<std::string>(const std::string& header)
-    {
-        push_back_header(header, 1);
-    }
-    template <> void SensorWriter::push_back_header<char*>(const std::string& header)
-    {
-        push_back_header(header, 1);
-    }
-} // namespace FluidSolver
 
 void FluidSolver::SensorWriter::push_back_header(const std::string& header, size_t dimensionality)
 {
