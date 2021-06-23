@@ -223,13 +223,15 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
     auto sen = std::make_shared<FluidSolver::Sensors::SensorPlane>();
-    sen->settings.origin = glm::vec3(-5, -5, 5);
-    sen->settings.span_x = glm::vec3(1.0f, 0.0f, 0.0f);
+    sen->settings.origin = glm::vec3(0, -5, 5);
+    sen->settings.span_x = glm::vec3(0.0f, 0.0f, 1.0f);
     sen->settings.span_y = glm::vec3(0.0f, 1.0f, 0.0f);
     sen->settings.width = 10;
     sen->settings.height = 10;
-    sen->settings.number_of_samples_x = 20;
-    sen->settings.number_of_samples_y = 20;
+    sen->settings.number_of_samples_x = 100;
+    sen->settings.number_of_samples_y = 100;
+    sen->settings.min_image_value = 0.0f;
+    sen->settings.max_image_value = 1.5f;
     simulation.parameters.sensors.push_back(sen);
 
 

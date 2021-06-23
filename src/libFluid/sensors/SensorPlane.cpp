@@ -37,7 +37,7 @@ namespace FluidSolver::Sensors
             size_t x = i % settings.number_of_samples_x;
 
             float value = 0.0f;
-            vec3 sample_position = settings.origin + span_x * x_step + span_y * y_step;
+            vec3 sample_position = settings.origin + span_x * x_step * (float)x + span_y * y_step * (float)y;
 
             auto neighbors = parameters.neighborhood_interface->get_neighbors(sample_position);
             for (auto neighbor : neighbors)

@@ -250,6 +250,24 @@ void FluidUi::StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolv
 
     if (rendered_image != nullptr)
     {
-        ImGui::Image((ImTextureID)rendered_image->GetID(), {400, 400});
+        auto max_width = ImGui::GetWindowWidth() - 20;
+        auto max_height = ImGui::GetWindowHeight() - 80;
+        float ratio = (float)rendered_image->getWidth() / (float)rendered_image->getHeight();
+
+        float width = 1;
+        float height = 1;
+
+        if (ratio * max_height <= max_width)
+        {
+            height = max_height;
+            width = ratio * max_height;
+        }
+        else
+        {
+            width = max_width;
+            height = max_width / ratio;
+        }
+
+        ImGui::Image((ImTextureID)rendered_image->GetID(), {width, height}, {0, 1}, {1, 0});
     }
 }
