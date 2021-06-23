@@ -4,6 +4,7 @@
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 #include "sensors/ParticleStatistics.hpp"
+#include "visualizer/ISimulationVisualizer.hpp"
 
 #include <implot.h>
 
@@ -215,5 +216,40 @@ void FluidUi::StatisticsUi::render_particle_count_sensor(
 
 void FluidUi::StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sensor)
 {
-    ImGui::Text("TODO");
+
+
+    auto& image = sensor->get_last_image();
+
+    FluidSolver::ISimulationVisualizer::Size size;
+    size.width = image.width();
+    size.height = image.height();
+
+    if (size.width == 0 || size.height == 0)
+    {
+        ImGui::Text("Currently no visualization data available!");
+    }
+
+    {
+        // create or recreate the gpu image
+        if (rendered_image == nullptr || rendered_image->getWidth() != size.width ||
+            rendered_image->getHeight() != size.height)
+        {
+            delete rendered_image;
+            rendered_image = nullptr;
+
+            // create new image
+            auto color_settings = new Engine::Graphics::Texture2DSettings();
+            color_settings->GenerateMipmaps = false;
+            rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA,
+                                                             Engine::ComponentType::ComponentTypeUnsignedByte);
+        }
+
+        // update the gpu image
+        rendered_image->SetData(image.data(), image.size());
+    }
+
+    if (rendered_image != nullptr)
+    {
+        ImGui::Image((ImTextureID)rendered_image->GetID(), {400, 400});
+    }
 }

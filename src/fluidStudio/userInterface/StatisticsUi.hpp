@@ -1,6 +1,7 @@
 #ifndef FLUIDSOLVER_STATISTICSUI_HPP
 #define FLUIDSOLVER_STATISTICSUI_HPP
 
+#include "engine/graphics/Texture2D.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 
@@ -25,6 +26,8 @@ namespace FluidUi
 
       private:
         std::vector<uint8_t> open_sensor_windows;
+
+        Engine::Graphics::Texture2D* rendered_image = nullptr;
 
         bool* sensor_window_open_ptr(size_t index);
 
