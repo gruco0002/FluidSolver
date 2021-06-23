@@ -89,6 +89,7 @@ set(LIB_FLUID_SOURCE_FILES
         "Compatibility.hpp" "Compatibility.cpp"
         "helper/stb_implementation.cpp"
         "serialization/YamlHelpers.hpp"
+        "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         )
 
 

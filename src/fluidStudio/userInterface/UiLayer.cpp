@@ -1,11 +1,11 @@
 #include "UiLayer.hpp"
 
+#include "ExtendedSimulationSerializer.hpp"
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
-#include "ExtendedSimulationSerializer.hpp"
 #include "timestep/ConstantTimestep.hpp"
 #include "timestep/DynamicCFLTimestep.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
@@ -94,6 +94,12 @@ void FluidUi::UiLayer::render_component_panel()
                 if (ImGui::MenuItem("Global Particle Count", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalParticleCountSensor>();
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+                    window->simulation.parameters.sensors.push_back(sen);
+                }           
+                if (ImGui::MenuItem("3D Sensor Plane", nullptr, nullptr, is_safe))
+                {
+                    auto sen = std::make_shared<FluidSolver::Sensors::SensorPlane>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
@@ -418,6 +424,10 @@ const char* get_sensor_type_name(const std::shared_ptr<FluidSolver::ISensor>& se
     {
         return "Global Particle Count";
     }
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen))
+    {
+        return "3D Sensor Plane";
+    }
     return "UNKNOWN";
 }
 
@@ -440,6 +450,10 @@ void FluidUi::UiLayer::render_sensor_component(size_t index)
     if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen))
     {
         render_global_energy_sensor_component(std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen));
+    }
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen))
+    {
+        render_sensor_plane_component(std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen));
     }
 }
 
@@ -852,4 +866,23 @@ bool FluidUi::UiLayer::Component::can_delete() const
     }
 
     return false;
+}
+
+
+void FluidUi::UiLayer::render_sensor_plane_component(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sen)
+{
+    BeginSubsection("Location & Size", [&] {
+        ImGui::InputFloat3("Origin", (float*)&sen->settings.origin);
+        ImGui::InputFloat3("Span X", (float*)&sen->settings.span_x);
+        ImGui::InputFloat3("Span Y", (float*)&sen->settings.span_y);
+        ImGui::InputFloat("Width", &sen->settings.width);
+        ImGui::InputFloat("Height", &sen->settings.height);
+        ImGui::InputInt("X-Samples", (int*)&sen->settings.number_of_samples_x);
+        ImGui::InputInt("Y-Samples", (int*)&sen->settings.number_of_samples_y);
+    });
+
+    BeginSubsection("Image", [&] {
+        ImGui::InputFloat("Min. value", &sen->settings.min_image_value);
+        ImGui::InputFloat("Max. value", &sen->settings.max_image_value);
+    });
 }

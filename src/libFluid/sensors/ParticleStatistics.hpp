@@ -19,6 +19,7 @@ namespace FluidSolver
             float maximum = std::numeric_limits<float>::min();
             float minimum = std::numeric_limits<float>::max();
         };
+       
 
         class GlobalDensitySensor : public ISensor {
           public:

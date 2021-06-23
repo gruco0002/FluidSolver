@@ -1,9 +1,9 @@
 #include "StatisticsUi.hpp"
 
 #include "FluidInclude.hpp"
-#include "sensors/ParticleStatistics.hpp"
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
+#include "sensors/ParticleStatistics.hpp"
 
 #include <implot.h>
 
@@ -52,6 +52,10 @@ void FluidUi::StatisticsUi::render()
                 {
                     render_particle_count_sensor(
                         std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen));
+                }
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen))
+                {
+                    render_sensor_plane_sensor(std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen));
                 }
             }
 
@@ -207,4 +211,9 @@ void FluidUi::StatisticsUi::render_particle_count_sensor(
 
         ImPlot::EndPlot();
     }
+}
+
+void FluidUi::StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sensor)
+{
+    ImGui::Text("TODO");
 }

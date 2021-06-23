@@ -104,6 +104,7 @@ void FluidSolver::Simulation::initialize()
     {
         FLUID_ASSERT(sen != nullptr);
         sen->parameters.simulation_parameters = &internal_parameters;
+        sen->parameters.neighborhood_interface = &neigborhood_interface;
         sen->initialize();
     }
 
@@ -170,6 +171,11 @@ FluidSolver::Compatibility FluidSolver::Simulation::check()
     if (parameters.visualizer != nullptr)
     {
         c.add_compatibility(parameters.visualizer->check());
+    }
+
+    for (auto& sensor : parameters.sensors)
+    {
+        c.add_compatibility(sensor->check());
     }
 
     return c;

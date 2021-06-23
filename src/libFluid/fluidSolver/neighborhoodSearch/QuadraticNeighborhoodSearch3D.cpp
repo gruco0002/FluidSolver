@@ -160,6 +160,8 @@ namespace FluidSolver
             return n;
         };
 
+        res.link.get_search_radius = [&]() { return this->search_radius; };
+
         return res;
     }
 

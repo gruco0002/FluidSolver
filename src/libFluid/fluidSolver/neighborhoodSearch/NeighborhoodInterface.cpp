@@ -95,3 +95,8 @@ FluidSolver::NeighborhoodInterface::NeighborsIterator::NeighborsIterator(const N
     this->original_iterator = to_copy.data->iterator_link.iterator_copy(to_copy.original_iterator);
     this->data = to_copy.data;
 }
+
+float FluidSolver::NeighborhoodInterface::get_search_radius(){
+    FLUID_ASSERT(this->link.get_search_radius != nullptr);
+    return this->link.get_search_radius();
+}

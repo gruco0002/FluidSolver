@@ -2,8 +2,8 @@
 #define FLUIDSOLVER_UILAYER_HPP
 
 #include "StatisticsUi.hpp"
-
-#include <userInterface/LogWindow.hpp>
+#include "sensors/SensorPlane.hpp"
+#include "userInterface/LogWindow.hpp"
 
 namespace FluidUi
 {
@@ -57,6 +57,7 @@ namespace FluidUi
 
 
         void render_global_energy_sensor_component(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sen);
+        void render_sensor_plane_component(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sen);
 
         void delete_component(const Component& component);
     };
