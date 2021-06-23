@@ -290,62 +290,86 @@ namespace FluidSolver
             FLUID_ASSERT(data->data->collection != nullptr);
             FLUID_ASSERT(data->data->search_radius > 0.0f);
             auto collection = data->data->collection;
+            bool found = false;
 
             auto center_cell = data->data->calculate_grid_cell_location_of_position(data->of.position);
-            GridCellLocation current_cell{center_cell.x + dx, center_cell.y + dy, center_cell.z + dz};
 
-            // initialize or advance the current iterator by one
-            if (current == -1)
+            while (!found)
             {
-                current_set_iterator = data->data->grid[current_cell].begin();
-                current = 0;
-            }
-            else
-            {
-                ++current_set_iterator;
-            }
+                GridCellLocation current_cell{center_cell.x + dx, center_cell.y + dy, center_cell.z + dz};
 
-            // check if the iterator reached the end
-            if (current_set_iterator == data->data->grid[current_cell].end())
-            {
-                // increment counters to the next cell location
-                dz++;
-                if (dz > 1)
+                // initialize or advance the current iterator by one
+                if (!current_set_iterator.has_value())
                 {
-                    dy++;
-                    dz = -1;
+                    if (data->data->grid[current_cell].size() != 0)
+                    {
+                        current_set_iterator = data->data->grid[current_cell].begin();
+                    }
                 }
-                if (dy > 1)
+                else
                 {
-                    dx++;
-                    dy = -1;
-                }
-                if (dx > 1)
-                {
-                    // there are no cells left to check, set the iterator to the end() and return
-                    current = collection->size();
-                    return *this;
+                    (*current_set_iterator)++;
+                    if (*current_set_iterator == data->data->grid[current_cell].end())
+                    {
+                        // set the iterator object to empty, since this iterator is depleted of entries
+                        current_set_iterator.reset();
+                    }
                 }
 
-                // set the current iterator the the new cell
-                current_cell = {center_cell.x + dx, center_cell.y + dy, center_cell.z + dz};
-                current_set_iterator = data->data->grid[current_cell].begin();
+                // check if we need to choose the next cell and therefore the next iterator
+                if (!current_set_iterator.has_value())
+                {
+                    // increment counters to the next cell location
+                    dz++;
+                    if (dz > 1)
+                    {
+                        dy++;
+                        dz = -1;
+                    }
+                    if (dy > 1)
+                    {
+                        dx++;
+                        dy = -1;
+                    }
+                    if (dx > 1)
+                    {
+                        // there are no cells left to check, set the iterator to the end() and return
+                        current = collection->size();
+                        return *this;
+                    }
 
-                // recurse to check the next cell
-                return ++(*this);
-            }
+                    // update the current cell
+                    current_cell = {center_cell.x + dx, center_cell.y + dy, center_cell.z + dz};
 
-            particleIndex_t current_candidate = *current_set_iterator;
-            const vec3& position = collection->get<MovementData3D>(current_candidate).position;
-            if (glm::length(data->of.position - position) <= data->data->search_radius)
-            {
-                // we found a neighbor -> set the current particle index to the neighbor
-                current = current_candidate;
-            }
-            else
-            {
-                // the candidate is not a neighbor, recurse to check the next particle
-                return ++(*this);
+                    // set the current iterator the the new cell
+                    if (data->data->grid[current_cell].size() != 0)
+                    {
+                        current_set_iterator = data->data->grid[current_cell].begin();
+                    }
+
+                    // repreat to check the next cell
+                    found = false;
+                    continue;
+                }
+                else
+                {
+                    // check the particle the iterator points to
+                    particleIndex_t current_candidate = *(*current_set_iterator);
+                    const vec3& position = collection->get<MovementData3D>(current_candidate).position;
+                    if (glm::length(data->of.position - position) <= data->data->search_radius)
+                    {
+                        // we found a neighbor -> set the current particle index to the neighbor
+                        current = current_candidate;
+                        found = true;
+                        continue;
+                    }
+                    else
+                    {
+                        // the candidate is not a neighbor, repeat to check the next particle
+                        found = false;
+                        continue;
+                    }
+                }
             }
         }
         return *this;

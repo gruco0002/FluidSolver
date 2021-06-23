@@ -10,6 +10,7 @@
 #include <limits>
 #include <memory>
 #include <set>
+#include <optional>
 
 namespace FluidSolver
 {
@@ -33,7 +34,7 @@ namespace FluidSolver
             int8_t dy = -1;
             int8_t dz = -1;
 
-            std::set<particleIndex_t>::iterator current_set_iterator;
+            std::optional<std::set<particleIndex_t>::iterator> current_set_iterator;
 
             bool operator==(const NeighborsIterator& other) const;
 
