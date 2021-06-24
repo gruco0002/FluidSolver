@@ -45,7 +45,7 @@ namespace FluidSolver::Sensors
                 auto& mv = parameters.simulation_parameters->collection->get<MovementData3D>(neighbor);
                 auto& pd = parameters.simulation_parameters->collection->get<ParticleData>(neighbor);
 
-                value += pd.density * kernel.GetKernelValue(mv.position, sample_position);
+                value += pd.mass * kernel.GetKernelValue(mv.position, sample_position);
             }
 
 
