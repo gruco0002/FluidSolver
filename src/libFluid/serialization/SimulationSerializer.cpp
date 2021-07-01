@@ -11,6 +11,7 @@
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "sensors/ParticleStatistics.hpp"
+#include "sensors/SensorPlane.hpp"
 #include "serialization/YamlHelpers.hpp"
 #include "timestep/ConstantTimestep.hpp"
 #include "timestep/DynamicCFLTimestep.hpp"
@@ -148,8 +149,60 @@ namespace FluidSolver
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
         res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+
         return res;
     }
+
+    YAML::Node SimulationSerializer::save_sensor_plane(const std::shared_ptr<Sensors::SensorPlane>& sen)
+    {
+        YAML::Node node;
+
+        node["type"] = "sensor-plane";
+        node["name"] = sen->parameters.name;
+        node["save-to-file"] = sen->parameters.save_to_file;
+        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+
+        // sensor plane custom settings
+        node["size"]["width"] = sen->settings.width;
+        node["size"]["height"] = sen->settings.height;
+
+        node["location"]["origin"] = sen->settings.origin;
+        node["location"]["span-x"] = sen->settings.span_x;
+        node["location"]["span-y"] = sen->settings.span_y;
+
+        node["samples"]["x"] = sen->settings.number_of_samples_x;
+        node["samples"]["y"] = sen->settings.number_of_samples_y;
+
+        node["image"]["min-value"] = sen->settings.min_image_value;
+        node["image"]["max-value"] = sen->settings.max_image_value;
+
+
+        return node;
+    }
+    std::shared_ptr<Sensors::SensorPlane> SimulationSerializer::load_sensor_plane(const YAML::Node& node)
+    {
+        auto res = std::make_shared<Sensors::SensorPlane>();
+        res->parameters.name = node["name"].as<std::string>();
+        res->parameters.save_to_file = node["save-to-file"].as<bool>();
+        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+
+        // sensor plane custom settings
+        res->settings.width = node["size"]["width"].as<float>();
+        res->settings.height = node["size"]["height"].as<float>();
+
+        res->settings.origin = node["location"]["origin"].as<glm::vec3>();
+        res->settings.span_x = node["location"]["span-x"].as<glm::vec3>();
+        res->settings.span_y = node["location"]["span-y"].as<glm::vec3>();
+
+        res->settings.number_of_samples_x = node["samples"]["x"].as<size_t>();
+        res->settings.number_of_samples_y = node["samples"]["y"].as<size_t>();
+
+        res->settings.min_image_value = node["image"]["min-value"].as<float>();
+        res->settings.max_image_value = node["image"]["max-value"].as<float>();
+
+        return res;
+    }
+
 
     YAML::Node SimulationSerializer::save_global_energy_sensor(const std::shared_ptr<Sensors::GlobalEnergySensor>& sen)
     {
