@@ -4,6 +4,7 @@
 #include "FluidAssert.hpp"
 #include "FluidTypes.hpp"
 #include "interface/Constants.hpp"
+#include "Forward.hpp"
 
 
 #endif // FLUIDSOLVER_FLUIDINCLUDE_HPP
