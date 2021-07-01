@@ -3,6 +3,7 @@
 #include "Log.hpp"
 #include "serialization/YamlHelpers.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
+#include "visualizer/GLParticleRenderer3D.hpp"
 
 namespace FluidUi
 {
@@ -43,6 +44,32 @@ namespace FluidUi
 
             return r;
         }
+        else if (node["type"].as<std::string>() == "gl-particle-renderer-3d")
+        {
+            if (!FluidSolver::GLRenderer::is_opengl_available())
+            {
+                FluidSolver::Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not "
+                                        "initialized but visualizer requires OpenGL!");
+                return nullptr;
+            }
+            auto r = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+
+            // default parameters
+            r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
+            r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
+
+            // custom paramters for the particle renderer
+            r->settings.background_color = node["settings"]["background-color"].as<glm::vec4>();
+            r->settings.boundary_particle_color = node["settings"]["boundary-color"].as<glm::vec4>();
+            r->settings.fluid_particle_color = node["settings"]["fluid-color"].as<glm::vec4>();
+            r->settings.light_direction = node["settings"]["light-direction"].as<glm::vec3>();
+            r->settings.camera.location = node["settings"]["camera"]["location"].as<glm::vec3>();
+            r->settings.camera.up = node["settings"]["camera"]["up"].as<glm::vec3>();
+            r->settings.camera.looking_at = node["settings"]["camera"]["looking-at"].as<glm::vec3>();
+
+            return r;
+        }
+
 
         return nullptr;
     }
@@ -77,7 +104,30 @@ namespace FluidUi
 
             return node;
         }
+        else if (std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer3D>(visualizer) != nullptr)
+        {
+            auto r = std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer3D>(visualizer);
+            YAML::Node node;
 
+            node["type"] = "gl-particle-renderer-3d";
+
+            // default parameters
+            node["render-target"]["width"] = r->parameters.render_target.width;
+            node["render-target"]["height"] = r->parameters.render_target.height;
+
+            // custom parameters for the particle renderer
+            node["settings"]["background-color"] = r->settings.background_color;
+            node["settings"]["boundary-color"] = r->settings.boundary_particle_color;
+            node["settings"]["fluid-color"] = r->settings.fluid_particle_color;
+            node["settings"]["light-direction"] = r->settings.light_direction;
+            node["settings"]["camera"]["location"] = r->settings.camera.location;
+            node["settings"]["camera"]["up"] = r->settings.camera.up;
+            node["settings"]["camera"]["looking-at"] = r->settings.camera.looking_at;
+
+            return node;
+        }
+
+        // return empty optional
         return {};
     }
 

@@ -5,7 +5,11 @@
 #include "entities/ParticleSpawner.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
+#include "fluidSolver/SESPHFluidSolver3D.hpp"
+#include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
+#include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
+#include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "serialization/YamlHelpers.hpp"
 #include "timestep/ConstantTimestep.hpp"
@@ -462,6 +466,29 @@ namespace FluidSolver
             node["min-iterations"] = f->settings.MinNumberOfIterations;
             node["viscosity"] = f->settings.Viscosity;
         }
+        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s))
+        {
+            auto f =
+                std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
+
+            node["type"] = "sesph-3d";
+            node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["stiffness"] = f->settings.StiffnessK;
+            node["viscosity"] = f->settings.Viscosity;
+        }
+        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
+        {
+            auto f = std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s);
+
+            node["type"] = "sesph-3d";
+            node["neigborhood-search"]["type"] = "hashed-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["stiffness"] = f->settings.StiffnessK;
+            node["viscosity"] = f->settings.Viscosity;
+        }
         else
         {
             error_count++;
@@ -561,6 +588,42 @@ namespace FluidSolver
                 Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
             }
         }
+        else if (node["type"].as<std::string>() == "sesph-3d")
+        {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
+            {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
+                {
+                    auto res =
+                        std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
+
+                    res->settings.StiffnessK = node["stiffness"].as<float>();
+                    res->settings.Viscosity = node["viscosity"].as<float>();
+
+                    simulation.parameters.fluid_solver = res;
+                }
+                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
+                {
+                    auto res = std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
+
+                    res->settings.StiffnessK = node["stiffness"].as<float>();
+                    res->settings.Viscosity = node["viscosity"].as<float>();
+
+                    simulation.parameters.fluid_solver = res;
+                }
+                else
+                {
+                    error_count++;
+                    Log::error("[LOADING] Unknown neighborhood search type '" +
+                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                }
+            }
+            else
+            {
+                error_count++;
+                Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
+            }
+        }
         else
         {
             error_count++;
@@ -573,40 +636,6 @@ namespace FluidSolver
 
     std::shared_ptr<ISimulationVisualizer> SimulationSerializer::load_visualizer(const YAML::Node& node)
     {
-        /* if (node["type"].as<std::string>() == "gl-particle-renderer")
-         {
-             if (!GLRenderer::is_opengl_available())
-             {
-                 error_count++;
-                 Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not initialized but "
-                            "visualizer requires OpenGL!");
-                 return nullptr;
-             }
-             auto r = std::make_shared<GLParticleRenderer>();
-
-             // default parameters
-             r->settings.viewport.left = node["viewport"]["left"].as<float>();
-             r->settings.viewport.right = node["viewport"]["right"].as<float>();
-             r->settings.viewport.top = node["viewport"]["top"].as<float>();
-             r->settings.viewport.bottom = node["viewport"]["bottom"].as<float>();
-             r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
-             r->parameters.render_target.height = node["render-target"]["height"].as<size_t>();
-
-             // custom paramters for the particle renderer
-             r->settings.topValue = node["settings"]["top"]["value"].as<float>();
-             r->settings.topColor = node["settings"]["top"]["color"].as<glm::vec4>();
-             r->settings.bottomValue = node["settings"]["bottom"]["value"].as<float>();
-             r->settings.bottomColor = node["settings"]["bottom"]["color"].as<glm::vec4>();
-             r->settings.colorSelection =
-                 (GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"].as<int>();
-             r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].as<glm::vec4>();
-             r->settings.backgroundClearColor = node["settings"]["colors"]["background"].as<glm::vec4>();
-             r->settings.showMemoryLocation = node["settings"]["show-memory-location"].as<bool>();
-
-             return r; // TODO: fix
-             return nullptr;
-         }
-         else*/
 
         if (node["type"].as<std::string>() == "no-visualizer")
         {
@@ -900,9 +929,9 @@ namespace FluidSolver
             if (collection.is_type_present<ExternalForces3D>())
             {
                 auto& e = collection.get<ExternalForces3D>(i);
-                e.non_pressure_acceleration.x = j["data"]["externalForces"][i]["n"][0];
-                e.non_pressure_acceleration.y = j["data"]["externalForces"][i]["n"][1];
-                e.non_pressure_acceleration.z = j["data"]["externalForces"][i]["n"][2];
+                e.non_pressure_acceleration.x = j["data"]["externalForces3D"][i]["n"][0];
+                e.non_pressure_acceleration.y = j["data"]["externalForces3D"][i]["n"][1];
+                e.non_pressure_acceleration.z = j["data"]["externalForces3D"][i]["n"][2];
             }
         }
     }
