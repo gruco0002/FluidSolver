@@ -228,7 +228,7 @@ namespace FluidSolver
         const float& pressure = pData.pressure;
         const float& mass = pData.mass;
 
-        float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / std::pow(density, 2.0f);
+        float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / Math::pow2(density);
 
         vec3 pressureAcceleration = vec3(0.0f);
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
@@ -256,7 +256,7 @@ namespace FluidSolver
                 const float& neighborPressure = neighbor_pData.pressure;
 
                 float neighborPressureDivDensitySquared =
-                    neighborDensity == 0.0f ? 0.0f : neighborPressure / std::pow(neighborDensity, 2.0f);
+                    neighborDensity == 0.0f ? 0.0f : neighborPressure / Math::pow2(neighborDensity);
 
                 pressureAcceleration += -neighborMass *
                                         (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
