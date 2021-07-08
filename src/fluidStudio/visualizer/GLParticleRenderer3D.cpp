@@ -98,7 +98,7 @@ void FluidSolver::GLParticleRenderer3D::render()
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
     particleShader->SetValue("viewMatrix", settings.camera.view_matrix());
-    particleShader->SetValue("pointSize", parameters.particle_size);
+    //particleShader->SetValue("pointSize", parameters.particle_size);
     particleShader->SetValue("particleColor", settings.fluid_particle_color);
     particleShader->SetValue("boundaryColor", settings.boundary_particle_color);
     particleShader->SetValue("lightDirection", glm::normalize(settings.light_direction));
