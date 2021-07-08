@@ -7,18 +7,23 @@ TEST(CubicSplineKernelTest, CompactKernelSupportTest)
     auto kernel = FluidSolver::CubicSplineKernel();
 
     kernel.kernel_support = 1.0f;
+    kernel.initialize();
     EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(2.0f, 0.0f)), 0.0f);
 
     kernel.kernel_support = 3.0f;
+    kernel.initialize();
     EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(8.0f, 0.0f)), 0.0f);
 
     kernel.kernel_support = 5.0f;
+    kernel.initialize();
     EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(3.0f, 16.0f)), 0.0f);
 
     kernel.kernel_support = 0.8f;
+    kernel.initialize();
     EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(4.0f, 10.0f)), 0.0f);
 
     kernel.kernel_support = 2.5f;
+    kernel.initialize();
     EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(0.0f, 3.0f)), 0.0f);
 }
 
@@ -29,14 +34,17 @@ TEST(CubicSplineKernelTest, SymmetricKernelTest)
     for (float t = 0.0f; t <= 10.0f; t += 0.001f)
     {
         kernel.kernel_support = 8.5f;
+        kernel.initialize();
         EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(t, t)), kernel.GetKernelValue(glm::vec2(-t, -t)));
 
         EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(t, 0.0f)), kernel.GetKernelValue(glm::vec2(-t, 0.0f)));
 
         kernel.kernel_support = 6.5f;
+        kernel.initialize();
         EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(0.0f, t)), kernel.GetKernelValue(glm::vec2(0.0f, -t)));
 
         kernel.kernel_support = 4.5f;
+        kernel.initialize();
         EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(0.2f * t, t)), kernel.GetKernelValue(glm::vec2(-0.2f * t, -t)));
         EXPECT_FLOAT_EQ(kernel.GetKernelValue(glm::vec2(0.8f * t, t)), kernel.GetKernelValue(glm::vec2(-0.8f * t, -t)));
 
@@ -51,14 +59,17 @@ TEST(CubicSplineKernelTest, NonNegativeTest)
     for (float t = 0.0f; t <= 10.0f; t += 0.001f)
     {
         kernel.kernel_support = 8.5f;
+        kernel.initialize();
         EXPECT_GE(kernel.GetKernelValue(glm::vec2(t, t)), 0.0f);
 
         EXPECT_GE(kernel.GetKernelValue(glm::vec2(t, 0.0f)), 0.0f);
 
         kernel.kernel_support = 6.5f;
+        kernel.initialize();
         EXPECT_GE(kernel.GetKernelValue(glm::vec2(0.0f, t)), 0.0f);
 
         kernel.kernel_support = 4.5f;
+        kernel.initialize();
         EXPECT_GE(kernel.GetKernelValue(glm::vec2(0.2f * t, t)), 0.0f);
         EXPECT_GE(kernel.GetKernelValue(glm::vec2(0.8f * t, t)), 0.0f);
 
@@ -76,6 +87,7 @@ TEST(CubicSplineKernelDerivativeTest, PointSymmetricTest)
 
         {
             kernel.kernel_support = 8.5f;
+            kernel.initialize();
             // x values
             EXPECT_FLOAT_EQ(kernel.GetKernelDerivativeValue(glm::vec2(t, t)).x,
                             -kernel.GetKernelDerivativeValue(glm::vec2(-t, -t)).x);
@@ -90,6 +102,7 @@ TEST(CubicSplineKernelDerivativeTest, PointSymmetricTest)
 
         {
             kernel.kernel_support = 6.5f;
+            kernel.initialize();
             EXPECT_FLOAT_EQ(kernel.GetKernelDerivativeValue(glm::vec2(0.0f, t)).x,
                             -kernel.GetKernelDerivativeValue(glm::vec2(0.0f, -t)).x);
             EXPECT_FLOAT_EQ(kernel.GetKernelDerivativeValue(glm::vec2(0.0f, t)).y,
@@ -98,6 +111,7 @@ TEST(CubicSplineKernelDerivativeTest, PointSymmetricTest)
 
         {
             kernel.kernel_support = 4.5f;
+            kernel.initialize();
             EXPECT_FLOAT_EQ(kernel.GetKernelDerivativeValue(glm::vec2(0.2f * t, t)).x,
                             -kernel.GetKernelDerivativeValue(glm::vec2(-0.2f * t, -t)).x);
             EXPECT_FLOAT_EQ(kernel.GetKernelDerivativeValue(glm::vec2(0.8f * t, t)).x,

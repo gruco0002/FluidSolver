@@ -9,6 +9,7 @@ FluidSolver::ContinousVisualizer::ContinousVisualizer() : image(0, 0), kernel()
 void FluidSolver::ContinousVisualizer::initialize()
 {
     kernel.kernel_support = parameters.particle_size * 2.0f;
+    kernel.initialize();
     image = Image(parameters.render_target.width, parameters.render_target.height);
     recalculate_viewport();
 }

@@ -3,16 +3,19 @@
 
 FluidSolver::pFloat FluidSolver::CubicSplineKernel3D::GetKernelValue(const vec3& position) const
 {
+    FLUID_ASSERT(h != 0.0f);
+    FLUID_ASSERT(alpha != 0.0f);
+
     float q = glm::length(position) / h;
 
     float ret = 0.0f;
     if (q < 1.0f)
     {
-        ret = pow3(2.0f - q) - 4.0f * pow3(1.0f - q);
+        ret = Math::pow3(2.0f - q) - 4.0f * Math::pow3(1.0f - q);
     }
     else if (q < 2.0f)
     {
-        ret = pow3(2.0f - q);
+        ret = Math::pow3(2.0f - q);
     }
     else if (q >= 2.0f)
     {
@@ -23,6 +26,8 @@ FluidSolver::pFloat FluidSolver::CubicSplineKernel3D::GetKernelValue(const vec3&
 
 FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeValue(const vec3& position) const
 {
+    FLUID_ASSERT(h != 0.0f);
+    FLUID_ASSERT(alpha != 0.0f);
 
     float length = glm::length(position);
     float q = length / h;
@@ -36,11 +41,11 @@ FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeValue(con
     // this is the reversed implementation
     if (q < 1.0f)
     {
-        ret = pre * (-3.0f * pow2(2.0f - q) + 12.0f * pow2(1.0f - q));
+        ret = pre * (-3.0f * Math::pow2(2.0f - q) + 12.0f * Math::pow2(1.0f - q));
     }
     else if (q < 2.0f)
     {
-        ret = pre * (-3.0f * pow2(2.0f - q));
+        ret = pre * (-3.0f * Math::pow2(2.0f - q));
     }
     else if (q >= 2.0f)
     {
@@ -75,7 +80,7 @@ FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeReversedV
 void FluidSolver::CubicSplineKernel3D::initialize()
 {
     h = kernel_support / 2.0f;
-    alpha = 1.0f / (4.0f * FS_PI * std::pow(h, 3.0f));
+    alpha = 1.0f / (4.0f * FS_PI * Math::pow3(h));
 }
 
 FluidSolver::Compatibility FluidSolver::CubicSplineKernel3D::check()

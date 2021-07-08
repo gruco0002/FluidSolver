@@ -24,7 +24,7 @@ namespace FluidSolver
 
         virtual void initialize() override;
 
-         virtual Compatibility check() override;
+        virtual Compatibility check() override;
 
         virtual void render() override;
 

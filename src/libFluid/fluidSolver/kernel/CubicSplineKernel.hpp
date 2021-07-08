@@ -23,6 +23,12 @@ namespace FluidSolver
         vec2 GetKernelDerivativeReversedValue(const vec2& neighborPosition, const vec2& position) const;
 
         Compatibility check();
+
+        void initialize();
+
+      private:
+        float h = 0.0f;
+        float alpha = 0.0f;
     };
 } // namespace FluidSolver
 

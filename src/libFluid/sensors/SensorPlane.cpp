@@ -30,6 +30,7 @@ namespace FluidSolver::Sensors
 
         CubicSplineKernel3D kernel;
         kernel.kernel_support = parameters.neighborhood_interface->get_search_radius();
+        kernel.initialize();
 
 
         parallel::loop_for(0, settings.number_of_samples_x * settings.number_of_samples_y, [&](size_t i) {

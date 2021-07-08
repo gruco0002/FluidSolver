@@ -91,6 +91,7 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/YamlHelpers.hpp"
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         "Forward.hpp"
+        "FluidMath.hpp"
         )
 
 
