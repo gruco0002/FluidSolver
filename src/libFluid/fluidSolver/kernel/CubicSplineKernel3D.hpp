@@ -20,7 +20,23 @@ namespace FluidSolver
 
         vec3 GetKernelDerivativeReversedValue(const vec3& neighborPosition, const vec3& position) const;
 
+        void initialize();
+
         Compatibility check();
+
+      private:
+        float h;
+        float alpha;
+
+        inline float pow2(const float& x) const
+        {
+            return x * x;
+        }
+
+        inline float pow3(const float& x) const
+        {
+            return x * x * x;
+        }
     };
 
 

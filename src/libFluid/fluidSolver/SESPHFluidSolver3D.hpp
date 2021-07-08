@@ -129,6 +129,7 @@ namespace FluidSolver
         neighborhood_search.search_radius = parameters.particle_size * 2.0f;
         neighborhood_search.initialize();
         kernel.kernel_support = parameters.particle_size * 2.0f;
+        kernel.initialize();
     }
 
     template <typename Kernel, typename NeighborhoodSearch, typename parallel>

@@ -3,19 +3,16 @@
 
 FluidSolver::pFloat FluidSolver::CubicSplineKernel3D::GetKernelValue(const vec3& position) const
 {
-    float h = kernel_support / 2.0f;
-    float alpha = 1.0f / (4.0f * FS_PI * std::pow(h, 3.0f));
     float q = glm::length(position) / h;
-
 
     float ret = 0.0f;
     if (q < 1.0f)
     {
-        ret = std::pow(2.0f - q, 3.0f) - 4.0f * std::pow(1.0f - q, 3.0f);
+        ret = pow3(2.0f - q) - 4.0f * pow3(1.0f - q);
     }
     else if (q < 2.0f)
     {
-        ret = std::pow(2.0f - q, 3.0f);
+        ret = pow3(2.0f - q);
     }
     else if (q >= 2.0f)
     {
@@ -26,24 +23,24 @@ FluidSolver::pFloat FluidSolver::CubicSplineKernel3D::GetKernelValue(const vec3&
 
 FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeValue(const vec3& position) const
 {
-    float h = kernel_support / 2.0f;
-    float alpha = 1.0f / (4.0f * FS_PI * std::pow(h, 3.0f));
-    float q = glm::length(position) / h;
+
+    float length = glm::length(position);
+    float q = length / h;
 
     vec3 pre = vec3(0.0f);
-    if (glm::length(position) > std::numeric_limits<float>::epsilon())
-        pre = h * position / glm::length(position);
+    if (length > std::numeric_limits<float>::epsilon())
+        pre = h * position / length;
 
 
     vec3 ret = vec3(0.0f);
     // this is the reversed implementation
     if (q < 1.0f)
     {
-        ret = pre * (-3.0f * std::pow(2.0f - q, 2.0f) + 12.0f * std::pow(1.0f - q, 2.0f));
+        ret = pre * (-3.0f * pow2(2.0f - q) + 12.0f * pow2(1.0f - q));
     }
     else if (q < 2.0f)
     {
-        ret = pre * (-3.0f * std::pow(2.0f - q, 2.0f));
+        ret = pre * (-3.0f * pow2(2.0f - q));
     }
     else if (q >= 2.0f)
     {
@@ -73,6 +70,12 @@ FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeReversedV
                                                                                      const vec3& position) const
 {
     return this->GetKernelDerivativeValue(neighborPosition, position) * -1.0f;
+}
+
+void FluidSolver::CubicSplineKernel3D::initialize()
+{
+    h = kernel_support / 2.0f;
+    alpha = 1.0f / (4.0f * FS_PI * std::pow(h, 3.0f));
 }
 
 FluidSolver::Compatibility FluidSolver::CubicSplineKernel3D::check()
