@@ -4,6 +4,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/engine)
 find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
+find_package(tinyply CONFIG REQUIRED)
 
 
 # include directories
@@ -31,6 +32,8 @@ set(FLUID_STUDIO_SOURCE_FILES
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
         "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         "Assets.hpp" "Assets.cpp"
+        "userInterface/PlyImport.hpp" "userInterface/PlyImport.cpp"
+        "FluidStudioFwd.hpp"
         )
 
 
@@ -40,6 +43,7 @@ target_link_libraries(FluidStudio PUBLIC ENGINE)
 target_link_libraries(FluidStudio PUBLIC imgui::imgui)
 target_link_libraries(FluidStudio PUBLIC implot::implot)
 target_link_libraries(FluidStudio PUBLIC unofficial::nativefiledialog::nfd)
+target_link_libraries(FluidStudio PUBLIC tinyply)
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.

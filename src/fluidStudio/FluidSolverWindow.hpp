@@ -42,6 +42,8 @@ namespace FluidUi
 
         void create_empty_simulation();
 
+        void create_empty_3d_simulation();
+
         void create_3d_test_simulation();
 
         void on_new_simulation();

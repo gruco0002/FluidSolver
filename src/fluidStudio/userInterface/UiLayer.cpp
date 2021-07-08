@@ -8,6 +8,7 @@
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "timestep/ConstantTimestep.hpp"
 #include "timestep/DynamicCFLTimestep.hpp"
+#include "userInterface/PlyImport.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
@@ -96,7 +97,7 @@ void FluidUi::UiLayer::render_component_panel()
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalParticleCountSensor>();
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
-                }           
+                }
                 if (ImGui::MenuItem("3D Sensor Plane", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::SensorPlane>();
@@ -667,6 +668,16 @@ void FluidUi::UiLayer::delete_component(const Component& component)
     }
 }
 
+FluidUi::UiLayer::UiLayer()
+{
+    this->ply_import = std::make_unique<PlyImport>(window);
+}
+
+FluidUi::UiLayer::~UiLayer()
+{
+    window = nullptr;
+}
+
 void FluidUi::UiLayer::render()
 {
 
@@ -680,6 +691,11 @@ void FluidUi::UiLayer::render()
     // render other windows
     statisticsUi.render();
     logWindow.render();
+
+    if (ply_import)
+    {
+        ply_import->render();
+    }
 }
 
 void FluidUi::UiLayer::initialize()
@@ -688,6 +704,11 @@ void FluidUi::UiLayer::initialize()
     statisticsUi.initialize();
     logWindow.window = window;
     logWindow.initialize();
+
+    if (ply_import)
+    {
+        ply_import->set_window(window);
+    }
 }
 
 
@@ -744,6 +765,21 @@ void FluidUi::UiLayer::render_menu()
             {
                 save_menu_open = true;
             }
+
+            if (ImGui::BeginMenu("Import", can_change))
+            {
+
+                if (ImGui::MenuItem("Ply File", nullptr, false, can_change))
+                {
+                    if (ply_import)
+                    {
+                        ply_import->show();
+                    }
+                }
+
+                ImGui::EndMenu();
+            }
+
 
             ImGui::EndMenu();
         }

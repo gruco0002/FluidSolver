@@ -1,0 +1,215 @@
+#include "PlyImport.hpp"
+
+#include "FluidSolverWindow.hpp"
+#include "ImguiHelper.hpp"
+
+#include <filesystem>
+#include <fstream>
+#include <nfd.h>
+#include <tinyply.h>
+
+namespace FluidUi
+{
+
+    const char* particle_type_to_string(FluidSolver::ParticleType type)
+    {
+        switch (type)
+        {
+        case FluidSolver::ParticleTypeNormal:
+            return "Normal";
+        case FluidSolver::ParticleTypeBoundary:
+            return "Boundary";
+        case FluidSolver::ParticleTypeDead:
+            return "Dead";
+        default:
+            return "Unknown";
+        }
+    }
+
+    void PlyImport::render()
+    {
+        if (!visible)
+            return;
+
+        load_colors_if_required();
+
+        if (ImGui::Begin("Ply Import"))
+        {
+            ImGui::Text("Current file: %s", current_file.c_str());
+            ImGui::SameLine();
+            if (ImGui::Button("Open"))
+            {
+                char* p = nullptr;
+                auto res = NFD_OpenDialog("ply", nullptr, &p);
+                if (res == NFD_OKAY)
+                {
+                    std::string path(p);
+                    free(p);
+
+                    this->current_file = path;
+                }
+            }
+
+            ImGui::Separator();
+
+            ImGui::Text("Color mappings");
+            int i = 0;
+            for (auto mapped : mapped_colors)
+            {
+                ImGui::PushID(i);
+
+                glm::vec4 color(mapped.first, 1.0f);
+
+                ImGui::TextColored(*((ImVec4*)&color), "This color will be mapped to:");
+                ImGui::SameLine();
+                if (ImGui::BeginCombo("Type", particle_type_to_string(mapped.second)))
+                {
+                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeNormal),
+                                          mapped.second == FluidSolver::ParticleType::ParticleTypeNormal))
+                    {
+                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeNormal;
+                    }
+
+                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeBoundary),
+                                          mapped.second == FluidSolver::ParticleType::ParticleTypeBoundary))
+                    {
+                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeBoundary;
+                    }
+
+                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeDead),
+                                          mapped.second == FluidSolver::ParticleType::ParticleTypeDead))
+                    {
+                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeDead;
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+
+                ImGui::PopID();
+                i++;
+            }
+
+
+            ImGui::Separator();
+
+            if (ImGui::Button("Import"))
+            {
+                import_data_into_simulation();
+            }
+        }
+
+        ImGui::End();
+    }
+    void PlyImport::show()
+    {
+        visible = true;
+    }
+    void PlyImport::set_window(FluidSolverWindow* window)
+    {
+        this->window = window;
+    }
+    PlyImport::PlyImport(FluidSolverWindow* window)
+    {
+        this->window = window;
+    }
+    void PlyImport::load_colors_if_required()
+    {
+        if (loaded_file == current_file)
+        {
+            return;
+        }
+        loaded_file = current_file;
+
+        if (!std::filesystem::exists(loaded_file))
+        {
+            return;
+        }
+
+        mapped_colors.clear();
+        colors.clear();
+        vertices.clear();
+
+
+        std::fstream filestream(loaded_file);
+
+        tinyply::PlyFile file;
+        file.parse_header(filestream);
+
+        std::shared_ptr<tinyply::PlyData> ply_vertices, ply_colors;
+
+        ply_vertices = file.request_properties_from_element("vertex", {"x", "y", "z"});
+        ply_colors = file.request_properties_from_element("vertex", {"red", "green", "blue"});
+
+        file.read(filestream);
+
+        if (ply_vertices->t == tinyply::Type::FLOAT32)
+        {
+            for (size_t i = 0; i < ply_vertices->count; i++)
+            {
+                float x, y, z;
+                x = ((float*)ply_vertices->buffer.get())[i * 3 + 0];
+                y = ((float*)ply_vertices->buffer.get())[i * 3 + 1];
+                z = ((float*)ply_vertices->buffer.get())[i * 3 + 2];
+
+                glm::vec3 vertex = glm::vec3(x, z, y);
+
+                vertices.push_back(vertex);
+            }
+        }
+
+        if (ply_colors->t == tinyply::Type::UINT8)
+        {
+            for (size_t i = 0; i < ply_colors->count; i++)
+            {
+                uint8_t r, g, b;
+                r = ply_colors->buffer.get()[i * 3 + 0];
+                g = ply_colors->buffer.get()[i * 3 + 1];
+                b = ply_colors->buffer.get()[i * 3 + 2];
+
+                glm::vec3 color = glm::vec3(r / 255.0f, g / 255.0f, b / 255.0f);
+
+                colors.push_back(color);
+                if (mapped_colors.find(color) == mapped_colors.end())
+                {
+                    mapped_colors[color] = FluidSolver::ParticleType::ParticleTypeNormal;
+                }
+            }
+        }
+    }
+    void PlyImport::import_data_into_simulation()
+    {
+        // create an empty scenario
+        window->create_empty_3d_simulation();
+
+        auto collection = window->simulation.parameters.collection;
+
+        // import the data
+        for (size_t i = 0; i < vertices.size(); i++)
+        {
+            if (i >= colors.size())
+                break;
+
+            if (mapped_colors.find(colors[i]) == mapped_colors.end())
+                continue;
+
+
+            size_t index = collection->add();
+
+            auto& pos = collection->get<FluidSolver::MovementData3D>(index);
+            pos.position = vertices[i];
+
+            auto& info = collection->get<FluidSolver::ParticleInfo>(index);
+
+            info.type = mapped_colors[colors[i]];
+
+            auto& data = collection->get<FluidSolver::ParticleData>(index);
+            data.density = 1.0f;
+            data.mass = 1.0f;
+            data.pressure = 0.0f;
+        }
+
+        // hide the window again
+        visible = false;
+    }
+} // namespace FluidUi

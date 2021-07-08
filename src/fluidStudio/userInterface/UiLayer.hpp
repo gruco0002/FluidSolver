@@ -1,13 +1,16 @@
 #ifndef FLUIDSOLVER_UILAYER_HPP
 #define FLUIDSOLVER_UILAYER_HPP
 
+#include "FluidStudioFwd.hpp"
 #include "StatisticsUi.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/LogWindow.hpp"
 
+#include <memory>
+
 namespace FluidUi
 {
-    class FluidSolverWindow;
+
 
     class UiLayer {
       private:
@@ -33,6 +36,9 @@ namespace FluidUi
         } selection;
 
       public:
+        UiLayer();
+        ~UiLayer();
+
         FluidSolverWindow* window = nullptr;
         void render();
         void initialize();
@@ -40,6 +46,8 @@ namespace FluidUi
       private:
         StatisticsUi statisticsUi;
         LogWindow logWindow;
+
+        std::unique_ptr<PlyImport> ply_import;
 
         void render_component_panel();
         void render_simulation_controls();

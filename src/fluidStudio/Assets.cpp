@@ -21,7 +21,7 @@ INCBIN(gl_particle_renderer_3d_geometry_shader, "visualizer/shader/GLParticleRen
 INCBIN(gl_particle_renderer_3d_fragment_shader, "visualizer/shader/GLParticleRenderer3D.frag.glsl");
 #endif
 
-constexpr auto ASSET_BASE_PATH = "../";
+constexpr auto ASSET_BASE_PATH = "../../../src/fluidStudio/";
 
 namespace FluidUi
 {

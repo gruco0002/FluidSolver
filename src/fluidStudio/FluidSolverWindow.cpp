@@ -202,6 +202,31 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
     on_new_simulation();
 }
 
+void FluidUi::FluidSolverWindow::create_empty_3d_simulation()
+{
+    simulation = FluidSolver::Simulation();
+
+    simulation.parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulation.parameters.collection->add_type<FluidSolver::MovementData3D>();
+    simulation.parameters.collection->add_type<FluidSolver::ParticleData>();
+    simulation.parameters.collection->add_type<FluidSolver::ParticleInfo>();
+    simulation.parameters.collection->add_type<FluidSolver::ExternalForces3D>();
+    simulation.parameters.rest_density = 1.0f;
+    simulation.parameters.particle_size = 1.0f;
+    simulation.parameters.gravity = 9.81f;
+
+    simulation.parameters.fluid_solver = current_type->create_type();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+
+    simulation.parameters.invalidate = true;
+
+
+    FluidSolver::Log::message("Loaded empty 3d scenario");
+
+    on_new_simulation();
+}
+
 void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 {
     simulation = FluidSolver::Simulation();
