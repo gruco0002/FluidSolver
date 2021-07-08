@@ -1,6 +1,5 @@
 #include "CubicSplineKernel.hpp"
 
-#include <interface/Constants.hpp>
 #include <limits>
 
 float FluidSolver::CubicSplineKernel::GetKernelValue(const glm::vec2& position) const
@@ -90,5 +89,5 @@ FluidSolver::Compatibility FluidSolver::CubicSplineKernel::check()
 void FluidSolver::CubicSplineKernel::initialize()
 {
     h = kernel_support / 2.0f;
-    alpha = 5.0f / (14.0f * FS_PI * Math::pow2(h));
+    alpha = 5.0f / (14.0f * Math::PI * Math::pow2(h));
 }

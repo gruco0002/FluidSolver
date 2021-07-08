@@ -80,7 +80,7 @@ FluidSolver::vec3 FluidSolver::CubicSplineKernel3D::GetKernelDerivativeReversedV
 void FluidSolver::CubicSplineKernel3D::initialize()
 {
     h = kernel_support / 2.0f;
-    alpha = 1.0f / (4.0f * FS_PI * Math::pow3(h));
+    alpha = 1.0f / (4.0f * Math::PI * Math::pow3(h));
 }
 
 FluidSolver::Compatibility FluidSolver::CubicSplineKernel3D::check()

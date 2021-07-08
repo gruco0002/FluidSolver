@@ -3,7 +3,6 @@
 
 #include "FluidAssert.hpp"
 #include "FluidTypes.hpp"
-#include "interface/Constants.hpp"
 #include "FluidMath.hpp"
 #include "Forward.hpp"
 
