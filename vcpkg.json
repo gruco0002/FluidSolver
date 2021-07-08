@@ -27,6 +27,7 @@
             "name": "tbb",
             "platform": "linux"
         },
-        "nlohmann-json"
+        "nlohmann-json",
+        "tinyply"
     ]
 }

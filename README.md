@@ -41,6 +41,7 @@ For the ui version `FluidStudio`:
 - [Dear ImGui](https://github.com/ocornut/imgui)
 - [ImPlot](https://github.com/epezent/implot)
 - [nativefiledialog](https://github.com/mlabbe/nativefiledialog)
+- [tinyply](https://github.com/ddiakopoulos/tinyply)
 - Libraries used by `libFluid`
 
 For the console version `FluidConsole`:
