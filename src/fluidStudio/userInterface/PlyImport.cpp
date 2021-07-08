@@ -33,7 +33,7 @@ namespace FluidUi
 
         load_colors_if_required();
 
-        if (ImGui::Begin("Ply Import"))
+        if (ImGui::Begin("Ply Import", &visible))
         {
             ImGui::Text("Current file: %s", current_file.c_str());
             ImGui::SameLine();
@@ -59,8 +59,11 @@ namespace FluidUi
                 ImGui::PushID(i);
 
                 glm::vec4 color(mapped.first, 1.0f);
+                ImGui::PushStyleColor(ImGuiCol_Text, *((ImVec4*)&color));
+                ImGui::Bullet();
+                ImGui::PopStyleColor();
 
-                ImGui::TextColored(*((ImVec4*)&color), "This color will be mapped to:");
+                ImGui::Text("Color %d:", (i + 1));
                 ImGui::SameLine();
                 if (ImGui::BeginCombo("Type", particle_type_to_string(mapped.second)))
                 {
