@@ -17,11 +17,7 @@ endif()
 include_directories(./)
 
 
-set(LIB_FLUID_SOURCE_FILES
-       
-        "fluidSolver/IISPHFluidSolver.hpp"
-        "fluidSolver/IISPHFluidSolver.cpp"
-        "fluidSolver/SESPHFluidSolver.cpp"
+set(LIB_FLUID_SOURCE_FILES       
         "fluidSolver/SESPHFluidSolver.hpp"
         "FluidSolverException.cpp"
         "FluidSolverException.hpp"
@@ -33,8 +29,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
         "Simulation.cpp" "Simulation.hpp"
         "visualizer/ISimulationVisualizer.hpp"
-        "fluidSolver/IFluidSolver.hpp"
-        "fluidSolver/IISPHFluidSolver.cpp"
+        "fluidSolver/IFluidSolver.hpp"        
         "fluidSolver/IISPHFluidSolver.hpp"
         "timestep/ITimestep.cpp"
         "timestep/ITimestep.hpp"
@@ -89,6 +84,7 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         "Forward.hpp"
         "FluidMath.hpp"
+        "fluidSolver/IISPHFluidSolver3D.hpp"
         )
 
 

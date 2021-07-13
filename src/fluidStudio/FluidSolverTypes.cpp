@@ -1,6 +1,7 @@
 #include "FluidSolverTypes.hpp"
 
 #include "fluidSolver/IISPHFluidSolver.hpp"
+#include "fluidSolver/IISPHFluidSolver3D.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel.hpp"
@@ -105,6 +106,33 @@ void FluidUi::FluidSolverTypes::add_types()
          SolverSettingsTypeSESPH3D,
          [](std::shared_ptr<IFluidSolverBase> b) {
              return &std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b)
+                         ->settings;
+         }});
+
+    types.push_back(
+        {"IISPH-3D", "QuadraticNeighborhoodSearch3D", "CubicSplineKernel3D",
+         []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(b) != nullptr;
+         },
+         SolverSettingsTypeSESPH3D,
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(
+                         b)
+                         ->settings;
+         }});
+
+    types.push_back(
+        {"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D",
+         []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b) != nullptr;
+         },
+         SolverSettingsTypeSESPH3D,
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b)
                          ->settings;
          }});
 }

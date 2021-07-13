@@ -16,7 +16,8 @@ namespace FluidUi
         {
             SolverSettingsTypeIISPH,
             SolverSettingsTypeSESPH,
-            SolverSettingsTypeSESPH3D
+            SolverSettingsTypeSESPH3D,
+            SolverSettingsTypeIISPH3D
         };
 
         struct FluidSolverType
