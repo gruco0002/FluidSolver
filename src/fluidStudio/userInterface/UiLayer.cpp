@@ -4,6 +4,7 @@
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
+#include "fluidSolver/IISPHFluidSolver3D.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "timestep/ConstantTimestep.hpp"
@@ -330,6 +331,24 @@ void FluidUi::UiLayer::render_solver_component()
             ImGui::Separator();
             ImGui::InputFloat("Viscosity", &v->Viscosity);
             ImGui::InputFloat("Stiffness", &v->StiffnessK);
+        });
+    }
+
+    if (window->current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH3D)
+    {
+        BeginSubsection("3D IISPH", [=]() {
+            render_solver_parameters();
+            ImGui::Separator();
+
+            auto v = (FluidSolver::IISPHSettings3D*)window->current_type->get_settings(
+                window->simulation.parameters.fluid_solver);
+
+            ImGui::InputFloat("Viscosity", &v->viscosity);
+            ImGui::InputFloat("Max. Density Err.", &v->max_density_error_allowed);
+            ImGui::InputInt("Min. Iterations", (int*)&v->min_number_of_iterations);
+            ImGui::InputInt("Max. Iterations", (int*)&v->max_number_of_iterations);
+            ImGui::InputFloat("Gamma", &v->gamma);
+            ImGui::InputFloat("Omega", &v->omega);
         });
     }
 }

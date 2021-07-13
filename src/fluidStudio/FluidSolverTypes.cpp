@@ -116,7 +116,7 @@ void FluidUi::FluidSolverTypes::add_types()
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(b) != nullptr;
          },
-         SolverSettingsTypeSESPH3D,
+         SolverSettingsTypeIISPH3D,
          [](std::shared_ptr<IFluidSolverBase> b) {
              return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(
                          b)
@@ -130,7 +130,7 @@ void FluidUi::FluidSolverTypes::add_types()
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b) != nullptr;
          },
-         SolverSettingsTypeSESPH3D,
+         SolverSettingsTypeIISPH3D,
          [](std::shared_ptr<IFluidSolverBase> b) {
              return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b)
                          ->settings;
