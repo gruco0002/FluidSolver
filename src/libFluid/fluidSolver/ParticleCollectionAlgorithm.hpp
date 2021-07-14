@@ -4,6 +4,7 @@
 #include "ParticleCollection.hpp"
 
 #include <functional>
+#include <memory>
 
 namespace FluidSolver
 {
@@ -14,7 +15,7 @@ namespace FluidSolver
 
         class Sort {
           public:
-            using key_function_t = std::function<uint64_t(ParticleCollection& collection, const pIndex_t)>;
+            using key_function_t = std::function<uint64_t(const std::shared_ptr<ParticleCollection>&, const pIndex_t)>;
 
 
             struct SortInfo
@@ -25,14 +26,14 @@ namespace FluidSolver
 
             /// Adds the appropriate component to a particle collection in order to be able to sort it.
             /// \param collection
-            void adapt_collection(ParticleCollection& collection);
+            void adapt_collection(std::shared_ptr<ParticleCollection> collection);
 
-            void merge_sort(ParticleCollection& collection, const key_function_t& key);
+            void merge_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
 
-            void insertion_sort(ParticleCollection& collection, const key_function_t& key);
+            void insertion_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
 
           private:
-            void precalculate_keys(ParticleCollection& collection, const key_function_t& key);
+            void precalculate_keys(std::shared_ptr<ParticleCollection>, const key_function_t& key);
         };
 
 

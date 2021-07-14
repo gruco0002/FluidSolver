@@ -6,15 +6,17 @@ namespace FluidSolver
 {
     namespace ParticleCollectionAlgorithm
     {
-        void Sort::adapt_collection(ParticleCollection& collection)
+        void Sort::adapt_collection(std::shared_ptr<ParticleCollection> collection)
         {
-            FLUID_ASSERT(!collection.is_type_present<SortInfo>());
-            collection.add_type<SortInfo>();
+            if (!collection->is_type_present<SortInfo>())
+            {
+                collection->add_type<SortInfo>();
+            }
         }
 
-        void Sort::merge_sort(ParticleCollection& collection, const key_function_t& key)
+        void Sort::merge_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
         {
-            FLUID_ASSERT(collection.is_type_present<SortInfo>());
+            FLUID_ASSERT(collection->is_type_present<SortInfo>());
 
             precalculate_keys(collection, key);
 
@@ -23,12 +25,12 @@ namespace FluidSolver
                 size_t leftIndex = left;
                 size_t rightIndex = half;
 
-                if (collection.get<SortInfo>(rightIndex - 1).key <= collection.get<SortInfo>(rightIndex).key)
+                if (collection->get<SortInfo>(rightIndex - 1).key <= collection->get<SortInfo>(rightIndex).key)
                     return; // everything was already sorted
 
                 while (leftIndex < half && rightIndex < right)
                 {
-                    if (collection.get<SortInfo>(leftIndex).key <= collection.get<SortInfo>(rightIndex).key)
+                    if (collection->get<SortInfo>(leftIndex).key <= collection->get<SortInfo>(rightIndex).key)
                     {
                         leftIndex++; // the element is already in the right place
                     }
@@ -39,7 +41,7 @@ namespace FluidSolver
                         size_t movingIndex = rightIndex;
                         while (movingIndex > leftIndex)
                         {
-                            collection.swap(movingIndex, movingIndex - 1);
+                            collection->swap(movingIndex, movingIndex - 1);
                             movingIndex--;
                         }
 
@@ -64,34 +66,34 @@ namespace FluidSolver
             };
 
             // start mergesort
-            mergesort(0, collection.size());
+            mergesort(0, collection->size());
         }
 
-        void Sort::insertion_sort(ParticleCollection& collection, const key_function_t& key)
+        void Sort::insertion_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
         {
-            FLUID_ASSERT(collection.is_type_present<SortInfo>());
+            FLUID_ASSERT(collection->is_type_present<SortInfo>());
 
             precalculate_keys(collection, key);
 
             // start insertion sort
-            for (size_t i = 1; i < collection.size(); i++)
+            for (size_t i = 1; i < collection->size(); i++)
             {
-                auto& info = collection.get<SortInfo>(i);
+                auto& info = collection->get<SortInfo>(i);
                 size_t j = i - 1;
-                while (j >= 0 && collection.get<SortInfo>(j).key > info.key)
+                while (j >= 0 && collection->get<SortInfo>(j).key > info.key)
                 {
-                    collection.swap(j, j + 1);
+                    collection->swap(j, j + 1);
                     j--;
                 }
             }
         }
 
-        void Sort::precalculate_keys(ParticleCollection& collection, const Sort::key_function_t& key)
+        void Sort::precalculate_keys(std::shared_ptr<ParticleCollection> collection, const Sort::key_function_t& key)
         {
-            FLUID_ASSERT(collection.is_type_present<SortInfo>());
-            for (size_t i = 0; i < collection.size(); i++)
+            FLUID_ASSERT(collection->is_type_present<SortInfo>());
+            for (size_t i = 0; i < collection->size(); i++)
             {
-                collection.get<SortInfo>(i).key = key(collection, i);
+                collection->get<SortInfo>(i).key = key(collection, i);
             }
         }
 
