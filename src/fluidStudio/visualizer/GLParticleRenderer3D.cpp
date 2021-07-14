@@ -98,11 +98,12 @@ void FluidSolver::GLParticleRenderer3D::render()
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
     particleShader->SetValue("viewMatrix", settings.camera.view_matrix());
-    //particleShader->SetValue("pointSize", parameters.particle_size);
     particleShader->SetValue("particleColor", settings.fluid_particle_color);
     particleShader->SetValue("boundaryColor", settings.boundary_particle_color);
     particleShader->SetValue("lightDirection", glm::normalize(settings.light_direction));
     particleShader->SetValue("ambientLightFactor", 0.1f);
+    particleShader->SetValue("numberOfParticles", (float)parameters.collection->size());
+    particleShader->SetValue("showParticleMemoryLocation", settings.show_particle_memory_location ? 1 : 0);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);

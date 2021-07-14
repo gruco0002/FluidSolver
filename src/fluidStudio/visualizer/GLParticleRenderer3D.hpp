@@ -1,11 +1,11 @@
 #pragma once
 
-#include "visualizer/GLParticleVertexArray3D.hpp"
-#include "visualizer/GLRenderer.hpp"
-#include "visualizer/ISimulationVisualizer.hpp"
 #include "engine/graphics/Framebuffer.hpp"
 #include "engine/graphics/Shader.hpp"
 #include "engine/graphics/Texture2D.hpp"
+#include "visualizer/GLParticleVertexArray3D.hpp"
+#include "visualizer/GLRenderer.hpp"
+#include "visualizer/ISimulationVisualizer.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -87,6 +87,8 @@ namespace FluidSolver
             Camera3D camera{glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
 
             glm::vec3 light_direction = glm::vec3(8.0f, -12.0f, 1.0f);
+
+            bool show_particle_memory_location = false;
 
         } settings;
 

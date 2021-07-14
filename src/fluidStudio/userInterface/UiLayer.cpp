@@ -628,6 +628,10 @@ void FluidUi::UiLayer::render_visualizer_component()
             ImGui::ColorEdit4("Background", (float*)&gl3d->settings.background_color, ImGuiColorEditFlags_Uint8);
             ImGui::ColorEdit4("Fluid", (float*)&gl3d->settings.fluid_particle_color, ImGuiColorEditFlags_Uint8);
             ImGui::ColorEdit4("Boundary", (float*)&gl3d->settings.boundary_particle_color, ImGuiColorEditFlags_Uint8);
+
+            ImGui::Separator();
+
+            ImGui::Checkbox("Memory Location", &gl3d->settings.show_particle_memory_location);
         }
     });
 
