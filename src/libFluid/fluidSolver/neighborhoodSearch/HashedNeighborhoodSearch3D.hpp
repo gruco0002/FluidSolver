@@ -93,6 +93,7 @@ namespace FluidSolver
         // Grid data
 
 
+
         struct GridCellLocation
         {
             int x = std::numeric_limits<int>::min();
@@ -149,6 +150,12 @@ namespace FluidSolver
 
 
         std::vector<NeighborData> neighbor_data;
+
+        private:
+
+            size_t calls_since_last_cache_efficiency_improvement = 0;
+
+            void improve_cache_efficiency();
     };
 
 
