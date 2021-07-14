@@ -52,8 +52,8 @@ namespace FluidSolver
                     c->data_ptr[typeId] = ((std::vector<Component>*)c->data[typeId])->data();
                 });
                 internal_swap_calls.push_back([typeId](ParticleCollection* c, size_t i, size_t j) {
-                    std::swap(((std::vector<Component>*)c->data[typeId])[i],
-                              ((std::vector<Component>*)c->data[typeId])[j]);
+                    std::swap((*((std::vector<Component>*)c->data[typeId]))[i],
+                              (*((std::vector<Component>*)c->data[typeId]))[j]);
                 });
                 internal_delete.push_back([typeId](ParticleCollection* c) {
                     delete ((std::vector<Component>*)c->data[typeId]);
