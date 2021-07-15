@@ -25,7 +25,7 @@
         "nativefiledialog",
         {
             "name": "tbb",
-            "platform": "linux"
+            "platform": "linux | osx"
         },
         "nlohmann-json",
         "tinyply"

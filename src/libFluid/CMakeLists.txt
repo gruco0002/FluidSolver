@@ -4,9 +4,8 @@ find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
-if (UNIX AND NOT APPLE)
+if (UNIX OR APPLE)
         # add tbb library for parallelization
-        # TODO: check if the library also works well on mac os, since clang does not support the TS Paralellization
 
         find_package(TBB CONFIG REQUIRED)
 endif()
@@ -97,7 +96,7 @@ target_link_libraries(libFluid PUBLIC fmt::fmt)
 target_link_libraries(libFluid PUBLIC yaml-cpp)
 target_link_libraries(libFluid PUBLIC nlohmann_json)
 
-if (UNIX AND NOT APPLE)
+if (UNIX OR APPLE)
         # add tbb library for parallelization to the link targets
         target_link_libraries(libFluid PUBLIC TBB::tbb)
 endif()
