@@ -230,31 +230,22 @@ namespace FluidSolver
             ParticleCollectionAlgorithm::Sort sorter;
             sorter.adapt_collection(collection);
 
-            sorter.merge_sort(
+            sorter.quick_sort(
                 collection,
                 [&](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
                     auto& grid_data = collection->get<GridCellState>(index);
 
-                    uint32_t x = (uint32_t)grid_data.current.x + std::numeric_limits<int>::max();
-                    if (grid_data.current.x < 0)
-                    {
-                        x = (uint32_t)(grid_data.current.x + std::numeric_limits<int>::max());
-                    }
-
-                    uint32_t y = (uint32_t)grid_data.current.y + std::numeric_limits<int>::max();
-                    if (grid_data.current.y < 0)
-                    {
-                        y = (uint32_t)(grid_data.current.y + std::numeric_limits<int>::max());
-                    }
-
-                    uint32_t z = (uint32_t)grid_data.current.z + std::numeric_limits<int>::max();
-                    if (grid_data.current.z < 0)
-                    {
-                        z = (uint32_t)(grid_data.current.z + std::numeric_limits<int>::max());
-                    }
+                    auto transform_into_unsigned = [](int32_t v) -> uint32_t {
+                        int64_t v2 = (int64_t)v;
+                        v2 -= std::numeric_limits<int32_t>::min();
+                        uint32_t res = (uint32_t)v2;
+                        return res;
+                    };
 
 
-                    uint64_t key = libmorton::morton3D_64_encode(x, y, z);
+                    uint64_t key = libmorton::morton3D_64_encode(transform_into_unsigned(grid_data.current.x),
+                                                                 transform_into_unsigned(grid_data.current.y),
+                                                                 transform_into_unsigned(grid_data.current.z));
                     return key;
                 });
 
