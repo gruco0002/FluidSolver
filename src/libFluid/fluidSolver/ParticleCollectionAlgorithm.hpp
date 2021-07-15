@@ -32,6 +32,8 @@ namespace FluidSolver
 
             void insertion_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
 
+            void quick_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
+
           private:
             void precalculate_keys(std::shared_ptr<ParticleCollection>, const key_function_t& key);
         };
