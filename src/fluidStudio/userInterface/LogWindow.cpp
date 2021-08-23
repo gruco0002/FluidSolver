@@ -36,7 +36,7 @@ void FluidUi::LogWindow::render()
     }
     ImGui::PopStyleVar();
     if (scroll_to_bottom)
-        ImGui::SetScrollHere(1.0f);
+        ImGui::SetScrollHereY();
     ImGui::EndChild();
     ImGui::End();
 }

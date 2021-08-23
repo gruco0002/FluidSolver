@@ -14,9 +14,6 @@ The dependencies for this project are managed with [vcpkg](https://github.com/mi
 `vcpkg.json`. Install vcpkg and setup the *toolchain file from vcpkg* for CMake before loading the project. If done so,
 all dependencies will be downloaded automatically with vcpkg while CMake configures the project.
 
-**Currently the `Docking Branch` of the library `Dear ImGui` is used. You (may) need to define an overlay port for vcpkg,
-or provide the library in another way, if you want to use this feature!**
-
 ### Compiling
 Only 64-bit compilation with the C++17 standard is supported. The project may work under other conditions but this is not tested.
 Use CMake to compile the project:

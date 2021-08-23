@@ -3,7 +3,7 @@
     "version-string": "1.2.0",
     "port-version": 0,
     "homepage": "https://github.com/gruco0002/FluidSolver",
-    "description": "A simple 2D SPH Fluid Solver",
+    "description": "A simple 2D and 3D SPH Fluid Solver",
     "dependencies": [
         "glfw3",
         "gtest",
@@ -15,6 +15,7 @@
         {
             "name": "imgui",
             "features": [
+                "docking-experimental",
                 "opengl3-glad-binding",
                 "glfw-binding"
             ]
