@@ -19,7 +19,10 @@ void ImGuiHelper::Init(GLFWwindow* window)
     float scaleX, scaleY;
     glfwGetWindowContentScale(window, &scaleX, &scaleY);
     float avgScale = (scaleX + scaleY) / 2.0f;
+
+#ifdef __APPLE__
     avgScale = 1.0f;
+#endif
 
 
     io.Fonts->AddFontFromMemoryCompressedTTF(RobotoMedium_compressed_data, RobotoMedium_compressed_size, 15 * avgScale);
