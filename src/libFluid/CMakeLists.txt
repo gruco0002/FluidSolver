@@ -84,6 +84,7 @@ set(LIB_FLUID_SOURCE_FILES
         "Forward.hpp"
         "FluidMath.hpp"
         "fluidSolver/IISPHFluidSolver3D.hpp"
+        "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         )
 
 

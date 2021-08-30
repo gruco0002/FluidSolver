@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#define FLUID_NAMEOF(name) #name
+
 #ifndef NDEBUG
 #define USE_FLUID_ASSERT
 #endif
