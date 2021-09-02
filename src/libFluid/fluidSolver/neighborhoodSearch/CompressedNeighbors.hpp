@@ -5,6 +5,7 @@
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 
+#include <bitset>
 #include <memory>
 #include <vector>
 
@@ -28,8 +29,9 @@ namespace FluidSolver
         struct NeighborsIterator
         {
 
-            const Neighbors* data;
-            particleIndex_t current;
+            const Neighbors* data = nullptr;
+            particleIndex_t current = 0;
+            size_t current_counter = 0;
 
             bool operator==(const NeighborsIterator& other) const;
 
@@ -135,13 +137,22 @@ namespace FluidSolver
         struct NeighborStorage
         {
             static constexpr size_t MAX_DELTAS = 32;
+            static constexpr size_t DELTAS_SIZE = MAX_DELTAS * 4;
+            static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
 
             size_t first_neighbor;
-            size_t deltas[MAX_DELTAS];
+            std::bitset<MAX_CONTROLS> control_sequence;
+            uint8_t deltas[DELTAS_SIZE];
 
             void clear();
             void set_first_neighbor(size_t index);
-            void set_next_neighbor(size_t delta_to_previous_neighbor, size_t neighbor_delta_counter);
+            void set_next_neighbor(size_t delta_to_previous_neighbor);
+            size_t size() const;
+            uint32_t get_delta(size_t delta_index) const;
+
+          private:
+            size_t size_value;
+            size_t current_deltas_byte_size;
         };
     };
 

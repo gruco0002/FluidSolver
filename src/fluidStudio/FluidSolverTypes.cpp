@@ -5,6 +5,7 @@
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel.hpp"
+#include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
@@ -110,6 +111,19 @@ void FluidUi::FluidSolverTypes::add_types()
          }});
 
     types.push_back(
+        {"SESPH-3D", "CompressedNeighborhoodSearch", "CubicSplineKernel3D",
+         []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b) != nullptr;
+         },
+         SolverSettingsTypeSESPH3D,
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b)
+                         ->settings;
+         }});
+
+    types.push_back(
         {"IISPH-3D", "QuadraticNeighborhoodSearch3D", "CubicSplineKernel3D",
          []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(); },
          [](const std::shared_ptr<IFluidSolverBase>& b) {
@@ -133,6 +147,19 @@ void FluidUi::FluidSolverTypes::add_types()
          SolverSettingsTypeIISPH3D,
          [](std::shared_ptr<IFluidSolverBase> b) {
              return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b)
+                         ->settings;
+         }});
+
+    types.push_back(
+        {"IISPH-3D", "CompressedNeighborhoodSearch", "CubicSplineKernel3D",
+         []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(); },
+         [](const std::shared_ptr<IFluidSolverBase>& b) {
+             return std::dynamic_pointer_cast<
+                        const IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b) != nullptr;
+         },
+         SolverSettingsTypeIISPH3D,
+         [](std::shared_ptr<IFluidSolverBase> b) {
+             return &std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b)
                          ->settings;
          }});
 }

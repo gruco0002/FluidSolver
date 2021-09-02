@@ -67,7 +67,7 @@ namespace FluidSolver
     size_t CompressedNeighborhoodSearch::get_particle_index_by_cell_index(size_t cell_index) const
     {
         std::function<size_t(size_t, size_t)> recursive_search = [&](size_t left, size_t right) -> size_t {
-            if (left >= cell_to_particle_map.size() || right == (size_t)(-1))
+            if (left >= cell_to_particle_map.size() || right == (size_t)(-1) || left == right)
             {
                 // could not find entry
                 return -1;
@@ -106,6 +106,73 @@ namespace FluidSolver
         {
             collection->add_type<NeighborStorage>();
         }
+    }
+
+    NeighborhoodInterface CompressedNeighborhoodSearch::create_interface()
+    {
+        auto res = NeighborhoodInterface();
+
+        res.link.get_by_index = [this](particleIndex_t index) {
+            auto neighbors = this->get_neighbors(index);
+
+            auto n = NeighborhoodInterface::Neighbors();
+            n.iterator_link.begin = [neighbors]() {
+                auto real_it = neighbors.begin();
+                return new NeighborsIterator(real_it);
+            };
+            n.iterator_link.end = [neighbors]() {
+                auto real_it = neighbors.end();
+                return new NeighborsIterator(real_it);
+            };
+            n.iterator_link.iterator_copy = [](void* it) {
+                auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
+                return copy;
+            };
+            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
+            n.iterator_link.iterator_dereference = [](void* it) {
+                auto& index = *(*(NeighborsIterator*)it);
+                return &index;
+            };
+            n.iterator_link.iterator_equals = [](void* it1, void* it2) {
+                return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
+            };
+            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+
+            return n;
+        };
+
+        res.link.get_by_position_3d = [this](const vec3& position) {
+            auto neighbors = this->get_neighbors(position);
+
+            auto n = NeighborhoodInterface::Neighbors();
+            n.iterator_link.begin = [neighbors]() {
+                auto real_it = neighbors.begin();
+                return new NeighborsIterator(real_it);
+            };
+            n.iterator_link.end = [neighbors]() {
+                auto real_it = neighbors.end();
+                return new NeighborsIterator(real_it);
+            };
+            n.iterator_link.iterator_copy = [](void* it) {
+                auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
+                return copy;
+            };
+            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
+            n.iterator_link.iterator_dereference = [](void* it) {
+                auto& index = *(*(NeighborsIterator*)it);
+                return &index;
+            };
+            n.iterator_link.iterator_equals = [](void* it1, void* it2) {
+                return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
+            };
+            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+
+            return n;
+        };
+
+        res.link.get_search_radius = [&] { return this->search_radius; };
+
+        return res;
     }
 
     void CompressedNeighborhoodSearch::find_neighbors()
@@ -240,7 +307,7 @@ namespace FluidSolver
                             {
                                 FLUID_ASSERT(last_neighbor < current_particle);
                                 size_t delta = current_particle - last_neighbor;
-                                storage.set_next_neighbor(delta, delta_counter);
+                                storage.set_next_neighbor(delta);
                                 last_neighbor = current_particle;
                                 delta_counter++;
                             }
@@ -256,11 +323,32 @@ namespace FluidSolver
         }
     }
 
+    CompressedNeighborhoodSearch::Neighbors CompressedNeighborhoodSearch::get_neighbors(particleIndex_t particleIndex)
+    {
+        Neighbors ret;
+        ret.of.particle = particleIndex;
+        ret.position_based = false;
+        ret.data = this;
+        return ret;
+    }
+
+    CompressedNeighborhoodSearch::Neighbors CompressedNeighborhoodSearch::get_neighbors(const vec3& position)
+    {
+        Neighbors ret;
+        ret.of.position = position;
+        ret.position_based = true;
+        ret.data = this;
+        return ret;
+    }
+
 
     void CompressedNeighborhoodSearch::NeighborStorage::clear()
     {
+        control_sequence.reset();
+        current_deltas_byte_size = 0;
+        size_value = 0;
         first_neighbor = -1;
-        for (size_t i = 0; i < MAX_DELTAS; i++)
+        for (size_t i = 0; i < DELTAS_SIZE; i++)
         {
             deltas[i] = 0;
         }
@@ -269,13 +357,217 @@ namespace FluidSolver
     void CompressedNeighborhoodSearch::NeighborStorage::set_first_neighbor(size_t index)
     {
         first_neighbor = index;
+        size_value = 1;
+        current_deltas_byte_size = 0;
     }
 
-    void CompressedNeighborhoodSearch::NeighborStorage::set_next_neighbor(size_t delta_to_previous_neighbor,
-                                                                          size_t neighbor_delta_counter)
+    void CompressedNeighborhoodSearch::NeighborStorage::set_next_neighbor(size_t delta_to_previous_neighbor)
     {
-        FLUID_ASSERT(neighbor_delta_counter < MAX_DELTAS);
-        deltas[neighbor_delta_counter] = delta_to_previous_neighbor;
+        FLUID_ASSERT(size_value - 1 < MAX_DELTAS);
+        FLUID_ASSERT(delta_to_previous_neighbor == 0);
+
+        size_t bit_pair_index = size_value - 1;
+        if (delta_to_previous_neighbor == 1)
+        {
+            // zero byte representation
+            control_sequence.set(bit_pair_index * 2 + 0, false);
+            control_sequence.set(bit_pair_index * 2 + 1, false);
+        }
+        else if (delta_to_previous_neighbor == 2)
+        {
+            // zero byte representation
+            control_sequence.set(bit_pair_index * 2 + 0, false);
+            control_sequence.set(bit_pair_index * 2 + 1, true);
+        }
+        else if (delta_to_previous_neighbor <= 256 + 2)
+        {
+            FLUID_ASSERT(current_deltas_byte_size < DELTAS_SIZE);
+
+            // one byte representation of the delta
+            control_sequence.set(bit_pair_index * 2 + 0, true);
+            control_sequence.set(bit_pair_index * 2 + 1, false);
+
+            // save a 8 bit unsigned integer inside the delta array
+            // note that we subtract the already covered range to allow for larger delta values this 8 bits can
+            // represent
+            deltas[current_deltas_byte_size] = (uint8_t)(delta_to_previous_neighbor - 3);
+            current_deltas_byte_size++;
+        }
+        else
+        {
+            FLUID_ASSERT(current_deltas_byte_size + 3 < DELTAS_SIZE);
+
+            // four byte representation of the delta
+            control_sequence.set(bit_pair_index * 2 + 0, true);
+            control_sequence.set(bit_pair_index * 2 + 1, true);
+
+            // save a 32 bit unsigned integer inside the delta array
+            // note that we subtract the already covered range to allow for larger delta values this 32 bits can
+            // represent
+            *((uint32_t*)&deltas[current_deltas_byte_size]) = (uint32_t)(delta_to_previous_neighbor - (256 + 3));
+            current_deltas_byte_size += 4;
+        }
+
+        size_value++;
     }
+
+    size_t CompressedNeighborhoodSearch::NeighborStorage::size() const
+    {
+        return size_value;
+    }
+
+    uint32_t CompressedNeighborhoodSearch::NeighborStorage::get_delta(size_t delta_index) const
+    {
+        FLUID_ASSERT(delta_index < MAX_DELTAS);
+        if (control_sequence[delta_index * 2 + 0] == false)
+        {
+            if (control_sequence[delta_index * 2 + 1] == false)
+            {
+                return 1;
+            }
+            else
+            {
+                return 2;
+            }
+        }
+        else
+        {
+            size_t starting_byte_index = 0;
+            // we have to determine the byte position
+            for (size_t i = 0; i < delta_index - 1; i++)
+            {
+                if (control_sequence[i * 2 + 0] == false)
+                {
+                    // this sequence does not need any bytes to store its information
+                    continue;
+                }
+
+                if (control_sequence[i * 2 + 1] == false)
+                {
+                    // this sequence takes one byte to store its information
+                    starting_byte_index += 1;
+                }
+                else
+                {
+                    // this sequence takes four bytes to store its information
+                    starting_byte_index += 4;
+                }
+            }
+
+
+            if (control_sequence[delta_index * 2 + 1] == false)
+            {
+                // the delta value is represented by one byte
+                FLUID_ASSERT(starting_byte_index < DELTAS_SIZE);
+                return deltas[starting_byte_index] + 3;
+            }
+            else
+            {
+                // the delta value is represented by four bytes
+                FLUID_ASSERT(starting_byte_index + 3 < DELTAS_SIZE);
+                return (*((uint32_t*)&deltas[starting_byte_index])) + 3 + 256;
+            }
+        }
+    }
+
+    CompressedNeighborhoodSearch::NeighborsIterator CompressedNeighborhoodSearch::Neighbors::begin() const
+    {
+        FLUID_ASSERT(data != nullptr);
+
+        NeighborsIterator iterator;
+        iterator.data = this;
+        iterator.current_counter = 0;
+
+        if (position_based)
+        {
+            iterator.current = -1;
+            iterator++;
+        }
+        else
+        {
+            FLUID_ASSERT(data->collection != nullptr);
+            FLUID_ASSERT(of.particle < data->collection->size());
+
+            const auto& storage = data->collection->get<NeighborStorage>(of.particle);
+            iterator.current = storage.first_neighbor;
+        }
+
+        return iterator;
+    }
+
+    CompressedNeighborhoodSearch::NeighborsIterator CompressedNeighborhoodSearch::Neighbors::end() const
+    {
+        FLUID_ASSERT(data != nullptr);
+        FLUID_ASSERT(data->collection != nullptr);
+
+        NeighborsIterator iterator;
+        iterator.data = this;
+        iterator.current = data->collection->size();
+        iterator.current_counter = -1;
+        return iterator;
+    }
+
+
+    bool CompressedNeighborhoodSearch::NeighborsIterator::operator==(
+        const FluidSolver::CompressedNeighborhoodSearch::NeighborsIterator& other) const
+    {
+        return data->data == other.data->data && current == other.current && current_counter == other.current_counter;
+    }
+
+    bool CompressedNeighborhoodSearch::NeighborsIterator::operator!=(
+        const CompressedNeighborhoodSearch::NeighborsIterator& other) const
+    {
+        return !(*this == other);
+    }
+
+    CompressedNeighborhoodSearch::particleIndex_t& CompressedNeighborhoodSearch::NeighborsIterator::operator*()
+    {
+        FLUID_ASSERT(data != nullptr);
+        FLUID_ASSERT(data->data != nullptr);
+        FLUID_ASSERT(data->data->collection != nullptr);
+        FLUID_ASSERT(data->data->collection->size() > current);
+        return current;
+    }
+
+    const CompressedNeighborhoodSearch::NeighborsIterator CompressedNeighborhoodSearch::NeighborsIterator::operator++(
+        int)
+    {
+        NeighborsIterator copy = *this;
+        ++(*this);
+        return copy;
+    }
+
+    CompressedNeighborhoodSearch::NeighborsIterator& CompressedNeighborhoodSearch::NeighborsIterator::operator++()
+    {
+        FLUID_ASSERT(data != nullptr);
+        FLUID_ASSERT(data->data != nullptr);
+        CompressedNeighborhoodSearch* compressed = data->data;
+        FLUID_ASSERT(compressed->collection != nullptr);
+
+
+        if (!data->position_based)
+        {
+            FLUID_ASSERT(data->of.particle < compressed->collection->size());
+            const auto& storage = compressed->collection->get<NeighborStorage>(data->of.particle);
+            current_counter++;
+            if (current_counter < storage.size())
+            {
+                current += storage.get_delta(current_counter - 1);
+            }
+            else
+            {
+                // we reached the end
+                current_counter = -1;
+                current = compressed->collection->size();
+            }
+        }
+        else
+        {
+            // TODO: implement
+            FLUID_ASSERT(false);
+        }
+        return *this;
+    }
+
 
 } // namespace FluidSolver
