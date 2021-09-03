@@ -364,7 +364,7 @@ namespace FluidSolver
     void CompressedNeighborhoodSearch::NeighborStorage::set_next_neighbor(size_t delta_to_previous_neighbor)
     {
         FLUID_ASSERT(size_value - 1 < MAX_DELTAS);
-        FLUID_ASSERT(delta_to_previous_neighbor == 0);
+        FLUID_ASSERT(delta_to_previous_neighbor != 0);
 
         size_t bit_pair_index = size_value - 1;
         if (delta_to_previous_neighbor == 1)
@@ -404,8 +404,14 @@ namespace FluidSolver
             // save a 32 bit unsigned integer inside the delta array
             // note that we subtract the already covered range to allow for larger delta values this 32 bits can
             // represent
-            *((uint32_t*)&deltas[current_deltas_byte_size]) = (uint32_t)(delta_to_previous_neighbor - (256 + 3));
-            current_deltas_byte_size += 4;
+            uint32_t reduced_delta = delta_to_previous_neighbor - (256 + 3);
+            deltas[current_deltas_byte_size + 0] = reduced_delta & 0xff;
+            deltas[current_deltas_byte_size + 1] = (reduced_delta >> 8)  & 0xff;
+            deltas[current_deltas_byte_size + 2] = (reduced_delta >> 16) & 0xff;
+            deltas[current_deltas_byte_size + 3] = (reduced_delta >> 24) & 0xff;
+           
+            current_deltas_byte_size += 4;        
+
         }
 
         size_value++;
@@ -465,7 +471,13 @@ namespace FluidSolver
             {
                 // the delta value is represented by four bytes
                 FLUID_ASSERT(starting_byte_index + 3 < DELTAS_SIZE);
-                return (*((uint32_t*)&deltas[starting_byte_index])) + 3 + 256;
+           
+                uint32_t value = uint32_t((uint8_t)(deltas[starting_byte_index + 3]) << 24 |
+                                (uint8_t)(deltas[starting_byte_index + 2]) << 16 |
+                                (uint8_t)(deltas[starting_byte_index + 1]) << 8 |
+                                (uint8_t)(deltas[starting_byte_index + 0]));
+                value = value + 3 + 256;
+                return value;
             }
         }
     }
@@ -552,7 +564,10 @@ namespace FluidSolver
             current_counter++;
             if (current_counter < storage.size())
             {
-                current += storage.get_delta(current_counter - 1);
+                size_t delta = storage.get_delta(current_counter - 1);
+                current += delta;
+
+                FLUID_ASSERT(current < compressed->collection->size());
             }
             else
             {
