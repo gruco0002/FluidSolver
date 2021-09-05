@@ -92,3 +92,5 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+CMakeSettings.json
