@@ -134,23 +134,27 @@ namespace FluidSolver
 
         size_t get_particle_index_by_cell_index(size_t cell_index) const;
 
+      public:
         struct NeighborStorage
         {
-            static constexpr size_t MAX_DELTAS = 32;
+            static constexpr size_t MAX_DELTAS = 48;
             static constexpr size_t DELTAS_SIZE = MAX_DELTAS * 4;
             static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
 
-            size_t first_neighbor;
-            std::bitset<MAX_CONTROLS> control_sequence;
-            uint8_t deltas[DELTAS_SIZE];
 
             void clear();
             void set_first_neighbor(size_t index);
             void set_next_neighbor(size_t delta_to_previous_neighbor);
             size_t size() const;
             uint32_t get_delta(size_t delta_index) const;
+            uint32_t get_first_neighbor() const;
 
           private:
+            size_t first_neighbor;
+            std::bitset<MAX_CONTROLS> control_sequence;
+            uint8_t deltas[DELTAS_SIZE];
+
+
             size_t size_value;
             size_t current_deltas_byte_size;
         };

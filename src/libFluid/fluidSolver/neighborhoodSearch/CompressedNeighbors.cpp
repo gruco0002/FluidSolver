@@ -422,6 +422,11 @@ namespace FluidSolver
         return size_value;
     }
 
+    uint32_t CompressedNeighborhoodSearch::NeighborStorage::get_first_neighbor() const
+    {
+        return first_neighbor;
+    }
+
     uint32_t CompressedNeighborhoodSearch::NeighborStorage::get_delta(size_t delta_index) const
     {
         FLUID_ASSERT(delta_index < MAX_DELTAS);
@@ -440,7 +445,7 @@ namespace FluidSolver
         {
             size_t starting_byte_index = 0;
             // we have to determine the byte position
-            for (size_t i = 0; i < delta_index - 1; i++)
+            for (size_t i = 0; i < delta_index; i++)
             {
                 if (control_sequence[i * 2 + 0] == false)
                 {
@@ -501,7 +506,7 @@ namespace FluidSolver
             FLUID_ASSERT(of.particle < data->collection->size());
 
             const auto& storage = data->collection->get<NeighborStorage>(of.particle);
-            iterator.current = storage.first_neighbor;
+            iterator.current = storage.get_first_neighbor();
         }
 
         return iterator;

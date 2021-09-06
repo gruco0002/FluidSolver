@@ -12,7 +12,7 @@ set(FluidSolverTests_SOURCE_FILES
         CubicSplineKernelTest.cpp
         # CompactHashingComponentTests/CompactHashingCellStorageTests.cpp 
         # CompactHashingComponentTests/CompactHashingHashTableTests.cpp
-        NeighborhoodSearchTests.cpp )
+        NeighborhoodSearchTests.cpp  "CompressedNeighborhoodSearchComponentTests/NeighborhoodStorageTests.cpp")
 
 
 #set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
