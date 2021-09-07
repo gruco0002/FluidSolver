@@ -181,3 +181,8 @@ FluidSolver::Compatibility FluidSolver::Simulation::check()
 
     return c;
 }
+
+const FluidSolver::Timepoint& FluidSolver::Simulation::get_current_timepoint() const
+{
+    return timepoint;
+}

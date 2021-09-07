@@ -1,6 +1,6 @@
-#ifndef FLUIDSOLVER_SIMULATION_HPP
-#define FLUIDSOLVER_SIMULATION_HPP
+#pragma once
 
+#include "Compatibility.hpp"
 #include "OutputManager.hpp"
 #include "entities/IEntity.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
@@ -8,7 +8,6 @@
 #include "sensors/ISensor.hpp"
 #include "timestep/ITimestep.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
-#include "Compatibility.hpp"
 
 #include <memory>
 
@@ -53,6 +52,7 @@ namespace FluidSolver
 
         Compatibility check();
 
+        const Timepoint& get_current_timepoint() const;
 
       private:
         Timepoint timepoint;
@@ -65,5 +65,3 @@ namespace FluidSolver
     };
 
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_SIMULATION_HPP
