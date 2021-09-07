@@ -7,7 +7,7 @@ include_directories(../libFluid)
 
 set(FLUID_CONSOLE_SOURCE_FILES
         "main.cpp"
-        "FluidSolverConsole.hpp" "FluidSolverConsole.cpp"
+         
         )
 
 
