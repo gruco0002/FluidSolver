@@ -24,13 +24,13 @@ int main(int argc, char* argv[])
     FluidSolver::Log::print_to_console = true;
 
 
-    cxxopts::Options options("FluidSolver", "SPH Fluid Solver Console Application");
-    options.add_options()("h,help", "Help");
-    options.add_options("Console")("length", "Time length of the simulation in seconds",
+    cxxopts::Options options("FluidConsole", "SPH Fluid Solver console application. Allows simulating scenarios "
+                                             "without a user interface or input by the user.");
+    options.add_options()("h,help", "Show help and information about the FluidConsole application.");
+    options.add_options("Console")("l,length", "Amount of time (in seconds) the scenario should be simulated.",
                                    cxxopts::value<float>()->default_value("60.0"))(
-        "v,verbose", "If set turns on verbose and debug messages",
-        cxxopts::value<bool>())("f,file", "Required in console mode: Scenario yaml file",
-                                cxxopts::value<std::string>());
+        "v,verbose", "If this flag is provided more information is printed to the console",
+        cxxopts::value<bool>())("f,file", "[Required] Filepath to a scenario yaml file", cxxopts::value<std::string>());
 
 
     try
