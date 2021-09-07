@@ -23,6 +23,7 @@ namespace FluidSolver
         class GlobalEnergySensor;
         class GlobalParticleCountSensor;
         class SensorPlane;
+        class CompressedNeighborStorageSensor;
 
     } // namespace Sensors
     class SensorWriter;

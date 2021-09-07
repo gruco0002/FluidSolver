@@ -138,7 +138,7 @@ namespace FluidSolver
         struct NeighborStorage
         {
             static constexpr size_t MAX_DELTAS = 48;
-            static constexpr size_t DELTAS_SIZE = MAX_DELTAS * 4;
+            static constexpr size_t DELTAS_SIZE = 48;
             static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
 
 
@@ -148,6 +148,7 @@ namespace FluidSolver
             size_t size() const;
             uint32_t get_delta(size_t delta_index) const;
             uint32_t get_first_neighbor() const;
+            size_t get_used_delta_bytes() const;
 
           private:
             size_t first_neighbor;

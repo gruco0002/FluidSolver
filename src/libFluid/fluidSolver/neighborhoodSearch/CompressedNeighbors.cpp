@@ -427,6 +427,11 @@ namespace FluidSolver
         return first_neighbor;
     }
 
+    size_t CompressedNeighborhoodSearch::NeighborStorage::get_used_delta_bytes() const
+    {
+        return current_deltas_byte_size;
+    }
+
     uint32_t CompressedNeighborhoodSearch::NeighborStorage::get_delta(size_t delta_index) const
     {
         FLUID_ASSERT(delta_index < MAX_DELTAS);
