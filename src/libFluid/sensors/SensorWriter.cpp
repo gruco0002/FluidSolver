@@ -88,7 +88,7 @@ void FluidSolver::SensorWriter::check_correct_dimensionality_at_position(size_t 
 
 FluidSolver::SensorWriter::SensorWriter(const std::string& filepath) : filepath(filepath)
 {
-    stream.open(filepath, std::ios::out | std::ios::binary);
+    stream.open(filepath, std::ofstream::out | std::ofstream::binary);
 
     auto abs = std::filesystem::absolute(filepath).string();
     if (!stream.is_open())

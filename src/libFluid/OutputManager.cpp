@@ -34,16 +34,24 @@ FluidSolver::OutputManager::~OutputManager()
 
 void FluidSolver::OutputManager::save_sensor_data()
 {
+    // creating output directory if it does not exist
+    if (!std::filesystem::exists(parameters.output_folder))
+    {
+        std::filesystem::create_directories(parameters.output_folder);
+    }
+
     // reset timesteps since last sensor save
     timesteps_since_last_sensor_save = 0;
 
     {
         // remove unneeded sensor writers
-        std::set<std::shared_ptr<FluidSolver::ISensor>> sensor_set(parameters.sensors.begin(), parameters.sensors.end());
+        std::set<std::shared_ptr<FluidSolver::ISensor>> sensor_set(parameters.sensors.begin(),
+                                                                   parameters.sensors.end());
         std::vector<std::shared_ptr<FluidSolver::ISensor>> to_remove;
         for (auto& [key, value] : sensor_writers)
         {
-            if (sensor_set.find(key) == sensor_set.end())
+            auto res = sensor_set.find(key);
+            if (res == sensor_set.end() || !(*res)->parameters.save_to_file)
             {
                 to_remove.push_back(key);
                 value = nullptr;
@@ -59,6 +67,8 @@ void FluidSolver::OutputManager::save_sensor_data()
     // check for the writers being present
     for (auto sen : parameters.sensors)
     {
+        if (!sen->parameters.save_to_file)
+            continue;
         auto res = sensor_writers.find(sen);
         if (res == sensor_writers.end())
         {
