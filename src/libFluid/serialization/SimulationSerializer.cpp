@@ -4,12 +4,15 @@
 #include "entities/ParticleRemover.hpp"
 #include "entities/ParticleSpawner.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
+#include "fluidSolver/IISPHFluidSolver3D.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
+#include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
+#include "sensors/CompressedNeighborsStatistics.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "serialization/YamlHelpers.hpp"
@@ -251,6 +254,29 @@ namespace FluidSolver
         return res;
     }
 
+    YAML::Node SimulationSerializer::save_compressed_neighborhood_storage_sensor(
+        const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen)
+    {
+        YAML::Node node;
+
+        node["type"] = "compressed-neighborhood-storage-sensor";
+        node["name"] = sen->parameters.name;
+        node["save-to-file"] = sen->parameters.save_to_file;
+        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+
+        return node;
+    }
+    std::shared_ptr<Sensors::CompressedNeighborStorageSensor> SimulationSerializer::
+        load_compressed_neighborhood_storage_sensor(const YAML::Node& node)
+    {
+        auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
+        res->parameters.name = node["name"].as<std::string>();
+        res->parameters.save_to_file = node["save-to-file"].as<bool>();
+        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+        return res;
+    }
+
+
     std::string SimulationSerializer::get_full_particle_data_path()
     {
         auto p = std::filesystem::path(filepath);
@@ -323,6 +349,12 @@ namespace FluidSolver
             {
                 res["sensors"].push_back(save_global_particle_count_sensor(gc));
             }
+
+            auto cns = std::dynamic_pointer_cast<Sensors::CompressedNeighborStorageSensor>(sen);
+            if (cns)
+            {
+                res["sensors"].push_back(save_compressed_neighborhood_storage_sensor(cns));
+            }
         }
 
         return res;
@@ -373,30 +405,35 @@ namespace FluidSolver
         {
             for (auto& sen_node : node["sensors"])
             {
-                if (sen_node["type"].as<std::string>() == "global-density-sensor")
+                auto type_str = sen_node["type"].as<std::string>();
+                if (type_str == "global-density-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_density_sensor(sen_node));
                 }
-                else if (sen_node["type"].as<std::string>() == "global-pressure-sensor")
+                else if (type_str == "global-pressure-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_pressure_sensor(sen_node));
                 }
-                else if (sen_node["type"].as<std::string>() == "global-velocity-sensor")
+                else if (type_str == "global-velocity-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_velocity_sensor(sen_node));
                 }
-                else if (sen_node["type"].as<std::string>() == "global-energy-sensor")
+                else if (type_str == "global-energy-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_energy_sensor(sen_node));
                 }
-                else if (sen_node["type"].as<std::string>() == "global-particle-count-sensor")
+                else if (type_str == "global-particle-count-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_particle_count_sensor(sen_node));
+                }
+                else if (type_str == "compressed-neighborhood-storage-sensor")
+                {
+                    simulation.parameters.sensors.push_back(load_compressed_neighborhood_storage_sensor(sen_node));
                 }
                 else
                 {
                     warning_count++;
-                    Log::warning("[LOADING] Unknown sensor type '" + sen_node["type"].as<std::string>() + "'!");
+                    Log::warning("[LOADING] Unknown sensor type '" + type_str + "'!");
                 }
             }
         }
@@ -542,6 +579,65 @@ namespace FluidSolver
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
         }
+        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
+        {
+            auto f =
+                std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
+
+            node["type"] = "sesph-3d";
+            node["neigborhood-search"]["type"] = "compressed-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["stiffness"] = f->settings.StiffnessK;
+            node["viscosity"] = f->settings.Viscosity;
+        }
+        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s))
+        {
+            auto f =
+                std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
+
+            node["type"] = "iisph-3d";
+            node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["gamma"] = f->settings.gamma;
+            node["omega"] = f->settings.omega;
+            node["max-density-error"] = f->settings.max_density_error_allowed;
+            node["max-iterations"] = f->settings.max_number_of_iterations;
+            node["min-iterations"] = f->settings.min_number_of_iterations;
+            node["viscosity"] = f->settings.viscosity;
+        }
+        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
+        {
+            auto f = std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s);
+
+            node["type"] = "iisph-3d";
+            node["neigborhood-search"]["type"] = "hashed-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["gamma"] = f->settings.gamma;
+            node["omega"] = f->settings.omega;
+            node["max-density-error"] = f->settings.max_density_error_allowed;
+            node["max-iterations"] = f->settings.max_number_of_iterations;
+            node["min-iterations"] = f->settings.min_number_of_iterations;
+            node["viscosity"] = f->settings.viscosity;
+        }
+        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
+        {
+            auto f =
+                std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
+
+            node["type"] = "iisph-3d";
+            node["neigborhood-search"]["type"] = "compressed-3d";
+            node["kernel"]["type"] = "cubic-spline-kernel-3d";
+
+            node["gamma"] = f->settings.gamma;
+            node["omega"] = f->settings.omega;
+            node["max-density-error"] = f->settings.max_density_error_allowed;
+            node["max-iterations"] = f->settings.max_number_of_iterations;
+            node["min-iterations"] = f->settings.min_number_of_iterations;
+            node["viscosity"] = f->settings.viscosity;
+        }
         else
         {
             error_count++;
@@ -664,11 +760,80 @@ namespace FluidSolver
 
                     simulation.parameters.fluid_solver = res;
                 }
+                else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
+                {
+                    auto res =
+                        std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
+
+                    res->settings.StiffnessK = node["stiffness"].as<float>();
+                    res->settings.Viscosity = node["viscosity"].as<float>();
+
+                    simulation.parameters.fluid_solver = res;
+                }
                 else
                 {
                     error_count++;
                     Log::error("[LOADING] Unknown neighborhood search type '" +
                                node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                }
+            }
+            else if (node["type"].as<std::string>() == "iisph-3d")
+            {
+                if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
+                {
+                    if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
+                    {
+                        auto res =
+                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
+
+                        res->settings.gamma = node["gamma"].as<float>();
+                        res->settings.omega = node["omega"].as<float>();
+                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                        res->settings.viscosity = node["viscosity"].as<float>();
+
+                        simulation.parameters.fluid_solver = res;
+                    }
+                    else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
+                    {
+                        auto res =
+                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
+
+                        res->settings.gamma = node["gamma"].as<float>();
+                        res->settings.omega = node["omega"].as<float>();
+                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                        res->settings.viscosity = node["viscosity"].as<float>();
+
+                        simulation.parameters.fluid_solver = res;
+                    }
+                    else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
+                    {
+                        auto res =
+                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
+
+                        res->settings.gamma = node["gamma"].as<float>();
+                        res->settings.omega = node["omega"].as<float>();
+                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                        res->settings.viscosity = node["viscosity"].as<float>();
+
+                        simulation.parameters.fluid_solver = res;
+                    }
+                    else
+                    {
+                        error_count++;
+                        Log::error("[LOADING] Unknown neighborhood search type '" +
+                                   node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                    }
+                }
+                else
+                {
+                    error_count++;
+                    Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
                 }
             }
             else

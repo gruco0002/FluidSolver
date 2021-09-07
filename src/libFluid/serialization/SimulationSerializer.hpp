@@ -78,6 +78,11 @@ namespace FluidSolver
         YAML::Node save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer);
         YAML::Node save_sensor_plane(const std::shared_ptr<Sensors::SensorPlane>& sen);
         std::shared_ptr<Sensors::SensorPlane> load_sensor_plane(const YAML::Node& node);
+
+        YAML::Node save_compressed_neighborhood_storage_sensor(
+            const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen);
+        std::shared_ptr<Sensors::CompressedNeighborStorageSensor> load_compressed_neighborhood_storage_sensor(
+            const YAML::Node& node);
     };
 
 } // namespace FluidSolver
