@@ -7,6 +7,7 @@
 #include "fluidSolver/IISPHFluidSolver3D.hpp"
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
+#include "sensors/CompressedNeighborsStatistics.hpp"
 #include "timestep/ConstantTimestep.hpp"
 #include "timestep/DynamicCFLTimestep.hpp"
 #include "userInterface/PlyImport.hpp"
@@ -105,6 +106,13 @@ void FluidUi::UiLayer::render_component_panel()
                     sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
                     window->simulation.parameters.sensors.push_back(sen);
                 }
+                if (ImGui::MenuItem("Compressed Neighborhood Storage", nullptr, nullptr, is_safe))
+                {
+                    auto sen = std::make_shared<FluidSolver::Sensors::CompressedNeighborStorageSensor>();
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.parameters.sensors.size() + 1);
+                    window->simulation.parameters.sensors.push_back(sen);
+                }
+
                 ImGui::EndMenu();
             }
             if (ImGui::MenuItem("Add Entity"))
@@ -447,6 +455,10 @@ const char* get_sensor_type_name(const std::shared_ptr<FluidSolver::ISensor>& se
     else if (std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen))
     {
         return "3D Sensor Plane";
+    }
+    else if (std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen))
+    {
+        return "Compressed Neighbor Storage";
     }
     return "UNKNOWN";
 }

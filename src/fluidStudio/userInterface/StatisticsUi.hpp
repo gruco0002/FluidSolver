@@ -2,6 +2,7 @@
 #define FLUIDSOLVER_STATISTICSUI_HPP
 
 #include "engine/graphics/Texture2D.hpp"
+#include "sensors/CompressedNeighborsStatistics.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 
@@ -37,6 +38,8 @@ namespace FluidUi
         void render_energy_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sensor);
         void render_particle_count_sensor(std::shared_ptr<FluidSolver::Sensors::GlobalParticleCountSensor> sensor);
         void render_sensor_plane_sensor(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sensor);
+        void render_compressed_neighborhood_storage_sensor(
+            std::shared_ptr<FluidSolver::Sensors::CompressedNeighborStorageSensor> sensor);
     };
 
 } // namespace FluidUi

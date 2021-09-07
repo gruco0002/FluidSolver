@@ -58,6 +58,11 @@ void FluidUi::StatisticsUi::render()
                 {
                     render_sensor_plane_sensor(std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen));
                 }
+                else if (std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen))
+                {
+                    render_compressed_neighborhood_storage_sensor(
+                        std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen));
+                }
             }
 
             ImGui::End();
@@ -271,5 +276,63 @@ void FluidUi::StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolv
         }
 
         ImGui::Image((ImTextureID)rendered_image->GetID(), {width, height}, {0, 1}, {1, 0});
+    }
+}
+
+void FluidUi::StatisticsUi::render_compressed_neighborhood_storage_sensor(
+    std::shared_ptr<FluidSolver::Sensors::CompressedNeighborStorageSensor> sensor)
+{
+    if (ImPlot::BeginPlot("Neighborhood Storage"))
+    {
+
+        ImPlot::PlotLineG(
+            "Neighbors Avg",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_average);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::PlotLineG(
+            "Neighbors Max",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_maximum);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::PlotLineG(
+            "Neighbors Min",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_minimum);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::PlotLineG(
+            "Delta Bytes Avg",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_average);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::PlotLineG(
+            "Delta Bytes Max",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_maximum);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::PlotLineG(
+            "Delta Bytes Min",
+            [](void* data, int x) {
+                auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_minimum);
+            },
+            (void*)&sensor->data, sensor->data.size());
+
+        ImPlot::EndPlot();
     }
 }
