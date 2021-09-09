@@ -30,7 +30,12 @@ int main(int argc, char* argv[])
     options.add_options("Console")("l,length", "Amount of time (in seconds) the scenario should be simulated.",
                                    cxxopts::value<float>()->default_value("60.0"))(
         "v,verbose", "If this flag is provided more information is printed to the console",
-        cxxopts::value<bool>())("f,file", "[Required] Filepath to a scenario yaml file", cxxopts::value<std::string>());
+        cxxopts::value<
+            bool>())("f,file", "[Required] Filepath to a scenario yaml file",
+                     cxxopts::value<
+                         std::string>())("o,output",
+                                         "Path to the output folder which will later contain the sensor data.",
+                                         cxxopts::value<std::string>()->default_value("./output"));
 
 
     try
@@ -49,6 +54,7 @@ int main(int argc, char* argv[])
             float simulation_length = 1.0f;
             bool verbose = false;
             std::string filepath = "";
+            std::string outputPath = "";
         } settings;
 
         try
@@ -56,6 +62,7 @@ int main(int argc, char* argv[])
             settings.simulation_length = result["length"].as<float>();
             settings.verbose = result["verbose"].as<bool>();
             settings.filepath = result["file"].as<std::string>();
+            settings.outputPath = result["output"].as<std::string>();
         }
         catch (const std::exception& e)
         {
@@ -81,6 +88,9 @@ int main(int argc, char* argv[])
             FluidSolver::Log::error("[Console] Loading of scenario caused errors!");
             return 3;
         }
+
+        simulation.parameters.output.parameters.output_folder = settings.outputPath;
+
 
         // check compatibility
         if (settings.verbose)

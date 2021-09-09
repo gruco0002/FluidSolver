@@ -15,7 +15,7 @@ namespace FluidSolver
       public:
         struct OutputManagerParameters
         {
-            std::string output_folder = "output/";
+            std::string output_folder = "./output";
 
             size_t timesteps_between_sensor_save = 10;
             std::vector<std::shared_ptr<ISensor>> sensors;
