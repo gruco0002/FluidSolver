@@ -312,3 +312,8 @@ FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const FluidSolv
     push_back(value);
     return *this;
 }
+
+void FluidSolver::SensorWriter::flush()
+{
+    stream.flush();
+}

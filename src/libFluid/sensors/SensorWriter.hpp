@@ -60,6 +60,8 @@ namespace FluidSolver
 
         void next();
 
+        void flush();
+
         SensorWriter& operator<<(float value);
         SensorWriter& operator<<(const std::string& value);
         SensorWriter& operator<<(const glm::vec2& value);

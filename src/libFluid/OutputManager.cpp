@@ -88,6 +88,7 @@ void FluidSolver::OutputManager::save_sensor_data()
         // collect the data
         auto& writer = *res->second;
         sen->save_data_to_file(writer);
+        writer.flush();
     }
 }
 
