@@ -777,63 +777,62 @@ namespace FluidSolver
                                node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
             }
-            else if (node["type"].as<std::string>() == "iisph-3d")
+            else
             {
-                if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
+                error_count++;
+                Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
+            }
+        }
+        else if (node["type"].as<std::string>() == "iisph-3d")
+        {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
+            {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
                 {
-                    if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
-                    {
-                        auto res =
-                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
+                    auto res =
+                        std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
 
-                        res->settings.gamma = node["gamma"].as<float>();
-                        res->settings.omega = node["omega"].as<float>();
-                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
-                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
-                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
-                        res->settings.viscosity = node["viscosity"].as<float>();
+                    res->settings.gamma = node["gamma"].as<float>();
+                    res->settings.omega = node["omega"].as<float>();
+                    res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                    res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                    res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                    res->settings.viscosity = node["viscosity"].as<float>();
 
-                        simulation.parameters.fluid_solver = res;
-                    }
-                    else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
-                    {
-                        auto res =
-                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
+                    simulation.parameters.fluid_solver = res;
+                }
+                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
+                {
+                    auto res = std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
 
-                        res->settings.gamma = node["gamma"].as<float>();
-                        res->settings.omega = node["omega"].as<float>();
-                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
-                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
-                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
-                        res->settings.viscosity = node["viscosity"].as<float>();
+                    res->settings.gamma = node["gamma"].as<float>();
+                    res->settings.omega = node["omega"].as<float>();
+                    res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                    res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                    res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                    res->settings.viscosity = node["viscosity"].as<float>();
 
-                        simulation.parameters.fluid_solver = res;
-                    }
-                    else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
-                    {
-                        auto res =
-                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
+                    simulation.parameters.fluid_solver = res;
+                }
+                else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
+                {
+                    auto res =
+                        std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
 
-                        res->settings.gamma = node["gamma"].as<float>();
-                        res->settings.omega = node["omega"].as<float>();
-                        res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
-                        res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
-                        res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
-                        res->settings.viscosity = node["viscosity"].as<float>();
+                    res->settings.gamma = node["gamma"].as<float>();
+                    res->settings.omega = node["omega"].as<float>();
+                    res->settings.max_density_error_allowed = node["max-density-error"].as<float>();
+                    res->settings.min_number_of_iterations = node["min-iterations"].as<size_t>();
+                    res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
+                    res->settings.viscosity = node["viscosity"].as<float>();
 
-                        simulation.parameters.fluid_solver = res;
-                    }
-                    else
-                    {
-                        error_count++;
-                        Log::error("[LOADING] Unknown neighborhood search type '" +
-                                   node["neigborhood-search"]["type"].as<std::string>() + "'!");
-                    }
+                    simulation.parameters.fluid_solver = res;
                 }
                 else
                 {
                     error_count++;
-                    Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
+                    Log::error("[LOADING] Unknown neighborhood search type '" +
+                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
             }
             else
