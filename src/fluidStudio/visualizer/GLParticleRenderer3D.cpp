@@ -166,7 +166,7 @@ void FluidSolver::GLParticleRenderer3D::calc_projection_matrix()
 
     // we want to mirror the image at the y-axis, such that it comes out in a "correct" way (we avoid flipping it later)
     projectionMatrix = flipY * glm::perspectiveFov(3.14f * 0.5f, (float)parameters.render_target.width,
-                                                   (float)parameters.render_target.height, 0.1f, 100.0f);
+                                                   (float)parameters.render_target.height, 0.1f, 200.0f);
 }
 
 FluidSolver::Image FluidSolver::GLParticleRenderer3D::get_image_data()
