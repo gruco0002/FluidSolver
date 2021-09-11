@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_PARTICLECOLLECTION_HPP
-#define FLUIDSOLVER_PARTICLECOLLECTION_HPP
+#pragma once
 
 #include "Particle.hpp"
 
@@ -109,6 +108,8 @@ namespace FluidSolver
 
         void swap(size_t i, size_t j)
         {
+            FLUID_ASSERT(i < internal_size);
+            FLUID_ASSERT(j < internal_size);
             for (auto& fn : internal_swap_calls)
             {
                 fn(this, i, j);
@@ -175,5 +176,3 @@ namespace FluidSolver
         }
     };
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_PARTICLECOLLECTION_HPP
