@@ -45,7 +45,7 @@ namespace FluidSolver::ParticleCollectionAlgorithm
                 }
                 else
                 {
-                    pivot = key(pivot_index);
+                    pivot = key(collection, pivot_index);
                 }
 
                 int64_t i = low - 1;
@@ -62,7 +62,7 @@ namespace FluidSolver::ParticleCollectionAlgorithm
                         }
                         else
                         {
-                            current_element = key(i);
+                            current_element = key(collection, i);
                         }
                     } while (current_element < pivot);
 
@@ -75,7 +75,7 @@ namespace FluidSolver::ParticleCollectionAlgorithm
                         }
                         else
                         {
-                            current_element = key(j);
+                            current_element = key(collection, j);
                         }
                     } while (current_element > pivot);
 
