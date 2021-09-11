@@ -19,6 +19,17 @@ void printHelp(cxxopts::Options& options)
               << std::endl;
 }
 
+void dump_particle_data(const std::shared_ptr<FluidSolver::ParticleCollection>& collection,
+                        std::filesystem::path filepath)
+{
+    if (!std::filesystem::exists(filepath.parent_path()))
+    {
+        std::filesystem::create_directories(filepath.parent_path());
+    }
+
+    FluidSolver::SimulationSerializer::save_particles(*collection, filepath.string());
+}
+
 int main(int argc, char* argv[])
 {
     FluidSolver::Log::print_to_console = true;
@@ -35,7 +46,12 @@ int main(int argc, char* argv[])
                      cxxopts::value<
                          std::string>())("o,output",
                                          "Path to the output folder which will later contain the sensor data.",
-                                         cxxopts::value<std::string>()->default_value("./output"));
+                                         cxxopts::value<std::string>()->default_value(
+                                             "./output"))("d,dump",
+                                                          "Amount of time (in seconds) the particle data will be "
+                                                          "dumped into a file. If set to zero (the default value) "
+                                                          "nothing will be saved.",
+                                                          cxxopts::value<float>()->default_value("0.0"));
 
 
     try
@@ -55,6 +71,8 @@ int main(int argc, char* argv[])
             bool verbose = false;
             std::string filepath = "";
             std::string outputPath = "";
+            float dump_every = 0.0f;
+            bool enable_particle_data_dump = false;
         } settings;
 
         try
@@ -63,12 +81,19 @@ int main(int argc, char* argv[])
             settings.verbose = result["verbose"].as<bool>();
             settings.filepath = result["file"].as<std::string>();
             settings.outputPath = result["output"].as<std::string>();
+            settings.dump_every = result["dump"].as<float>();
         }
         catch (const std::exception& e)
         {
             FluidSolver::Log::error("[Console] Invalid or missing arguments: " + std::string(e.what()));
             return 5;
         }
+
+        if (settings.dump_every != 0.0f)
+        {
+            settings.enable_particle_data_dump = true;
+        }
+
 
         if (!std::filesystem::exists(settings.filepath))
         {
@@ -111,6 +136,23 @@ int main(int argc, char* argv[])
 
         // simulate
         float last_time_message = 0.0f;
+
+        // set up particle data dumps
+        float last_time_dump = 0.0f;
+        size_t dump_counter = 0;
+        if (settings.enable_particle_data_dump)
+        {
+            if (settings.verbose)
+            {
+                FluidSolver::Log::message("[Console] Dumping initial particle data to file.");
+            }
+            dump_particle_data(simulation.parameters.collection, std::filesystem::path(settings.outputPath) /
+                                                                     "particle-data" /
+                                                                     (std::to_string(dump_counter) + ".data"));
+            dump_counter++;
+        }
+
+
         while (simulation.get_current_timepoint().simulation_time <= settings.simulation_length)
         {
             simulation.execute_simulation_step();
@@ -122,6 +164,25 @@ int main(int argc, char* argv[])
                     FluidSolver::Log::message("[Console] Simulated " + std::to_string(last_time_message) +
                                               " seconds of the simulation.");
                 last_time_message += 1.0f;
+            }
+
+            // check particle data dump status
+            if (settings.enable_particle_data_dump)
+            {
+                last_time_dump += simulation.get_current_timepoint().current_time_step;
+                if (last_time_dump >= settings.dump_every)
+                {
+                    if (settings.verbose)
+                    {
+                        FluidSolver::Log::message("[Console] Dumping particle data to file.");
+                    }
+
+                    last_time_dump = std::fmodf(last_time_dump, settings.dump_every);
+                    dump_particle_data(simulation.parameters.collection, std::filesystem::path(settings.outputPath) /
+                                                                             "particle-data" /
+                                                                             (std::to_string(dump_counter) + ".data"));
+                    dump_counter++;
+                }
             }
         }
 
