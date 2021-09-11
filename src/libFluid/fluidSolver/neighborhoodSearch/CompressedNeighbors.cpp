@@ -4,6 +4,7 @@
 #include "parallelization/StdParallelForEach.hpp"
 
 #include <array>
+#include <cstring>
 #include <libmorton/morton.h>
 
 namespace FluidSolver
