@@ -38,7 +38,6 @@ void FluidSolver::Simulation::execute_simulation_step()
     float current_timestep = internal_parameters.timestep->get_current_timestep();
     timepoint.system_time = std::chrono::system_clock::now();
     timepoint.current_time_step = current_timestep;
-    timepoint.timestep_number++;
 
 
     // simulate
@@ -52,7 +51,7 @@ void FluidSolver::Simulation::execute_simulation_step()
 
     // update simulation time
     timepoint.simulation_time += current_timestep;
-    timepoint.current_time_step++;
+    timepoint.timestep_number++;
 
     // measure sensor data
     for (auto sen : internal_parameters.sensors)
