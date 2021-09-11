@@ -88,45 +88,6 @@ namespace FluidSolver
             }
         }
 
-        void Sort::quick_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
-        {
-            FLUID_ASSERT(collection->is_type_present<SortInfo>());
-
-            precalculate_keys(collection, key);
-
-
-            auto partition = [&](int64_t low, int64_t high) -> int64_t {
-                auto pivot = collection->get<SortInfo>(high).key;
-
-                int64_t i = low - 1;
-
-                for (int64_t j = low; j < high; j++)
-                {
-                    auto value_at_j = collection->get<SortInfo>(j).key;
-                    if (value_at_j < pivot)
-                    {
-                        i++;
-                        collection->swap(i, j);
-                    }
-                }
-
-                collection->swap(i + 1, high);
-                return i + 1;
-            };
-
-
-            std::function<void(int64_t, int64_t)> quick_sort = [&](int64_t low, int64_t high) {
-                if (low < high)
-                {
-                    auto partitioning_index = partition(low, high);
-
-                    quick_sort(low, partitioning_index - 1);
-                    quick_sort(partitioning_index + 1, high);
-                }
-            };
-
-            quick_sort(0, collection->size() - 1);
-        }
 
         void Sort::precalculate_keys(std::shared_ptr<ParticleCollection> collection, const Sort::key_function_t& key)
         {
