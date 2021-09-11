@@ -203,11 +203,10 @@ namespace FluidSolver
         // sort particles according to cell index
         {
             ParticleCollectionAlgorithm::Sort sorter;
-            sorter.adapt_collection(collection);
 
-            sorter.quick_sort(
+            sorter.quick_sort<false, true>(
                 collection,
-                [&](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
+                [](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
                     auto& information = collection->get<ParticleInformation>(index);
                     return information.cell_index;
                 });
