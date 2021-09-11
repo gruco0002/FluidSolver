@@ -150,6 +150,13 @@ namespace FluidSolver
             uint32_t get_first_neighbor() const;
             size_t get_used_delta_bytes() const;
 
+            NeighborStorage();
+            NeighborStorage(const NeighborStorage&);
+            NeighborStorage(NeighborStorage&&);
+            NeighborStorage& operator=(const NeighborStorage&);
+            NeighborStorage& operator=(NeighborStorage&&);
+            ~NeighborStorage() = default;
+
           private:
             size_t first_neighbor;
             std::bitset<MAX_CONTROLS> control_sequence;

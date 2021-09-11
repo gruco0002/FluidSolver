@@ -406,12 +406,11 @@ namespace FluidSolver
             // represent
             uint32_t reduced_delta = delta_to_previous_neighbor - (256 + 3);
             deltas[current_deltas_byte_size + 0] = reduced_delta & 0xff;
-            deltas[current_deltas_byte_size + 1] = (reduced_delta >> 8)  & 0xff;
+            deltas[current_deltas_byte_size + 1] = (reduced_delta >> 8) & 0xff;
             deltas[current_deltas_byte_size + 2] = (reduced_delta >> 16) & 0xff;
             deltas[current_deltas_byte_size + 3] = (reduced_delta >> 24) & 0xff;
-           
-            current_deltas_byte_size += 4;        
 
+            current_deltas_byte_size += 4;
         }
 
         size_value++;
@@ -481,12 +480,13 @@ namespace FluidSolver
             {
                 // the delta value is represented by four bytes
                 FLUID_ASSERT(starting_byte_index + 3 < DELTAS_SIZE);
-           
+
                 uint32_t value = uint32_t((uint8_t)(deltas[starting_byte_index + 3]) << 24 |
-                                (uint8_t)(deltas[starting_byte_index + 2]) << 16 |
-                                (uint8_t)(deltas[starting_byte_index + 1]) << 8 |
-                                (uint8_t)(deltas[starting_byte_index + 0]));
+                                          (uint8_t)(deltas[starting_byte_index + 2]) << 16 |
+                                          (uint8_t)(deltas[starting_byte_index + 1]) << 8 |
+                                          (uint8_t)(deltas[starting_byte_index + 0]));
                 value = value + 3 + 256;
+                FLUID_ASSERT(value != std::numeric_limits<uint32_t>::max());
                 return value;
             }
         }
@@ -511,7 +511,16 @@ namespace FluidSolver
             FLUID_ASSERT(of.particle < data->collection->size());
 
             const auto& storage = data->collection->get<NeighborStorage>(of.particle);
-            iterator.current = storage.get_first_neighbor();
+            if (storage.size() != 0)
+            {
+                iterator.current = storage.get_first_neighbor();
+            }
+            else
+            {
+                // the iterator reached already the end
+                iterator.current_counter = -1;
+                iterator.current = data->collection->size();
+            }
         }
 
         return iterator;
@@ -594,5 +603,49 @@ namespace FluidSolver
         return *this;
     }
 
+    CompressedNeighborhoodSearch::NeighborStorage::NeighborStorage()
+    {
+        clear();
+    }
+
+    CompressedNeighborhoodSearch::NeighborStorage::NeighborStorage(const NeighborStorage& c)
+    {
+        first_neighbor = c.first_neighbor;
+        control_sequence = c.control_sequence;
+        size_value = c.size_value;
+        current_deltas_byte_size = c.current_deltas_byte_size;
+        std::memcpy(deltas, c.deltas, DELTAS_SIZE * sizeof(uint8_t));
+    }
+
+    CompressedNeighborhoodSearch::NeighborStorage::NeighborStorage(NeighborStorage&& c)
+    {
+        first_neighbor = c.first_neighbor;
+        control_sequence = c.control_sequence;
+        size_value = c.size_value;
+        current_deltas_byte_size = c.current_deltas_byte_size;
+        std::memcpy(deltas, c.deltas, DELTAS_SIZE * sizeof(uint8_t));
+    }
+
+    CompressedNeighborhoodSearch::NeighborStorage& CompressedNeighborhoodSearch::NeighborStorage::operator=(
+        NeighborStorage&& c)
+    {
+        first_neighbor = c.first_neighbor;
+        control_sequence = c.control_sequence;
+        size_value = c.size_value;
+        current_deltas_byte_size = c.current_deltas_byte_size;
+        std::memcpy(deltas, c.deltas, DELTAS_SIZE * sizeof(uint8_t));
+        return *this;
+    }
+
+    CompressedNeighborhoodSearch::NeighborStorage& CompressedNeighborhoodSearch::NeighborStorage::operator=(
+        const NeighborStorage& c)
+    {
+        first_neighbor = c.first_neighbor;
+        control_sequence = c.control_sequence;
+        size_value = c.size_value;
+        current_deltas_byte_size = c.current_deltas_byte_size;
+        std::memcpy(deltas, c.deltas, DELTAS_SIZE * sizeof(uint8_t));
+        return *this;
+    }
 
 } // namespace FluidSolver
