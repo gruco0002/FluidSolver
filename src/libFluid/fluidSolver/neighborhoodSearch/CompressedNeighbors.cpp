@@ -205,7 +205,7 @@ namespace FluidSolver
         {
             ParticleCollectionAlgorithm::Sort sorter;
 
-            sorter.quick_sort<false, true>(
+            sorter.quick_sort_stable<false, true>(
                 collection,
                 [](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
                     auto& information = collection->get<ParticleInformation>(index);
