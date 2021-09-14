@@ -942,14 +942,62 @@ bool FluidUi::UiLayer::Component::can_delete() const
 
 void FluidUi::UiLayer::render_sensor_plane_component(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sen)
 {
+    BeginSubsection("Value", [&] {
+        using namespace FluidSolver::Sensors;
+
+        const char* current_type_name = nullptr;
+        switch (sen->settings.sensor_type)
+        {
+        case SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
+            current_type_name = "Density";
+            break;
+        case SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
+            current_type_name = "Velocity";
+            break;
+        case SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
+            current_type_name = "Pressure";
+            break;
+        default:
+            current_type_name = "Unknown";
+            break;
+        }
+
+        if (ImGui::BeginCombo("Type", current_type_name))
+        {
+            if (ImGui::Selectable("Density",
+                                  sen->settings.sensor_type == SensorPlane::SensorPlaneType::SensorPlaneTypeDensity))
+            {
+                sen->settings.sensor_type = SensorPlane::SensorPlaneType::SensorPlaneTypeDensity;
+            }
+
+            if (ImGui::Selectable("Velocity",
+                                  sen->settings.sensor_type == SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity))
+            {
+                sen->settings.sensor_type = SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity;
+            }
+
+            if (ImGui::Selectable("Pressure",
+                                  sen->settings.sensor_type == SensorPlane::SensorPlaneType::SensorPlaneTypePressure))
+            {
+                sen->settings.sensor_type = SensorPlane::SensorPlaneType::SensorPlaneTypePressure;
+            }
+
+            ImGui::EndCombo();
+        }
+    });
+
     BeginSubsection("Location & Size", [&] {
         ImGui::InputFloat3("Origin", (float*)&sen->settings.origin);
         ImGui::InputFloat3("Span X", (float*)&sen->settings.span_x);
         ImGui::InputFloat3("Span Y", (float*)&sen->settings.span_y);
         ImGui::InputFloat("Width", &sen->settings.width);
         ImGui::InputFloat("Height", &sen->settings.height);
+    });
+
+    BeginSubsection("Samples", [&] {
         ImGui::InputInt("X-Samples", (int*)&sen->settings.number_of_samples_x);
         ImGui::InputInt("Y-Samples", (int*)&sen->settings.number_of_samples_y);
+        ImGui::InputInt("Sub-Samples", (int*)&sen->settings.sub_sample_grid_size);
     });
 
     BeginSubsection("Image", [&] {
