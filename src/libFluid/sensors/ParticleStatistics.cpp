@@ -74,6 +74,7 @@ void FluidSolver::Sensors::GlobalDensitySensor::save_data_to_file(SensorWriter& 
     else
     {
         data.clear();
+        saved_data_until = 0;
     }
 }
 
@@ -145,6 +146,7 @@ void FluidSolver::Sensors::GlobalPressureSensor::save_data_to_file(SensorWriter&
     else
     {
         data.clear();
+        saved_data_until = 0;
     }
 }
 
@@ -217,6 +219,7 @@ void FluidSolver::Sensors::GlobalVelocitySensor::save_data_to_file(SensorWriter&
     else
     {
         data.clear();
+        saved_data_until = 0;
     }
 }
 
@@ -246,6 +249,7 @@ void FluidSolver::Sensors::GlobalEnergySensor::save_data_to_file(SensorWriter& w
     else
     {
         data.clear();
+        saved_data_until = 0;
     }
 }
 
@@ -353,5 +357,6 @@ void FluidSolver::Sensors::GlobalParticleCountSensor::save_data_to_file(SensorWr
     else
     {
         data.clear();
+        saved_data_until = 0;
     }
 }

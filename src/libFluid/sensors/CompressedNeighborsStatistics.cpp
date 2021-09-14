@@ -83,6 +83,7 @@ namespace FluidSolver::Sensors
         else
         {
             data.clear();
+            saved_data_until = 0;
         }
     }
 
