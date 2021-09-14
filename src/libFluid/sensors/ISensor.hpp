@@ -1,10 +1,10 @@
-#ifndef FLUIDSOLVER_ISENSOR_HPP
-#define FLUIDSOLVER_ISENSOR_HPP
+#pragma once
 
 #include "Compatibility.hpp"
+#include "Forward.hpp"
+#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/SensorWriter.hpp"
 #include "timestep/ITimestep.hpp"
-#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 
 
 namespace FluidSolver
@@ -22,6 +22,7 @@ namespace FluidSolver
             bool keep_data_in_memory_after_saving = false;
             SimulationParameters* simulation_parameters = nullptr;
             NeighborhoodInterface* neighborhood_interface = nullptr;
+            OutputManager* manager = nullptr;
         } parameters;
 
 
@@ -32,7 +33,10 @@ namespace FluidSolver
         virtual void save_data_to_file(SensorWriter& writer) = 0;
 
         // TODO: make abstract
-        virtual inline Compatibility check() {return {};}
+        virtual inline Compatibility check()
+        {
+            return {};
+        }
 
         virtual ~ISensor()
         {
@@ -42,5 +46,3 @@ namespace FluidSolver
         size_t saved_data_until = 0;
     };
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_ISENSOR_HPP

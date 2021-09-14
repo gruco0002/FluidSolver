@@ -27,6 +27,7 @@ namespace FluidSolver
 
     } // namespace Sensors
     class SensorWriter;
+    class OutputManager;
 
     class Compatibility;
     struct CompatibilityIssue;

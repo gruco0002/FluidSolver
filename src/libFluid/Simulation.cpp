@@ -105,6 +105,7 @@ void FluidSolver::Simulation::initialize()
         FLUID_ASSERT(sen != nullptr);
         sen->parameters.simulation_parameters = &internal_parameters;
         sen->parameters.neighborhood_interface = &neigborhood_interface;
+        sen->parameters.manager = &internal_parameters.output;
         sen->initialize();
     }
 
