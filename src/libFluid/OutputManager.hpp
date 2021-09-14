@@ -2,8 +2,10 @@
 
 #include "sensors/ISensor.hpp"
 
+#include <filesystem>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -28,6 +30,9 @@ namespace FluidSolver
         void manual_save();
 
         ~OutputManager();
+
+        std::optional<std::filesystem::path> get_filepath_for_sensor(const ISensor* sensor,
+                                                                     std::string desired_filename);
 
       private:
         size_t timesteps_since_last_sensor_save = 0;

@@ -112,3 +112,31 @@ std::string FluidSolver::OutputManager::remove_invalid_chars_from_filename(const
     }
     return res;
 }
+
+std::optional<std::filesystem::path> FluidSolver::OutputManager::get_filepath_for_sensor(const ISensor* sensor,
+                                                                                         std::string desired_filename)
+{
+    // creating output directory if it does not exist
+    if (!std::filesystem::exists(parameters.output_folder))
+    {
+        std::filesystem::create_directories(parameters.output_folder);
+    }
+
+    if (!sensor->parameters.save_to_file)
+    {
+        // it is not allowed to save a file
+        return {};
+    }
+
+    auto sensor_directory =
+        std::filesystem::path(parameters.output_folder) / remove_invalid_chars_from_filename(sensor->parameters.name);
+
+    // create sensor directory if required
+    if (!std::filesystem::exists(sensor_directory))
+    {
+        std::filesystem::create_directories(sensor_directory);
+    }
+
+    // create filepath
+    return sensor_directory / desired_filename;
+}
