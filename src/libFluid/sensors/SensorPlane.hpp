@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sensors/ISensor.hpp"
+#include "sensors/SensorData.hpp"
 #include "visualizer/Image.hpp"
 
 namespace FluidSolver::Sensors
@@ -37,8 +38,10 @@ namespace FluidSolver::Sensors
 
             size_t sub_sample_grid_size = 2;
 
+            size_t calculate_plane_every_nth_step = 1;
+
         } settings;
-        
+
 
         virtual void initialize() override;
 
@@ -57,6 +60,9 @@ namespace FluidSolver::Sensors
         std::vector<vec3> last_values;
 
         Image get_image_representation() const;
+
+        SensorData<std::string> data;
+        size_t saved_data_until = 0;
     };
 
 } // namespace FluidSolver::Sensors

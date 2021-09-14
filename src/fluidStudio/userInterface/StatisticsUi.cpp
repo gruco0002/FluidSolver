@@ -275,7 +275,7 @@ void FluidUi::StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolv
             height = max_width / ratio;
         }
 
-        ImGui::Image((ImTextureID)rendered_image->GetID(), {width, height}, {0, 1}, {1, 0});
+        ImGui::Image((ImTextureID)rendered_image->GetID(), {width, height});
     }
 }
 

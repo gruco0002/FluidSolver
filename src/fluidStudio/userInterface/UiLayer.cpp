@@ -984,6 +984,14 @@ void FluidUi::UiLayer::render_sensor_plane_component(std::shared_ptr<FluidSolver
 
             ImGui::EndCombo();
         }
+
+        if (ImGui::InputInt("Calc. every nth step", (int*)&sen->settings.calculate_plane_every_nth_step))
+        {
+            if (sen->settings.calculate_plane_every_nth_step == 0)
+            {
+                sen->settings.calculate_plane_every_nth_step = 1;
+            }
+        }
     });
 
     BeginSubsection("Location & Size", [&] {

@@ -24,6 +24,7 @@ scenario:
         min-value: -1
         max-value: 1
       data: velocity
+      calculate-every-nth-step: 1
 solver:
   type: sesph-3d
   neigborhood-search:

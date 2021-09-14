@@ -197,6 +197,8 @@ namespace FluidSolver
             break;
         }
 
+        node["calculate-every-nth-step"] = sen->settings.calculate_plane_every_nth_step;
+
         return node;
     }
     std::shared_ptr<Sensors::SensorPlane> SimulationSerializer::load_sensor_plane(const YAML::Node& node)
@@ -239,6 +241,8 @@ namespace FluidSolver
             Log::error("[LOADING] Unknown sensor plane type '" + kind + "'!");
             error_count++;
         }
+
+        res->settings.calculate_plane_every_nth_step = node["calculate-every-nth-step"].as<size_t>(1);
 
         return res;
     }

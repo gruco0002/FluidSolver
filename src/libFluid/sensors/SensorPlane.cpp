@@ -1,5 +1,7 @@
 #include "SensorPlane.hpp"
 
+#include "Log.hpp"
+#include "OutputManager.hpp"
 #include "Simulation.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
@@ -20,21 +22,30 @@ namespace FluidSolver::Sensors
         FLUID_ASSERT(parameters.simulation_parameters->collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(parameters.simulation_parameters->collection->is_type_present<ParticleData>());
 
+        // check if we should even recalculate the plane
+        if (timepoint.timestep_number % settings.calculate_plane_every_nth_step != 0)
+        {
+            return;
+        }
+
+        // clear the old array of data and resize accordingly
         last_values.clear();
         last_values.resize(settings.number_of_samples_x * settings.number_of_samples_y);
 
+        // calculate the plane
         vec3 span_x = glm::normalize(settings.span_x);
         vec3 span_y = glm::normalize(settings.span_y);
         float x_step = settings.width / settings.number_of_samples_x;
         float y_step = settings.height / settings.number_of_samples_y;
 
+        // initialize kernel for sph equations
         CubicSplineKernel3D kernel;
         kernel.kernel_support = parameters.neighborhood_interface->get_search_radius();
         kernel.initialize();
 
-
+        // calculate in parallel every sample location
         parallel::loop_for(0, settings.number_of_samples_x * settings.number_of_samples_y, [&](size_t i) {
-            size_t y = i / settings.number_of_samples_x;
+            size_t y = settings.number_of_samples_y - 1 - (i / settings.number_of_samples_x);
             size_t x = i % settings.number_of_samples_x;
 
             vec3 value = vec3(0.0f);
@@ -76,12 +87,57 @@ namespace FluidSolver::Sensors
             last_values[i] = value;
         });
 
+        // convert data into an image representation
         last_image = get_image_representation();
+
+        // save the data to file and add an entry into the sensor data if required
+        if (parameters.save_to_file)
+        {
+            // calculate the filename
+            auto filename = std::to_string(timepoint.timestep_number) + ".png";
+
+            // save the image to a file
+            FLUID_ASSERT(parameters.manager != nullptr);
+            auto path = parameters.manager->get_filepath_for_sensor(this, filename);
+            if (path.has_value())
+            {
+                last_image.save_as_png(path.value().string());
+                data.push_back(timepoint, filename);
+            }
+            else
+            {
+                Log::warning("[SensorPlane] Could not save image output of sensor plane!");
+            }
+        }
     }
 
     void SensorPlane::save_data_to_file(SensorWriter& writer)
     {
-        // TODO: sensor writers do not support image data yet
+        if (writer.begin_header())
+        {
+            writer.push_back_header<Timepoint>("Timepoint");
+            writer.push_back_header<std::string>("Filename");
+            writer.end_header();
+        }
+
+
+        // data writing
+        for (size_t i = saved_data_until; i < data.size(); i++)
+        {
+            auto& tmp = data.data()[i];
+            writer << data.times()[i] << tmp << SensorWriter::Control::Next;
+        }
+
+
+        if (parameters.keep_data_in_memory_after_saving)
+        {
+            saved_data_until = data.size();
+        }
+        else
+        {
+            data.clear();
+            saved_data_until = 0;
+        }
     }
 
     Compatibility SensorPlane::check()
