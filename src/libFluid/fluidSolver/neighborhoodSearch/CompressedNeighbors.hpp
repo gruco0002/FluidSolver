@@ -23,6 +23,38 @@ namespace FluidSolver
         using particleIndex_t = pIndex_t;
         using particleAmount_t = uint16_t;
 
+        struct NeighborStorage
+        {
+            static constexpr size_t MAX_DELTAS = 48;
+            static constexpr size_t DELTAS_SIZE = 48;
+            static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
+
+
+            void clear();
+            void set_first_neighbor(size_t index);
+            void set_next_neighbor(size_t delta_to_previous_neighbor);
+            size_t size() const;
+            uint32_t get_delta(size_t delta_index) const;
+            uint32_t get_first_neighbor() const;
+            size_t get_used_delta_bytes() const;
+
+            NeighborStorage();
+            NeighborStorage(const NeighborStorage&);
+            NeighborStorage(NeighborStorage&&);
+            NeighborStorage& operator=(const NeighborStorage&);
+            NeighborStorage& operator=(NeighborStorage&&);
+            ~NeighborStorage() = default;
+
+          private:
+            size_t first_neighbor;
+            std::bitset<MAX_CONTROLS> control_sequence;
+            uint8_t deltas[DELTAS_SIZE];
+
+
+            size_t size_value;
+            size_t current_deltas_byte_size;
+        };
+
 
         struct Neighbors;
 
@@ -46,6 +78,8 @@ namespace FluidSolver
 
         struct Neighbors
         {
+            friend class CompressedNeighborhoodSearch;
+            friend class NeighborsIterator;
 
             // iterator defines
             using T = particleIndex_t;
@@ -69,6 +103,10 @@ namespace FluidSolver
             NeighborsIterator begin() const;
 
             NeighborsIterator end() const;
+
+          private:
+            void calculate_position_based_neighbors();
+            NeighborStorage internal_storage;
         };
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
@@ -133,39 +171,6 @@ namespace FluidSolver
         std::vector<GridCellToParticle> cell_to_particle_map;
 
         size_t get_particle_index_by_cell_index(size_t cell_index) const;
-
-      public:
-        struct NeighborStorage
-        {
-            static constexpr size_t MAX_DELTAS = 48;
-            static constexpr size_t DELTAS_SIZE = 48;
-            static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
-
-
-            void clear();
-            void set_first_neighbor(size_t index);
-            void set_next_neighbor(size_t delta_to_previous_neighbor);
-            size_t size() const;
-            uint32_t get_delta(size_t delta_index) const;
-            uint32_t get_first_neighbor() const;
-            size_t get_used_delta_bytes() const;
-
-            NeighborStorage();
-            NeighborStorage(const NeighborStorage&);
-            NeighborStorage(NeighborStorage&&);
-            NeighborStorage& operator=(const NeighborStorage&);
-            NeighborStorage& operator=(NeighborStorage&&);
-            ~NeighborStorage() = default;
-
-          private:
-            size_t first_neighbor;
-            std::bitset<MAX_CONTROLS> control_sequence;
-            uint8_t deltas[DELTAS_SIZE];
-
-
-            size_t size_value;
-            size_t current_deltas_byte_size;
-        };
     };
 
 

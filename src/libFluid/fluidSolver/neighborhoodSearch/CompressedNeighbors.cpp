@@ -338,6 +338,7 @@ namespace FluidSolver
         ret.of.position = position;
         ret.position_based = true;
         ret.data = this;
+        ret.calculate_position_based_neighbors();
         return ret;
     }
 
@@ -495,6 +496,7 @@ namespace FluidSolver
     CompressedNeighborhoodSearch::NeighborsIterator CompressedNeighborhoodSearch::Neighbors::begin() const
     {
         FLUID_ASSERT(data != nullptr);
+        FLUID_ASSERT(data->collection != nullptr);
 
         NeighborsIterator iterator;
         iterator.data = this;
@@ -502,12 +504,19 @@ namespace FluidSolver
 
         if (position_based)
         {
-            iterator.current = -1;
-            iterator++;
+            if (internal_storage.size() != 0)
+            {
+                iterator.current = internal_storage.get_first_neighbor();
+            }
+            else
+            {
+                // the iterator reached already the end
+                iterator.current_counter = -1;
+                iterator.current = data->collection->size();
+            }
         }
         else
         {
-            FLUID_ASSERT(data->collection != nullptr);
             FLUID_ASSERT(of.particle < data->collection->size());
 
             const auto& storage = data->collection->get<NeighborStorage>(of.particle);
@@ -597,8 +606,21 @@ namespace FluidSolver
         }
         else
         {
-            // TODO: implement
-            FLUID_ASSERT(false);
+            const auto& storage = data->internal_storage;
+            current_counter++;
+            if (current_counter < storage.size())
+            {
+                size_t delta = storage.get_delta(current_counter - 1);
+                current += delta;
+
+                FLUID_ASSERT(current < compressed->collection->size());
+            }
+            else
+            {
+                // we reached the end
+                current_counter = -1;
+                current = compressed->collection->size();
+            }
         }
         return *this;
     }
@@ -646,6 +668,81 @@ namespace FluidSolver
         current_deltas_byte_size = c.current_deltas_byte_size;
         std::memcpy(deltas, c.deltas, DELTAS_SIZE * sizeof(uint8_t));
         return *this;
+    }
+
+
+    void CompressedNeighborhoodSearch::Neighbors::calculate_position_based_neighbors()
+    {
+        FLUID_ASSERT(data != nullptr);
+        FLUID_ASSERT(data->collection != nullptr);
+        FLUID_ASSERT(position_based == true);
+
+        auto cell_location = data->calculate_grid_cell_location_of_position(of.position);
+
+        std::array<size_t, 27> cell_indices_to_check;
+        size_t i = 0;
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int z = -1; z <= 1; z++)
+                {
+                    FLUID_ASSERT(i < cell_indices_to_check.size());
+
+                    cell_indices_to_check[i] = calculate_cell_index_by_cell_location({
+                        cell_location.x + x,
+                        cell_location.y + y,
+                        cell_location.z + z,
+                    });
+                    i++;
+                }
+            }
+        }
+        std::sort(cell_indices_to_check.begin(), cell_indices_to_check.end());
+
+        auto& storage = internal_storage;
+        storage.clear();
+        size_t last_neighbor = -1;
+        size_t delta_counter = 0;
+
+        for (size_t i = 0; i < cell_indices_to_check.size(); i++)
+        {
+            size_t first_particle_index = data->get_particle_index_by_cell_index(cell_indices_to_check[i]);
+            if (first_particle_index == (size_t)(-1))
+            {
+                // the cell is empty and therefore non existant
+                continue;
+            }
+
+            size_t current_particle = first_particle_index;
+            while (cell_indices_to_check[i] == data->collection->get<ParticleInformation>(current_particle).cell_index)
+            {
+                const auto& mv_current = data->collection->get<MovementData3D>(current_particle);
+                auto diff = mv_current.position - of.position;
+                if (glm::dot(diff, diff) <= Math::pow2(data->search_radius))
+                {
+                    // the particles are neighbors
+                    if (last_neighbor == (size_t)(-1))
+                    {
+                        last_neighbor = current_particle;
+                        storage.set_first_neighbor(last_neighbor);
+                    }
+                    else
+                    {
+                        FLUID_ASSERT(last_neighbor < current_particle);
+                        size_t delta = current_particle - last_neighbor;
+                        storage.set_next_neighbor(delta);
+                        last_neighbor = current_particle;
+                        delta_counter++;
+                    }
+                }
+                current_particle++;
+                if (current_particle >= data->collection->size())
+                {
+                    break;
+                }
+            }
+        }
     }
 
 } // namespace FluidSolver
