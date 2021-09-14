@@ -10,6 +10,13 @@ namespace FluidSolver::Sensors
 
 
       public:
+        enum class SensorPlaneType
+        {
+            SensorPlaneTypeDensity,
+            SensorPlaneTypeVelocity,
+            SensorPlaneTypePressure
+        };
+
         struct SensorPlaneSettings
         {
 
@@ -26,8 +33,12 @@ namespace FluidSolver::Sensors
             float max_image_value = 1.02f;
             float min_image_value = 0.98f;
 
-        } settings;
+            SensorPlaneType sensor_type = SensorPlaneType::SensorPlaneTypeDensity;
 
+            size_t sub_sample_grid_size = 2;
+
+        } settings;
+        
 
         virtual void initialize() override;
 
@@ -43,7 +54,7 @@ namespace FluidSolver::Sensors
       private:
         Image last_image = Image(1, 1);
 
-        std::vector<float> last_values;
+        std::vector<vec3> last_values;
 
         Image get_image_representation() const;
     };

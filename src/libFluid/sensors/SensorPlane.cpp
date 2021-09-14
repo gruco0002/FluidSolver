@@ -37,19 +37,42 @@ namespace FluidSolver::Sensors
             size_t y = i / settings.number_of_samples_x;
             size_t x = i % settings.number_of_samples_x;
 
-            float value = 0.0f;
-            vec3 sample_position = settings.origin + span_x * x_step * (float)x + span_y * y_step * (float)y;
+            vec3 value = vec3(0.0f);
 
-            auto neighbors = parameters.neighborhood_interface->get_neighbors(sample_position);
-            for (auto neighbor : neighbors)
+            for (size_t sub_x_count = 0; sub_x_count <= settings.sub_sample_grid_size; sub_x_count++)
             {
-                auto& mv = parameters.simulation_parameters->collection->get<MovementData3D>(neighbor);
-                auto& pd = parameters.simulation_parameters->collection->get<ParticleData>(neighbor);
+                float sub_x = sub_x_count / (settings.sub_sample_grid_size + 1.0f) - 0.5f;
+                for (size_t sub_y_count = 0; sub_y_count <= settings.sub_sample_grid_size; sub_y_count++)
+                {
+                    float sub_y = sub_y_count / (settings.sub_sample_grid_size + 1.0f) - 0.5f;
 
-                value += pd.mass * kernel.GetKernelValue(mv.position, sample_position);
+                    vec3 sample_position =
+                        settings.origin + span_x * x_step * (x + sub_x) + span_y * y_step * (y + sub_y);
+                    auto neighbors = parameters.neighborhood_interface->get_neighbors(sample_position);
+                    for (auto neighbor : neighbors)
+                    {
+                        auto& mv = parameters.simulation_parameters->collection->get<MovementData3D>(neighbor);
+                        auto& pd = parameters.simulation_parameters->collection->get<ParticleData>(neighbor);
+
+                        float kernel_value = kernel.GetKernelValue(mv.position, sample_position);
+
+                        switch (settings.sensor_type)
+                        {
+                        case SensorPlaneType::SensorPlaneTypeDensity:
+                            value += vec3(pd.mass, 0.0f, 0.0f) * kernel_value;
+                            break;
+                        case SensorPlaneType::SensorPlaneTypeVelocity:
+                            value += mv.velocity * kernel_value;
+                            break;
+                        case SensorPlaneType::SensorPlaneTypePressure:
+                            value += vec3(0.0f, 0.0f, pd.pressure) * kernel_value;
+                            break;
+                        }
+                    }
+                }
             }
 
-
+            value /= Math::pow2(settings.sub_sample_grid_size + 1);
             last_values[i] = value;
         });
 
@@ -58,6 +81,7 @@ namespace FluidSolver::Sensors
 
     void SensorPlane::save_data_to_file(SensorWriter& writer)
     {
+        // TODO: sensor writers do not support image data yet
     }
 
     Compatibility SensorPlane::check()
@@ -76,23 +100,35 @@ namespace FluidSolver::Sensors
             size_t y = i / settings.number_of_samples_x;
             size_t x = i % settings.number_of_samples_x;
 
-            float value = 0.0f;
+            vec3 value = vec3(0.0f);
 
             if (last_values.size() > i)
             {
                 value = last_values[i];
             }
-            value -= settings.min_image_value;
-            value = value / (settings.max_image_value - settings.min_image_value);
+            value -= vec3(settings.min_image_value);
+            value = value / vec3(settings.max_image_value - settings.min_image_value);
 
-            if (value > 1.0f)
-                value = 1.0f;
-            if (value < 0.0f)
-                value = 0.0f;
+            if (value.x > 1.0f)
+                value.x = 1.0f;
+            if (value.x < 0.0f)
+                value.x = 0.0f;
 
-            uint8_t color = value * 255;
+            if (value.y > 1.0f)
+                value.y = 1.0f;
+            if (value.y < 0.0f)
+                value.y = 0.0f;
 
-            img.set(x, y, Image::Color(color, color, color));
+            if (value.z > 1.0f)
+                value.z = 1.0f;
+            if (value.z < 0.0f)
+                value.z = 0.0f;
+
+            uint8_t color_r = value.x * 255;
+            uint8_t color_g = value.y * 255;
+            uint8_t color_b = value.z * 255;
+
+            img.set(x, y, Image::Color(color_r, color_g, color_b));
         });
 
         return img;

@@ -175,10 +175,27 @@ namespace FluidSolver
 
         node["samples"]["x"] = sen->settings.number_of_samples_x;
         node["samples"]["y"] = sen->settings.number_of_samples_y;
+        node["samples"]["sub-sample-grid-size"] = sen->settings.sub_sample_grid_size;
 
         node["image"]["min-value"] = sen->settings.min_image_value;
         node["image"]["max-value"] = sen->settings.max_image_value;
 
+
+        switch (sen->settings.sensor_type)
+        {
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
+            node["data"] = "density";
+            break;
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
+            node["data"] = "pressure";
+            break;
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
+            node["data"] = "velocity";
+            break;
+        default:
+            Log::warning("[Saving] Unknown sensor plane type!");
+            break;
+        }
 
         return node;
     }
@@ -199,9 +216,29 @@ namespace FluidSolver
 
         res->settings.number_of_samples_x = node["samples"]["x"].as<size_t>();
         res->settings.number_of_samples_y = node["samples"]["y"].as<size_t>();
+        res->settings.sub_sample_grid_size = node["samples"]["sub-sample-grid-size"].as<size_t>();
 
         res->settings.min_image_value = node["image"]["min-value"].as<float>();
         res->settings.max_image_value = node["image"]["max-value"].as<float>();
+
+        auto kind = node["data"].as<std::string>();
+        if (kind == "density")
+        {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity;
+        }
+        else if (kind == "pressure")
+        {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure;
+        }
+        else if (kind == "velocity")
+        {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity;
+        }
+        else
+        {
+            Log::error("[LOADING] Unknown sensor plane type '" + kind + "'!");
+            error_count++;
+        }
 
         return res;
     }
@@ -350,6 +387,12 @@ namespace FluidSolver
                 res["sensors"].push_back(save_global_particle_count_sensor(gc));
             }
 
+            auto sp = std::dynamic_pointer_cast<Sensors::SensorPlane>(sen);
+            if (sp)
+            {
+                res["sensors"].push_back(save_sensor_plane(sp));
+            }
+
             auto cns = std::dynamic_pointer_cast<Sensors::CompressedNeighborStorageSensor>(sen);
             if (cns)
             {
@@ -425,6 +468,10 @@ namespace FluidSolver
                 else if (type_str == "global-particle-count-sensor")
                 {
                     simulation.parameters.sensors.push_back(load_global_particle_count_sensor(sen_node));
+                }
+                else if (type_str == "sensor-plane")
+                {
+                    simulation.parameters.sensors.push_back(load_sensor_plane(sen_node));
                 }
                 else if (type_str == "compressed-neighborhood-storage-sensor")
                 {
