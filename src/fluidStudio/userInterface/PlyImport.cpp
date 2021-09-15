@@ -50,6 +50,12 @@ namespace FluidUi
                 }
             }
 
+            if (ImGui::InputInt("Scale", &this->scale))
+            {
+                if (scale <= 0)
+                    scale = 1;
+            }
+
             ImGui::Separator();
 
             ImGui::Text("Color mappings");
@@ -197,19 +203,28 @@ namespace FluidUi
                 continue;
 
 
-            size_t index = collection->add();
+            for (int x = 0; x < scale; x++)
+            {
+                for (int y = 0; y < scale; y++)
+                {
+                    for (int z = 0; z < scale; z++)
+                    {
+                        size_t index = collection->add();
 
-            auto& pos = collection->get<FluidSolver::MovementData3D>(index);
-            pos.position = vertices[i];
+                        auto& pos = collection->get<FluidSolver::MovementData3D>(index);
+                        pos.position = vertices[i] * (float)scale + glm::vec3((float)x, (float)y, (float)z);
 
-            auto& info = collection->get<FluidSolver::ParticleInfo>(index);
+                        auto& info = collection->get<FluidSolver::ParticleInfo>(index);
 
-            info.type = mapped_colors[colors[i]];
+                        info.type = mapped_colors[colors[i]];
 
-            auto& data = collection->get<FluidSolver::ParticleData>(index);
-            data.density = 1.0f;
-            data.mass = 1.0f;
-            data.pressure = 0.0f;
+                        auto& data = collection->get<FluidSolver::ParticleData>(index);
+                        data.density = 1.0f;
+                        data.mass = 1.0f;
+                        data.pressure = 0.0f;
+                    }
+                }
+            }
         }
 
         // hide the window again

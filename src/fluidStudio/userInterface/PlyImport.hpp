@@ -30,6 +30,8 @@ namespace FluidUi
 
         std::string loaded_file;
 
+        int scale = 1;
+
         void load_colors_if_required();
 
         std::vector<glm::vec3> colors;
