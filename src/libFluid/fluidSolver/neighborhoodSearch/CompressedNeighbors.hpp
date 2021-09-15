@@ -171,6 +171,8 @@ namespace FluidSolver
         std::vector<GridCellToParticle> cell_to_particle_map;
 
         size_t get_particle_index_by_cell_index(size_t cell_index) const;
+
+        void find_neighbors_and_save_in_storage(const vec3& position, NeighborStorage& storage);
     };
 
 
