@@ -1302,9 +1302,9 @@ namespace FluidSolver
 
 
         // write to file
-        auto binary_data = nlohmann::json::to_msgpack(j);
         std::ofstream data(filepath, std::ios::out | std::ios::binary);
-        data.write(reinterpret_cast<const char*>(binary_data.data()), binary_data.size());
+        nlohmann::detail::output_adapter adapter(data);
+        nlohmann::json::to_msgpack(j, adapter);
     }
 
 
