@@ -1073,238 +1073,286 @@ namespace FluidSolver
 
     void SimulationSerializer::load_particles(ParticleCollection& collection, const std::string& filepath)
     {
-        // reading in file data
-        std::ifstream data(filepath, std::ios::in | std::ios::binary);
-        nlohmann::json j = nlohmann::json::from_msgpack(data);
+        // empty the collection
+        collection.clear();
 
-        // getting metadata
-        size_t count = j["count"];
-        collection.resize(count);
+        // set up paths for the current file
+        bool next_file_existing = true;
+        std::filesystem::path base_path = std::filesystem::path(filepath).parent_path();
+        std::filesystem::path current_filename = std::filesystem::path(filepath).filename();
 
-        // adding types if needed
-        if (j["data"].contains("movementData"))
+        while (next_file_existing)
         {
-            if (j["data"]["movementData"].size() != count)
+
+            // reading in file data
+            std::ifstream data((base_path / current_filename).string(), std::ios::in | std::ios::binary);
+            nlohmann::json j = nlohmann::json::from_msgpack(data);
+
+            // getting count data
+            size_t count = j["count"];
+            size_t collection_size_before = collection.size();
+            collection.resize(collection_size_before + count);
+
+            // checking for next file
+            next_file_existing = false;
+            if (j.contains("next-file"))
             {
-                Log::error("[LOADING] Particle data has insufficient movementData available!");
-            }
-            if (!collection.is_type_present<MovementData>())
-                collection.add_type<MovementData>();
-        }
-
-        if (j["data"].contains("movementData3D"))
-        {
-            if (j["data"]["movementData3D"].size() != count)
-            {
-                Log::error("[LOADING] Particle data has insufficient movementData3D available!");
-            }
-            if (!collection.is_type_present<MovementData3D>())
-                collection.add_type<MovementData3D>();
-        }
-
-        if (j["data"].contains("particleInfo"))
-        {
-            if (j["data"]["particleInfo"].size() != count)
-            {
-                Log::error("[LOADING] Particle data has insufficient particleInfo available!");
-            }
-            if (!collection.is_type_present<ParticleInfo>())
-                collection.add_type<ParticleInfo>();
-        }
-
-        if (j["data"].contains("particleData"))
-        {
-            if (j["data"]["particleData"].size() != count)
-            {
-                Log::error("[LOADING] Particle data has insufficient particleData available!");
-            }
-            if (!collection.is_type_present<ParticleData>())
-                collection.add_type<ParticleData>();
-        }
-
-        if (j["data"].contains("externalForces"))
-        {
-            if (j["data"]["externalForces"].size() != count)
-            {
-                Log::error("[LOADING] Particle data has insufficient externalForces available!");
-            }
-            if (!collection.is_type_present<ExternalForces>())
-                collection.add_type<ExternalForces>();
-        }
-
-        if (j["data"].contains("externalForces3D"))
-        {
-            if (j["data"]["externalForces3D"].size() != count)
-            {
-                Log::error("[LOADING] Particle data has insufficient externalForces3D available!");
-            }
-            if (!collection.is_type_present<ExternalForces3D>())
-                collection.add_type<ExternalForces3D>();
-        }
-
-
-        // load data from particles
-        for (size_t i = 0; i < collection.size(); i++)
-        {
-            if (collection.is_type_present<MovementData>())
-            {
-                auto& m = collection.get<MovementData>(i);
-
-                m.position.x = j["data"]["movementData"][i]["p"][0];
-                m.position.y = j["data"]["movementData"][i]["p"][1];
-                m.velocity.x = j["data"]["movementData"][i]["v"][0];
-                m.velocity.y = j["data"]["movementData"][i]["v"][1];
-                m.acceleration.x = j["data"]["movementData"][i]["a"][0];
-                m.acceleration.y = j["data"]["movementData"][i]["a"][1];
+                next_file_existing = true;
+                current_filename = std::filesystem::path(j["next-file"].get<std::string>());
             }
 
-            if (collection.is_type_present<MovementData3D>())
+
+            // adding types if needed
+            if (j["data"].contains("movementData"))
             {
-                auto& m = collection.get<MovementData3D>(i);
-                m.position.x = j["data"]["movementData3D"][i]["p"][0];
-                m.position.y = j["data"]["movementData3D"][i]["p"][1];
-                m.position.z = j["data"]["movementData3D"][i]["p"][2];
-                m.velocity.x = j["data"]["movementData3D"][i]["v"][0];
-                m.velocity.y = j["data"]["movementData3D"][i]["v"][1];
-                m.velocity.z = j["data"]["movementData3D"][i]["v"][2];
-                m.acceleration.x = j["data"]["movementData3D"][i]["a"][0];
-                m.acceleration.y = j["data"]["movementData3D"][i]["a"][1];
-                m.acceleration.z = j["data"]["movementData3D"][i]["a"][2];
+                if (j["data"]["movementData"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient movementData available!");
+                }
+                if (!collection.is_type_present<MovementData>())
+                    collection.add_type<MovementData>();
             }
 
-            if (collection.is_type_present<ParticleInfo>())
+            if (j["data"].contains("movementData3D"))
             {
-                auto& p = collection.get<ParticleInfo>(i);
-                p.tag = j["data"]["particleInfo"][i]["t"];
-                p.type = j["data"]["particleInfo"][i]["k"];
+                if (j["data"]["movementData3D"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient movementData3D available!");
+                }
+                if (!collection.is_type_present<MovementData3D>())
+                    collection.add_type<MovementData3D>();
             }
 
-            if (collection.is_type_present<ParticleData>())
+            if (j["data"].contains("particleInfo"))
             {
-                auto& d = collection.get<ParticleData>(i);
-                d.density = j["data"]["particleData"][i]["d"];
-                d.mass = j["data"]["particleData"][i]["m"];
-                d.pressure = j["data"]["particleData"][i]["p"];
+                if (j["data"]["particleInfo"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient particleInfo available!");
+                }
+                if (!collection.is_type_present<ParticleInfo>())
+                    collection.add_type<ParticleInfo>();
             }
 
-            if (collection.is_type_present<ExternalForces>())
+            if (j["data"].contains("particleData"))
             {
-                auto& e = collection.get<ExternalForces>(i);
-                e.non_pressure_acceleration.x = j["data"]["externalForces"][i]["n"][0];
-                e.non_pressure_acceleration.y = j["data"]["externalForces"][i]["n"][1];
+                if (j["data"]["particleData"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient particleData available!");
+                }
+                if (!collection.is_type_present<ParticleData>())
+                    collection.add_type<ParticleData>();
             }
 
-            if (collection.is_type_present<ExternalForces3D>())
+            if (j["data"].contains("externalForces"))
             {
-                auto& e = collection.get<ExternalForces3D>(i);
-                e.non_pressure_acceleration.x = j["data"]["externalForces3D"][i]["n"][0];
-                e.non_pressure_acceleration.y = j["data"]["externalForces3D"][i]["n"][1];
-                e.non_pressure_acceleration.z = j["data"]["externalForces3D"][i]["n"][2];
+                if (j["data"]["externalForces"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient externalForces available!");
+                }
+                if (!collection.is_type_present<ExternalForces>())
+                    collection.add_type<ExternalForces>();
+            }
+
+            if (j["data"].contains("externalForces3D"))
+            {
+                if (j["data"]["externalForces3D"].size() != count)
+                {
+                    Log::error("[LOADING] Particle data has insufficient externalForces3D available!");
+                }
+                if (!collection.is_type_present<ExternalForces3D>())
+                    collection.add_type<ExternalForces3D>();
+            }
+
+
+            // load data from particles
+            for (size_t i = 0; i < count; i++)
+            {
+                FLUID_ASSERT(i + collection_size_before < collection.size());
+
+                if (collection.is_type_present<MovementData>())
+                {
+                    auto& m = collection.get<MovementData>(i + collection_size_before);
+
+                    m.position.x = j["data"]["movementData"][i]["p"][0];
+                    m.position.y = j["data"]["movementData"][i]["p"][1];
+                    m.velocity.x = j["data"]["movementData"][i]["v"][0];
+                    m.velocity.y = j["data"]["movementData"][i]["v"][1];
+                    m.acceleration.x = j["data"]["movementData"][i]["a"][0];
+                    m.acceleration.y = j["data"]["movementData"][i]["a"][1];
+                }
+
+                if (collection.is_type_present<MovementData3D>())
+                {
+                    auto& m = collection.get<MovementData3D>(i + collection_size_before);
+                    m.position.x = j["data"]["movementData3D"][i]["p"][0];
+                    m.position.y = j["data"]["movementData3D"][i]["p"][1];
+                    m.position.z = j["data"]["movementData3D"][i]["p"][2];
+                    m.velocity.x = j["data"]["movementData3D"][i]["v"][0];
+                    m.velocity.y = j["data"]["movementData3D"][i]["v"][1];
+                    m.velocity.z = j["data"]["movementData3D"][i]["v"][2];
+                    m.acceleration.x = j["data"]["movementData3D"][i]["a"][0];
+                    m.acceleration.y = j["data"]["movementData3D"][i]["a"][1];
+                    m.acceleration.z = j["data"]["movementData3D"][i]["a"][2];
+                }
+
+                if (collection.is_type_present<ParticleInfo>())
+                {
+                    auto& p = collection.get<ParticleInfo>(i + collection_size_before);
+                    p.tag = j["data"]["particleInfo"][i]["t"];
+                    p.type = j["data"]["particleInfo"][i]["k"];
+                }
+
+                if (collection.is_type_present<ParticleData>())
+                {
+                    auto& d = collection.get<ParticleData>(i + collection_size_before);
+                    d.density = j["data"]["particleData"][i]["d"];
+                    d.mass = j["data"]["particleData"][i]["m"];
+                    d.pressure = j["data"]["particleData"][i]["p"];
+                }
+
+                if (collection.is_type_present<ExternalForces>())
+                {
+                    auto& e = collection.get<ExternalForces>(i + collection_size_before);
+                    e.non_pressure_acceleration.x = j["data"]["externalForces"][i]["n"][0];
+                    e.non_pressure_acceleration.y = j["data"]["externalForces"][i]["n"][1];
+                }
+
+                if (collection.is_type_present<ExternalForces3D>())
+                {
+                    auto& e = collection.get<ExternalForces3D>(i + collection_size_before);
+                    e.non_pressure_acceleration.x = j["data"]["externalForces3D"][i]["n"][0];
+                    e.non_pressure_acceleration.y = j["data"]["externalForces3D"][i]["n"][1];
+                    e.non_pressure_acceleration.z = j["data"]["externalForces3D"][i]["n"][2];
+                }
             }
         }
     }
 
     void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath)
     {
+        constexpr size_t MAX_PARTICLES_PER_FILE = 500000;
 
-        // create header information
-        nlohmann::json j;
-
-        j["type"] = "particle-data-file";
-        j["version"] = 1;
-
-        j["count"] = collection.size();
-        j["data"] = nlohmann::json::object();
-
-        // create all fields for the respective types
-        if (collection.is_type_present<MovementData>())
-        {
-            j["data"]["movementData"] = nlohmann::json::array();
-        }
-
-        if (collection.is_type_present<MovementData3D>())
-        {
-            j["data"]["movementData3D"] = nlohmann::json::array();
-        }
-
-        if (collection.is_type_present<ParticleInfo>())
-        {
-            j["data"]["particleInfo"] = nlohmann::json::array();
-        }
-
-        if (collection.is_type_present<ParticleData>())
-        {
-            j["data"]["particleData"] = nlohmann::json::array();
-        }
-
-        if (collection.is_type_present<ExternalForces>())
-        {
-            j["data"]["externalForces"] = nlohmann::json::array();
-        }
-
-        if (collection.is_type_present<ExternalForces3D>())
-        {
-            j["data"]["externalForces3D"] = nlohmann::json::array();
-        }
-
-
-        // write particle data
-        for (size_t i = 0; i < collection.size(); i++)
+        std::string current_filepath = filepath;
+        std::string next_filepath;
+        size_t file_counter = 0;
+        for (size_t counter = 0; counter < collection.size(); counter += MAX_PARTICLES_PER_FILE)
         {
 
+            // create header information
+            nlohmann::json j;
+
+            j["type"] = "particle-data-file";
+            j["version"] = 1;
+
+            j["count"] = std::min(collection.size() - counter, MAX_PARTICLES_PER_FILE);
+            j["data"] = nlohmann::json::object();
+
+            if (counter + MAX_PARTICLES_PER_FILE < collection.size())
+            {
+                // there will be a next file
+                file_counter++;
+                std::string next_filename =
+                    std::filesystem::path(filepath).filename().string() + "." + std::to_string(file_counter);
+
+                next_filepath = (std::filesystem::path(filepath).parent_path() / next_filename).string();
+
+                j["next-file"] = next_filename;
+            }
+
+            // create all fields for the respective types
             if (collection.is_type_present<MovementData>())
             {
-                auto& m = collection.get<MovementData>(i);
-                j["data"]["movementData"].push_back({
-                    {"p", {m.position.x, m.position.y}},
-                    {"v", {m.velocity.x, m.velocity.y}},
-                    {"a", {m.acceleration.x, m.acceleration.y}},
-                });
+                j["data"]["movementData"] = nlohmann::json::array();
             }
 
             if (collection.is_type_present<MovementData3D>())
             {
-                auto& m = collection.get<MovementData3D>(i);
-                j["data"]["movementData3D"].push_back({
-                    {"p", {m.position.x, m.position.y, m.position.z}},
-                    {"v", {m.velocity.x, m.velocity.y, m.velocity.z}},
-                    {"a", {m.acceleration.x, m.acceleration.y, m.acceleration.z}},
-                });
+                j["data"]["movementData3D"] = nlohmann::json::array();
             }
 
             if (collection.is_type_present<ParticleInfo>())
             {
-                auto& p = collection.get<ParticleInfo>(i);
-                j["data"]["particleInfo"].push_back({{"t", p.tag}, {"k", p.type}});
+                j["data"]["particleInfo"] = nlohmann::json::array();
             }
 
             if (collection.is_type_present<ParticleData>())
             {
-                auto& d = collection.get<ParticleData>(i);
-                j["data"]["particleData"].push_back({{"d", d.density}, {"m", d.mass}, {"p", d.pressure}});
+                j["data"]["particleData"] = nlohmann::json::array();
             }
 
             if (collection.is_type_present<ExternalForces>())
             {
-                auto& e = collection.get<ExternalForces>(i);
-                j["data"]["externalForces"].push_back(
-                    {{"n", {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y}}});
+                j["data"]["externalForces"] = nlohmann::json::array();
             }
 
             if (collection.is_type_present<ExternalForces3D>())
             {
-                auto& e = collection.get<ExternalForces3D>(i);
-                j["data"]["externalForces3D"].push_back(
-                    {{"n",
-                      {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y, e.non_pressure_acceleration.z}}});
+                j["data"]["externalForces3D"] = nlohmann::json::array();
             }
+
+
+            // write particle data
+            for (size_t i = counter; i < collection.size() && i < counter + MAX_PARTICLES_PER_FILE; i++)
+            {
+
+                if (collection.is_type_present<MovementData>())
+                {
+                    auto& m = collection.get<MovementData>(i);
+                    j["data"]["movementData"].push_back({
+                        {"p", {m.position.x, m.position.y}},
+                        {"v", {m.velocity.x, m.velocity.y}},
+                        {"a", {m.acceleration.x, m.acceleration.y}},
+                    });
+                }
+
+                if (collection.is_type_present<MovementData3D>())
+                {
+                    auto& m = collection.get<MovementData3D>(i);
+                    j["data"]["movementData3D"].push_back({
+                        {"p", {m.position.x, m.position.y, m.position.z}},
+                        {"v", {m.velocity.x, m.velocity.y, m.velocity.z}},
+                        {"a", {m.acceleration.x, m.acceleration.y, m.acceleration.z}},
+                    });
+                }
+
+                if (collection.is_type_present<ParticleInfo>())
+                {
+                    auto& p = collection.get<ParticleInfo>(i);
+                    j["data"]["particleInfo"].push_back({{"t", p.tag}, {"k", p.type}});
+                }
+
+                if (collection.is_type_present<ParticleData>())
+                {
+                    auto& d = collection.get<ParticleData>(i);
+                    j["data"]["particleData"].push_back({{"d", d.density}, {"m", d.mass}, {"p", d.pressure}});
+                }
+
+                if (collection.is_type_present<ExternalForces>())
+                {
+                    auto& e = collection.get<ExternalForces>(i);
+                    j["data"]["externalForces"].push_back(
+                        {{"n", {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y}}});
+                }
+
+                if (collection.is_type_present<ExternalForces3D>())
+                {
+                    auto& e = collection.get<ExternalForces3D>(i);
+                    j["data"]["externalForces3D"].push_back(
+                        {{"n",
+                          {e.non_pressure_acceleration.x, e.non_pressure_acceleration.y,
+                           e.non_pressure_acceleration.z}}});
+                }
+            }
+
+
+            // write to file
+            std::ofstream data(current_filepath, std::ios::out | std::ios::binary);
+            nlohmann::detail::output_adapter adapter(data);
+            nlohmann::json::to_msgpack(j, adapter);
+
+            // set new filepath
+            current_filepath = next_filepath;
         }
-
-
-        // write to file
-        std::ofstream data(filepath, std::ios::out | std::ios::binary);
-        nlohmann::detail::output_adapter adapter(data);
-        nlohmann::json::to_msgpack(j, adapter);
     }
 
 
