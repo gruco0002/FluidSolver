@@ -236,7 +236,9 @@ namespace FluidSolver::ParticleCollectionAlgorithm
                 if (low >= high)
                     return;
 
-                auto [p1, p2] = three_way_partition(low, high);
+                auto [p1_tmp, p2_tmp] = three_way_partition(low, high);
+                auto p1 = p1_tmp;
+                auto p2 = p2_tmp;
                 if constexpr (!calculate_parallellized)
                 {
 
