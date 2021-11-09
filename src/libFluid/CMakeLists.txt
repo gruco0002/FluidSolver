@@ -18,8 +18,6 @@ include_directories(./)
 
 set(LIB_FLUID_SOURCE_FILES       
         "fluidSolver/SESPHFluidSolver.hpp"
-        "FluidSolverException.cpp"
-        "FluidSolverException.hpp"
         "fluidSolver/kernel/CubicSplineKernel.cpp"
         "fluidSolver/kernel/CubicSplineKernel.hpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.cpp"
