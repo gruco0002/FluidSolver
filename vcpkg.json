@@ -29,6 +29,7 @@
             "platform": "linux | osx"
         },
         "nlohmann-json",
-        "tinyply"
+        "tinyply",
+        "lz4"
     ]
 }
