@@ -3,6 +3,7 @@ find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(fmt CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(lz4 CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
         # add tbb library for parallelization
@@ -97,6 +98,7 @@ target_link_libraries(libFluid PUBLIC Threads::Threads)
 target_link_libraries(libFluid PUBLIC fmt::fmt)
 target_link_libraries(libFluid PUBLIC yaml-cpp)
 target_link_libraries(libFluid PUBLIC nlohmann_json)
+target_link_libraries(libFluid PUBLIC lz4::lz4)
 
 if (UNIX OR APPLE)
         # add tbb library for parallelization to the link targets
