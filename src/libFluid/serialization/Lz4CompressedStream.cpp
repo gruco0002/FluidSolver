@@ -58,6 +58,7 @@ namespace FluidSolver {
         FLUID_ASSERT(this->decompression_context != nullptr);
 
         size_t to_copy = length;
+        size_t copied_so_far = 0;
         while (to_copy > 0) {
             if (read_decompressed_buffer.has_data()) {
                 // the buffer contains data -> copy it over to data
@@ -66,11 +67,12 @@ namespace FluidSolver {
                 size_t copied_amount = std::min(to_copy, read_decompressed_buffer.size());
 
                 // copy the data
-                std::memcpy(data, read_decompressed_buffer.data(), copied_amount);
+                std::memcpy(data + copied_so_far, read_decompressed_buffer.data(), copied_amount);
 
-                // increase the index and decrease the amount that is left to copy
+                // change the counters
                 read_decompressed_buffer.consume(copied_amount);
                 to_copy -= copied_amount;
+                copied_so_far += copied_amount;
             } else {
                 // the buffer is empty decompress the next batch
                 if (read_source_buffer.has_data()) {
@@ -78,10 +80,13 @@ namespace FluidSolver {
                     size_t destination_size = Buffer::max_size;
                     size_t source_size = read_source_buffer.size();
 
+                    LZ4F_decompressOptions_t options = {};
+                    options.stableDst = 0;
+
                     size_t result = LZ4F_decompress(this->decompression_context,
                             read_decompressed_buffer.new_data(), &destination_size,
                             read_source_buffer.data(), &source_size,
-                            nullptr);
+                            &options);
 
                     if (LZ4F_isError(result)) {
                         throw std::runtime_error("could not decompress data");
@@ -93,7 +98,9 @@ namespace FluidSolver {
 
                 } else {
                     // the source buffer is empty, read in more data
-                    size_t read_bytes = stream.readsome(read_source_buffer.new_data(), FluidSolver::Lz4CompressedStream::Buffer::max_size);
+                    stream.read(read_source_buffer.new_data(), FluidSolver::Lz4CompressedStream::Buffer::max_size);
+                    size_t read_bytes = stream.gcount();
+
                     if (read_bytes == 0) {
                         read_reached_eof = true;
                         return;
