@@ -66,6 +66,7 @@ namespace FluidSolver {
         void finalize_write();
 
         LZ4F_cctx* compression_context = nullptr;
+        std::vector<char> write_heap_buffer;
 
 
     };

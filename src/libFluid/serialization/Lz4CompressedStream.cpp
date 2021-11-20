@@ -30,27 +30,19 @@ namespace FluidSolver {
             return;
         }
 
-        // determine the maximum size of the compressed data
+        // determine the maximum size of the compressed data and allocated memory if required
         size_t compressed_data_max_size = LZ4F_compressBound(length, nullptr);
-
-        // determine if we use a buffer on the stack or need to allocate memory on the heap
-        constexpr size_t max_stackbuffer_size = 8192;
-        char stack_buffer[max_stackbuffer_size];
-        std::vector<char> heap_buffer(0);
-
-        char* destination = stack_buffer;
-        if (compressed_data_max_size > max_stackbuffer_size) {
-            heap_buffer.resize(compressed_data_max_size);
-            destination = heap_buffer.data();
+        if (compressed_data_max_size > write_heap_buffer.size()) {
+            write_heap_buffer.resize(compressed_data_max_size);
         }
 
         // compress the data
-        size_t compressed_data_size = LZ4F_compressUpdate(this->compression_context, destination, compressed_data_max_size, data, length, nullptr);
+        size_t compressed_data_size = LZ4F_compressUpdate(this->compression_context, write_heap_buffer.data(), compressed_data_max_size, data, length, nullptr);
         if (LZ4F_isError(compressed_data_size)) {
             throw std::runtime_error("compression failed");
         } else if (compressed_data_size > 0) {
             // there was data written out
-            stream.write(destination, compressed_data_size);
+            stream.write(write_heap_buffer.data(), compressed_data_size);
         }
     }
 
