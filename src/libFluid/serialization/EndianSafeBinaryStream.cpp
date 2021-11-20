@@ -4,119 +4,78 @@
 #include <exception>
 #include <stdexcept>
 
-namespace EndianSwapper {
-    class SwapByteBase {
-      public:
-        static bool is_system_little_endian(){
-            static const uint16_t swap_test = 1;
-            return (*((char*)&swap_test) == 1);
-        }
-
-        static bool should_swap() {
-            // since most systems are little endian, we only want to swap
-            // if the system is big endian. This avoids unnecessary
-            // computational overhead on most common systems.
-            return !is_system_little_endian();
-        }
-
-        static void swap_bytes(uint8_t& v_1, uint8_t& v_2) {
-            uint8_t tmp = v_1;
-            v_1 = v_2;
-            v_2 = tmp;
-        }
-    };
-
-    template<class T, int S>
-    class SwapByte : public SwapByteBase {
-      public:
-        static T swap(T v) {
-            // TODO: prevent this template instantiation from being usable
-            return v;
-        }
-    };
-
-    template<class T>
-    class SwapByte<T, 1> : public SwapByteBase {
-      public:
-        static T swap(T v) {
-            return v;
-        }
-    };
-
-    template<class T>
-    class SwapByte<T, 2> : public SwapByteBase {
-      public:
-        static T swap(T v) {
-            if (should_swap())
-                return ((uint16_t)v >> 8) | ((uint16_t)v << 8);
-            return v;
-        }
-    };
-
-    template<class T>
-    class SwapByte<T, 4> : public SwapByteBase {
-      public:
-        static T swap(T v) {
-            if (should_swap()) {
-                return (SwapByte<uint16_t, 2>::swap((uint32_t)v & 0xffff) << 16) | (SwapByte<uint16_t, 2>::swap(((uint32_t)v & 0xffff0000) >> 16));
-            }
-            return v;
-        }
-    };
-
-    template<class T>
-    class SwapByte<T, 8> : public SwapByteBase {
-      public:
-        static T swap(T v) {
-            if (should_swap())
-                return (((uint64_t)SwapByte<uint32_t, 4>::swap((uint32_t)(v & 0xffffffffull))) << 32) | (SwapByte<uint32_t, 4>::swap((uint32_t)(v >> 32)));
-            return v;
-        }
-    };
-
-    template<>
-    class SwapByte<float, 4> : public SwapByteBase {
-      public:
-        static float swap(float v) {
-            // usage can be dangerous because of NaN values:
-            // it is recommended to not use this function
-            union {
-                float f;
-                uint8_t c[4] = {};
-            };
-            f = v;
-            if (should_swap()) {
-                swap_bytes(c[0], c[3]);
-                swap_bytes(c[1], c[2]);
-            }
-            return f;
-        }
-    };
-
-    template<>
-    class SwapByte<double, 8> : public SwapByteBase {
-      public:
-        static double swap(double v) {
-            // usage can be dangerous because of NaN values:
-            // it is recommended to not use this function
-            union {
-                double f;
-                uint8_t c[8]= {};
-            };
-            f = v;
-            if (should_swap()) {
-                swap_bytes(c[0], c[7]);
-                swap_bytes(c[1], c[6]);
-                swap_bytes(c[2], c[5]);
-                swap_bytes(c[3], c[4]);
-            }
-            return f;
-        }
-    };
-} // namespace EndianSwapper
-
-
 namespace FluidSolver {
+
+    namespace EndianSwapper {
+        class SwapByteBase {
+          public:
+            static bool is_system_little_endian() {
+                static const uint16_t swap_test = 1;
+                return (*((char*)&swap_test) == 1);
+            }
+
+            static bool should_swap() {
+                // since most systems are little endian, we only want to swap
+                // if the system is big endian. This avoids unnecessary
+                // computational overhead on most common systems.
+                return !is_system_little_endian();
+            }
+
+            static void swap_bytes(uint8_t& v_1, uint8_t& v_2) {
+                uint8_t tmp = v_1;
+                v_1 = v_2;
+                v_2 = tmp;
+            }
+        };
+
+        template<class T, int S>
+        class SwapByte : public SwapByteBase {
+          public:
+            static T swap(T v) {
+                return v;
+            }
+        };
+
+        template<class T>
+        class SwapByte<T, 1> : public SwapByteBase {
+          public:
+            static T swap(T v) {
+                return v;
+            }
+        };
+
+        template<class T>
+        class SwapByte<T, 2> : public SwapByteBase {
+          public:
+            static T swap(T v) {
+                if (should_swap())
+                    return ((uint16_t)v >> 8) | ((uint16_t)v << 8);
+                return v;
+            }
+        };
+
+        template<class T>
+        class SwapByte<T, 4> : public SwapByteBase {
+          public:
+            static T swap(T v) {
+                if (should_swap()) {
+                    return (SwapByte<uint16_t, 2>::swap((uint32_t)v & 0xffff) << 16) | (SwapByte<uint16_t, 2>::swap(((uint32_t)v & 0xffff0000) >> 16));
+                }
+                return v;
+            }
+        };
+
+        template<class T>
+        class SwapByte<T, 8> : public SwapByteBase {
+          public:
+            static T swap(T v) {
+                if (should_swap())
+                    return (((uint64_t)SwapByte<uint32_t, 4>::swap((uint32_t)(v & 0xffffffffull))) << 32) | (SwapByte<uint32_t, 4>::swap((uint32_t)(v >> 32)));
+                return v;
+            }
+        };
+
+    } // namespace EndianSwapper
 
     EndianSafeBinaryStream::EndianSafeBinaryStream(const std::filesystem::path& filepath, std::ios_base::openmode mode)
         : stream(filepath, mode | std::ios_base::binary) {
@@ -150,12 +109,12 @@ namespace FluidSolver {
 
     template<typename type>
     void deserialize_for_floating_point(std::fstream& stream, type& v) {
-        // Special serializer for floating point values, can't directly swap on floating point variable
-        // because it might cause a NaN and the wrong value is read back (the problem occurs on visual studio)
+        // Custom deserializer for floating point values since converting a "swapped"
+        // value back to a floating point type could cause NaN's and other problems.
 
         union {
             type f;
-            uint8_t c[sizeof(type)]= {};
+            uint8_t c[sizeof(type)] = {};
         };
         stream.read((char*)&c[0], sizeof(type));
         if (!stream) {
@@ -170,12 +129,12 @@ namespace FluidSolver {
 
     template<typename type>
     void serialize_for_floating_point(std::fstream& stream, const type& v) {
-        // Special serializer for floating point values, can't directly swap on floating point variable
-        // because it might cause a NaN and the wrong value is read back (the problem occurs on visual studio)
+        // Custom serializer for floating point values since converting a "swapped"
+        // value back to a floating point type could cause NaN's and other problems.
 
         union {
             type f;
-            uint8_t c[sizeof(type)]= {};
+            uint8_t c[sizeof(type)] = {};
         };
         f = v;
         if (EndianSwapper::SwapByteBase::should_swap()) {
@@ -184,7 +143,6 @@ namespace FluidSolver {
         }
         stream.write((const char*)&c[0], sizeof(type));
     }
-
 
     EndianSafeBinaryStream& EndianSafeBinaryStream::operator<<(const bool& v) {
         serialize_for_integers(stream, v ? (uint8_t)1 : (uint8_t)0);
@@ -305,6 +263,4 @@ namespace FluidSolver {
         }
         return *this;
     }
-
-
 } // namespace FluidSolver

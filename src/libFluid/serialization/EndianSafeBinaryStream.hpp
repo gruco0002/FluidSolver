@@ -8,8 +8,6 @@
     #include <string>
     #include <vector>
 #endif
-
-
 namespace FluidSolver {
 
     template<typename T>
@@ -20,18 +18,13 @@ namespace FluidSolver {
      * as little-endian encoded to a file independent of the current system / compiler.
      * It can be expanded via explicit template instantiation of the
      * EndianSafeBinaryStreamExtension struct.
-     *
-     * This class is inspired by https://github.com/voidah/archive
      */
     class EndianSafeBinaryStream {
-
-
       public:
         explicit EndianSafeBinaryStream(const std::filesystem::path& filepath, std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out);
 
         static EndianSafeBinaryStream input(const std::filesystem::path& filepath);
         static EndianSafeBinaryStream output(const std::filesystem::path& filepath);
-
 
         EndianSafeBinaryStream& operator<<(const bool& v);
         EndianSafeBinaryStream& operator>>(bool& v);
@@ -87,9 +80,8 @@ namespace FluidSolver {
         static constexpr size_t array_buffer_size = 4096;
     };
 
-
 // Default extensions following, you do not need to use them,
-// just remove the defined macro from the top of this file
+// just remove the define macro from the top of this file
 #ifdef ENDIAN_SAFE_BINARY_STREAM_DEFAULT_EXTENSIONS
 
     template<>
