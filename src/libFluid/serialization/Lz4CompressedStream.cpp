@@ -1,6 +1,6 @@
 #include "Lz4CompressedStream.hpp"
-#include <FluidAssert.hpp>
-
+#include "FluidAssert.hpp"
+#include <lz4frame.h>
 
 namespace FluidSolver {
 
@@ -37,7 +37,7 @@ namespace FluidSolver {
         }
 
         // compress the data
-        size_t compressed_data_size = LZ4F_compressUpdate(this->compression_context, write_heap_buffer.data(), compressed_data_max_size, data, length, nullptr);
+        size_t compressed_data_size = LZ4F_compressUpdate(reinterpret_cast<LZ4F_cctx*>(this->compression_context), write_heap_buffer.data(), compressed_data_max_size, data, length, nullptr);
         if (LZ4F_isError(compressed_data_size)) {
             throw std::runtime_error("compression failed");
         } else if (compressed_data_size > 0) {
@@ -75,7 +75,7 @@ namespace FluidSolver {
                     LZ4F_decompressOptions_t options = {};
                     options.stableDst = 0;
 
-                    size_t result = LZ4F_decompress(this->decompression_context,
+                    size_t result = LZ4F_decompress(reinterpret_cast<LZ4F_dctx*>(this->decompression_context),
                             read_decompressed_buffer.new_data(), &destination_size,
                             read_source_buffer.data(), &source_size,
                             &options);
@@ -129,13 +129,13 @@ namespace FluidSolver {
         }
     }
     void Lz4CompressedStream::initialize_read() {
-        LZ4F_errorCode_t error_code = LZ4F_createDecompressionContext(&this->decompression_context, LZ4F_getVersion());
+        LZ4F_errorCode_t error_code = LZ4F_createDecompressionContext(reinterpret_cast<LZ4F_dctx**>(&this->decompression_context), LZ4F_getVersion());
         if (LZ4F_isError(error_code)) {
             throw std::runtime_error("could not create decompression context");
         }
     }
     void Lz4CompressedStream::finalize_read() {
-        LZ4F_errorCode_t error_code = LZ4F_freeDecompressionContext(this->decompression_context);
+        LZ4F_errorCode_t error_code = LZ4F_freeDecompressionContext(reinterpret_cast<LZ4F_dctx*>(this->decompression_context));
         this->decompression_context = nullptr;
         if (LZ4F_isError(error_code)) {
             throw std::runtime_error("could not free decompression context");
@@ -144,14 +144,14 @@ namespace FluidSolver {
 
     void Lz4CompressedStream::initialize_write() {
         // create the context
-        LZ4F_errorCode_t error_code = LZ4F_createCompressionContext(&this->compression_context, LZ4F_getVersion());
+        LZ4F_errorCode_t error_code = LZ4F_createCompressionContext(reinterpret_cast<LZ4F_cctx**>(&this->compression_context), LZ4F_getVersion());
         if (LZ4F_isError(error_code)) {
             throw std::runtime_error("could not create compression context");
         }
 
         // write the begin header
         char header_data[LZ4F_HEADER_SIZE_MAX] = {};
-        size_t header_size = LZ4F_compressBegin(this->compression_context,
+        size_t header_size = LZ4F_compressBegin(reinterpret_cast<LZ4F_cctx*>(this->compression_context),
                 header_data, LZ4F_HEADER_SIZE_MAX,
                 nullptr);
 
@@ -170,7 +170,7 @@ namespace FluidSolver {
 
         // create the end
         std::vector<char> end_data(max_size);
-        size_t end_size = LZ4F_compressEnd(this->compression_context, end_data.data(), end_data.size(), nullptr);
+        size_t end_size = LZ4F_compressEnd(reinterpret_cast<LZ4F_cctx*>(this->compression_context), end_data.data(), end_data.size(), nullptr);
         if (LZ4F_isError(end_size)) {
             throw std::runtime_error("could not end compression");
         }
@@ -179,7 +179,7 @@ namespace FluidSolver {
         stream.write(end_data.data(), end_size);
 
         // free the context
-        LZ4F_errorCode_t error_code = LZ4F_freeCompressionContext(this->compression_context);
+        LZ4F_errorCode_t error_code = LZ4F_freeCompressionContext(reinterpret_cast<LZ4F_cctx*>(this->compression_context));
         this->compression_context = nullptr;
         if (LZ4F_isError(error_code)) {
             throw std::runtime_error("could not free compression context");
@@ -187,6 +187,20 @@ namespace FluidSolver {
     }
     bool Lz4CompressedStream::operator!() const {
         return this->read_reached_eof;
+    }
+    Lz4CompressedStream::Lz4CompressedStream(Lz4CompressedStream&& other) {
+        this->stream = std::move(other.stream);
+        this->compression_context = other.compression_context;
+        other.compression_context = nullptr;
+        this->read_decompressed_buffer = other.read_decompressed_buffer;
+        this->read_source_buffer = other.read_source_buffer;
+        this->decompression_context = other.decompression_context;
+        other.decompression_context = nullptr;
+        this->access_mode = other.access_mode;
+        this->write_heap_buffer = std::move(other.write_heap_buffer);
+        this->read_reached_eof = other.read_reached_eof;
+        this->is_finalized = other.is_finalized;
+        other.is_finalized = true;
     }
 
     bool Lz4CompressedStream::Buffer::has_data() const {
@@ -208,6 +222,20 @@ namespace FluidSolver {
     }
     char* Lz4CompressedStream::Buffer::new_data() {
         return current_data;
+    }
+
+    Lz4CompressedStream::Buffer::Buffer(const Lz4CompressedStream::Buffer& other) {
+        this->current_index = other.current_index;
+        this->current_size = other.current_size;
+        std::memcpy(this->current_data, other.current_data, max_size);
+    }
+    Lz4CompressedStream::Buffer& Lz4CompressedStream::Buffer::operator=(const Lz4CompressedStream::Buffer& other) {
+        if (this != &other) {
+            this->current_index = other.current_index;
+            this->current_size = other.current_size;
+            std::memcpy(this->current_data, other.current_data, max_size);
+        }
+        return *this;
     }
 
 } // namespace FluidSolver

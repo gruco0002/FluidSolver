@@ -1,7 +1,6 @@
 #pragma once
 
 #include <fstream>
-#include <lz4frame.h>
 #include <vector>
 
 namespace FluidSolver {
@@ -19,6 +18,8 @@ namespace FluidSolver {
         bool operator!() const;
 
         ~Lz4CompressedStream();
+
+        Lz4CompressedStream(Lz4CompressedStream&&);
 
       private:
         enum class AccessMode {
@@ -38,7 +39,7 @@ namespace FluidSolver {
         void initialize_read();
         void finalize_read();
 
-        LZ4F_dctx* decompression_context = nullptr;
+        void* decompression_context = nullptr;
         struct Buffer {
             constexpr static size_t max_size = 16384;
 
@@ -50,8 +51,14 @@ namespace FluidSolver {
             void set_new_size(size_t new_size);
             char* new_data();
 
+            Buffer() =default;
+            Buffer(const Buffer&);
+            Buffer& operator=(const Buffer&);
+            Buffer(Buffer&&) = delete;
+
+
           private:
-            char current_data[max_size] ={};
+            char current_data[max_size] = {};
             size_t current_size = 0;
             size_t current_index = 0;
         };
@@ -65,10 +72,8 @@ namespace FluidSolver {
         void initialize_write();
         void finalize_write();
 
-        LZ4F_cctx* compression_context = nullptr;
+        void* compression_context = nullptr;
         std::vector<char> write_heap_buffer;
-
-
     };
 
 } // namespace FluidSolver
