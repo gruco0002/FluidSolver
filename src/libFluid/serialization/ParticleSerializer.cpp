@@ -2,15 +2,18 @@
 
 #include <utility>
 
-namespace FluidSolver {
 
+namespace esbs {
     template<>
     struct EndianSafeBinaryStreamExtension<glm::vec2> {
-        static EndianSafeBinaryStream& serialize(EndianSafeBinaryStream& stream, const glm::vec2& v) {
+        template<typename Stream>
+        static EndianSafeBinaryStream<Stream>& serialize(EndianSafeBinaryStream<Stream>& stream, const glm::vec2& v) {
             stream << v.x << v.y;
             return stream;
         }
-        static EndianSafeBinaryStream& deserialize(EndianSafeBinaryStream& stream, glm::vec2& v) {
+
+        template<typename Stream>
+        static EndianSafeBinaryStream<Stream>& deserialize(EndianSafeBinaryStream<Stream>& stream, glm::vec2& v) {
             stream >> v.x >> v.y;
             return stream;
         }
@@ -18,23 +21,25 @@ namespace FluidSolver {
 
     template<>
     struct EndianSafeBinaryStreamExtension<glm::vec3> {
-        static EndianSafeBinaryStream& serialize(EndianSafeBinaryStream& stream, const glm::vec3& v) {
+        template<typename Stream>
+        static EndianSafeBinaryStream<Stream>& serialize(EndianSafeBinaryStream<Stream>& stream, const glm::vec3& v) {
             stream << v.x << v.y << v.z;
             return stream;
         }
-        static EndianSafeBinaryStream& deserialize(EndianSafeBinaryStream& stream, glm::vec3& v) {
+
+        template<typename Stream>
+        static EndianSafeBinaryStream<Stream>& deserialize(EndianSafeBinaryStream<Stream>& stream, glm::vec3& v) {
             stream >> v.x >> v.y >> v.z;
             return stream;
         }
     };
-
-} // namespace FluidSolver
+} // namespace esbs
 
 
 namespace FluidSolver {
 
     void FluidSolver::ParticleSerializer::serialize(ParticleCollection& collection) {
-        EndianSafeBinaryStream stream(filepath, std::ios_base::out);
+        esbs::EndianSafeBinaryStream<Lz4CompressedStream> stream(std::move(Lz4CompressedStream::output(filepath)));
 
         // version code
         stream << (uint32_t)1;
@@ -82,7 +87,7 @@ namespace FluidSolver {
     }
 
     void ParticleSerializer::deserialize(ParticleCollection& collection) {
-        EndianSafeBinaryStream stream(filepath, std::ios_base::in);
+        esbs::EndianSafeBinaryStream<Lz4CompressedStream> stream(std::move(Lz4CompressedStream::input(filepath)));
 
         // version code
         uint32_t version;
@@ -157,7 +162,7 @@ namespace FluidSolver {
         }
         return result;
     }
-    void ParticleSerializer::write_component_ids(EndianSafeBinaryStream& stream, ParticleCollection& collection) {
+    void ParticleSerializer::write_component_ids(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream, ParticleCollection& collection) {
         if (collection.is_type_present<MovementData>()) {
             stream << (uint32_t)1;
         }
@@ -215,7 +220,7 @@ namespace FluidSolver {
             }
         }
     }
-    ParticleSerializer::AvailableComponents ParticleSerializer::read_available_components(EndianSafeBinaryStream& stream) {
+    ParticleSerializer::AvailableComponents ParticleSerializer::read_available_components(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream) {
         AvailableComponents result;
 
         // read number of components

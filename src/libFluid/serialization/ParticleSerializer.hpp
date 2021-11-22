@@ -2,6 +2,7 @@
 
 #include "fluidSolver/ParticleCollection.hpp"
 #include "serialization/EndianSafeBinaryStream.hpp"
+#include "serialization/Lz4CompressedStream.hpp"
 
 #include <filesystem>
 
@@ -27,9 +28,9 @@ namespace FluidSolver {
         std::filesystem::path filepath;
 
         size_t get_amount_of_components(ParticleCollection& collection);
-        void write_component_ids(EndianSafeBinaryStream& stream, ParticleCollection& collection);
+        void write_component_ids(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream, ParticleCollection& collection);
 
-        AvailableComponents read_available_components(EndianSafeBinaryStream& stream);
+        AvailableComponents read_available_components(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream);
         void add_components_if_required(const AvailableComponents& available_components, ParticleCollection& collection);
     };
 
