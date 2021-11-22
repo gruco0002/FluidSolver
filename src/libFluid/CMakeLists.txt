@@ -86,7 +86,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         "sensors/CompressedNeighborsStatistics.hpp" "sensors/CompressedNeighborsStatistics.cpp"
         "serialization/ParticleSerializer.cpp" "serialization/ParticleSerializer.hpp"
-        "serialization/EndianSafeBinaryStream.cpp" "serialization/EndianSafeBinaryStream.hpp"
+        "serialization/EndianSafeBinaryStream.hpp"
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
         )
 
