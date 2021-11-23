@@ -3,9 +3,10 @@
 #include <filesystem>
 
 namespace FluidStudio {
-    std::string DirectoryHelper::s_studio_directory = "";
-    std::string DirectoryHelper::s_config_file = "";
-    std::string DirectoryHelper::s_imgui_config_file = "";
+
+    std::string DirectoryHelper::s_studio_directory;
+    std::string DirectoryHelper::s_config_file;
+    std::string DirectoryHelper::s_imgui_config_file;
     bool DirectoryHelper::loaded = false;
 
     const char* DirectoryHelper::studio_directory() {
