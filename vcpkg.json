@@ -28,7 +28,6 @@
             "name": "tbb",
             "platform": "linux | osx"
         },
-        "nlohmann-json",
         "tinyply",
         "lz4"
     ]
