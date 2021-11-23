@@ -1,6 +1,7 @@
 #include "ImguiHelper.hpp"
 
 #include "font/RobotoMedium.cpp"
+#include "DirectoryHelper.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -14,6 +15,7 @@ void ImGuiHelper::Init(GLFWwindow* window)
 
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.IniFilename = FluidStudio::DirectoryHelper::imgui_config_file();
 
     // taking high-dpi displays into account
     float scaleX, scaleY;
