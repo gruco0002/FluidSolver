@@ -30,6 +30,8 @@ In the core part `libFluid`:
 - [yaml-cpp](https://github.com/jbeder/yaml-cpp)
 - [stb](https://github.com/nothings/stb)
 - [GLM](https://glm.g-truc.net/)
+- [lz4](https://github.com/lz4/lz4)
+- [EndianSafeBinaryStream](https://github.com/gruco0002/EndianSafeBinaryStream)
 
 For the ui version `FluidStudio`:
 - [GLAD](https://github.com/Dav1dde/glad)
