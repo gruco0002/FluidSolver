@@ -90,7 +90,7 @@ namespace FluidSolver
         }
 
       public:
-        virtual void execute_simulation_step(pFloat timestep) override
+        virtual void execute_simulation_step(Timepoint &timestep) override
         {
             FLUID_ASSERT(collection != nullptr)
             FLUID_ASSERT(collection->is_type_present<MovementData3D>());
@@ -102,10 +102,10 @@ namespace FluidSolver
             FLUID_ASSERT(settings.max_number_of_iterations >= settings.min_number_of_iterations);
             FLUID_ASSERT(settings.max_density_error_allowed > 0.0f);
 
-            FLUID_ASSERT(timestep > 0.0f);
+            FLUID_ASSERT(timestep.desired_time_step > 0.0f);
 
             // set the current timestep
-            current_timestep = timestep;
+            current_timestep = timestep.desired_time_step;
 
             // find neighbors for all particles
             FLUID_ASSERT(neighborhood_search.collection == collection);
@@ -479,6 +479,7 @@ namespace FluidSolver
             }
 
             // integrate particle movement
+            // FIXME: adapt timestep if required
             parallel::loop_for(0, collection->size(), [&](size_t i) {
                 // update velocity and position of all particles
 

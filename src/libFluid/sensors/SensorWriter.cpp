@@ -232,8 +232,10 @@ void FluidSolver::SensorWriter::push_back(const FluidSolver::Timepoint& value)
     next_value();
 
     add_seperator_if_required();
-    stream << value.current_time_step;
+    stream << value.actual_time_step;
     next_value();
+
+    // TODO: maybe also write the desired timestep size out to the sensor writer
 }
 
 void FluidSolver::SensorWriter::next()

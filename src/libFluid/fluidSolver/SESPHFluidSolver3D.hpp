@@ -22,7 +22,7 @@ namespace FluidSolver
 
         NeighborhoodSearch neighborhood_search;
 
-        void execute_simulation_step(pFloat timestep) override;
+        void execute_simulation_step(Timepoint& timestep) override;
 
         void initialize() override;
 
@@ -50,7 +50,7 @@ namespace FluidSolver
 
 
     template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(pFloat timestep)
+    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep)
     {
         FLUID_ASSERT(collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
@@ -58,8 +58,8 @@ namespace FluidSolver
         FLUID_ASSERT(collection->is_type_present<ExternalForces3D>());
 
 
-        FLUID_ASSERT(timestep > 0.0f);
-        current_timestep = timestep;
+        FLUID_ASSERT(timestep.desired_time_step > 0.0f);
+        current_timestep = timestep.desired_time_step;
 
         // find neighbors for all particles
         FLUID_ASSERT(neighborhood_search.collection == collection);
@@ -114,6 +114,7 @@ namespace FluidSolver
             }
 
             // integrate using euler cromer
+            // FIXME: adapt timestep if required
             auto& mv = collection->get<MovementData3D>(i);
             mv.velocity = mv.velocity + current_timestep * mv.acceleration;
             mv.position = mv.position + current_timestep * mv.velocity;

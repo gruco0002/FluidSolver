@@ -1,10 +1,10 @@
-#ifndef FLUIDSOLVER_IFLUIDSOLVER_HPP
-#define FLUIDSOLVER_IFLUIDSOLVER_HPP
+#pragma once
 
 #include "ParticleCollection.hpp"
 #include "Compatibility.hpp"
 #include "FluidInclude.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "timestep/ITimestep.hpp"
 
 #include <memory>
 
@@ -20,7 +20,7 @@ namespace FluidSolver
             pFloat particle_size = 1.0f;
         } parameters;
 
-        virtual void execute_simulation_step(pFloat timestep) = 0;
+        virtual void execute_simulation_step(Timepoint &timestep) = 0;
 
         virtual void initialize() = 0;
 
@@ -82,4 +82,3 @@ namespace FluidSolver
 
 
 } // namespace FluidSolver
-#endif // FLUIDSOLVER_IFLUIDSOLVER_HPP

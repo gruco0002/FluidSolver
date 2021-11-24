@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_IISPHFLUIDSOLVER_HPP
-#define FLUIDSOLVER_IISPHFLUIDSOLVER_HPP
+#pragma once
 
 #include <fluidSolver/IFluidSolver.hpp>
 #include <fluidSolver/kernel/CubicSplineKernel.hpp>
@@ -42,7 +41,7 @@ namespace FluidSolver
 
         void initialize() override;
 
-        void execute_simulation_step(pFloat timestep) override;
+        void execute_simulation_step(Timepoint &timestep) override;
 
         NeighborhoodInterface create_neighborhood_interface() override;
 
@@ -135,7 +134,7 @@ namespace FluidSolver
     }
 
     template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(pFloat timestep)
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep)
     {
         FLUID_ASSERT(collection != nullptr)
         FLUID_ASSERT(collection->is_type_present<MovementData>());
@@ -147,8 +146,8 @@ namespace FluidSolver
         FLUID_ASSERT(settings.MaxNumberOfIterations >= settings.MinNumberOfIterations);
         FLUID_ASSERT(settings.MaxDensityErrorAllowed > 0.0f);
 
-        FLUID_ASSERT(timestep > 0.0f);
-        current_timestep = timestep;
+        FLUID_ASSERT(timestep.desired_time_step > 0.0f);
+        current_timestep = timestep.desired_time_step;
 
 
         // find neighbors for all particles
@@ -182,6 +181,7 @@ namespace FluidSolver
         ComputePressure();
 
         // update velocity and position of all particles
+        // FIXME: adapt timestep if required
         parallel::loop_for(0, collection->size(), [&](pIndex_t i) { IntegrateParticle(i); });
     }
 
@@ -576,6 +576,3 @@ namespace FluidSolver
         collection.add_type<IISPHParticleData>();
     }
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_IISPHFLUIDSOLVER_HPP

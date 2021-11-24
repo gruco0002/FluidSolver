@@ -34,23 +34,26 @@ void FluidSolver::Simulation::execute_simulation_step()
 
 
     // calculate timestep
-    internal_parameters.timestep->calculate_current_timestep();
-    float current_timestep = internal_parameters.timestep->get_current_timestep();
-    timepoint.system_time = std::chrono::system_clock::now();
-    timepoint.current_time_step = current_timestep;
-
+    {
+        internal_parameters.timestep->calculate_current_timestep();
+        float current_timestep = internal_parameters.timestep->get_current_timestep();
+        timepoint.system_time = std::chrono::system_clock::now();
+        timepoint.desired_time_step= current_timestep;
+        timepoint.actual_time_step = current_timestep;
+    }
 
     // simulate
-    internal_parameters.fluid_solver->execute_simulation_step(current_timestep);
+    internal_parameters.fluid_solver->execute_simulation_step(timepoint);
 
     // simulate entities
     for (auto ent : internal_parameters.entities)
     {
-        ent->execute_simulation_step(current_timestep);
+        // TODO: improve entity time step is fixed
+        ent->execute_simulation_step(timepoint.actual_time_step);
     }
 
     // update simulation time
-    timepoint.simulation_time += current_timestep;
+    timepoint.simulation_time += timepoint.actual_time_step;
     timepoint.timestep_number++;
 
     // measure sensor data

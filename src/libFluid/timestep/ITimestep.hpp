@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_ITIMESTEP_HPP
-#define FLUIDSOLVER_ITIMESTEP_HPP
+#pragma once
 
 #include "Compatibility.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
@@ -15,7 +14,9 @@ namespace FluidSolver
         size_t timestep_number = 0;
         std::chrono::time_point<std::chrono::system_clock> system_time = {};
         float simulation_time = 0;
-        float current_time_step = 0;
+
+        float desired_time_step = 0;
+        float actual_time_step = 0;
     };
 
     class ITimestep {
@@ -39,6 +40,3 @@ namespace FluidSolver
         virtual Compatibility check() = 0;
     };
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_ITIMESTEP_HPP
