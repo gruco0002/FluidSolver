@@ -87,6 +87,7 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/ParticleSerializer.cpp" "serialization/ParticleSerializer.hpp"
         "serialization/EndianSafeBinaryStream.hpp"
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
+        "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         )
 
 
