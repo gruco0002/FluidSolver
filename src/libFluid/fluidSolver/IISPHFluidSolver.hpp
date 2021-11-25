@@ -127,6 +127,10 @@ namespace FluidSolver
             c.add_issue({"IISPHFluidSolver", "MaxDensityErrorAllowed is smaller or equal to zero."});
         }
 
+        if(parameters.timestep_generator == nullptr){
+            c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
+        }
+
         c.add_compatibility(neighborhood_search.check());
         c.add_compatibility(kernel.check());
 
@@ -147,6 +151,9 @@ namespace FluidSolver
         FLUID_ASSERT(settings.MaxDensityErrorAllowed > 0.0f);
 
         FLUID_ASSERT(timestep.desired_time_step > 0.0f);
+
+        FLUID_ASSERT(parameters.timestep_generator != nullptr);
+
         current_timestep = timestep.desired_time_step;
 
 

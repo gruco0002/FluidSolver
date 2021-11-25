@@ -81,6 +81,7 @@ void FluidSolver::Simulation::initialize()
         internal_parameters.fluid_solver->parameters.particle_size = parameters.particle_size;
         internal_parameters.fluid_solver->parameters.rest_density = parameters.rest_density;
         internal_parameters.fluid_solver->parameters.gravity = parameters.gravity;
+        internal_parameters.fluid_solver->parameters.timestep_generator = parameters.timestep;
         internal_parameters.fluid_solver->collection = parameters.collection;
         internal_parameters.fluid_solver->initialize();
 

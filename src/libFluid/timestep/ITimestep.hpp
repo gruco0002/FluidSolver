@@ -18,7 +18,6 @@ namespace FluidSolver
         float desired_time_step = 0;
         float actual_time_step = 0;
 
-        static float get_non_cfl_validating_timestep(float max_velocity, float particle_size);
     };
 
     class ITimestep {
@@ -36,6 +35,8 @@ namespace FluidSolver
         virtual void calculate_current_timestep() = 0;
 
         float get_current_timestep() const;
+
+        virtual float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) = 0;
 
         virtual ~ITimestep() = default;
 

@@ -18,6 +18,8 @@ namespace FluidSolver
             pFloat rest_density = 1.0f;
             pFloat gravity = 9.81f;
             pFloat particle_size = 1.0f;
+
+            std::shared_ptr<ITimestep> timestep_generator = nullptr;
         } parameters;
 
         virtual void execute_simulation_step(Timepoint &timestep) = 0;

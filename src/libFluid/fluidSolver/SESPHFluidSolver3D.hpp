@@ -57,8 +57,10 @@ namespace FluidSolver
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
         FLUID_ASSERT(collection->is_type_present<ExternalForces3D>());
 
-
         FLUID_ASSERT(timestep.desired_time_step > 0.0f);
+
+        FLUID_ASSERT(parameters.timestep_generator != nullptr);
+
         current_timestep = timestep.desired_time_step;
 
         // find neighbors for all particles
@@ -94,11 +96,13 @@ namespace FluidSolver
             {
                 return; // don*t calculate unnecessary values for dead particles.
             }
+            auto& mv = collection->get<MovementData3D>(i);
 
             vec3 nonPressureAcc = ComputeNonPressureAcceleration(i);
             vec3 pressureAcc = ComputePressureAcceleration(i);
-            vec3 acceleration = pressureAcc + nonPressureAcc;
-            collection->get<MovementData3D>(i).acceleration = acceleration;
+            mv.acceleration = pressureAcc + nonPressureAcc;
+
+
         });
 
         // update velocity and position of all particles
@@ -161,6 +165,9 @@ namespace FluidSolver
             }
         }
 
+        if(parameters.timestep_generator == nullptr){
+            c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
+        }
 
         c.add_compatibility(neighborhood_search.check());
         c.add_compatibility(kernel.check());
