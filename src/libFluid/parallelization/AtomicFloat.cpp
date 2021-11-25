@@ -12,6 +12,7 @@ namespace FluidSolver::Parallelization {
         lock.lock();
         result = value;
         lock.unlock();
+        return result;
     }
     void AtomicFloat::set(float value) {
         lock.lock();
