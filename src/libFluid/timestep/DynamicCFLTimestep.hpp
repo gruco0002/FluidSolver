@@ -1,9 +1,9 @@
 #pragma once
 
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 
 namespace FluidSolver {
-    class DynamicCFLTimestep : public ITimestep {
+    class DynamicCFLTimestep : public ITimestepGenerator {
       public:
         struct DynamicCFLTimestepSettings {
             float max_timestep = 0.02f;

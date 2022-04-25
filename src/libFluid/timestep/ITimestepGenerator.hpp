@@ -20,7 +20,7 @@ namespace FluidSolver
 
     };
 
-    class ITimestep {
+    class ITimestepGenerator {
 
       protected:
         float current_timestep = 0.0f;
@@ -38,7 +38,7 @@ namespace FluidSolver
 
         virtual float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) = 0;
 
-        virtual ~ITimestep() = default;
+        virtual ~ITimestepGenerator() = default;
 
         virtual Compatibility check() = 0;
     };

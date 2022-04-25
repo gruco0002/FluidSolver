@@ -6,7 +6,7 @@
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/ISensor.hpp"
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
 
 #include <memory>
@@ -22,7 +22,7 @@ namespace FluidSolver
         std::shared_ptr<ParticleCollection> collection = nullptr;
         std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
         std::shared_ptr<ISimulationVisualizer> visualizer = nullptr;
-        std::shared_ptr<ITimestep> timestep = nullptr;
+        std::shared_ptr<ITimestepGenerator> timestep = nullptr;
 
         std::vector<std::shared_ptr<IEntity>> entities;
 

@@ -4,7 +4,7 @@
 #include "Forward.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/SensorWriter.hpp"
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 
 
 namespace FluidSolver

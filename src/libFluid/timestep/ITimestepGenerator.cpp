@@ -1,7 +1,7 @@
-#include "ITimestep.hpp"
+#include "ITimestepGenerator.hpp"
 namespace FluidSolver {
 
-    float ITimestep::get_current_timestep() const {
+    float ITimestepGenerator::get_current_timestep() const {
         return current_timestep;
     }
 

@@ -490,7 +490,7 @@ namespace FluidSolver
         }
     }
 
-    YAML::Node SimulationSerializer::save_timestep(const std::shared_ptr<ITimestep>& timestep)
+    YAML::Node SimulationSerializer::save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep)
     {
         YAML::Node node;
 
@@ -520,7 +520,7 @@ namespace FluidSolver
         return node;
     }
 
-    std::shared_ptr<ITimestep> SimulationSerializer::load_timestep(const YAML::Node& node)
+    std::shared_ptr<ITimestepGenerator> SimulationSerializer::load_timestep(const YAML::Node& node)
     {
 
         if (node["type"].as<std::string>() == "constant")

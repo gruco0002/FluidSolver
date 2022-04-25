@@ -3,7 +3,7 @@
 namespace FluidSolver
 {
     class Simulation;
-    class ITimestep;
+    class ITimestepGenerator;
     class ISimulationVisualizer;
     class ParticleCollection;
     class IFluidSolverBase;

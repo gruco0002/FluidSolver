@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ParticleCollection.hpp"
 #include "Compatibility.hpp"
 #include "FluidInclude.hpp"
+#include "ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 
 #include <memory>
 
@@ -19,7 +19,7 @@ namespace FluidSolver
             pFloat gravity = 9.81f;
             pFloat particle_size = 1.0f;
 
-            std::shared_ptr<ITimestep> timestep_generator = nullptr;
+            std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
         } parameters;
 
         virtual void execute_simulation_step(Timepoint &timestep) = 0;

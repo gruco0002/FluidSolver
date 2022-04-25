@@ -70,8 +70,8 @@ namespace FluidSolver
         std::string get_full_particle_data_path();
         YAML::Node save_scenario(const Simulation& simulation);
         void load_scenario(const YAML::Node& node, Simulation& simulation);
-        YAML::Node save_timestep(const std::shared_ptr<ITimestep>& timestep);
-        std::shared_ptr<ITimestep> load_timestep(const YAML::Node& node);
+        YAML::Node save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep);
+        std::shared_ptr<ITimestepGenerator> load_timestep(const YAML::Node& node);
         YAML::Node save_solver(const Simulation& simulation);
         void load_solver(Simulation& simulation, const YAML::Node& node);
         std::shared_ptr<ISimulationVisualizer> load_visualizer(const YAML::Node& node);

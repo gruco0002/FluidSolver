@@ -1,9 +1,9 @@
 #pragma once
 
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 
 namespace FluidSolver {
-    class ConstantTimestep : public ITimestep {
+    class ConstantTimestep : public ITimestepGenerator {
       public:
         struct ConstantTimestepSettings {
             float timestep = 0.001f;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FluidInclude.hpp"
-#include "timestep/ITimestep.hpp"
+#include "timestep/ITimestepGenerator.hpp"
 
 #include <fstream>
 #include <iostream>
