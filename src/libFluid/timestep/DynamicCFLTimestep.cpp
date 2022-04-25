@@ -3,33 +3,60 @@
 #include <algorithm>
 
 namespace FluidSolver {
-    float DynamicCFLTimestep::calculate_maximum_velocity() {
+    std::tuple<float, float> DynamicCFLTimestep::calculate_maximum_velocity_and_acceleration() {
         FLUID_ASSERT(parameters.particle_collection != nullptr);
-        FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>());
+        FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>() || parameters.particle_collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(parameters.particle_collection->is_type_present<ParticleInfo>());
 
-        float maximum = 0.0f;
-        for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
-            auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
-            if (type != ParticleTypeDead)
-                continue;
-            const glm::vec2& velocity = parameters.particle_collection->get<MovementData>(i).velocity;
-            maximum = std::max(maximum, (float)glm::length(velocity));
+        float maximum_veloctiy = 0.0f;
+        float maximum_acceleration = 0.0f;
+
+        if (parameters.particle_collection->is_type_present<MovementData3D>()) {
+            for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
+                auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
+                if (type != ParticleTypeDead)
+                    continue;
+
+
+                const glm::vec3& velocity = parameters.particle_collection->get<MovementData3D>(i).velocity;
+                const glm::vec3& acceleration = parameters.particle_collection->get<MovementData3D>(i).acceleration;
+
+                maximum_veloctiy = std::max(maximum_veloctiy, (float)glm::length(velocity));
+                maximum_acceleration = std::max(maximum_acceleration, (float)glm::length(acceleration));
+            }
+        } else {
+            for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
+                auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
+                if (type != ParticleTypeDead)
+                    continue;
+
+
+                const glm::vec2& velocity = parameters.particle_collection->get<MovementData>(i).velocity;
+                const glm::vec2& acceleration = parameters.particle_collection->get<MovementData>(i).acceleration;
+
+                maximum_veloctiy = std::max(maximum_veloctiy, (float)glm::length(velocity));
+                maximum_acceleration = std::max(maximum_acceleration, (float)glm::length(acceleration));
+            }
         }
-        return maximum;
+
+
+        return {maximum_veloctiy, maximum_acceleration};
     }
 
-    void DynamicCFLTimestep::calculate_current_timestep() {
-        FLUID_ASSERT(parameters.particle_size > 0.0f)
+    void DynamicCFLTimestep::generate_next_timestep() {
+        auto [max_velocity, max_acceleration] = calculate_maximum_velocity_and_acceleration();
 
-        float maxVelocity = calculate_maximum_velocity();
         float timestep = settings.min_timestep;
-        if (maxVelocity > std::numeric_limits<float>::epsilon()) {
+
+        if (max_velocity > std::numeric_limits<float>::epsilon() && max_acceleration > std::numeric_limits<float>::epsilon()) {
             // try to obtain cfl number
-            timestep = settings.cfl_number * parameters.particle_size / maxVelocity;
-            timestep = std::min(settings.max_timestep, std::max(settings.min_timestep, timestep));
+            float max_allowed_timestep = get_non_cfl_validating_timestep(max_acceleration, max_velocity);
+
+            timestep = std::max(timestep, std::min(settings.max_timestep, max_allowed_timestep));
+
         }
-        current_timestep = timestep;
+
+        generated_timestep = timestep;
     }
 
     Compatibility DynamicCFLTimestep::check() {
@@ -37,8 +64,8 @@ namespace FluidSolver {
         if (parameters.particle_collection == nullptr) {
             c.add_issue({"DynamicCFLTimestep", "ParticleCollection is null."});
         } else {
-            if (!parameters.particle_collection->is_type_present<MovementData>()) {
-                c.add_issue({"DynamicCFLTimestep", "Particles are missing the MovementData attribute."});
+            if (!parameters.particle_collection->is_type_present<MovementData>() && !parameters.particle_collection->is_type_present<MovementData3D>() ) {
+                c.add_issue({"DynamicCFLTimestep", "Particles are missing the MovementData or MovementData3D attribute."});
             }
             if (!parameters.particle_collection->is_type_present<ParticleInfo>()) {
                 c.add_issue({"DynamicCFLTimestep", "Particles are missing the ParticleInfo attribute."});

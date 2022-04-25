@@ -2,6 +2,8 @@
 
 #include "timestep/ITimestepGenerator.hpp"
 
+#include <tuple>
+
 namespace FluidSolver {
     class DynamicCFLTimestep : public ITimestepGenerator {
       public:
@@ -14,12 +16,12 @@ namespace FluidSolver {
             float lambda_a = 0.25f;
         } settings;
 
-        void calculate_current_timestep() override;
+        void generate_next_timestep() override;
 
         Compatibility check() override;
         float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) override;
 
       private:
-        float calculate_maximum_velocity();
+        std::tuple<float, float> calculate_maximum_velocity_and_acceleration();
     };
 } // namespace FluidSolver

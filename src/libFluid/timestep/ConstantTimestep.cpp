@@ -1,8 +1,8 @@
 #include "ConstantTimestep.hpp"
 
 namespace FluidSolver {
-    void ConstantTimestep::calculate_current_timestep() {
-        current_timestep = settings.timestep;
+    void ConstantTimestep::generate_next_timestep() {
+        generated_timestep = settings.timestep;
     }
 
     Compatibility ConstantTimestep::check() {

@@ -23,7 +23,7 @@ namespace FluidSolver
     class ITimestepGenerator {
 
       protected:
-        float current_timestep = 0.0f;
+        float generated_timestep = 0.0f;
 
       public:
         struct TimestepParameters
@@ -32,9 +32,9 @@ namespace FluidSolver
             float particle_size = 1.0f;
         } parameters;
 
-        virtual void calculate_current_timestep() = 0;
+        virtual void generate_next_timestep() = 0;
 
-        float get_current_timestep() const;
+        float get_generated_timestep() const;
 
         virtual float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) = 0;
 

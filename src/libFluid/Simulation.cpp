@@ -35,8 +35,8 @@ void FluidSolver::Simulation::execute_simulation_step()
 
     // calculate timestep
     {
-        internal_parameters.timestep->calculate_current_timestep();
-        float current_timestep = internal_parameters.timestep->get_current_timestep();
+        internal_parameters.timestep->generate_next_timestep();
+        float current_timestep = internal_parameters.timestep->get_generated_timestep();
         timepoint.system_time = std::chrono::system_clock::now();
         timepoint.desired_time_step= current_timestep;
         timepoint.actual_time_step = current_timestep;

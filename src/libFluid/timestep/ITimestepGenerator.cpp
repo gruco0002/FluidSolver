@@ -1,8 +1,8 @@
 #include "ITimestepGenerator.hpp"
 namespace FluidSolver {
 
-    float ITimestepGenerator::get_current_timestep() const {
-        return current_timestep;
+    float ITimestepGenerator::get_generated_timestep() const {
+        return generated_timestep;
     }
 
 } // namespace FluidSolver
