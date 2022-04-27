@@ -3,7 +3,6 @@
 #include "stb_truetype.h"
 
 #include <cstring>
-#include <EngineException.hpp>
 #include <fstream>
 
 
@@ -38,7 +37,7 @@ namespace Engine
 
             if (!fontFile.is_open())
             {
-                throw EngineException("Couldn't open font file");
+                throw std::invalid_argument("Couldn't open font file");
             }
 
             auto buffer = getFileContent(fontFile);
@@ -47,7 +46,7 @@ namespace Engine
 
             if (!stbtt_InitFont(&font, (unsigned char*)buffer.data(), 0))
             {
-                throw EngineException("Failed loading font");
+                throw std::invalid_argument("Failed loading font");
             }
 
             glyphs.resize(ENGINE_FONT_GLYPH_COUNT);

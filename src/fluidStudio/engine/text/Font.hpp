@@ -1,5 +1,4 @@
-#ifndef WORLDENGINE_FONT_HPP
-#define WORLDENGINE_FONT_HPP
+#pragma once
 
 
 #include "../graphics/Texture2D.hpp"
@@ -14,15 +13,11 @@
 #define ENGINE_FONT_GLYPH_COUNT 4096
 #define ENGINE_GPU_GLYPH_COUNT 2048
 
-namespace Engine
-{
+namespace Engine {
 
-    namespace Text
-    {
+    namespace Text {
 
-        struct Glyph
-        {
-
+        struct Glyph {
             int32_t codepoint;
 
             int32_t advance;
@@ -42,13 +37,11 @@ namespace Engine
         * Handles the font loading and management of characters.
         */
         class Font {
-
           public:
             /**
              * Constructs a font object.
              */
-            Font()
-            {
+            Font() {
             }
 
             /**
@@ -124,8 +117,7 @@ namespace Engine
 
             uint8_t edgeValue;
 
-            struct GlyphInfo
-            {
+            struct GlyphInfo {
                 glm::vec2 scale;
                 glm::vec2 size;
             };
@@ -147,6 +139,3 @@ namespace Engine
     } // namespace Text
 
 } // namespace Engine
-
-
-#endif // WORLDENGINE_FONT_HPP

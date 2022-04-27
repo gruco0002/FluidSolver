@@ -1,18 +1,14 @@
-#ifndef ENGINE_TEXTURE2DARRAY_HPP
-#define ENGINE_TEXTURE2DARRAY_HPP
+#pragma once
 
 #include "Texture2D.hpp"
 
 #include <cstdint>
 
-namespace Engine
-{
+namespace Engine {
 
-    namespace Graphics
-    {
+    namespace Graphics {
 
         class Texture2DArray {
-
           public:
             /**
              * Creates an empty texture with the specified settings.
@@ -28,7 +24,7 @@ namespace Engine
              * depth of the texture array
              */
             Texture2DArray(uint32_t width, uint32_t height, uint32_t depth, Texture2DSettings* settings,
-                           GLenum pixelFormat, GLenum sizedPixelFormat, ComponentType pixelDataType);
+                    GLenum pixelFormat, GLenum sizedPixelFormat, ComponentType pixelDataType);
 
             /**
             * Sets the data of the texture object.
@@ -67,7 +63,7 @@ namespace Engine
              * @param depth The depth of the texture region to be set.
  */
             void SetData(std::vector<uint8_t>& data, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height,
-                         int32_t depth);
+                    int32_t depth);
 
 
             /**
@@ -116,6 +112,3 @@ namespace Engine
         };
     } // namespace Graphics
 } // namespace Engine
-
-
-#endif // ENGINE_TEXTURE2DARRAY_HPP

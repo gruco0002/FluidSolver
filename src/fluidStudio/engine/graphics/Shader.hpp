@@ -1,5 +1,4 @@
-#ifndef ENGINE_SHADER_HPP
-#define ENGINE_SHADER_HPP
+#pragma once
 
 #include "Texture2D.hpp"
 #include "Texture2DArray.hpp"
@@ -11,24 +10,19 @@
 #include <unordered_set>
 #include <vector>
 
-namespace Engine
-{
-    namespace Graphics
-    {
+namespace Engine {
+    namespace Graphics {
 
 
         class Shader {
-
           public:
-            enum ProgramPartType
-            {
+            enum ProgramPartType {
                 ProgramPartTypeVertex = GL_VERTEX_SHADER,
                 ProgramPartTypeFragment = GL_FRAGMENT_SHADER,
                 ProgramPartTypeGeometry = GL_GEOMETRY_SHADER,
             };
 
-            struct ProgramPart
-            {
+            struct ProgramPart {
                 std::string code;
                 ProgramPartType type;
 
@@ -36,8 +30,7 @@ namespace Engine
                 ProgramPart(ProgramPartType type, std::string code);
             };
 
-            struct ProgramPartFile
-            {
+            struct ProgramPartFile {
                 std::string filepath;
                 ProgramPartType type;
             };
@@ -126,6 +119,3 @@ namespace Engine
 
     } // namespace Graphics
 } // namespace Engine
-
-
-#endif // ENGINE_SHADER_HPP

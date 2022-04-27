@@ -1,5 +1,4 @@
-#ifndef ENGINE_FRAMEBUFFER_HPP
-#define ENGINE_FRAMEBUFFER_HPP
+#pragma once
 
 #include <glad/glad.h>
 
@@ -8,14 +7,10 @@
 #include <map>
 #include <vector>
 
-namespace Engine
-{
-    namespace Graphics
-    {
+namespace Engine {
+    namespace Graphics {
 
         class Framebuffer {
-
-
           public:
             Framebuffer(uint32_t width, uint32_t height);
 
@@ -53,5 +48,3 @@ namespace Engine
 
     } // namespace Graphics
 } // namespace Engine
-
-#endif // ENGINE_FRAMEBUFFER_HPP

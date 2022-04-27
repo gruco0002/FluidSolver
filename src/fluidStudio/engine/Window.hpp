@@ -1,5 +1,4 @@
-#ifndef ENGINE_WINDOW_HPP
-#define ENGINE_WINDOW_HPP
+#pragma once
 
 
 #include "EventDelegate.hpp"
@@ -8,8 +7,7 @@
 
 typedef struct GLFWwindow GLFWwindow;
 
-namespace Engine
-{
+namespace Engine {
 
     bool opengl_context_available();
 
@@ -17,10 +15,8 @@ namespace Engine
      * There can only be one window created.
      */
     class Window {
-
       public:
-        enum MouseButton
-        {
+        enum MouseButton {
             RightButton,
             LeftButton
         };
@@ -167,5 +163,3 @@ namespace Engine
         virtual ~Window();
     };
 } // namespace Engine
-
-#endif // ENGINE_WINDOW_HPP

@@ -1,39 +1,28 @@
-#ifndef ENGINE_BUFFER_HPP
-#define ENGINE_BUFFER_HPP
-
+#pragma once
 
 #include <glad/glad.h>
 
-#include "../../EngineException.hpp"
+#include <cstddef>
 
-#include <cstdint>
+namespace Engine {
+    namespace Graphics {
+        namespace Buffer {
 
-namespace Engine
-{
-    namespace Graphics
-    {
-        namespace Buffer
-        {
-
-            enum IndexBufferDataType
-            {
+            enum IndexBufferDataType {
                 IndexBufferDataTypeByte = GL_UNSIGNED_BYTE,
                 IndexBufferDataTypeShort = GL_UNSIGNED_SHORT,
                 IndexBufferDataTypeInt = GL_UNSIGNED_INT,
             };
 
             class Buffer {
-
               public:
-                enum BufferType
-                {
+                enum BufferType {
                     BufferTypeVertex = GL_ARRAY_BUFFER,
                     BufferTypeIndex = GL_ELEMENT_ARRAY_BUFFER,
                     BufferTypeUniform = GL_UNIFORM_BUFFER
                 };
 
-                enum DataMode
-                {
+                enum DataMode {
                     DataModeStatic = GL_STATIC_DRAW,
                     DataModeDynamic = GL_DYNAMIC_DRAW,
                     DataModeStream = GL_STREAM_DRAW
@@ -48,7 +37,7 @@ namespace Engine
                  * @param elementCount
  */
                 Buffer(BufferType type, size_t elementSize, DataMode dataMode = DataModeStatic,
-                       size_t elementCount = 0);
+                        size_t elementCount = 0);
 
                 virtual ~Buffer();
 
@@ -101,5 +90,3 @@ namespace Engine
         } // namespace Buffer
     }     // namespace Graphics
 } // namespace Engine
-
-#endif // ENGINE_BUFFER_HPP

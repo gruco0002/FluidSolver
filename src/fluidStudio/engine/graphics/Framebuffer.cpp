@@ -1,6 +1,5 @@
 #include "Framebuffer.hpp"
 
-#include "../EngineException.hpp"
 
 uint32_t Engine::Graphics::Framebuffer::currentlyBound = 0;
 
@@ -43,11 +42,11 @@ void Engine::Graphics::Framebuffer::AddAttachment(GLenum attachment, Engine::Gra
 
     // check if existing, if yes throw error
     if (attachments.find(attachment) != attachments.end())
-        throw EngineException("Framebuffer Exception: Attachment already exists!");
+        throw std::invalid_argument("Framebuffer Exception: Attachment already exists!");
 
     // check size
     if (this->width != texture->getWidth() || this->height != texture->getHeight())
-        throw EngineException("Framebuffer Exception: Texture does not have the same size as the framebuffer!");
+        throw std::invalid_argument("Framebuffer Exception: Texture does not have the same size as the framebuffer!");
 
     // add to attachments
     attachments[attachment] = texture;
@@ -70,7 +69,7 @@ void Engine::Graphics::Framebuffer::CheckFramebufferStatus()
 {
     Bind();
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        throw EngineException("Framebuffer Exception: Framebuffer is not complete!");
+        throw std::invalid_argument("Framebuffer Exception: Framebuffer is not complete!");
 }
 
 void Engine::Graphics::Framebuffer::GenerateFramebuffer()

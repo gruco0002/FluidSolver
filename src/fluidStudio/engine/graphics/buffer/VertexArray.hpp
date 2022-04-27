@@ -1,5 +1,4 @@
-#ifndef ENGINE_VERTEXARRAY_HPP
-#define ENGINE_VERTEXARRAY_HPP
+#pragma once
 
 #include "../Enums.hpp"
 #include "Buffer.hpp"
@@ -8,14 +7,10 @@
 #include <set>
 #include <vector>
 
-namespace Engine
-{
-    namespace Graphics
-    {
-        namespace Buffer
-        {
+namespace Engine {
+    namespace Graphics {
+        namespace Buffer {
             class VertexArray {
-
               public:
                 /**
                  * Data for a buffer binding. There can be bindings to multiple buffers and / or
@@ -33,8 +28,7 @@ namespace Engine
                  * element represents a 4D-Vector, so it consists of
                  *       four components.
  */
-                struct BufferBinding
-                {
+                struct BufferBinding {
                     Buffer* buffer = nullptr;
                     uint8_t attributeIndex = 0;                        // aka attribute location
                     uint8_t numberOfComponentsPerAttributeElement = 1; // aka size
@@ -44,10 +38,10 @@ namespace Engine
                     bool isInstanced = false;
 
                     BufferBinding(Buffer* buffer, uint8_t attributeIndex = 0,
-                                  uint8_t numberOfComponentsPerAttributeElement = 1,
-                                  size_t byteOffsetToFirstAttributeElement = 0,
-                                  size_t byteOffsetBetweenAttributeElement = 4,
-                                  ComponentType componentType = ComponentTypeFloat, bool isInstanced = false);
+                            uint8_t numberOfComponentsPerAttributeElement = 1,
+                            size_t byteOffsetToFirstAttributeElement = 0,
+                            size_t byteOffsetBetweenAttributeElement = 4,
+                            ComponentType componentType = ComponentTypeFloat, bool isInstanced = false);
 
                     BufferBinding();
                 };
@@ -91,5 +85,3 @@ namespace Engine
         } // namespace Buffer
     }     // namespace Graphics
 } // namespace Engine
-
-#endif // ENGINE_VERTEXARRAY_HPP

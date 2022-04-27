@@ -1,5 +1,4 @@
-#ifndef ENGINE_TEXTRENDERER_HPP
-#define ENGINE_TEXTRENDERER_HPP
+#pragma once
 
 #include "../graphics/Shader.hpp"
 #include "../graphics/buffer/IndexBuffer.hpp"
@@ -7,10 +6,8 @@
 #include "../graphics/buffer/VertexBuffer.hpp"
 #include "Font.hpp"
 
-namespace Engine
-{
-    namespace Text
-    {
+namespace Engine {
+    namespace Text {
         class TextRenderer {
           public:
             TextRenderer(Font* font);
@@ -18,21 +15,21 @@ namespace Engine
             void Render(std::string text, float x, float y, float size, glm::vec4 color = glm::vec4(1.0f));
 
             void Render(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 clipArea,
-                        glm::vec4 blendArea);
+                    glm::vec4 blendArea);
 
             void RenderOutlined(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 outlineColor,
-                                float outlineScale);
+                    float outlineScale);
 
             void RenderOutlined(std::string text, float x, float y, float size, glm::vec4 color, glm::vec4 outlineColor,
-                                float outlineScale, glm::vec4 clipArea, glm::vec4 blendArea);
+                    float outlineScale, glm::vec4 clipArea, glm::vec4 blendArea);
 
             void RenderCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color, glm::vec4 clipArea,
-                                 glm::vec4 blendArea);
+                    glm::vec4 blendArea);
 
 
             void RenderOutlinedCodepoint(uint32_t codepoint, float x, float y, float size, glm::vec4 color,
-                                         glm::vec4 outlineColor, float outlineScale, glm::vec4 clipArea,
-                                         glm::vec4 blendArea);
+                    glm::vec4 outlineColor, float outlineScale, glm::vec4 clipArea,
+                    glm::vec4 blendArea);
 
 
             glm::mat4 projectionMatrix;
@@ -70,5 +67,3 @@ namespace Engine
         };
     } // namespace Text
 } // namespace Engine
-
-#endif // ENGINE_TEXTRENDERER_HPP

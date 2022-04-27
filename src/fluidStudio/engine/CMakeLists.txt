@@ -18,7 +18,7 @@ if (APPLE)
     find_library(OpenGL_LIBRARY OpenGL)
     find_library(IOKit_LIBRARY IOKit)
     find_library(CoreVideo_LIBRARY CoreVideo)
-    mark_as_advanced(COCOA_LIBRARY OpenGL_LIBRARY)   
+    mark_as_advanced(COCOA_LIBRARY OpenGL_LIBRARY)
     set(ENGINE_SYSTEM_LIBS ${COCOA_LIBRARY} ${IOKit_LIBRARY} ${OpenGL_LIBRARY} ${CoreVideo_LIBRARY})
 endif ()
 
@@ -36,7 +36,7 @@ if (UNIX AND NOT APPLE)
     set(CMAKE_INSTALL_RPATH "./")
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-     # note that the order is important for setting the libs
+    # note that the order is important for setting the libs
     # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
     set(ENGINE_SYSTEM_LIBS X11 Xxf86vm GL dl)
 
@@ -51,11 +51,26 @@ find_package(glfw3 CONFIG REQUIRED)
 
 # includes
 include_directories(./)
-  
+
 # source files
-set(ENGINE_SOURCE_FILES 
-Window.cpp Window.hpp EventDelegate.hpp EngineException.cpp EngineException.hpp graphics/Texture2D.cpp graphics/Texture2D.hpp graphics/Texture2DArray.cpp graphics/Texture2DArray.hpp graphics/buffer/UniformBuffer.cpp graphics/buffer/UniformBuffer.hpp graphics/Framebuffer.cpp graphics/Framebuffer.hpp graphics/buffer/VertexArray.cpp graphics/buffer/VertexArray.hpp graphics/buffer/VertexBuffer.cpp graphics/buffer/VertexBuffer.hpp graphics/buffer/IndexBuffer.cpp graphics/buffer/IndexBuffer.hpp graphics/buffer/Buffer.cpp graphics/buffer/Buffer.hpp graphics/Shader.cpp graphics/Shader.hpp graphics/Enums.hpp graphics/Enums.cpp
-text/Font.cpp text/Font.hpp text/TextRenderer.cpp text/TextRenderer.hpp RectangleRenderer.cpp RectangleRenderer.hpp stb_implementation.cpp)
+set(ENGINE_SOURCE_FILES
+        Window.cpp Window.hpp
+        EventDelegate.hpp
+        graphics/Texture2D.cpp graphics/Texture2D.hpp
+        graphics/Texture2DArray.cpp graphics/Texture2DArray.hpp
+        graphics/buffer/UniformBuffer.hpp
+        graphics/Framebuffer.cpp graphics/Framebuffer.hpp
+        graphics/buffer/VertexArray.cpp graphics/buffer/VertexArray.hpp
+        graphics/buffer/VertexBuffer.hpp
+        graphics/buffer/IndexBuffer.hpp
+        graphics/buffer/Buffer.cpp graphics/buffer/Buffer.hpp
+        graphics/Shader.cpp graphics/Shader.hpp
+        graphics/Enums.hpp graphics/Enums.cpp
+        text/Font.cpp text/Font.hpp
+        text/TextRenderer.cpp text/TextRenderer.hpp
+        RectangleRenderer.cpp RectangleRenderer.hpp
+        stb_implementation.cpp
+        )
 
 
 # linking

@@ -2,7 +2,6 @@
 
 #include "Window.hpp"
 
-#include "EngineException.hpp"
 #include "Window.hpp"
 
 #include <GLFW/glfw3.h>
@@ -34,7 +33,7 @@ namespace Engine
 
         if (windowCreated)
         {
-            throw EngineException("A window was already created, there can only be one window!");
+            throw std::invalid_argument("A window was already created, there can only be one window!");
         }
         windowCreated = true;
 
@@ -48,14 +47,14 @@ namespace Engine
         if (window == nullptr)
         {
             glfwTerminate();
-            throw EngineException("Failed to create GLFW window");
+            throw std::invalid_argument("Failed to create GLFW window");
         }
 
         glfwMakeContextCurrent(window);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            throw EngineException("Failed to initialize GLAD");
+            throw std::invalid_argument("Failed to initialize GLAD");
         }
 
         setCallbacks();

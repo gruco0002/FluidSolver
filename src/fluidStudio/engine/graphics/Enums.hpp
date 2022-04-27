@@ -1,16 +1,13 @@
-#ifndef ENGINE_ENUMS_HPP
-#define ENGINE_ENUMS_HPP
+#pragma once
 
 #include <glad/glad.h>
 
 #include <cstdint>
 
-namespace Engine
-{
+namespace Engine {
 
 
-    enum ComponentType
-    {
+    enum ComponentType {
         ComponentTypeFloat = GL_FLOAT,
         ComponentTypeUInt = GL_UNSIGNED_INT,
         ComponentTypeHalfFloat = GL_HALF_FLOAT,
@@ -22,4 +19,3 @@ namespace Engine
     uint8_t SizeOfComponentType(ComponentType type);
 
 } // namespace Engine
-#endif // ENGINE_ENUMS_HPP
