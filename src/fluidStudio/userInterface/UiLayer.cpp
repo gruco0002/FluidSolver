@@ -8,8 +8,8 @@
 #include "fluidSolver/SESPHFluidSolver.hpp"
 #include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "sensors/CompressedNeighborsStatistics.hpp"
-#include "timestep/ConstantTimestep.hpp"
-#include "timestep/DynamicCFLTimestep.hpp"
+#include "timestep/ConstantTimestepGenerator.hpp"
+#include "timestep/DynamicCflTimestepGenerator.hpp"
 #include "userInterface/PlyImport.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
@@ -364,8 +364,8 @@ void FluidUi::UiLayer::render_solver_component()
 void FluidUi::UiLayer::render_timestep_component()
 {
     BeginSubsection("Timestep", [=]() {
-        auto ct = std::dynamic_pointer_cast<FluidSolver::ConstantTimestep>(window->simulation.parameters.timestep);
-        auto dt = std::dynamic_pointer_cast<FluidSolver::DynamicCFLTimestep>(window->simulation.parameters.timestep);
+        auto ct = std::dynamic_pointer_cast<FluidSolver::ConstantTimestepGenerator>(window->simulation.parameters.timestep);
+        auto dt = std::dynamic_pointer_cast<FluidSolver::DynamicCflTimestepGenerator>(window->simulation.parameters.timestep);
 
         if (ImGui::BeginCombo("Type", ct ? "Constant" : "Dynamic CFL"))
         {
@@ -376,7 +376,7 @@ void FluidUi::UiLayer::render_timestep_component()
                     ct = nullptr;
                     dt = nullptr;
 
-                    ct = std::make_shared<FluidSolver::ConstantTimestep>();
+                    ct = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
                     window->simulation.parameters.timestep = ct;
                     window->simulation.parameters.invalidate = true;
                 }
@@ -388,7 +388,7 @@ void FluidUi::UiLayer::render_timestep_component()
                     ct = nullptr;
                     dt = nullptr;
 
-                    dt = std::make_shared<FluidSolver::DynamicCFLTimestep>();
+                    dt = std::make_shared<FluidSolver::DynamicCflTimestepGenerator>();
                     window->simulation.parameters.timestep = dt;
                     window->simulation.parameters.invalidate = true;
                 }
@@ -404,7 +404,7 @@ void FluidUi::UiLayer::render_timestep_component()
             }
             if (ImGui::Button("Reset"))
             {
-                ct->settings = FluidSolver::ConstantTimestep::ConstantTimestepSettings();
+                ct->settings = FluidSolver::ConstantTimestepGenerator::ConstantTimestepGeneratorSettings();
             }
         }
 
@@ -423,7 +423,7 @@ void FluidUi::UiLayer::render_timestep_component()
             ImGui::InputFloat("CFL Number", &dt->settings.cfl_number);
             if (ImGui::Button("Reset"))
             {
-                dt->settings = FluidSolver::DynamicCFLTimestep::DynamicCFLTimestepSettings();
+                dt->settings = FluidSolver::DynamicCflTimestepGenerator::DynamicCflTimestepGeneratorSettings();
             }
         }
     });

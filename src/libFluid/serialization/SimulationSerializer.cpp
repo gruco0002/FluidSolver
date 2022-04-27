@@ -17,8 +17,8 @@
 #include "sensors/SensorPlane.hpp"
 #include "serialization/ParticleSerializer.hpp"
 #include "serialization/YamlHelpers.hpp"
-#include "timestep/ConstantTimestep.hpp"
-#include "timestep/DynamicCFLTimestep.hpp"
+#include "timestep/ConstantTimestepGenerator.hpp"
+#include "timestep/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 
 
@@ -494,16 +494,16 @@ namespace FluidSolver
     {
         YAML::Node node;
 
-        if (std::dynamic_pointer_cast<ConstantTimestep>(timestep))
+        if (std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep))
         {
-            auto t = std::dynamic_pointer_cast<ConstantTimestep>(timestep);
+            auto t = std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep);
 
             node["type"] = "constant";
             node["timestep"] = t->settings.timestep;
         }
-        else if (std::dynamic_pointer_cast<DynamicCFLTimestep>(timestep))
+        else if (std::dynamic_pointer_cast<DynamicCflTimestepGenerator>(timestep))
         {
-            auto t = std::dynamic_pointer_cast<DynamicCFLTimestep>(timestep);
+            auto t = std::dynamic_pointer_cast<DynamicCflTimestepGenerator>(timestep);
 
             node["type"] = "dynamic-cfl";
             node["max-timestep"] = t->settings.max_timestep;
@@ -525,13 +525,13 @@ namespace FluidSolver
 
         if (node["type"].as<std::string>() == "constant")
         {
-            auto res = std::make_shared<ConstantTimestep>();
+            auto res = std::make_shared<ConstantTimestepGenerator>();
             res->settings.timestep = node["timestep"].as<float>();
             return res;
         }
         else if (node["type"].as<std::string>() == "dynamic-cfl")
         {
-            auto res = std::make_shared<DynamicCFLTimestep>();
+            auto res = std::make_shared<DynamicCflTimestepGenerator>();
             res->settings.max_timestep = node["max-timestep"].as<float>();
             res->settings.min_timestep = node["min-timestep"].as<float>();
             res->settings.cfl_number = node["cfl"].as<float>();

@@ -1,18 +1,18 @@
-#include "ConstantTimestep.hpp"
+#include "ConstantTimestepGenerator.hpp"
 
 namespace FluidSolver {
-    void ConstantTimestep::generate_next_timestep() {
+    void ConstantTimestepGenerator::generate_next_timestep() {
         generated_timestep = settings.timestep;
     }
 
-    Compatibility ConstantTimestep::check() {
+    Compatibility ConstantTimestepGenerator::check() {
         Compatibility c;
         if (settings.timestep <= 0.0f) {
-            c.add_issue({"ConstantTimestep", "Timestep is smaller or equal to zero."});
+            c.add_issue({"ConstantTimestepGenerator", "Timestep is smaller or equal to zero."});
         }
         return c;
     }
-    float ConstantTimestep::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
+    float ConstantTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
         FLUID_ASSERT(max_velocity > 0.0f);
         FLUID_ASSERT(max_acceleration > 0.0f);
         FLUID_ASSERT(parameters.particle_size > 0.0f);

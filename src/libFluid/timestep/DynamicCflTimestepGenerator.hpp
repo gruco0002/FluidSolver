@@ -5,9 +5,9 @@
 #include <tuple>
 
 namespace FluidSolver {
-    class DynamicCFLTimestep : public ITimestepGenerator {
+    class DynamicCflTimestepGenerator : public ITimestepGenerator {
       public:
-        struct DynamicCFLTimestepSettings {
+        struct DynamicCflTimestepGeneratorSettings {
             float max_timestep = 0.02f;
             float min_timestep = 0.0001f;
             float cfl_number = 0.8f;

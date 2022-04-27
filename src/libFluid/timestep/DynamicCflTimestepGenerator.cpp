@@ -1,9 +1,9 @@
-#include "DynamicCFLTimestep.hpp"
+#include "DynamicCflTimestepGenerator.hpp"
 
 #include <algorithm>
 
 namespace FluidSolver {
-    std::tuple<float, float> DynamicCFLTimestep::calculate_maximum_velocity_and_acceleration() {
+    std::tuple<float, float> DynamicCflTimestepGenerator::calculate_maximum_velocity_and_acceleration() {
         FLUID_ASSERT(parameters.particle_collection != nullptr);
         FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>() || parameters.particle_collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(parameters.particle_collection->is_type_present<ParticleInfo>());
@@ -43,7 +43,7 @@ namespace FluidSolver {
         return {maximum_veloctiy, maximum_acceleration};
     }
 
-    void DynamicCFLTimestep::generate_next_timestep() {
+    void DynamicCflTimestepGenerator::generate_next_timestep() {
         auto [max_velocity, max_acceleration] = calculate_maximum_velocity_and_acceleration();
 
         float timestep = settings.min_timestep;
@@ -59,26 +59,26 @@ namespace FluidSolver {
         generated_timestep = timestep;
     }
 
-    Compatibility DynamicCFLTimestep::check() {
+    Compatibility DynamicCflTimestepGenerator::check() {
         Compatibility c;
         if (parameters.particle_collection == nullptr) {
-            c.add_issue({"DynamicCFLTimestep", "ParticleCollection is null."});
+            c.add_issue({"DynamicCflTimestepGenerator", "ParticleCollection is null."});
         } else {
             if (!parameters.particle_collection->is_type_present<MovementData>() && !parameters.particle_collection->is_type_present<MovementData3D>() ) {
-                c.add_issue({"DynamicCFLTimestep", "Particles are missing the MovementData or MovementData3D attribute."});
+                c.add_issue({"DynamicCflTimestepGenerator", "Particles are missing the MovementData or MovementData3D attribute."});
             }
             if (!parameters.particle_collection->is_type_present<ParticleInfo>()) {
-                c.add_issue({"DynamicCFLTimestep", "Particles are missing the ParticleInfo attribute."});
+                c.add_issue({"DynamicCflTimestepGenerator", "Particles are missing the ParticleInfo attribute."});
             }
         }
 
         if (parameters.particle_size <= 0.0f) {
-            c.add_issue({"DynamicCFLTimestep", "Particle size is smaller or equal to zero."});
+            c.add_issue({"DynamicCflTimestepGenerator", "Particle size is smaller or equal to zero."});
         }
 
         return c;
     }
-    float DynamicCFLTimestep::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
+    float DynamicCflTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
         FLUID_ASSERT(max_velocity > 0.0f);
         FLUID_ASSERT(max_acceleration > 0.0f);
         FLUID_ASSERT(parameters.particle_size > 0.0f);

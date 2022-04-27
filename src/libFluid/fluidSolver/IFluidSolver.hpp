@@ -5,6 +5,7 @@
 #include "ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "timestep/ITimestepGenerator.hpp"
+#include "timestep/Timepoint.hpp"
 
 #include <memory>
 

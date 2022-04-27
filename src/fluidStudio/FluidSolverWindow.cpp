@@ -5,8 +5,8 @@
 #include "ImguiHelper.hpp"
 #include "Log.hpp"
 #include "sensors/ParticleStatistics.hpp"
-#include "timestep/ConstantTimestep.hpp"
-#include "timestep/DynamicCFLTimestep.hpp"
+#include "timestep/ConstantTimestepGenerator.hpp"
+#include "timestep/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
@@ -189,7 +189,7 @@ void FluidUi::FluidSolverWindow::create_empty_simulation()
     simulation.parameters.gravity = 9.81f;
 
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
@@ -216,7 +216,7 @@ void FluidUi::FluidSolverWindow::create_empty_3d_simulation()
     simulation.parameters.gravity = 9.81f;
 
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
     simulation.parameters.invalidate = true;
@@ -242,7 +242,7 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation()
 
 
     simulation.parameters.fluid_solver = current_type->create_type();
-    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestep>();
+    simulation.parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.parameters.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());

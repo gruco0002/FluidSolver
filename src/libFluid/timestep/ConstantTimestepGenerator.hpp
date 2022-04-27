@@ -3,9 +3,9 @@
 #include "timestep/ITimestepGenerator.hpp"
 
 namespace FluidSolver {
-    class ConstantTimestep : public ITimestepGenerator {
+    class ConstantTimestepGenerator : public ITimestepGenerator {
       public:
-        struct ConstantTimestepSettings {
+        struct ConstantTimestepGeneratorSettings {
             float timestep = 0.001f;
 
             float lambda_v = 0.4f;
