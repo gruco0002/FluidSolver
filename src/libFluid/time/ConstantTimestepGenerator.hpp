@@ -1,6 +1,6 @@
 #pragma once
 
-#include "timestep/ITimestepGenerator.hpp"
+#include "time/ITimestepGenerator.hpp"
 
 namespace FluidSolver {
     class ConstantTimestepGenerator : public ITimestepGenerator {

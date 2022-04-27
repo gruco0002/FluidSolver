@@ -6,7 +6,7 @@
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/ISensor.hpp"
-#include "timestep/ITimestepGenerator.hpp"
+#include "time/ITimestepGenerator.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
 
 #include <memory>

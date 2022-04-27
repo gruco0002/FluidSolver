@@ -28,12 +28,12 @@ set(LIB_FLUID_SOURCE_FILES
         "visualizer/ISimulationVisualizer.hpp"
         "fluidSolver/IFluidSolver.hpp"        
         "fluidSolver/IISPHFluidSolver.hpp"
-        "timestep/ITimestepGenerator.cpp"
-        "timestep/ITimestepGenerator.hpp"
-        "timestep/ConstantTimestepGenerator.cpp"
-        "timestep/ConstantTimestepGenerator.hpp"
-        "timestep/DynamicCflTimestepGenerator.cpp"
-        "timestep/DynamicCflTimestepGenerator.hpp"
+        "time/ITimestepGenerator.cpp"
+        "time/ITimestepGenerator.hpp"
+        "time/ConstantTimestepGenerator.cpp"
+        "time/ConstantTimestepGenerator.hpp"
+        "time/DynamicCflTimestepGenerator.cpp"
+        "time/DynamicCflTimestepGenerator.hpp"
         "visualizer/ContinousVisualizer.cpp"
         "visualizer/ContinousVisualizer.hpp"
         "fluidSolver/ParticleCollection.cpp"
@@ -89,7 +89,7 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
-        timestep/Timepoint.hpp)
+        time/Timepoint.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

@@ -17,8 +17,8 @@
 #include "sensors/SensorPlane.hpp"
 #include "serialization/ParticleSerializer.hpp"
 #include "serialization/YamlHelpers.hpp"
-#include "timestep/ConstantTimestepGenerator.hpp"
-#include "timestep/DynamicCflTimestepGenerator.hpp"
+#include "time/ConstantTimestepGenerator.hpp"
+#include "time/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 
 

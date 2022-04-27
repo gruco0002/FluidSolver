@@ -1,6 +1,6 @@
 #pragma once
 
-#include "timestep/Timepoint.hpp"
+#include "time/Timepoint.hpp"
 
 #include <vector>
 

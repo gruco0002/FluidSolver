@@ -4,8 +4,8 @@
 #include "FluidInclude.hpp"
 #include "ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "timestep/ITimestepGenerator.hpp"
-#include "timestep/Timepoint.hpp"
+#include "time/ITimestepGenerator.hpp"
+#include "time/Timepoint.hpp"
 
 #include <memory>
 
