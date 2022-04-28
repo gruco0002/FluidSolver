@@ -22,11 +22,11 @@ namespace FluidUi {
         void load() override;
 
       protected:
-        void onCursorPositionChanged(double xpos, double ypos) override;
+        void on_cursor_position_changed(double xpos, double ypos) override;
         void on_mouse_down(MouseButton button) override;
         void on_mouse_up(MouseButton button) override;
-        void OnKeyPressed(int key) override;
-        void OnKeyReleased(int key) override;
+        void on_key_pressed(int key) override;
+        void on_key_released(int key) override;
 
 
       public:

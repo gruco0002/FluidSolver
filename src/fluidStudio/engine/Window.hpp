@@ -16,37 +16,56 @@ namespace Engine {
         };
 
       public:
-        Window(std::string title, int width = 800, int height = 600);
+        explicit Window(std::string title, int width = 800, int height = 600);
 
+        virtual ~Window();
 
-        int GetHeight();
+        int get_height();
 
-        int GetWidth();
+        int get_width();
 
-        void SetSize(int width, int height);
+        void set_size(int width, int height);
 
-        void SetWidth(int width);
+        void set_width(int width);
 
-        void SetHeight(int height);
+        void set_height(int height);
 
-        int GetFramebufferWidth();
+        int get_framebuffer_width();
 
-        int GetFramebufferHeight();
+        int get_framebuffer_height();
 
-        int GetScreenWidth();
+        int get_screen_width();
 
-        int GetScreenHeight();
+        int get_screen_height();
 
-        void MainLoop();
+        double get_mouse_position_x() const;
+
+        double get_mouse_position_y() const;
+
+        double get_last_frame_time() const;
+
+        double get_fps() const;
+
+        double get_average_fps() const;
+
+        void main_loop();
 
       protected:
         virtual void render() = 0;
-
         virtual void load() = 0;
-
         virtual void unload() = 0;
 
-        GLFWwindow* GetWindowHandler();
+        GLFWwindow* get_window_handler();
+
+        virtual void on_window_size_changed(int width, int height);
+        virtual void on_framebuffer_size_changed(int width, int height);
+        virtual void on_cursor_position_changed(double xpos, double ypos);
+        virtual void on_mouse_down(MouseButton button);
+        virtual void on_mouse_up(MouseButton button);
+        virtual void on_scroll_changed(double xoffset, double yoffset);
+        virtual void on_key_pressed(int key);
+        virtual void on_key_released(int key);
+        virtual void on_text_input(std::string text);
 
       private:
         std::string title;
@@ -54,50 +73,29 @@ namespace Engine {
         int width;
         int height;
 
-        double currentTime;
-        double lastFrameTime;
+        double current_time;
+        double last_frame_time;
 
-        const static unsigned int lastFrameTimesLength = 50;
-        unsigned int lastFrameTimesIndex = 0;
-        double lastFrameTimes[lastFrameTimesLength] = {0};
+        const static unsigned int last_frame_times_length = 50;
+        unsigned int last_frame_times_index = 0;
+        double last_frame_times[last_frame_times_length] = {0};
 
-      public:
-        double GetLastFrameTime() const;
+        double mouse_position_x;
+        double mouse_position_y;
 
-        double GetFPS() const;
-
-        double GetAvgFPS() const;
-
-      protected:
-        virtual void onWindowSizeChanged(int width, int height);
-        virtual void onFramebufferSizeChanged(int width, int height);
-        virtual void onCursorPositionChanged(double xpos, double ypos);
-        virtual void on_mouse_down(MouseButton button);
-        virtual void on_mouse_up(MouseButton button);
-        virtual void onScrollChanged(double xoffset, double yoffset);
-        virtual void OnKeyPressed(int key);
-        virtual void OnKeyReleased(int key);
-        virtual void onTextInput(std::string text);
-
-
-      public:
-        double GetMousePositionX() const;
-
-        double GetMousePositionY() const;
-
-      private:
-        double mousePositionX;
-        double mousePositionY;
-
-        int framebufferWidth;
-        int framebufferHeight;
+        int framebuffer_width;
+        int framebuffer_height;
 
         GLFWwindow* glfw_window;
 
-        void setCorrectSizeValues();
+        void set_correct_size_values();
 
 
       private:
+        // only one window can exist
+        static Window* active_window;
+
+
         static void set_all_callbacks(GLFWwindow* window);
 
         // callbacks for glfw
@@ -116,14 +114,5 @@ namespace Engine {
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
         static std::string unicode_codepoint_as_utf_8_string(unsigned int codepoint);
-
-
-      private:
-        // only one window can exist
-        static Window* active_window;
-
-
-      public:
-        virtual ~Window();
     };
 } // namespace Engine

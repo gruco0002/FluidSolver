@@ -41,9 +41,9 @@ namespace Engine {
         }
 
         set_all_callbacks(glfw_window);
-        setCorrectSizeValues();
+        set_correct_size_values();
 
-        currentTime = glfwGetTime();
+        current_time = glfwGetTime();
 
         // unlock framerate
         glfwSwapInterval(0);
@@ -77,68 +77,68 @@ namespace Engine {
     }
 
 
-    int Window::GetHeight() {
+    int Window::get_height() {
         return height;
     }
 
-    int Window::GetWidth() {
+    int Window::get_width() {
         return width;
     }
 
-    void Window::SetSize(int width, int height) {
+    void Window::set_size(int width, int height) {
         this->width = width;
         this->height = height;
         glfwSetWindowSize(glfw_window, width, height);
     }
 
-    void Window::SetWidth(int width) {
-        SetSize(width, GetHeight());
+    void Window::set_width(int width) {
+        set_size(width, get_height());
     }
 
-    void Window::SetHeight(int height) {
-        SetSize(GetWidth(), height);
+    void Window::set_height(int height) {
+        set_size(get_width(), height);
     }
 
-    int Window::GetFramebufferWidth() {
-        return framebufferWidth;
+    int Window::get_framebuffer_width() {
+        return framebuffer_width;
     }
 
-    int Window::GetFramebufferHeight() {
-        return framebufferHeight;
+    int Window::get_framebuffer_height() {
+        return framebuffer_height;
     }
 
 
-    void Window::setCorrectSizeValues() {
-        glfwGetFramebufferSize(glfw_window, &framebufferWidth, &framebufferHeight);
+    void Window::set_correct_size_values() {
+        glfwGetFramebufferSize(glfw_window, &framebuffer_width, &framebuffer_height);
         glfwGetWindowSize(glfw_window, &width, &height);
     }
 
-    double Window::GetMousePositionX() const {
-        return mousePositionX;
+    double Window::get_mouse_position_x() const {
+        return mouse_position_x;
     }
 
-    double Window::GetMousePositionY() const {
-        return mousePositionY;
+    double Window::get_mouse_position_y() const {
+        return mouse_position_y;
     }
 
-    double Window::GetLastFrameTime() const {
-        return lastFrameTime;
+    double Window::get_last_frame_time() const {
+        return last_frame_time;
     }
 
-    double Window::GetFPS() const {
-        return 1.0 / lastFrameTime;
+    double Window::get_fps() const {
+        return 1.0 / last_frame_time;
     }
 
-    double Window::GetAvgFPS() const {
+    double Window::get_average_fps() const {
         double acc = 0.0f;
-        for (size_t i = 0; i < lastFrameTimesLength; i++) {
-            acc += lastFrameTimes[i];
+        for (size_t i = 0; i < last_frame_times_length; i++) {
+            acc += last_frame_times[i];
         }
-        acc /= (double)lastFrameTimesLength;
+        acc /= (double)last_frame_times_length;
         return 1.0 / acc;
     }
 
-    GLFWwindow* Window::GetWindowHandler() {
+    GLFWwindow* Window::get_window_handler() {
         return glfw_window;
     }
 
@@ -147,30 +147,30 @@ namespace Engine {
         return v_opengl_context_available;
     }
 
-    int Window::GetScreenWidth() {
+    int Window::get_screen_width() {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         return mode->width;
     }
 
-    int Window::GetScreenHeight() {
+    int Window::get_screen_height() {
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         return mode->height;
     }
 
 
-    void Window::MainLoop() {
+    void Window::main_loop() {
         load();
 
         while (!glfwWindowShouldClose(glfw_window)) {
             // fps calc
             double tmp = glfwGetTime();
-            lastFrameTime = tmp - currentTime;
-            currentTime = tmp;
+            last_frame_time = tmp - current_time;
+            current_time = tmp;
 
-            lastFrameTimesIndex = (lastFrameTimesIndex + 1) % lastFrameTimesLength;
-            lastFrameTimes[lastFrameTimesIndex] = lastFrameTime;
+            last_frame_times_index = (last_frame_times_index + 1) % last_frame_times_length;
+            last_frame_times[last_frame_times_index] = last_frame_time;
 
             // input handling here
 
@@ -194,10 +194,10 @@ namespace Engine {
         active_window->width = width;
         active_window->height = height;
 
-        active_window->onWindowSizeChanged(width, height);
+        active_window->on_window_size_changed(width, height);
     }
 
-    void Window::onWindowSizeChanged(int width, int height) {
+    void Window::on_window_size_changed(int width, int height) {
         // nothing to do
     }
 
@@ -208,12 +208,12 @@ namespace Engine {
 
         if (window != active_window->glfw_window)
             return;
-        active_window->framebufferWidth = width;
-        active_window->framebufferHeight = height;
-        active_window->onFramebufferSizeChanged(width, height);
+        active_window->framebuffer_width = width;
+        active_window->framebuffer_height = height;
+        active_window->on_framebuffer_size_changed(width, height);
     }
 
-    void Window::onFramebufferSizeChanged(int width, int height) {
+    void Window::on_framebuffer_size_changed(int width, int height) {
         // nothing to do
     }
 
@@ -224,12 +224,12 @@ namespace Engine {
 
         if (window != active_window->glfw_window)
             return;
-        active_window->mousePositionX = xpos;
-        active_window->mousePositionY = ypos;
-        active_window->onCursorPositionChanged(xpos, ypos);
+        active_window->mouse_position_x = xpos;
+        active_window->mouse_position_y = ypos;
+        active_window->on_cursor_position_changed(xpos, ypos);
     }
 
-    void Window::onCursorPositionChanged(double xpos, double ypos) {
+    void Window::on_cursor_position_changed(double xpos, double ypos) {
         // nothing to do
     }
 
@@ -269,10 +269,10 @@ namespace Engine {
 
         if (window != active_window->glfw_window)
             return;
-        active_window->onScrollChanged(xoffset, yoffset);
+        active_window->on_scroll_changed(xoffset, yoffset);
     }
 
-    void Window::onScrollChanged(double xoffset, double yoffset) {
+    void Window::on_scroll_changed(double xoffset, double yoffset) {
         // nothing to do
     }
 
@@ -283,10 +283,10 @@ namespace Engine {
         if (window != active_window->glfw_window)
             return;
         std::string asUtf8 = unicode_codepoint_as_utf_8_string(codepoint);
-        active_window->onTextInput(asUtf8);
+        active_window->on_text_input(asUtf8);
     }
 
-    void Window::onTextInput(std::string text) {
+    void Window::on_text_input(std::string text) {
         // nothing to do
     }
 
@@ -297,16 +297,16 @@ namespace Engine {
         if (window != active_window->glfw_window)
             return;
         if (action == GLFW_PRESS) {
-            active_window->OnKeyPressed(key);
+            active_window->on_key_pressed(key);
         } else if (action == GLFW_RELEASE) {
-            active_window->OnKeyReleased(key);
+            active_window->on_key_released(key);
         }
     }
 
-    void Window::OnKeyPressed(int key) {
+    void Window::on_key_pressed(int key) {
         // nothing to do
     }
-    void Window::OnKeyReleased(int key) {
+    void Window::on_key_released(int key) {
         // nothing to do
     }
 
