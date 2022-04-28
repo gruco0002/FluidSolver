@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP
-#define FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP
+#pragma once
 
 #include "FluidSolverTypes.hpp"
 
@@ -10,10 +9,8 @@
 #include <thread>
 #include <userInterface/UiLayer.hpp>
 
-namespace FluidUi
-{
+namespace FluidUi {
     class FluidSolverWindow : public Engine::Window {
-
       public:
         explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
 
@@ -23,6 +20,14 @@ namespace FluidUi
         void render() override;
 
         void load() override;
+
+      protected:
+        void onCursorPositionChanged(double xpos, double ypos) override;
+        void on_mouse_down(MouseButton button) override;
+        void on_mouse_up(MouseButton button) override;
+        void OnKeyPressed(int key) override;
+        void OnKeyReleased(int key) override;
+
 
       public:
         FluidSolver::Simulation simulation;
@@ -51,8 +56,7 @@ namespace FluidUi
         void visualizer_parameter_changed();
 
       private:
-        enum class SimWorkerThreadStatus
-        {
+        enum class SimWorkerThreadStatus {
             SimWorkerThreadStatusWork,
             SimWorkerThreadStatusDone,
             SimWorkerThreadStatusWaitForWork,
@@ -86,8 +90,7 @@ namespace FluidUi
         } visualizer_window_size;
 
 
-        enum class MovementDirection
-        {
+        enum class MovementDirection {
             Left,
             Right,
             Top,
@@ -109,5 +112,3 @@ namespace FluidUi
         void drag_viewport(double newX, double newY);
     };
 } // namespace FluidUi
-
-#endif // FLUIDSOLVER_FLUIDSOLVERWINDOW_HPP

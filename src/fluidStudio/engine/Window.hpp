@@ -1,8 +1,5 @@
 #pragma once
 
-
-#include "EventDelegate.hpp"
-
 #include <string>
 
 typedef struct GLFWwindow GLFWwindow;
@@ -11,9 +8,6 @@ namespace Engine {
 
     bool opengl_context_available();
 
-    /**
-     * There can only be one window created.
-     */
     class Window {
       public:
         enum MouseButton {
@@ -24,15 +18,6 @@ namespace Engine {
       public:
         Window(std::string title, int width = 800, int height = 600);
 
-        EventDelegate<int, int> OnWindowSizeChanged;
-        EventDelegate<int, int> OnFramebufferSizeChanged;
-        EventDelegate<double, double> OnCursorPositionChanged;
-        EventDelegate<MouseButton> OnMouseDown;
-        EventDelegate<MouseButton> OnMouseUp;
-        EventDelegate<double, double> OnScrollChanged;
-        EventDelegate<int> OnKeyPressed;
-        EventDelegate<int> OnKeyRelease;
-        EventDelegate<std::string> OnTextInput;
 
         int GetHeight();
 
@@ -64,14 +49,6 @@ namespace Engine {
         GLFWwindow* GetWindowHandler();
 
       private:
-        void init();
-
-        bool callbackSet = false;
-
-        void setCallbacks();
-
-        void unsetCallbacks();
-
         std::string title;
 
         int width;
@@ -91,6 +68,18 @@ namespace Engine {
 
         double GetAvgFPS() const;
 
+      protected:
+        virtual void onWindowSizeChanged(int width, int height);
+        virtual void onFramebufferSizeChanged(int width, int height);
+        virtual void onCursorPositionChanged(double xpos, double ypos);
+        virtual void on_mouse_down(MouseButton button);
+        virtual void on_mouse_up(MouseButton button);
+        virtual void onScrollChanged(double xoffset, double yoffset);
+        virtual void OnKeyPressed(int key);
+        virtual void OnKeyReleased(int key);
+        virtual void onTextInput(std::string text);
+
+
       public:
         double GetMousePositionX() const;
 
@@ -103,41 +92,13 @@ namespace Engine {
         int framebufferWidth;
         int framebufferHeight;
 
-        GLFWwindow* window;
+        GLFWwindow* glfw_window;
 
         void setCorrectSizeValues();
 
 
-        void onWindowSizeChanged(GLFWwindow* window, int width, int height);
-
-        void onFramebufferSizeChanged(GLFWwindow* window, int width, int height);
-
-        void onCursorPositionChanged(GLFWwindow* window, double xpos, double ypos);
-
-        void onMouseButtonChanged(GLFWwindow* window, int button, int action, int mods);
-
-        void onScrollChanged(GLFWwindow* window, double xoffset, double yoffset);
-
-        void onKeyChanged(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-        void onTextInput(GLFWwindow* window, unsigned int codepoint);
-
-
-        static EventDelegate<GLFWwindow*, int, int> onAnyWindowSizeChanged;
-        uint32_t onAnyWindowSizeChangedSubscription;
-        static EventDelegate<GLFWwindow*, int, int> onAnyFramebufferSizeChanged;
-        uint32_t onAnyFramebufferSizeChangedSubscription;
-        static EventDelegate<GLFWwindow*, double, double> onAnyCursorPositionChanged;
-        uint32_t onAnyCursorPositionChangedSubscription;
-        static EventDelegate<GLFWwindow*, int, int, int> onAnyMouseButtonChanged;
-        uint32_t onAnyMouseButtonChangedSubscription;
-        static EventDelegate<GLFWwindow*, double, double> onAnyScrollChanged;
-        uint32_t onAnyScrollChangedSubscription;
-        static EventDelegate<GLFWwindow*, int, int, int, int> onAnyKeyChanged;
-        uint32_t onAnyKeyChangedSubscription;
-        static EventDelegate<GLFWwindow*, unsigned int> onAnyTextInput;
-        uint32_t onAnyTextInputSubscription;
-
+      private:
+        static void set_all_callbacks(GLFWwindow* window);
 
         // callbacks for glfw
         static void window_size_callback(GLFWwindow* window, int width, int height);
@@ -154,9 +115,12 @@ namespace Engine {
 
         static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+        static std::string unicode_codepoint_as_utf_8_string(unsigned int codepoint);
 
+
+      private:
         // only one window can exist
-        static bool windowCreated;
+        static Window* active_window;
 
 
       public:

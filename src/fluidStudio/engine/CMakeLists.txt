@@ -55,7 +55,6 @@ include_directories(./)
 # source files
 set(ENGINE_SOURCE_FILES
         Window.cpp Window.hpp
-        EventDelegate.hpp
         graphics/Texture2D.cpp graphics/Texture2D.hpp
         graphics/Texture2DArray.cpp graphics/Texture2DArray.hpp
         graphics/buffer/UniformBuffer.hpp
@@ -66,8 +65,6 @@ set(ENGINE_SOURCE_FILES
         graphics/buffer/Buffer.cpp graphics/buffer/Buffer.hpp
         graphics/Shader.cpp graphics/Shader.hpp
         graphics/Enums.hpp graphics/Enums.cpp
-        text/Font.cpp text/Font.hpp
-        text/TextRenderer.cpp text/TextRenderer.hpp
         RectangleRenderer.cpp RectangleRenderer.hpp
         stb_implementation.cpp
         )

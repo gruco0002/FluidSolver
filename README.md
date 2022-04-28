@@ -69,7 +69,7 @@ sudo apt install xorg-dev
 package manager (here `apt`) is not the same for every linux system.
 
 The mesa packages are required for OpenGL support. The xorg-dev is required in order to
-create a window in which OpenGL can render its stuff.
+create a glfw_window in which OpenGL can render its stuff.
 Also make sure to have a decent c++ and c compiler like a recent version of gcc available
 on your system.
 I recommend installing the build-essential package, since it contains the compiler and
