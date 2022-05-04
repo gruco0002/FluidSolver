@@ -1,13 +1,13 @@
 #pragma once
 
 #include "FluidSolverTypes.hpp"
+#include "Simulation.hpp"
+#include "engine/RectangleRenderer.hpp"
+#include "engine/Window.hpp"
+#include "engine/graphics/Framebuffer.hpp"
+#include "userInterface/UiLayer.hpp"
 
-#include <Simulation.hpp>
-#include <engine/RectangleRenderer.hpp>
-#include <engine/Window.hpp>
-#include <engine/graphics/Framebuffer.hpp>
 #include <thread>
-#include <userInterface/UiLayer.hpp>
 
 namespace FluidUi {
     class FluidSolverWindow : public Engine::Window {
