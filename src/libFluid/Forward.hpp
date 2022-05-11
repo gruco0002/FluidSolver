@@ -2,6 +2,7 @@
 
 namespace FluidSolver
 {
+    class SimulatorVisualizerBundle;
     class Simulation;
     class ITimestepGenerator;
     class ISimulationVisualizer;

@@ -18,4 +18,8 @@ namespace FluidUi {
 
         simulation->execute_simulation_step();
     }
+
+    SimulationRunner::SimulationRunner() {
+        run_asynchronously = true; // by default we want the simulation to run asynchronously
+    }
 } // namespace FluidUi

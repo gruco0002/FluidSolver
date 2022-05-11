@@ -6,7 +6,10 @@
 namespace FluidUi {
     class SimulationRunner : public ComponentRunner {
       public:
-        std::unique_ptr<FluidSolver::Simulation> simulation = nullptr;
+
+        SimulationRunner();
+
+        std::shared_ptr<FluidSolver::Simulation> simulation = nullptr;
 
       protected:
         void execute_computation() override;

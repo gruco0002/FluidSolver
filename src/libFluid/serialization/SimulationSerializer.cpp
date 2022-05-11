@@ -20,6 +20,7 @@
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
+#include "SimulatorVisualizerBundle.hpp"
 
 
 #include <filesystem>
@@ -1008,17 +1009,18 @@ namespace FluidSolver
     }
 
 
-    Simulation SimulationSerializer::load_from_file()
+    SimulatorVisualizerBundle SimulationSerializer::load_from_file()
     {
         // reset error statistics
         error_count = 0;
         warning_count = 0;
 
         // setup basic parameters
-        Simulation res;
-        res.parameters.invalidate = true;
+        SimulatorVisualizerBundle res;
+        res.simulation = std::make_shared<Simulation>();
+        res.simulation->parameters.invalidate = true;
 
-        res.parameters.collection = std::make_shared<ParticleCollection>();
+        res.simulation->parameters.collection = std::make_shared<ParticleCollection>();
 
         // check version
         YAML::Node config = YAML::LoadFile(filepath);
@@ -1033,9 +1035,9 @@ namespace FluidSolver
         // load the data
         try
         {
-            load_scenario(config["scenario"], res);
-            load_solver(res, config["solver"]);
-            res.parameters.visualizer = load_visualizer(config["visualizer"]);
+            load_scenario(config["scenario"], *res.simulation);
+            load_solver(*res.simulation, config["solver"]);
+            res.visualizer = load_visualizer(config["visualizer"]);
         }
         catch (const std::exception& e)
         {
@@ -1049,7 +1051,7 @@ namespace FluidSolver
     }
 
 
-    void SimulationSerializer::save_to_file(const Simulation& simulation)
+    void SimulationSerializer::save_to_file(const SimulatorVisualizerBundle& simulation)
     {
         // reset error statistics
         error_count = 0;
@@ -1062,9 +1064,9 @@ namespace FluidSolver
 
 
         // save values
-        config["scenario"] = save_scenario(simulation);
-        config["solver"] = save_solver(simulation);
-        config["visualizer"] = save_visualizer(simulation.parameters.visualizer);
+        config["scenario"] = save_scenario(*simulation.simulation);
+        config["solver"] = save_solver(*simulation.simulation);
+        config["visualizer"] = save_visualizer(simulation.visualizer);
 
         // save data to file
         std::ofstream filestream(filepath);

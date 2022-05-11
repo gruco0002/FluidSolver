@@ -6,6 +6,7 @@
 #include "engine/Window.hpp"
 #include "engine/graphics/Framebuffer.hpp"
 #include "userInterface/UiLayer.hpp"
+#include "SimulatorVisualizerBundle.hpp"
 
 #include <thread>
 
@@ -30,7 +31,7 @@ namespace FluidUi {
 
 
       public:
-        FluidSolver::Simulation simulation;
+        FluidSolver::SimulatorVisualizerBundle simulation;
 
 
         bool running = false;

@@ -89,7 +89,7 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
-        time/Timepoint.hpp)
+        time/Timepoint.hpp SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

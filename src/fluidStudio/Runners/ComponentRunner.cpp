@@ -11,7 +11,7 @@ namespace FluidUi {
 
         start_or_discard_thread_if_required();
 
-        if (run_in_parallel) {
+        if (run_asynchronously) {
             // asynchronous computation in another thread
             currently_computing = true;
             invoke_computation_start_in_thread = true;
@@ -30,7 +30,7 @@ namespace FluidUi {
     }
 
     void ComponentRunner::start_or_discard_thread_if_required() {
-        if (run_in_parallel) {
+        if (run_asynchronously) {
             if (worker_thread == nullptr) {
                 // we should run asynchronous but the worker thread is not running, hence create a new thread
                 worker_thread_should_terminate = false;

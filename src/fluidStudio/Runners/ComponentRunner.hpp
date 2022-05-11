@@ -8,14 +8,13 @@ namespace FluidUi {
 
       public:
 
-        bool run_in_parallel = false;
-
         bool is_currently_computing() const;
 
         bool start_next_computation();
 
         virtual ~ComponentRunner();
 
+        bool run_asynchronously = false;
 
       protected:
 

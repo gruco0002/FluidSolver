@@ -32,9 +32,9 @@ namespace FluidSolver
         bool has_errors() const;
         bool has_warnings() const;
 
-        Simulation load_from_file();
+        SimulatorVisualizerBundle load_from_file();
 
-        void save_to_file(const Simulation& simulation);
+        void save_to_file(const SimulatorVisualizerBundle& simulation);
 
         virtual ~SimulationSerializer()
         {
