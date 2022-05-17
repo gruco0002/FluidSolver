@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_IMGUIHELPER_HPP
-#define FLUIDSOLVER_IMGUIHELPER_HPP
+#pragma once
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -34,5 +33,3 @@ namespace ImGuiHelper
 
 } // namespace ImGuiHelper
 
-
-#endif // FLUIDSOLVER_IMGUIHELPER_HPP
