@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "Forward.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/SensorWriter.hpp"
@@ -35,8 +35,8 @@ namespace FluidSolver {
         virtual void save_data_to_file(SensorWriter& writer) = 0;
 
         // TODO: make abstract
-        virtual inline Compatibility check() {
-            return {};
+        virtual inline  void create_compatibility_report(CompatibilityReport &report) {
+
         }
 
         virtual ~ISensor() {

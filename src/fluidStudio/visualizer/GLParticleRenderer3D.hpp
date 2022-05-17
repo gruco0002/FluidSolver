@@ -71,7 +71,7 @@ namespace FluidSolver
 
         virtual void render() override;
 
-        virtual Compatibility check() override;
+        virtual void create_compatibility_report(CompatibilityReport &report) override;
 
         virtual Image get_image_data() override;
 

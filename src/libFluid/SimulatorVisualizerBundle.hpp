@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CompatibilityReport.hpp"
 #include "FluidInclude.hpp"
 
 namespace FluidSolver {
@@ -9,5 +10,6 @@ namespace FluidSolver {
         std::shared_ptr<ISimulationVisualizer> visualizer = nullptr;
 
 
+        void create_compatibility_report(CompatibilityReport &report);
     };
 }

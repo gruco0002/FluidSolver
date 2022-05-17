@@ -1,43 +1,38 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
+#include "DataChangeStruct.hpp"
 #include "FluidInclude.hpp"
 #include "ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "time/ITimestepGenerator.hpp"
 #include "time/Timepoint.hpp"
-#include "DataChangeStruct.hpp"
 
 #include <memory>
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
     class IFluidSolverBase {
       public:
-        struct SimulationParameters : public DataChangeStruct
-        {
+        struct SimulationParameters : public DataChangeStruct {
             pFloat rest_density = 1.0f;
             pFloat gravity = 9.81f;
             pFloat particle_size = 1.0f;
 
         } parameters;
 
-        struct SimulationData : public DataChangeStruct{
+        struct SimulationData : public DataChangeStruct {
             std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
             std::shared_ptr<ParticleCollection> collection = nullptr;
         } data;
 
-        virtual void execute_simulation_step(Timepoint &timestep) = 0;
+        virtual void execute_simulation_step(Timepoint& timestep) = 0;
 
         virtual ~IFluidSolverBase() = default;
 
         virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() = 0;
 
-        virtual Compatibility check() = 0;
-
-
-
+        virtual void create_compatibility_report(CompatibilityReport& report) = 0;
     };
 
     /**
@@ -78,7 +73,8 @@ namespace FluidSolver
      *      NeighborhoodInterface create_interface();
      *
      */
-    template <typename Kernel, typename NeighborhoodSearch> class IFluidSolver : public IFluidSolverBase {
+    template<typename Kernel, typename NeighborhoodSearch>
+    class IFluidSolver : public IFluidSolverBase {
       public:
         Kernel kernel;
 

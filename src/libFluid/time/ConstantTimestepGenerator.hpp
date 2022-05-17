@@ -15,6 +15,6 @@ namespace FluidSolver {
         float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) override;
         void generate_next_timestep() override;
 
-        Compatibility check() override;
+        void create_compatibility_report(CompatibilityReport &report) override;
     };
 } // namespace FluidSolver

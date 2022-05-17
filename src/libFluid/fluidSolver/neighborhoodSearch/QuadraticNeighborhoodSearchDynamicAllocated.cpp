@@ -58,26 +58,26 @@ namespace FluidSolver {
     void QuadraticNeighborhoodSearchDynamicAllocated::initialize() {
     }
 
-    Compatibility QuadraticNeighborhoodSearchDynamicAllocated::check() {
-        Compatibility c;
+    void QuadraticNeighborhoodSearchDynamicAllocated::create_compatibility_report(CompatibilityReport &report) {
+        report.begin_scope(FLUID_NAMEOF(QuadraticNeighborhoodSearchDynamicAllocated));
         if (collection == nullptr) {
-            c.add_issue({"QuadraticNeighborhoodSearchDynamicAllocated", "ParticleCollection is null."});
+            report.add_issue( "ParticleCollection is null.");
         } else {
             if (!collection->is_type_present<MovementData>()) {
-                c.add_issue(
-                        {"QuadraticNeighborhoodSearchDynamicAllocated", "Particles are missing the MovementData attribute."});
+                report.add_issue(
+                         "Particles are missing the MovementData attribute.");
             }
             if (!collection->is_type_present<ParticleInfo>()) {
-                c.add_issue(
-                        {"QuadraticNeighborhoodSearchDynamicAllocated", "Particles are missing the ParticleInfo attribute."});
+                report.add_issue(
+                         "Particles are missing the ParticleInfo attribute.");
             }
         }
 
         if (search_radius <= 0.0f) {
-            c.add_issue({"QuadraticNeighborhoodSearchDynamicAllocated", "Search radius is smaller or equal to zero."});
+            report.add_issue( "Search radius is smaller or equal to zero.");
         }
 
-        return c;
+      report.end_scope();
     }
 
     std::shared_ptr<NeighborhoodInterface> QuadraticNeighborhoodSearchDynamicAllocated::create_interface() {

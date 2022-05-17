@@ -1,7 +1,6 @@
-#ifndef FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
-#define FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP
+#pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "visualizer/Image.hpp"
@@ -41,8 +40,6 @@ namespace FluidSolver
 
         virtual ~ISimulationVisualizer() = default;
 
-        virtual Compatibility check() = 0;
+        virtual void create_compatibility_report(CompatibilityReport &report) = 0;
     };
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_ISIMULATIONVISUALIZER_HPP

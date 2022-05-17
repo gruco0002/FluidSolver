@@ -19,7 +19,7 @@ namespace FluidSolver
 
         virtual void initialize() override;
 
-        virtual Compatibility check() override;
+        virtual void create_compatibility_report(CompatibilityReport &report) override;
 
         virtual void render() override;
 

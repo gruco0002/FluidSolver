@@ -53,30 +53,29 @@ namespace FluidSolver {
             float max_allowed_timestep = get_non_cfl_validating_timestep(max_acceleration, max_velocity);
 
             timestep = std::max(timestep, std::min(settings.max_timestep, max_allowed_timestep));
-
         }
 
         generated_timestep = timestep;
     }
 
-    Compatibility DynamicCflTimestepGenerator::check() {
-        Compatibility c;
+    void DynamicCflTimestepGenerator::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(DynamicCflTimestepGenerator));
+
         if (parameters.particle_collection == nullptr) {
-            c.add_issue({"DynamicCflTimestepGenerator", "ParticleCollection is null."});
+            report.add_issue("ParticleCollection is null.");
         } else {
-            if (!parameters.particle_collection->is_type_present<MovementData>() && !parameters.particle_collection->is_type_present<MovementData3D>() ) {
-                c.add_issue({"DynamicCflTimestepGenerator", "Particles are missing the MovementData or MovementData3D attribute."});
+            if (!parameters.particle_collection->is_type_present<MovementData>() && !parameters.particle_collection->is_type_present<MovementData3D>()) {
+                report.add_issue("Particles are missing the MovementData or MovementData3D attribute.");
             }
             if (!parameters.particle_collection->is_type_present<ParticleInfo>()) {
-                c.add_issue({"DynamicCflTimestepGenerator", "Particles are missing the ParticleInfo attribute."});
+                report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
         }
 
         if (parameters.particle_size <= 0.0f) {
-            c.add_issue({"DynamicCflTimestepGenerator", "Particle size is smaller or equal to zero."});
+            report.add_issue("Particle size is smaller or equal to zero.");
         }
-
-        return c;
+        report.end_scope();
     }
     float DynamicCflTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
         FLUID_ASSERT(max_velocity > 0.0f);

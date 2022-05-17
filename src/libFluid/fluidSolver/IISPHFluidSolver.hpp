@@ -40,7 +40,7 @@ namespace FluidSolver {
 
         std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override;
 
-        Compatibility check() override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         void CalculateDensity(pIndex_t particleIndex);
@@ -98,44 +98,45 @@ namespace FluidSolver {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    Compatibility IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::check() {
-        Compatibility c;
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver));
+
         if (data.collection == nullptr) {
-            c.add_issue({"IISPHFluidSolver", "ParticleCollection is null."});
+            report.add_issue("ParticleCollection is null.");
         } else {
             if (!data.collection->is_type_present<MovementData>()) {
-                c.add_issue({"IISPHFluidSolver", "Particles are missing the MovementData attribute."});
+                report.add_issue("Particles are missing the MovementData attribute.");
             }
             if (!data.collection->is_type_present<ParticleData>()) {
-                c.add_issue({"IISPHFluidSolver", "Particles are missing the ParticleData attribute."});
+                report.add_issue("Particles are missing the ParticleData attribute.");
             }
             if (!data.collection->is_type_present<ParticleInfo>()) {
-                c.add_issue({"IISPHFluidSolver", "Particles are missing the ParticleInfo attribute."});
+                report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
             if (!data.collection->is_type_present<ExternalForces>()) {
-                c.add_issue({"IISPHFluidSolver", "Particles are missing the ExternalForces attribute."});
+                report.add_issue("Particles are missing the ExternalForces attribute.");
             }
             if (!data.collection->is_type_present<IISPHParticleData>()) {
-                c.add_issue({"IISPHFluidSolver", "Particles are missing the IISPHParticleData attribute."});
+                report.add_issue("Particles are missing the IISPHParticleData attribute.");
             }
         }
 
         if (settings.MaxNumberOfIterations < settings.MinNumberOfIterations) {
-            c.add_issue({"IISPHFluidSolver", "Max iterations are less than min number of iterations."});
+            report.add_issue("Max iterations are less than min number of iterations.");
         }
 
         if (settings.MaxDensityErrorAllowed <= 0.0f) {
-            c.add_issue({"IISPHFluidSolver", "MaxDensityErrorAllowed is smaller or equal to zero."});
+            report.add_issue("MaxDensityErrorAllowed is smaller or equal to zero.");
         }
 
         if (data.timestep_generator == nullptr) {
-            c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
+            report.add_issue("Timestep generator is null");
         }
 
-        c.add_compatibility(neighborhood_search.check());
-        c.add_compatibility(kernel.check());
+        neighborhood_search.create_compatibility_report(report);
+        kernel.create_compatibility_report(report);
 
-        return c;
+        report.end_scope();
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>

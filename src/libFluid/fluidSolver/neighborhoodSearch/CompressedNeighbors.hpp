@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
@@ -122,7 +122,7 @@ namespace FluidSolver
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        Compatibility check();
+        void create_compatibility_report(CompatibilityReport &report);
 
 
       private:

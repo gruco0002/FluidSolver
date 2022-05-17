@@ -30,8 +30,7 @@ namespace FluidSolver
     class SensorWriter;
     class OutputManager;
 
-    class Compatibility;
-    struct CompatibilityIssue;
+    class CompatibilityReport;
 
     // other stuff
     struct DataChangeStruct;

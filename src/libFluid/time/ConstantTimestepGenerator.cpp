@@ -5,12 +5,12 @@ namespace FluidSolver {
         generated_timestep = settings.timestep;
     }
 
-    Compatibility ConstantTimestepGenerator::check() {
-        Compatibility c;
+    void ConstantTimestepGenerator::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(ConstantTimestepGenerator));
         if (settings.timestep <= 0.0f) {
-            c.add_issue({"ConstantTimestepGenerator", "Timestep is smaller or equal to zero."});
+            report.add_issue("Timestep is smaller or equal to zero.");
         }
-        return c;
+        report.end_scope();
     }
     float ConstantTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
         FLUID_ASSERT(max_velocity > 0.0f);

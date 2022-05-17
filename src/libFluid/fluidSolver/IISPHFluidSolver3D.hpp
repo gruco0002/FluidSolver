@@ -528,44 +528,43 @@ namespace FluidSolver {
             return neighborhood_search.create_interface();
         }
 
-        virtual Compatibility check() override {
-            Compatibility c;
+        virtual void create_compatibility_report(CompatibilityReport& report) override {
+            report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver3D));
             if (data.collection == nullptr) {
-                c.add_issue({"IISPHFluidSolver3D", "Particle collection is null."});
+                report.add_issue("Particle collection is null.");
             } else {
                 if (!data.collection->is_type_present<MovementData3D>()) {
-                    c.add_issue({"IISPHFluidSolver3D", "Particles are missing the MovementData3D attribute."});
+                    report.add_issue("Particles are missing the MovementData3D attribute.");
                 }
                 if (!data.collection->is_type_present<ParticleData>()) {
-                    c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ParticleData attribute."});
+                    report.add_issue("Particles are missing the ParticleData attribute.");
                 }
                 if (!data.collection->is_type_present<ParticleInfo>()) {
-                    c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ParticleInfo attribute."});
+                    report.add_issue("Particles are missing the ParticleInfo attribute.");
                 }
                 if (!data.collection->is_type_present<ExternalForces3D>()) {
-                    c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ExternalForces3D attribute."});
+                    report.add_issue("Particles are missing the ExternalForces3D attribute.");
                 }
                 if (!data.collection->is_type_present<IISPHParticleData3D>()) {
-                    c.add_issue({"IISPHFluidSolver3D", "Particles are missing the IISPHParticleData3D attribute."});
+                    report.add_issue("Particles are missing the IISPHParticleData3D attribute.");
                 }
             }
 
             if (settings.max_number_of_iterations < settings.min_number_of_iterations) {
-                c.add_issue({"IISPHFluidSolver3D", "Max iterations are less than min number of iterations."});
+                report.add_issue("Max iterations are less than min number of iterations.");
             }
 
             if (settings.max_density_error_allowed <= 0.0f) {
-                c.add_issue({"IISPHFluidSolver3D", "MaxDensityErrorAllowed is smaller or equal to zero."});
+                report.add_issue("MaxDensityErrorAllowed is smaller or equal to zero.");
             }
 
             if (data.timestep_generator == nullptr) {
-                c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
+                report.add_issue("Timestep generator is null");
             }
+            neighborhood_search.create_compatibility_report(report);
+            kernel.create_compatibility_report(report);
 
-            c.add_compatibility(neighborhood_search.check());
-            c.add_compatibility(kernel.check());
-
-            return c;
+            report.end_scope();
         }
     };
 

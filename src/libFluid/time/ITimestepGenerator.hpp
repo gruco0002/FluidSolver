@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 #include <memory>
@@ -28,6 +28,6 @@ namespace FluidSolver
 
         virtual ~ITimestepGenerator() = default;
 
-        virtual Compatibility check() = 0;
+        virtual void create_compatibility_report(CompatibilityReport &report) = 0;
     };
 } // namespace FluidSolver

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "FluidInclude.hpp"
 
 namespace FluidSolver
@@ -22,7 +22,7 @@ namespace FluidSolver
 
         void initialize();
 
-        Compatibility check();
+        void create_compatibility_report(CompatibilityReport &report);
 
       private:
         float h = 0.0f;

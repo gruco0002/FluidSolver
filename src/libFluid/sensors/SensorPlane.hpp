@@ -4,23 +4,17 @@
 #include "sensors/SensorData.hpp"
 #include "visualizer/Image.hpp"
 
-namespace FluidSolver::Sensors
-{
+namespace FluidSolver::Sensors {
 
     class SensorPlane : public ISensor {
-
-
       public:
-        enum class SensorPlaneType
-        {
+        enum class SensorPlaneType {
             SensorPlaneTypeDensity,
             SensorPlaneTypeVelocity,
             SensorPlaneTypePressure
         };
 
-        struct SensorPlaneSettings
-        {
-
+        struct SensorPlaneSettings {
             vec3 origin = vec3(0.0f, 0.0f, 0.0f);
             vec3 span_x = vec3(1.0f, 0.0f, 0.0f);
             vec3 span_y = vec3(0.0f, 1.0f, 0.0f);
@@ -43,12 +37,11 @@ namespace FluidSolver::Sensors
         } settings;
 
 
-
         virtual void calculate_and_store(const Timepoint& timepoint) override;
 
         virtual void save_data_to_file(SensorWriter& writer) override;
 
-        virtual Compatibility check() override;
+        virtual void create_compatibility_report(CompatibilityReport& report) override;
 
         const Image& get_last_image() const;
 

@@ -70,7 +70,6 @@ namespace FluidSolver {
                 ent->sim.gravity = parameters.gravity;
                 ent->sim.particle_size = parameters.particle_size;
                 ent->sim.notify_that_data_changed();
-
             }
 
             for (auto sen : data.sensors) {
@@ -80,7 +79,6 @@ namespace FluidSolver {
                 // sen->parameters.simulation_parameters = &internal_parameters;
 
                 sen->simulator_parameters.notify_that_data_changed();
-
             }
         }
 
@@ -105,7 +103,6 @@ namespace FluidSolver {
                 ent->sim.neighborhood_interface = neigborhood_interface;
 
                 ent->sim.notify_that_data_changed();
-
             }
 
             for (auto sen : data.sensors) {
@@ -115,7 +112,6 @@ namespace FluidSolver {
                 sen->simulator_data.collection = data.collection;
 
                 sen->simulator_data.notify_that_data_changed();
-
             }
 
             output->parameters.sensors = data.sensors;
@@ -130,30 +126,30 @@ namespace FluidSolver {
         initialize_if_required();
     }
 
-    Compatibility Simulator::check() {
-        Compatibility c;
+    void Simulator::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(Simulator));
 
         if (data.collection == nullptr) {
-            c.add_issue({"Simulation", "Particle collection is null."});
+            report.add_issue("Particle collection is null.");
         }
 
         if (data.fluid_solver == nullptr) {
-            c.add_issue({"Simulation", "Fluid solver is null."});
+            report.add_issue("Fluid solver is null.");
         } else {
-            c.add_compatibility(data.fluid_solver->check());
+            data.fluid_solver->create_compatibility_report(report);
         }
 
         if (data.timestep_generator == nullptr) {
-            c.add_issue({"Simulation", "Timestep is null."});
+            report.add_issue("Timestep is null.");
         } else {
-            c.add_compatibility(data.timestep_generator->check());
+            data.timestep_generator->create_compatibility_report(report);
         }
 
         for (auto& sensor : data.sensors) {
-            c.add_compatibility(sensor->check());
+            sensor->create_compatibility_report(report);
         }
 
-        return c;
+        report.end_scope();
     }
 
     const Timepoint& Simulator::get_current_timepoint() const {

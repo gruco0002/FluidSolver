@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "DataChangeStruct.hpp"
 #include "OutputManager.hpp"
 #include "entities/IEntity.hpp"
@@ -54,7 +54,7 @@ namespace FluidSolver {
         // TODO: rename in "force_initialization_in_next_execution_step"
         void manual_initialize();
 
-        Compatibility check();
+        void create_compatibility_report(CompatibilityReport &report);
     };
 
 } // namespace FluidSolver

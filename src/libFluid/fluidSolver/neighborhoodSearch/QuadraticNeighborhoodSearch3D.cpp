@@ -2,44 +2,34 @@
 
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
     using parallel = StdParallelForEach;
 
-    void QuadraticNeighborhoodSearch3D::initialize()
-    {
+    void QuadraticNeighborhoodSearch3D::initialize() {
     }
 
-    Compatibility QuadraticNeighborhoodSearch3D::check()
-    {
-        Compatibility c;
-        if (collection == nullptr)
-        {
-            c.add_issue({"QuadraticNeighborhoodSearch3D", "ParticleCollection is null."});
-        }
-        else
-        {
-            if (!collection->is_type_present<MovementData3D>())
-            {
-                c.add_issue({"QuadraticNeighborhoodSearch3D", "Particles are missing the MovementData3D attribute."});
+    void QuadraticNeighborhoodSearch3D::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(QuadraticNeighborhoodSearch3D));
+        if (collection == nullptr) {
+            report.add_issue("ParticleCollection is null.");
+        } else {
+            if (!collection->is_type_present<MovementData3D>()) {
+                report.add_issue("Particles are missing the MovementData3D attribute.");
             }
-            if (!collection->is_type_present<ParticleInfo>())
-            {
-                c.add_issue({"QuadraticNeighborhoodSearch3D", "Particles are missing the ParticleInfo attribute."});
+            if (!collection->is_type_present<ParticleInfo>()) {
+                report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
         }
 
-        if (search_radius <= 0.0f)
-        {
-            c.add_issue({"QuadraticNeighborhoodSearch3D", "Search radius is smaller or equal to zero."});
+        if (search_radius <= 0.0f) {
+            report.add_issue("Search radius is smaller or equal to zero.");
         }
 
-        return c;
+        report.end_scope();
     }
 
-    void QuadraticNeighborhoodSearch3D::find_neighbors()
-    {
+    void QuadraticNeighborhoodSearch3D::find_neighbors() {
         FLUID_ASSERT(collection != nullptr);
         FLUID_ASSERT(collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
@@ -59,8 +49,7 @@ namespace FluidSolver
                 return;
 
             auto& mv_i = collection->get<MovementData3D>(i);
-            for (particleIndex_t j = 0; j < collection->size(); j++)
-            {
+            for (particleIndex_t j = 0; j < collection->size(); j++) {
                 if (collection->get<ParticleInfo>(j).type == ParticleTypeDead)
                     continue;
 
@@ -68,8 +57,7 @@ namespace FluidSolver
 
                 vec3 difference = mv_i.position - mv_j.position;
 
-                if (glm::dot(difference, difference) <= search_radius_squared)
-                {
+                if (glm::dot(difference, difference) <= search_radius_squared) {
                     // the particle is a neighbor
                     if (data.neighbor_indices.size() <= data.size)
                         data.neighbor_indices.resize(data.size + 1);
@@ -80,8 +68,7 @@ namespace FluidSolver
         });
     }
 
-    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(particleIndex_t particleIndex)
-    {
+    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(particleIndex_t particleIndex) {
         Neighbors n;
         n.data = this;
         n.position_based = false;
@@ -89,8 +76,7 @@ namespace FluidSolver
         return n;
     }
 
-    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(const vec3& position)
-    {
+    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(const vec3& position) {
         Neighbors n;
         n.data = this;
         n.position_based = true;
@@ -98,8 +84,7 @@ namespace FluidSolver
         return n;
     }
 
-    std::shared_ptr<NeighborhoodInterface> QuadraticNeighborhoodSearch3D::create_interface()
-    {
+    std::shared_ptr<NeighborhoodInterface> QuadraticNeighborhoodSearch3D::create_interface() {
         auto res = std::make_shared<NeighborhoodInterface>();
 
         res->link.get_by_index = [this](particleIndex_t index) {
@@ -118,7 +103,9 @@ namespace FluidSolver
                 auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
                 return copy;
             };
-            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
+            n.iterator_link.iterator_delete = [](void* it) {
+                delete ((NeighborsIterator*)it);
+            };
             n.iterator_link.iterator_dereference = [](void* it) {
                 auto& index = *(*(NeighborsIterator*)it);
                 return &index;
@@ -126,7 +113,9 @@ namespace FluidSolver
             n.iterator_link.iterator_equals = [](void* it1, void* it2) {
                 return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
             };
-            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+            n.iterator_link.iterator_increment = [](void* it) {
+                ++(*(NeighborsIterator*)it);
+            };
 
             return n;
         };
@@ -147,7 +136,9 @@ namespace FluidSolver
                 auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
                 return copy;
             };
-            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
+            n.iterator_link.iterator_delete = [](void* it) {
+                delete ((NeighborsIterator*)it);
+            };
             n.iterator_link.iterator_dereference = [](void* it) {
                 auto& index = *(*(NeighborsIterator*)it);
                 return &index;
@@ -155,34 +146,34 @@ namespace FluidSolver
             n.iterator_link.iterator_equals = [](void* it1, void* it2) {
                 return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
             };
-            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+            n.iterator_link.iterator_increment = [](void* it) {
+                ++(*(NeighborsIterator*)it);
+            };
 
             return n;
         };
 
-        res->link.get_search_radius = [&]() { return this->search_radius; };
+        res->link.get_search_radius = [&]() {
+            return this->search_radius;
+        };
 
         return res;
     }
 
     bool QuadraticNeighborhoodSearch3D::NeighborsIterator::operator==(
-        const FluidSolver::QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const
-    {
+            const FluidSolver::QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const {
         return data->data == other.data->data && current == other.current;
     }
 
     bool QuadraticNeighborhoodSearch3D::NeighborsIterator::operator!=(
-        const QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const
-    {
+            const QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const {
         return !(*this == other);
     }
 
-    QuadraticNeighborhoodSearch3D::particleIndex_t& QuadraticNeighborhoodSearch3D::NeighborsIterator::operator*()
-    {
+    QuadraticNeighborhoodSearch3D::particleIndex_t& QuadraticNeighborhoodSearch3D::NeighborsIterator::operator*() {
         FLUID_ASSERT(data != nullptr);
         FLUID_ASSERT(data->data != nullptr);
-        if (!data->position_based)
-        {
+        if (!data->position_based) {
             FLUID_ASSERT(current >= 0);
             FLUID_ASSERT(data->data->collection->size() > current);
 
@@ -191,9 +182,7 @@ namespace FluidSolver
             FLUID_ASSERT(data->data->neighbor_data[data->of.particle].neighbor_indices.size() > current);
 
             return data->data->neighbor_data[data->of.particle].neighbor_indices[current];
-        }
-        else
-        {
+        } else {
             FLUID_ASSERT(data->data->collection != nullptr);
             FLUID_ASSERT(data->data->collection->size() > current);
             return current;
@@ -201,33 +190,26 @@ namespace FluidSolver
     }
 
     const QuadraticNeighborhoodSearch3D::NeighborsIterator QuadraticNeighborhoodSearch3D::NeighborsIterator::operator++(
-        int)
-    {
+            int) {
         NeighborsIterator copy = *this;
         ++(*this);
         return copy;
     }
 
-    QuadraticNeighborhoodSearch3D::NeighborsIterator& QuadraticNeighborhoodSearch3D::NeighborsIterator::operator++()
-    {
+    QuadraticNeighborhoodSearch3D::NeighborsIterator& QuadraticNeighborhoodSearch3D::NeighborsIterator::operator++() {
         FLUID_ASSERT(data != nullptr);
 
-        if (!data->position_based)
-        {
+        if (!data->position_based) {
             current++;
-        }
-        else
-        {
+        } else {
             FLUID_ASSERT(data->data != nullptr);
             FLUID_ASSERT(data->data->collection != nullptr);
             FLUID_ASSERT(data->data->search_radius > 0.0f);
             auto collection = data->data->collection;
             current++;
-            while (current < collection->size())
-            {
+            while (current < collection->size()) {
                 const vec3& position = collection->get<MovementData3D>(current).position;
-                if (glm::length(data->of.position - position) <= data->data->search_radius)
-                {
+                if (glm::length(data->of.position - position) <= data->data->search_radius) {
                     break;
                 }
                 current++;
@@ -236,8 +218,7 @@ namespace FluidSolver
         return *this;
     }
 
-    QuadraticNeighborhoodSearch3D::NeighborsIterator QuadraticNeighborhoodSearch3D::Neighbors::begin() const
-    {
+    QuadraticNeighborhoodSearch3D::NeighborsIterator QuadraticNeighborhoodSearch3D::Neighbors::begin() const {
         FLUID_ASSERT(data != nullptr);
         NeighborsIterator iterator;
         iterator.data = this;
@@ -246,18 +227,14 @@ namespace FluidSolver
         return iterator;
     }
 
-    QuadraticNeighborhoodSearch3D::NeighborsIterator QuadraticNeighborhoodSearch3D::Neighbors::end() const
-    {
+    QuadraticNeighborhoodSearch3D::NeighborsIterator QuadraticNeighborhoodSearch3D::Neighbors::end() const {
         FLUID_ASSERT(data != nullptr);
         NeighborsIterator iterator;
         iterator.data = this;
-        if (!position_based)
-        {
+        if (!position_based) {
             FLUID_ASSERT(data->neighbor_data.size() > of.particle);
             iterator.current = data->neighbor_data[of.particle].size;
-        }
-        else
-        {
+        } else {
             FLUID_ASSERT(data->collection != nullptr);
             iterator.current = data->collection->size();
         }

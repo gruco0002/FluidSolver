@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_CONTINOUSVISUALIZER_HPP
-#define FLUIDSOLVER_CONTINOUSVISUALIZER_HPP
+#pragma once
 
 #include "fluidSolver/kernel/CubicSplineKernel.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
@@ -24,7 +23,7 @@ namespace FluidSolver
 
         virtual void initialize() override;
 
-        virtual Compatibility check() override;
+        virtual void create_compatibility_report(CompatibilityReport &report) override;
 
         virtual void render() override;
 
@@ -45,6 +44,3 @@ namespace FluidSolver
         glm::vec2 calculate_particle_space_position_for_pixel(size_t x, size_t y);
     };
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_CONTINOUSVISUALIZER_HPP

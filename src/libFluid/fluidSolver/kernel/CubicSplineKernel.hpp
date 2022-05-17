@@ -1,8 +1,7 @@
-#ifndef FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
-#define FLUIDSOLVER_CUBICSPLINEKERNEL_HPP
+#pragma once
 
 
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 #include "FluidInclude.hpp"
 
 namespace FluidSolver
@@ -22,7 +21,7 @@ namespace FluidSolver
 
         vec2 GetKernelDerivativeReversedValue(const vec2& neighborPosition, const vec2& position) const;
 
-        Compatibility check();
+        void create_compatibility_report(CompatibilityReport &report);
 
         void initialize();
 
@@ -31,5 +30,3 @@ namespace FluidSolver
         float alpha = 0.0f;
     };
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_CUBICSPLINEKERNEL_HPP

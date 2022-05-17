@@ -73,7 +73,7 @@ set(LIB_FLUID_SOURCE_FILES
         "visualizer/Viewport2D.hpp"
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.cpp"
         "helper/ProtectedUnorderedMap.hpp"
-        "Compatibility.hpp" "Compatibility.cpp"
+        "CompatibilityReport.hpp" "CompatibilityReport.cpp"
         "helper/stb_implementation.cpp"
         "serialization/YamlHelpers.hpp"
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"

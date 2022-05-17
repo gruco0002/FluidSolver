@@ -259,10 +259,13 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
 void FluidUi::FluidSolverWindow::on_new_simulation() {
     this->current_type = this->solver_types.query_type(simulation.simulation->data.fluid_solver);
     simulation.simulation->manual_initialize();
-    auto compatibility_report = simulation.simulation->check();
-    if (compatibility_report.has_issues()) {
-        compatibility_report.log_issues();
+
+    FluidSolver::CompatibilityReport report;
+    simulation.create_compatibility_report(report);
+    if (report.has_issues()) {
+        report.log_issues();
     }
+
     simulation_changed_compared_to_visualization = true;
     render_image_updated = true;
 }
@@ -379,14 +382,14 @@ void FluidUi::FluidSolverWindow::setup_windows() {
 }
 
 void FluidUi::FluidSolverWindow::execute_one_simulation_step() {
-
-
-    auto compatibility_report = simulation.simulation->check();
-    if (compatibility_report.has_issues()) {
-        compatibility_report.log_issues();
+    FluidSolver::CompatibilityReport report;
+    simulation.create_compatibility_report(report);
+    if (report.has_issues()) {
+        report.log_issues();
         running = false;
         return;
     }
+
 
     simulation.simulation->execute_simulation_step();
     simulation_changed_compared_to_visualization = true;
@@ -396,13 +399,14 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
     if (!simulation_changed_compared_to_visualization)
         return;
 
-
-    auto compatibility_report = simulation.simulation->check();
-    if (compatibility_report.has_issues()) {
-        compatibility_report.log_issues();
+    FluidSolver::CompatibilityReport report;
+    simulation.create_compatibility_report(report);
+    if (report.has_issues()) {
+        report.log_issues();
         simulation_changed_compared_to_visualization = false;
         return;
     }
+
 
     bool is_gl_renderer =
             std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.visualizer) != nullptr;

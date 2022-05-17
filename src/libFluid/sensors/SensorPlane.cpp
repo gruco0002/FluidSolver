@@ -120,10 +120,7 @@ namespace FluidSolver::Sensors {
         }
     }
 
-    Compatibility SensorPlane::check() {
-        Compatibility c;
-
-        return c;
+    void SensorPlane::create_compatibility_report(CompatibilityReport& report) {
     }
 
     Image SensorPlane::get_image_representation() const {

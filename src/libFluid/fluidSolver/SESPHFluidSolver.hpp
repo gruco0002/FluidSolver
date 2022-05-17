@@ -25,7 +25,7 @@ namespace FluidSolver {
 
         std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override;
 
-        Compatibility check() override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         pFloat current_timestep = 0.0f;
@@ -142,33 +142,34 @@ namespace FluidSolver {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    Compatibility SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::check() {
-        Compatibility c;
+    void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(SESPHFluidSolver));
+
         if (data.collection == nullptr) {
-            c.add_issue({"SESPHFluidSolver", "ParticleCollection is null."});
+            report.add_issue("ParticleCollection is null.");
         } else {
             if (!data.collection->is_type_present<MovementData>()) {
-                c.add_issue({"SESPHFluidSolver", "Particles are missing the MovementData attribute."});
+                report.add_issue("Particles are missing the MovementData attribute.");
             }
             if (!data.collection->is_type_present<ParticleData>()) {
-                c.add_issue({"SESPHFluidSolver", "Particles are missing the ParticleData attribute."});
+                report.add_issue("Particles are missing the ParticleData attribute.");
             }
             if (!data.collection->is_type_present<ParticleInfo>()) {
-                c.add_issue({"SESPHFluidSolver", "Particles are missing the ParticleInfo attribute."});
+                report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
             if (!data.collection->is_type_present<ExternalForces>()) {
-                c.add_issue({"SESPHFluidSolver", "Particles are missing the ExternalForces attribute."});
+                report.add_issue("Particles are missing the ExternalForces attribute.");
             }
         }
 
         if (data.timestep_generator == nullptr) {
-            c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
+            report.add_issue("Timestep generator is null");
         }
 
-        c.add_compatibility(neighborhood_search.check());
-        c.add_compatibility(kernel.check());
+        neighborhood_search.create_compatibility_report(report);
+        kernel.create_compatibility_report(report);
 
-        return c;
+        report.end_scope();
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>

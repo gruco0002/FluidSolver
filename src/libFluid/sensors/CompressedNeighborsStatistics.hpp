@@ -26,7 +26,7 @@ namespace FluidSolver::Sensors {
         virtual void calculate_and_store(const Timepoint& timepoint) override;
         virtual void save_data_to_file(SensorWriter& writer) override;
 
-        virtual Compatibility check() override;
+        virtual void create_compatibility_report(CompatibilityReport& report) override;
     };
 
 } // namespace FluidSolver::Sensors

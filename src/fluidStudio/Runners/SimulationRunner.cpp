@@ -8,9 +8,10 @@ namespace FluidUi {
         if (simulation == nullptr)
             return;
 
-        auto compatibility_report = simulation->check();
-        if (compatibility_report.has_issues()) {
-            compatibility_report.log_issues();
+        FluidSolver::CompatibilityReport report;
+        simulation->create_compatibility_report(report);
+        if (report.has_issues()) {
+            report.log_issues();
             return;
         }
 

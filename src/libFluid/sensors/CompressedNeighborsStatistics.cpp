@@ -71,20 +71,17 @@ namespace FluidSolver::Sensors {
         }
     }
 
-    Compatibility CompressedNeighborStorageSensor::check() {
-        Compatibility c;
-
-
+    void CompressedNeighborStorageSensor::create_compatibility_report(CompatibilityReport& report) {
+        report.begin_scope(FLUID_NAMEOF(CompressedNeighborStorageSensor));
         if (this->simulator_data.collection == nullptr) {
-            c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor), "Particle collection is nullptr."});
+            report.add_issue("Particle collection is nullptr.");
         } else {
             if (!this->simulator_data.collection->is_type_present<CompressedNeighborhoodSearch::NeighborStorage>()) {
-                c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor),
-                        "NeighborStorage attribute is missing in particle collection."});
+                report.add_issue(
+                        "NeighborStorage attribute is missing in particle collection.");
             }
         }
-
-        return c;
+        report.end_scope();
     }
 
 } // namespace FluidSolver::Sensors

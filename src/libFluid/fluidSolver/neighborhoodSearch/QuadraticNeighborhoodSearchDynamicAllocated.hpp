@@ -3,7 +3,7 @@
 #include "NeighborhoodInterface.hpp"
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
-#include "Compatibility.hpp"
+#include "CompatibilityReport.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -125,7 +125,7 @@ namespace FluidSolver
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        Compatibility check();
+        void create_compatibility_report(CompatibilityReport &report);
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;

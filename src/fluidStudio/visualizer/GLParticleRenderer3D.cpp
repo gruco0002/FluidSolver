@@ -14,26 +14,27 @@ Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_targe
 void FluidSolver::GLParticleRenderer3D::initialize() {
     FLUID_ASSERT(Engine::opengl_context_available());
 
-    if (!this->check().has_issues()) {
+    CompatibilityReport report;
+    create_compatibility_report(report);
+    if (!report.has_issues()) {
         initialize_in_next_render_step = true;
     }
 }
 
-FluidSolver::Compatibility FluidSolver::GLParticleRenderer3D::check() {
-    Compatibility c;
-
+void FluidSolver::GLParticleRenderer3D::create_compatibility_report(CompatibilityReport& report) {
+    report.begin_scope(FLUID_NAMEOF(GLParticleRenderer3D));
     if (parameters.collection == nullptr) {
-        c.add_issue({"GLParticleRenderer3D", "ParticleCollection is null."});
+        report.add_issue("ParticleCollection is null.");
     } else {
         if (!parameters.collection->is_type_present<MovementData3D>()) {
-            c.add_issue({"GLParticleRenderer3D", "Particles are missing the MovementData3D attribute."});
+            report.add_issue("Particles are missing the MovementData3D attribute.");
         }
         if (!parameters.collection->is_type_present<ParticleInfo>()) {
-            c.add_issue({"GLParticleRenderer3D", "Particles are missing the ParticleInfo attribute."});
+            report.add_issue("Particles are missing the ParticleInfo attribute.");
         }
     }
 
-    return c;
+    report.end_scope();
 }
 
 void FluidSolver::GLParticleRenderer3D::render() {

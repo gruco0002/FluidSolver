@@ -161,31 +161,31 @@ namespace FluidSolver
         gridToParticles.clear();
     }
 
-    Compatibility HashedNeighborhoodSearch::check()
+    void HashedNeighborhoodSearch::create_compatibility_report(CompatibilityReport &report)
     {
-        Compatibility c;
+        report.begin_scope(FLUID_NAMEOF(HashedNeighborhoodSearch));
         if (collection == nullptr)
         {
-            c.add_issue({"HashedNeighborhoodSearch", "ParticleCollection is null."});
+            report.add_issue({"HashedNeighborhoodSearch", "ParticleCollection is null."});
         }
         else
         {
             if (!collection->is_type_present<MovementData>())
             {
-                c.add_issue({"HashedNeighborhoodSearch", "Particles are missing the MovementData attribute."});
+                report.add_issue({"HashedNeighborhoodSearch", "Particles are missing the MovementData attribute."});
             }
             if (!collection->is_type_present<ParticleInfo>())
             {
-                c.add_issue({"HashedNeighborhoodSearch", "Particles are missing the ParticleInfo attribute."});
+                report.add_issue({"HashedNeighborhoodSearch", "Particles are missing the ParticleInfo attribute."});
             }
         }
 
         if (search_radius <= 0.0f)
         {
-            c.add_issue({"HashedNeighborhoodSearch", "Search radius is smaller or equal to zero."});
+            report.add_issue({"HashedNeighborhoodSearch", "Search radius is smaller or equal to zero."});
         }
 
-        return c;
+       report.end_scope();
     }
 
     std::shared_ptr<NeighborhoodInterface> HashedNeighborhoodSearch::create_interface()
