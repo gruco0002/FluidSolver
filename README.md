@@ -3,7 +3,7 @@ A SPH Fluid Solver framework and studio application implemented in C++ with Open
 The fluid solver framework is tested with the help of googletest.
 Furthermore the project contains a command line tool to calculate fluid scenarios.
 
-![Screenshot](https://github.com/gruco0002/FluidSolver/blob/master/resources/Screenshot.png?raw=true)
+![Screenshot](https://github.com/gruco0002/FluidSolver/blob/main/resources/Screenshot.png?raw=true)
 
 ## Using the code
 The whole project is cmake based and configured to run on established systems like common Linux distros, Windows machines
