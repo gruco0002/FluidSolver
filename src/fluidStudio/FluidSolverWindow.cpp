@@ -86,7 +86,7 @@ void FluidUi::FluidSolverWindow::render() {
 }
 
 void FluidUi::FluidSolverWindow::create_empty_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulation>();
+    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
     simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
     simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData>();
@@ -112,7 +112,7 @@ void FluidUi::FluidSolverWindow::create_empty_simulation() {
 }
 
 void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulation>();
+    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
     simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
     simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData3D>();
@@ -136,7 +136,7 @@ void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
 }
 
 void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulation>();
+    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
     simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
     simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData3D>();

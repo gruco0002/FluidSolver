@@ -120,7 +120,7 @@ namespace FluidSolver
 
         void initialize();
 
-        NeighborhoodInterface create_interface();
+        std::shared_ptr<NeighborhoodInterface> create_interface();
 
         Compatibility check();
 

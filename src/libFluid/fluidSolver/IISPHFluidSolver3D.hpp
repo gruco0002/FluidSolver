@@ -8,7 +8,7 @@
 
 namespace FluidSolver {
 
-    struct IISPHSettings3D {
+    struct IISPHSettings3D : public DataChangeStruct {
         pFloat max_density_error_allowed = 0.001f;
 
         size_t min_number_of_iterations = 2;
@@ -43,12 +43,12 @@ namespace FluidSolver {
         float current_timestep = 0.0f;
 
         void adapt_collection() {
-            FLUID_ASSERT(!collection->is_type_present<IISPHParticleData>());
-            collection->add_type<IISPHParticleData3D>();
+            FLUID_ASSERT(!data.collection->is_type_present<IISPHParticleData>());
+            data.collection->add_type<IISPHParticleData3D>();
         }
 
         vec3 ComputeViscosityAcceleration(pIndex_t particleIndex) {
-            auto& movement_data = collection->get<MovementData3D>(particleIndex);
+            auto& movement_data = data.collection->get<MovementData3D>(particleIndex);
 
             const vec3& position = movement_data.position;
             const vec3& velocity = movement_data.velocity;
@@ -57,15 +57,15 @@ namespace FluidSolver {
             vec3 tmp = vec3(0.0f);
             auto neighbors = neighborhood_search.get_neighbors(particleIndex);
             for (uint32_t neighbor : neighbors) {
-                auto type = collection->get<ParticleInfo>(neighbor).type;
+                auto type = data.collection->get<ParticleInfo>(neighbor).type;
                 if (type == ParticleTypeDead) {
                     continue; // don*t calculate unnecessary values for dead particles.
                 }
 
-                const vec3& neighborPosition = collection->get<MovementData3D>(neighbor).position;
-                const vec3& neighborVelocity = collection->get<MovementData3D>(neighbor).velocity;
-                float neighborMass = collection->get<ParticleData>(neighbor).mass;
-                float neighborDensity = collection->get<ParticleData>(neighbor).density;
+                const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+                const vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
+                float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
+                float neighborDensity = data.collection->get<ParticleData>(neighbor).density;
 
                 if (neighborDensity == 0.0f)
                     continue;
@@ -82,39 +82,67 @@ namespace FluidSolver {
             return 2.0f * settings.viscosity * tmp;
         }
 
+        void initialize_if_required() {
+            FLUID_ASSERT(data.collection != nullptr);
+            if (data.has_data_changed()) {
+                data.acknowledge_data_change();
+
+                if (!data.collection->is_type_present<IISPHParticleData3D>())
+                    adapt_collection();
+
+                neighborhood_search.collection = data.collection;
+                neighborhood_search.initialize();
+            }
+
+            if (parameters.has_data_changed()) {
+                parameters.acknowledge_data_change();
+
+                neighborhood_search.search_radius = parameters.particle_size * 2.0f;
+                neighborhood_search.initialize();
+                kernel.kernel_support = parameters.particle_size * 2.0f;
+                kernel.initialize();
+            }
+
+            if (settings.has_data_changed()) {
+                settings.acknowledge_data_change();
+            }
+        }
+
       public:
         virtual void execute_simulation_step(Timepoint& timestep) override {
-            FLUID_ASSERT(collection != nullptr)
-            FLUID_ASSERT(collection->is_type_present<MovementData3D>());
-            FLUID_ASSERT(collection->is_type_present<ParticleData>());
-            FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
-            FLUID_ASSERT(collection->is_type_present<ExternalForces3D>());
-            FLUID_ASSERT(collection->is_type_present<IISPHParticleData3D>());
+            initialize_if_required();
+
+            FLUID_ASSERT(data.collection != nullptr)
+            FLUID_ASSERT(data.collection->is_type_present<MovementData3D>());
+            FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
+            FLUID_ASSERT(data.collection->is_type_present<ParticleInfo>());
+            FLUID_ASSERT(data.collection->is_type_present<ExternalForces3D>());
+            FLUID_ASSERT(data.collection->is_type_present<IISPHParticleData3D>());
 
             FLUID_ASSERT(settings.max_number_of_iterations >= settings.min_number_of_iterations);
             FLUID_ASSERT(settings.max_density_error_allowed > 0.0f);
 
             FLUID_ASSERT(timestep.desired_time_step > 0.0f);
 
-            FLUID_ASSERT(parameters.timestep_generator != nullptr);
+            FLUID_ASSERT(data.timestep_generator != nullptr);
 
             // set the current timestep
             current_timestep = timestep.desired_time_step;
 
             // find neighbors for all particles
-            FLUID_ASSERT(neighborhood_search.collection == collection);
+            FLUID_ASSERT(neighborhood_search.collection == data.collection);
             neighborhood_search.find_neighbors();
 
             // set pressure to zero, calculate density, calculate non pressure accelerations and predicted velocity
-            parallel::loop_for(0, collection->size(), [&](size_t particle_index) {
-                auto particle_type = collection->get<ParticleInfo>(particle_index).type;
+            parallel::loop_for(0, data.collection->size(), [&](size_t particle_index) {
+                auto particle_type = data.collection->get<ParticleInfo>(particle_index).type;
 
                 if (particle_type == ParticleTypeDead) {
                     return; // don't calculate unnecessary data
                 }
 
-                auto& particle_data = collection->get<ParticleData>(particle_index);
-                auto& movement_data = collection->get<MovementData3D>(particle_index);
+                auto& particle_data = data.collection->get<ParticleData>(particle_index);
+                auto& movement_data = data.collection->get<MovementData3D>(particle_index);
 
                 // set pressure to zero
                 particle_data.pressure = 0.0f;
@@ -122,7 +150,7 @@ namespace FluidSolver {
                 // compute non pressure accelerations and predicted velocity
                 {
                     glm::vec3& nonPressureAcc =
-                            collection->get<ExternalForces3D>(particle_index).non_pressure_acceleration;
+                            data.collection->get<ExternalForces3D>(particle_index).non_pressure_acceleration;
                     const glm::vec3& velocity = movement_data.velocity;
 
                     // adding gravity to non pressure acceleration
@@ -135,7 +163,7 @@ namespace FluidSolver {
                     glm::vec3 predictedVelocity = velocity + current_timestep * nonPressureAcc;
 
                     // set predicted velocity and original non pressure acceleration
-                    auto& ip = collection->get<IISPHParticleData3D>(particle_index);
+                    auto& ip = data.collection->get<IISPHParticleData3D>(particle_index);
                     ip.predicted_velocity = predictedVelocity;
                     ip.original_non_pressure_acceleration = nonPressureAcc;
 
@@ -154,12 +182,12 @@ namespace FluidSolver {
                     const glm::vec3& position = movement_data.position;
                     auto neighbors = neighborhood_search.get_neighbors(particle_index);
                     for (uint32_t neighbor : neighbors) {
-                        auto type = collection->get<ParticleInfo>(neighbor).type;
+                        auto type = data.collection->get<ParticleInfo>(neighbor).type;
                         if (type == ParticleTypeDead) {
                             continue; // don't calculate unnecessary values for dead particles.
                         }
-                        const glm::vec3& neighbor_position = collection->get<MovementData3D>(neighbor).position;
-                        float neighbor_mass = collection->get<ParticleData>(neighbor).mass;
+                        const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
+                        float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
                         density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
                     }
 
@@ -169,30 +197,30 @@ namespace FluidSolver {
 
 
             // compute source term and diagonal element
-            parallel::loop_for(0, collection->size(), [&](size_t i) {
-                auto type = collection->get<ParticleInfo>(i).type;
+            parallel::loop_for(0, data.collection->size(), [&](size_t i) {
+                auto type = data.collection->get<ParticleInfo>(i).type;
                 if (type == ParticleTypeDead)
                     return; // we do not want to process dead particles
                 if (type == ParticleTypeBoundary)
                     return; // we do not want to process boundary particles
 
-                auto& iisph_data = collection->get<IISPHParticleData3D>(i);
-                auto& movement_data = collection->get<MovementData3D>(i);
-                auto& particle_data = collection->get<ParticleData>(i);
+                auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                auto& movement_data = data.collection->get<MovementData3D>(i);
+                auto& particle_data = data.collection->get<ParticleData>(i);
 
                 // compute source term
                 {
                     float neighbor_contribution = 0.0f;
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
-                        auto type = collection->get<ParticleInfo>(neighbor).type;
+                        auto type = data.collection->get<ParticleInfo>(neighbor).type;
                         if (type == ParticleTypeDead) {
                             continue; // don*t calculate unnecessary values for dead particles.
                         }
 
-                        auto& neighbor_particle_data = collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = collection->get<MovementData3D>(neighbor);
+                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
                         if (type == ParticleTypeNormal) {
                             neighbor_contribution +=
@@ -220,14 +248,14 @@ namespace FluidSolver {
                     {
                         auto neighbors = neighborhood_search.get_neighbors(i);
                         for (auto neighbor : neighbors) {
-                            auto type = collection->get<ParticleInfo>(neighbor).type;
+                            auto type = data.collection->get<ParticleInfo>(neighbor).type;
                             if (type == ParticleTypeDead) {
                                 continue; // don't calculate unnecessary values for dead particles.
                             }
 
-                            auto& neighbor_particle_data = collection->get<ParticleData>(neighbor);
-                            auto& neighbor_iisph_data = collection->get<IISPHParticleData3D>(neighbor);
-                            auto& neighbor_movement_data = collection->get<MovementData3D>(neighbor);
+                            auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                            auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                            auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
                             if (type == ParticleTypeNormal) {
                                 inner_part_of_sum -= neighbor_particle_data.mass / Math::pow2(parameters.rest_density) *
@@ -247,14 +275,14 @@ namespace FluidSolver {
                     {
                         auto neighbors = neighborhood_search.get_neighbors(i);
                         for (auto neighbor : neighbors) {
-                            auto type = collection->get<ParticleInfo>(neighbor).type;
+                            auto type = data.collection->get<ParticleInfo>(neighbor).type;
                             if (type == ParticleTypeDead) {
                                 continue; // don't calculate unnecessary values for dead particles.
                             }
 
-                            auto& neighbor_particle_data = collection->get<ParticleData>(neighbor);
-                            auto& neighbor_iisph_data = collection->get<IISPHParticleData3D>(neighbor);
-                            auto& neighbor_movement_data = collection->get<MovementData3D>(neighbor);
+                            auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                            auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                            auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
                             if (type == ParticleTypeNormal) {
                                 diagonal_element +=
@@ -292,29 +320,29 @@ namespace FluidSolver {
             // start iterations
             for (size_t iteration = 0; iteration < settings.max_number_of_iterations; iteration++) {
                 // compute pressure acceleration
-                parallel::loop_for(0, collection->size(), [&](size_t i) {
-                    auto type = collection->get<ParticleInfo>(i).type;
+                parallel::loop_for(0, data.collection->size(), [&](size_t i) {
+                    auto type = data.collection->get<ParticleInfo>(i).type;
                     if (type == ParticleTypeDead)
                         return; // we do not want to process dead particles
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
-                    auto& iisph_data = collection->get<IISPHParticleData3D>(i);
-                    auto& movement_data = collection->get<MovementData3D>(i);
-                    auto& particle_data = collection->get<ParticleData>(i);
+                    auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                    auto& movement_data = data.collection->get<MovementData3D>(i);
+                    auto& particle_data = data.collection->get<ParticleData>(i);
 
                     vec3 pressure_acceleration = vec3(0.0f);
 
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
-                        auto type = collection->get<ParticleInfo>(neighbor).type;
+                        auto type = data.collection->get<ParticleInfo>(neighbor).type;
                         if (type == ParticleTypeDead) {
                             continue; // don't calculate unnecessary values for dead particles.
                         }
 
-                        auto& neighbor_particle_data = collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = collection->get<MovementData3D>(neighbor);
+                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
                         if (type == ParticleTypeNormal) {
                             pressure_acceleration -=
@@ -337,29 +365,29 @@ namespace FluidSolver {
 
                 // compute divergence of the velocity change, update pressure, compute predicted density error per
                 // particle
-                parallel::loop_for(0, collection->size(), [&](size_t i) {
-                    auto type = collection->get<ParticleInfo>(i).type;
+                parallel::loop_for(0, data.collection->size(), [&](size_t i) {
+                    auto type = data.collection->get<ParticleInfo>(i).type;
                     if (type == ParticleTypeDead)
                         return; // we do not want to process dead particles
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
-                    auto& iisph_data = collection->get<IISPHParticleData3D>(i);
-                    auto& movement_data = collection->get<MovementData3D>(i);
-                    auto& particle_data = collection->get<ParticleData>(i);
+                    auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                    auto& movement_data = data.collection->get<MovementData3D>(i);
+                    auto& particle_data = data.collection->get<ParticleData>(i);
 
                     float ap = 0.0f;
 
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
-                        auto type = collection->get<ParticleInfo>(neighbor).type;
+                        auto type = data.collection->get<ParticleInfo>(neighbor).type;
                         if (type == ParticleTypeDead) {
                             continue; // don't calculate unnecessary values for dead particles.
                         }
 
-                        auto& neighbor_particle_data = collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = collection->get<MovementData3D>(neighbor);
+                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
                         if (type == ParticleTypeNormal) {
                             ap += neighbor_particle_data.mass *
@@ -408,18 +436,18 @@ namespace FluidSolver {
                     max_final_velocity_squared = 0.0f;
                     max_final_acceleration_squared = 0.0f;
 
-                    for (size_t i = 0; i < collection->size(); i++) {
+                    for (size_t i = 0; i < data.collection->size(); i++) {
                         // skip particles that are not normal fluid particles
-                        auto type = collection->get<ParticleInfo>(i).type;
+                        auto type = data.collection->get<ParticleInfo>(i).type;
                         if (type != ParticleTypeNormal) {
                             continue;
                         }
 
-                        auto& iisph_data = collection->get<IISPHParticleData3D>(i);
+                        auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
 
                         {
                             // calculate the current maximal velocity and acceleration of all fluid particles
-                            const auto& movement_data = collection->get<MovementData3D>(i);
+                            const auto& movement_data = data.collection->get<MovementData3D>(i);
 
                             max_final_acceleration_squared = std::fmax(max_final_acceleration_squared, glm::dot(movement_data.acceleration, movement_data.acceleration));
 
@@ -458,7 +486,7 @@ namespace FluidSolver {
             {
                 float max_final_velocity = sqrt(max_final_velocity_squared);
                 float max_final_acceleration = sqrt(max_final_acceleration_squared);
-                float corrected_timestep = parameters.timestep_generator->get_non_cfl_validating_timestep(max_final_acceleration, max_final_velocity);
+                float corrected_timestep = data.timestep_generator->get_non_cfl_validating_timestep(max_final_acceleration, max_final_velocity);
                 corrected_timestep = std::fmin(corrected_timestep, timestep.desired_time_step);
                 FLUID_ASSERT(corrected_timestep > 0.0f);
                 timestep.actual_time_step = corrected_timestep;
@@ -467,10 +495,10 @@ namespace FluidSolver {
 
 
             // integrate particle movement
-            parallel::loop_for(0, collection->size(), [&](size_t i) {
+            parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                 // update velocity and position of all particles
 
-                auto type = collection->get<ParticleInfo>(i).type;
+                auto type = data.collection->get<ParticleInfo>(i).type;
                 if (type == ParticleTypeBoundary) {
                     return; // don't calculate unnecessary values for the boundary particles.
                 }
@@ -478,8 +506,8 @@ namespace FluidSolver {
                     return; // don't calculate unnecessary values for dead particles.
                 }
 
-                auto& movement_data = collection->get<MovementData3D>(i);
-                const auto& pi = collection->get<IISPHParticleData3D>(i);
+                auto& movement_data = data.collection->get<MovementData3D>(i);
+                const auto& pi = data.collection->get<IISPHParticleData3D>(i);
                 vec3 predicted_velocity = pi.predicted_velocity;
 
                 // correct predicted velocity if required
@@ -495,40 +523,29 @@ namespace FluidSolver {
             });
         }
 
-        virtual void initialize() override {
-            FLUID_ASSERT(collection != nullptr);
-            if (!collection->is_type_present<IISPHParticleData3D>())
-                adapt_collection();
 
-            neighborhood_search.collection = collection;
-            neighborhood_search.search_radius = parameters.particle_size * 2.0f;
-            neighborhood_search.initialize();
-            kernel.kernel_support = parameters.particle_size * 2.0f;
-            kernel.initialize();
-        }
-
-        virtual NeighborhoodInterface create_neighborhood_interface() override {
+        virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override {
             return neighborhood_search.create_interface();
         }
 
         virtual Compatibility check() override {
             Compatibility c;
-            if (collection == nullptr) {
-                c.add_issue({"IISPHFluidSolver3D", "ParticleCollection is null."});
+            if (data.collection == nullptr) {
+                c.add_issue({"IISPHFluidSolver3D", "Particle collection is null."});
             } else {
-                if (!collection->is_type_present<MovementData3D>()) {
+                if (!data.collection->is_type_present<MovementData3D>()) {
                     c.add_issue({"IISPHFluidSolver3D", "Particles are missing the MovementData3D attribute."});
                 }
-                if (!collection->is_type_present<ParticleData>()) {
+                if (!data.collection->is_type_present<ParticleData>()) {
                     c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ParticleData attribute."});
                 }
-                if (!collection->is_type_present<ParticleInfo>()) {
+                if (!data.collection->is_type_present<ParticleInfo>()) {
                     c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ParticleInfo attribute."});
                 }
-                if (!collection->is_type_present<ExternalForces3D>()) {
+                if (!data.collection->is_type_present<ExternalForces3D>()) {
                     c.add_issue({"IISPHFluidSolver3D", "Particles are missing the ExternalForces3D attribute."});
                 }
-                if (!collection->is_type_present<IISPHParticleData3D>()) {
+                if (!data.collection->is_type_present<IISPHParticleData3D>()) {
                     c.add_issue({"IISPHFluidSolver3D", "Particles are missing the IISPHParticleData3D attribute."});
                 }
             }
@@ -541,7 +558,7 @@ namespace FluidSolver {
                 c.add_issue({"IISPHFluidSolver3D", "MaxDensityErrorAllowed is smaller or equal to zero."});
             }
 
-            if (parameters.timestep_generator == nullptr) {
+            if (data.timestep_generator == nullptr) {
                 c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
             }
 

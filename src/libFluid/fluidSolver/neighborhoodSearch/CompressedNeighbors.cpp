@@ -109,11 +109,11 @@ namespace FluidSolver
         }
     }
 
-    NeighborhoodInterface CompressedNeighborhoodSearch::create_interface()
+    std::shared_ptr<NeighborhoodInterface> CompressedNeighborhoodSearch::create_interface()
     {
-        auto res = NeighborhoodInterface();
+        auto res = std::make_shared<NeighborhoodInterface>();
 
-        res.link.get_by_index = [this](particleIndex_t index) {
+        res->link.get_by_index = [this](particleIndex_t index) {
             auto neighbors = this->get_neighbors(index);
 
             auto n = NeighborhoodInterface::Neighbors();
@@ -142,7 +142,7 @@ namespace FluidSolver
             return n;
         };
 
-        res.link.get_by_position_3d = [this](const vec3& position) {
+        res->link.get_by_position_3d = [this](const vec3& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();
@@ -171,7 +171,7 @@ namespace FluidSolver
             return n;
         };
 
-        res.link.get_search_radius = [&] { return this->search_radius; };
+        res->link.get_search_radius = [&] { return this->search_radius; };
 
         return res;
     }

@@ -7,13 +7,11 @@
 #include <limits>
 
 
-namespace FluidSolver::Sensors
-{
+namespace FluidSolver::Sensors {
 
     class CompressedNeighborStorageSensor : public ISensor {
       public:
-        struct Info
-        {
+        struct Info {
             float used_delta_bytes_average = 0.0f;
             float used_delta_bytes_minimum = std::numeric_limits<float>::max();
             float used_delta_bytes_maximum = std::numeric_limits<float>::lowest();
@@ -25,7 +23,6 @@ namespace FluidSolver::Sensors
 
         SensorData<Info> data;
 
-        virtual void initialize() override;
         virtual void calculate_and_store(const Timepoint& timepoint) override;
         virtual void save_data_to_file(SensorWriter& writer) override;
 

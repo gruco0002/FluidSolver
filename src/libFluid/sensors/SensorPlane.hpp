@@ -43,7 +43,6 @@ namespace FluidSolver::Sensors
         } settings;
 
 
-        virtual void initialize() override;
 
         virtual void calculate_and_store(const Timepoint& timepoint) override;
 

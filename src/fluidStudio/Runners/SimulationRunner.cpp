@@ -1,6 +1,6 @@
 #include "SimulationRunner.hpp"
 
-#include "Simulation.hpp"
+#include "Simulator.hpp"
 
 namespace FluidUi {
 

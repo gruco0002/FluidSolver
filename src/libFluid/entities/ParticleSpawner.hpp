@@ -1,15 +1,11 @@
-#ifndef FLUIDSOLVER_PARTICLESPAWNER_HPP
-#define FLUIDSOLVER_PARTICLESPAWNER_HPP
+#pragma once
 
 #include "IEntity.hpp"
 
-namespace FluidSolver
-{
+namespace FluidSolver {
     class ParticleSpawner : public IEntity {
       public:
-        struct Parameters
-        {
-
+        struct Parameters {
             vec2 position = vec2(0.0f);
             vec2 direction = vec2(0.0f, -1.0f);
             float width = 10.0f;
@@ -19,8 +15,6 @@ namespace FluidSolver
             float mass = 1.0f;
             float rest_density = 1.0f;
         } parameters;
-
-        void initialize() override;
 
         void execute_simulation_step(pFloat timestep) override;
 
@@ -38,6 +32,3 @@ namespace FluidSolver
     };
 
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_PARTICLESPAWNER_HPP

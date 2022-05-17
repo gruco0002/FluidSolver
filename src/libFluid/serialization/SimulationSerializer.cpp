@@ -326,7 +326,7 @@ namespace FluidSolver
         return combined.string();
     }
 
-    YAML::Node SimulationSerializer::save_scenario(const Simulation& simulation)
+    YAML::Node SimulationSerializer::save_scenario(const Simulator& simulation)
     {
         YAML::Node res;
 
@@ -334,7 +334,7 @@ namespace FluidSolver
         res["particles"] = settings.particle_data_relative_filepath;
         if (settings.save_particle_data)
         {
-            SimulationSerializer::save_particles(*simulation.parameters.collection, get_full_particle_data_path());
+            SimulationSerializer::save_particles(*simulation.data.collection, get_full_particle_data_path());
         }
 
         // save general parameters
@@ -343,7 +343,7 @@ namespace FluidSolver
         res["rest-density"] = simulation.parameters.rest_density;
 
         // save entities
-        for (auto ent : simulation.parameters.entities)
+        for (auto ent : simulation.data.entities)
         {
             auto spawner = std::dynamic_pointer_cast<ParticleSpawner>(ent);
             if (spawner)
@@ -359,7 +359,7 @@ namespace FluidSolver
         }
 
         // save sensors
-        for (auto sen : simulation.parameters.sensors)
+        for (auto sen : simulation.data.sensors)
         {
 
             auto gd = std::dynamic_pointer_cast<Sensors::GlobalDensitySensor>(sen);
@@ -408,7 +408,7 @@ namespace FluidSolver
         return res;
     }
 
-    void SimulationSerializer::load_scenario(const YAML::Node& node, Simulation& simulation)
+    void SimulationSerializer::load_scenario(const YAML::Node& node, Simulator& simulation)
     {
 
         // loading particles from file
@@ -420,7 +420,7 @@ namespace FluidSolver
             error_count++;
             return;
         }
-        SimulationSerializer::load_particles(*simulation.parameters.collection, particles_file.string());
+        SimulationSerializer::load_particles(*simulation.data.collection, particles_file.string());
 
         // loading general parameters
         simulation.parameters.gravity = node["gravity"].as<float>();
@@ -434,11 +434,11 @@ namespace FluidSolver
             {
                 if (ent_node["type"].as<std::string>() == "particle-spawner")
                 {
-                    simulation.parameters.entities.push_back(load_particle_spawner(ent_node));
+                    simulation.data.entities.push_back(load_particle_spawner(ent_node));
                 }
                 else if (ent_node["type"].as<std::string>() == "particle-remover")
                 {
-                    simulation.parameters.entities.push_back(load_particle_remover(ent_node));
+                    simulation.data.entities.push_back(load_particle_remover(ent_node));
                 }
                 else
                 {
@@ -456,31 +456,31 @@ namespace FluidSolver
                 auto type_str = sen_node["type"].as<std::string>();
                 if (type_str == "global-density-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_global_density_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_global_density_sensor(sen_node));
                 }
                 else if (type_str == "global-pressure-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_global_pressure_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_global_pressure_sensor(sen_node));
                 }
                 else if (type_str == "global-velocity-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_global_velocity_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_global_velocity_sensor(sen_node));
                 }
                 else if (type_str == "global-energy-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_global_energy_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_global_energy_sensor(sen_node));
                 }
                 else if (type_str == "global-particle-count-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_global_particle_count_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_global_particle_count_sensor(sen_node));
                 }
                 else if (type_str == "sensor-plane")
                 {
-                    simulation.parameters.sensors.push_back(load_sensor_plane(sen_node));
+                    simulation.data.sensors.push_back(load_sensor_plane(sen_node));
                 }
                 else if (type_str == "compressed-neighborhood-storage-sensor")
                 {
-                    simulation.parameters.sensors.push_back(load_compressed_neighborhood_storage_sensor(sen_node));
+                    simulation.data.sensors.push_back(load_compressed_neighborhood_storage_sensor(sen_node));
                 }
                 else
                 {
@@ -546,12 +546,12 @@ namespace FluidSolver
         return nullptr;
     }
 
-    YAML::Node SimulationSerializer::save_solver(const Simulation& simulation)
+    YAML::Node SimulationSerializer::save_solver(const Simulator& simulation)
     {
         YAML::Node node;
 
         // solver, neighborhood search, kernel
-        auto s = simulation.parameters.fluid_solver;
+        auto s = simulation.data.fluid_solver;
 
         if (std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(
                 s))
@@ -698,16 +698,16 @@ namespace FluidSolver
 
 
         // timestep
-        node["timestep"] = save_timestep(simulation.parameters.timestep);
+        node["timestep"] = save_timestep(simulation.data.timestep_generator);
 
 
         return node;
     }
 
-    void SimulationSerializer::load_solver(Simulation& simulation, const YAML::Node& node)
+    void SimulationSerializer::load_solver(Simulator& simulation, const YAML::Node& node)
     {
 
-        simulation.parameters.fluid_solver = nullptr;
+        simulation.data.fluid_solver = nullptr;
 
         if (node["type"].as<std::string>() == "sesph")
         {
@@ -721,7 +721,7 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed")
                 {
@@ -730,7 +730,7 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else
                 {
@@ -761,7 +761,7 @@ namespace FluidSolver
                     res->settings.MaxNumberOfIterations = node["max-iterations"].as<size_t>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed")
                 {
@@ -774,7 +774,7 @@ namespace FluidSolver
                     res->settings.MaxNumberOfIterations = node["max-iterations"].as<size_t>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else
                 {
@@ -801,7 +801,7 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
                 {
@@ -810,7 +810,7 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
                 {
@@ -820,7 +820,7 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else
                 {
@@ -851,7 +851,7 @@ namespace FluidSolver
                     res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
                     res->settings.viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
                 {
@@ -864,7 +864,7 @@ namespace FluidSolver
                     res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
                     res->settings.viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
                 {
@@ -878,7 +878,7 @@ namespace FluidSolver
                     res->settings.max_number_of_iterations = node["max-iterations"].as<size_t>();
                     res->settings.viscosity = node["viscosity"].as<float>();
 
-                    simulation.parameters.fluid_solver = res;
+                    simulation.data.fluid_solver = res;
                 }
                 else
                 {
@@ -900,7 +900,7 @@ namespace FluidSolver
         }
 
         // timestep
-        simulation.parameters.timestep = load_timestep(node["timestep"]);
+        simulation.data.timestep_generator = load_timestep(node["timestep"]);
     }
 
     std::shared_ptr<ISimulationVisualizer> SimulationSerializer::load_visualizer(const YAML::Node& node)
@@ -1017,10 +1017,10 @@ namespace FluidSolver
 
         // setup basic parameters
         SimulatorVisualizerBundle res;
-        res.simulation = std::make_shared<Simulation>();
-        res.simulation->parameters.invalidate = true;
+        res.simulation = std::make_shared<Simulator>();
+        res.simulation->parameters.notify_that_data_changed();
 
-        res.simulation->parameters.collection = std::make_shared<ParticleCollection>();
+        res.simulation->data.collection = std::make_shared<ParticleCollection>();
 
         // check version
         YAML::Node config = YAML::LoadFile(filepath);

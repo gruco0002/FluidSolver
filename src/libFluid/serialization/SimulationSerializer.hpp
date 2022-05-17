@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Forward.hpp"
-#include "Simulation.hpp"
+#include "Simulator.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
 
 #include <memory>
@@ -68,12 +68,12 @@ namespace FluidSolver
         YAML::Node save_global_particle_count_sensor(const std::shared_ptr<Sensors::GlobalParticleCountSensor>& sen);
         std::shared_ptr<Sensors::GlobalParticleCountSensor> load_global_particle_count_sensor(const YAML::Node& node);
         std::string get_full_particle_data_path();
-        YAML::Node save_scenario(const Simulation& simulation);
-        void load_scenario(const YAML::Node& node, Simulation& simulation);
+        YAML::Node save_scenario(const Simulator& simulation);
+        void load_scenario(const YAML::Node& node, Simulator& simulation);
         YAML::Node save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep);
         std::shared_ptr<ITimestepGenerator> load_timestep(const YAML::Node& node);
-        YAML::Node save_solver(const Simulation& simulation);
-        void load_solver(Simulation& simulation, const YAML::Node& node);
+        YAML::Node save_solver(const Simulator& simulation);
+        void load_solver(Simulator& simulation, const YAML::Node& node);
         std::shared_ptr<ISimulationVisualizer> load_visualizer(const YAML::Node& node);
         YAML::Node save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer);
         YAML::Node save_sensor_plane(const std::shared_ptr<Sensors::SensorPlane>& sen);

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "FluidSolverTypes.hpp"
-#include "Simulation.hpp"
+#include "Simulator.hpp"
+#include "SimulatorVisualizerBundle.hpp"
 #include "engine/RectangleRenderer.hpp"
 #include "engine/Window.hpp"
 #include "engine/graphics/Framebuffer.hpp"
 #include "userInterface/UiLayer.hpp"
-#include "SimulatorVisualizerBundle.hpp"
 
 #include <thread>
 

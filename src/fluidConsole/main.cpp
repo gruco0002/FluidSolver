@@ -1,6 +1,6 @@
 
 #include "Log.hpp"
-#include "Simulation.hpp"
+#include "Simulator.hpp"
 #include "serialization/SimulationSerializer.hpp"
 
 #include <cxxopts.hpp>
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 
         // Load file
         FluidSolver::SimulationSerializer s(settings.filepath);
-        FluidSolver::Simulation simulation = s.load_from_file();
+        FluidSolver::Simulator simulation = s.load_from_file();
         if (s.has_errors())
         {
             FluidSolver::Log::error("[Console] Loading of scenario caused errors!");

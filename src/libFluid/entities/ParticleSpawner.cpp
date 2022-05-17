@@ -1,13 +1,16 @@
 #include "ParticleSpawner.hpp"
 
 
-void FluidSolver::ParticleSpawner::initialize()
-{
-    time_left_over = 0.0f;
-}
-
 void FluidSolver::ParticleSpawner::execute_simulation_step(FluidSolver::pFloat timestep)
 {
+
+    if(sim.has_data_changed()){
+        sim.acknowledge_data_change();
+
+        time_left_over = 0.0f;
+    }
+
+
     FLUID_ASSERT(sim.collection != nullptr)
     FLUID_ASSERT(sim.collection->is_type_present<ParticleInfo>())
     FLUID_ASSERT(sim.collection->is_type_present<MovementData>())

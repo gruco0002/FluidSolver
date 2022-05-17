@@ -1,31 +1,22 @@
 #include "CompressedNeighborsStatistics.hpp"
 
-#include "Simulation.hpp"
+#include "Simulator.hpp"
 #include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 
 #include <algorithm>
 
-namespace FluidSolver::Sensors
-{
-
-    void CompressedNeighborStorageSensor::initialize()
-    {
-    }
+namespace FluidSolver::Sensors {
 
 
-    void CompressedNeighborStorageSensor::calculate_and_store(const Timepoint& timepoint)
-    {
-        FLUID_ASSERT(this->parameters.simulation_parameters != nullptr);
-        FLUID_ASSERT(this->parameters.simulation_parameters->collection != nullptr);
-        FLUID_ASSERT(this->parameters.simulation_parameters->collection
-                         ->is_type_present<CompressedNeighborhoodSearch::NeighborStorage>());
+    void CompressedNeighborStorageSensor::calculate_and_store(const Timepoint& timepoint) {
+        FLUID_ASSERT(this->simulator_data.collection != nullptr);
+        FLUID_ASSERT(this->simulator_data.collection->is_type_present<CompressedNeighborhoodSearch::NeighborStorage>());
 
-        auto collection = this->parameters.simulation_parameters->collection;
+        auto& collection = this->simulator_data.collection;
 
         Info res;
         size_t counter = 0;
-        for (size_t i = 0; i < collection->size(); i++)
-        {
+        for (size_t i = 0; i < collection->size(); i++) {
             const auto& storage = collection->get<CompressedNeighborhoodSearch::NeighborStorage>(i);
 
             float neighbors = storage.size();
@@ -41,8 +32,7 @@ namespace FluidSolver::Sensors
 
             counter++;
         }
-        if (counter != 0)
-        {
+        if (counter != 0) {
             res.neighbor_count_average /= counter;
             res.used_delta_bytes_average /= counter;
         }
@@ -51,10 +41,8 @@ namespace FluidSolver::Sensors
     }
 
 
-    void CompressedNeighborStorageSensor::save_data_to_file(SensorWriter& writer)
-    {
-        if (writer.begin_header())
-        {
+    void CompressedNeighborStorageSensor::save_data_to_file(SensorWriter& writer) {
+        if (writer.begin_header()) {
             writer.push_back_header<Timepoint>("Timepoint");
             writer.push_back_header<float>("Neighbor Count Avg");
             writer.push_back_header<float>("Neighbor Count Min");
@@ -67,8 +55,7 @@ namespace FluidSolver::Sensors
 
 
         // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++)
-        {
+        for (size_t i = saved_data_until; i < data.size(); i++) {
             auto& tmp = data.data()[i];
             writer << data.times()[i] << tmp.neighbor_count_average << tmp.neighbor_count_minimum
                    << tmp.neighbor_count_maximum << tmp.used_delta_bytes_average << tmp.used_delta_bytes_minimum
@@ -76,39 +63,24 @@ namespace FluidSolver::Sensors
         }
 
 
-        if (parameters.keep_data_in_memory_after_saving)
-        {
+        if (parameters.keep_data_in_memory_after_saving) {
             saved_data_until = data.size();
-        }
-        else
-        {
+        } else {
             data.clear();
             saved_data_until = 0;
         }
     }
 
-    Compatibility CompressedNeighborStorageSensor::check()
-    {
+    Compatibility CompressedNeighborStorageSensor::check() {
         Compatibility c;
 
-        if (this->parameters.simulation_parameters == nullptr)
-        {
-            c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor), "Simulation_parameters is a nullptr."});
-        }
-        else
-        {
-            if (this->parameters.simulation_parameters->collection == nullptr)
-            {
-                c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor), "Particle collection is nullptr."});
-            }
-            else
-            {
-                if (!this->parameters.simulation_parameters->collection
-                         ->is_type_present<CompressedNeighborhoodSearch::NeighborStorage>())
-                {
-                    c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor),
-                                 "NeighborStorage attribute is missing in particle collection."});
-                }
+
+        if (this->simulator_data.collection == nullptr) {
+            c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor), "Particle collection is nullptr."});
+        } else {
+            if (!this->simulator_data.collection->is_type_present<CompressedNeighborhoodSearch::NeighborStorage>()) {
+                c.add_issue({FLUID_NAMEOF(CompressedNeighborStorageSensor),
+                        "NeighborStorage attribute is missing in particle collection."});
             }
         }
 

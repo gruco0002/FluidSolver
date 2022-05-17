@@ -24,7 +24,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.cpp"
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
-        "Simulation.cpp" "Simulation.hpp"
+        "Simulator.cpp" "Simulator.hpp"
         "visualizer/ISimulationVisualizer.hpp"
         "fluidSolver/IFluidSolver.hpp"        
         "fluidSolver/IISPHFluidSolver.hpp"
@@ -36,9 +36,7 @@ set(LIB_FLUID_SOURCE_FILES
         "time/DynamicCflTimestepGenerator.hpp"
         "visualizer/ContinousVisualizer.cpp"
         "visualizer/ContinousVisualizer.hpp"
-        "fluidSolver/ParticleCollection.cpp"
         "fluidSolver/ParticleCollection.hpp"
-        "fluidSolver/Particle.cpp"
         "fluidSolver/Particle.hpp"
         "FluidAssert.hpp"
         "fluidSolver/ParticleCollectionAlgorithm.cpp"
@@ -89,7 +87,7 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
-        time/Timepoint.hpp SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp)
+        time/Timepoint.hpp SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp DataChangeStruct.cpp DataChangeStruct.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

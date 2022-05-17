@@ -3,7 +3,7 @@
 namespace FluidSolver
 {
     class SimulatorVisualizerBundle;
-    class Simulation;
+    class Simulator;
     class ITimestepGenerator;
     class ISimulationVisualizer;
     class ParticleCollection;
@@ -33,5 +33,7 @@ namespace FluidSolver
     class Compatibility;
     struct CompatibilityIssue;
 
+    // other stuff
+    struct DataChangeStruct;
 
 } // namespace FluidSolver

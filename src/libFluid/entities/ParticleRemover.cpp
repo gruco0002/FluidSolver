@@ -3,10 +3,7 @@
 #include <group/GroupActions.hpp>
 #include <group/RectangleAreaGroup.hpp>
 
-void FluidSolver::ParticleRemover::initialize()
-{
-    return;
-}
+
 
 void FluidSolver::ParticleRemover::execute_simulation_step(FluidSolver::pFloat timestep)
 {

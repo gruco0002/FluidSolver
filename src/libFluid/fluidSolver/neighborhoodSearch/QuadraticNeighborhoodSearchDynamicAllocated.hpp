@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
-#define FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP
+#pragma once
 
 #include "NeighborhoodInterface.hpp"
 #include "FluidInclude.hpp"
@@ -124,7 +123,7 @@ namespace FluidSolver
 
         void initialize();
 
-        NeighborhoodInterface create_interface();
+        std::shared_ptr<NeighborhoodInterface> create_interface();
 
         Compatibility check();
 
@@ -134,6 +133,3 @@ namespace FluidSolver
 
 
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_QUADRATICNEIGHBORHOODSEARCHDYNAMICALLOCATED_HPP

@@ -9,7 +9,7 @@ namespace FluidUi {
 
         SimulationRunner();
 
-        std::shared_ptr<FluidSolver::Simulation> simulation = nullptr;
+        std::shared_ptr<FluidSolver::Simulator> simulation = nullptr;
 
       protected:
         void execute_computation() override;

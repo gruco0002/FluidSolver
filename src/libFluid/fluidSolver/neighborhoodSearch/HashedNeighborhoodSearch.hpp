@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
-#define FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP
+#pragma once
 
 #include "Compatibility.hpp"
 #include "FluidInclude.hpp"
@@ -80,7 +79,7 @@ namespace FluidSolver
 
         void initialize();
 
-        NeighborhoodInterface create_interface();
+        std::shared_ptr<NeighborhoodInterface> create_interface();
 
         Compatibility check();
 
@@ -126,5 +125,3 @@ namespace FluidSolver
 
 
 } // namespace FluidSolver
-
-#endif // FLUIDSOLVER_HASHEDNEIGHBORHOODSEARCH_HPP

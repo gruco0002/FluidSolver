@@ -5,17 +5,15 @@
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
-    struct SESPHSettings3D
-    {
+    struct SESPHSettings3D : public DataChangeStruct {
         pFloat StiffnessK = 100000.0f;
         pFloat Viscosity = 5.0f;
     };
 
-    template <typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
-              typename parallel = StdParallelForEach>
+    template<typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
+            typename parallel = StdParallelForEach>
     class SESPHFluidSolver3D : public IFluidSolverBase {
       public:
         Kernel kernel;
@@ -24,9 +22,8 @@ namespace FluidSolver
 
         void execute_simulation_step(Timepoint& timestep) override;
 
-        void initialize() override;
 
-        NeighborhoodInterface create_neighborhood_interface() override;
+        std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override;
 
         Compatibility check() override;
 
@@ -43,129 +40,128 @@ namespace FluidSolver
 
         vec3 ComputeViscosityAcceleration(pIndex_t particleIndex);
 
+        void initialize_if_required();
+
 
       public:
         SESPHSettings3D settings;
     };
 
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep)
-    {
-        FLUID_ASSERT(collection->is_type_present<MovementData3D>());
-        FLUID_ASSERT(collection->is_type_present<ParticleData>());
-        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
-        FLUID_ASSERT(collection->is_type_present<ExternalForces3D>());
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep) {
+        initialize_if_required();
+
+        FLUID_ASSERT(data.collection->is_type_present<MovementData3D>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(data.collection->is_type_present<ExternalForces3D>());
 
         FLUID_ASSERT(timestep.desired_time_step > 0.0f);
 
-        FLUID_ASSERT(parameters.timestep_generator != nullptr);
+        FLUID_ASSERT(data.timestep_generator != nullptr);
 
         current_timestep = timestep.desired_time_step;
 
         // find neighbors for all particles
-        FLUID_ASSERT(neighborhood_search.collection == collection);
+        FLUID_ASSERT(neighborhood_search.collection == data.collection);
         neighborhood_search.find_neighbors();
 
         // calculate density and pressure for all particles
-        parallel::loop_for(0, collection->size(), [&](pIndex_t i) {
-            auto type = collection->get<ParticleInfo>(i).type;
-            if (type == ParticleTypeBoundary)
-            {
+        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+            auto type = data.collection->get<ParticleInfo>(i).type;
+            if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead)
-            {
+            if (type == ParticleTypeDead) {
                 return; // don't calculate unnecessary values for dead particles.
             }
 
-            collection->get<ParticleData>(i).density = ComputeDensity(i);
+            data.collection->get<ParticleData>(i).density = ComputeDensity(i);
 
 
-            collection->get<ParticleData>(i).pressure = ComputePressure(i);
+            data.collection->get<ParticleData>(i).pressure = ComputePressure(i);
         });
 
         // compute non pressure accelerations and pressure accelerations for all particles
-        parallel::loop_for(0, collection->size(), [&](pIndex_t i) {
-            auto type = collection->get<ParticleInfo>(i).type;
-            if (type == ParticleTypeBoundary)
-            {
+        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+            auto type = data.collection->get<ParticleInfo>(i).type;
+            if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead)
-            {
+            if (type == ParticleTypeDead) {
                 return; // don*t calculate unnecessary values for dead particles.
             }
-            auto& mv = collection->get<MovementData3D>(i);
+            auto& mv = data.collection->get<MovementData3D>(i);
 
             vec3 nonPressureAcc = ComputeNonPressureAcceleration(i);
             vec3 pressureAcc = ComputePressureAcceleration(i);
             mv.acceleration = pressureAcc + nonPressureAcc;
-
-
         });
 
         // update velocity and position of all particles
-        parallel::loop_for(0, collection->size(), [&](pIndex_t i) {
-            auto type = collection->get<ParticleInfo>(i).type;
-            if (type == ParticleTypeBoundary)
-            {
+        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+            auto type = data.collection->get<ParticleInfo>(i).type;
+            if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead)
-            {
+            if (type == ParticleTypeDead) {
                 return; // don*t calculate unnecessary values for dead particles.
             }
 
             // integrate using euler cromer
             // FIXME: adapt timestep if required
-            auto& mv = collection->get<MovementData3D>(i);
+            auto& mv = data.collection->get<MovementData3D>(i);
             mv.velocity = mv.velocity + current_timestep * mv.acceleration;
             mv.position = mv.position + current_timestep * mv.velocity;
         });
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::initialize()
-    {
-        FLUID_ASSERT(collection != nullptr);
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    void SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::initialize_if_required() {
+        FLUID_ASSERT(data.collection != nullptr);
 
-        neighborhood_search.collection = collection;
-        neighborhood_search.search_radius = parameters.particle_size * 2.0f;
-        neighborhood_search.initialize();
-        kernel.kernel_support = parameters.particle_size * 2.0f;
-        kernel.initialize();
+        if (data.has_data_changed()) {
+            data.acknowledge_data_change();
+            neighborhood_search.collection = data.collection;
+            neighborhood_search.initialize();
+        }
+
+        if (parameters.has_data_changed()) {
+            parameters.acknowledge_data_change();
+
+            neighborhood_search.search_radius = parameters.particle_size * 2.0f;
+            neighborhood_search.initialize();
+            kernel.kernel_support = parameters.particle_size * 2.0f;
+            kernel.initialize();
+        }
+
+        if (settings.has_data_changed()) {
+            settings.acknowledge_data_change();
+        }
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    Compatibility SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::check()
-    {
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    Compatibility SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::check() {
         Compatibility c;
-        if (collection == nullptr)
-        {
+        if (data.collection == nullptr) {
             c.add_issue({"SESPHFluidSolver3D", "ParticleCollection is null."});
-        }
-        else
-        {
-            if (!collection->is_type_present<MovementData3D>())
-            {
+        } else {
+            if (!data.collection->is_type_present<MovementData3D>()) {
                 c.add_issue({"SESPHFluidSolver3D", "Particles are missing the MovementData3D attribute."});
             }
-            if (!collection->is_type_present<ParticleData>())
-            {
+            if (!data.collection->is_type_present<ParticleData>()) {
                 c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ParticleData attribute."});
             }
-            if (!collection->is_type_present<ParticleInfo>())
-            {
+            if (!data.collection->is_type_present<ParticleInfo>()) {
                 c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ParticleInfo attribute."});
             }
-            if (!collection->is_type_present<ExternalForces3D>())
-            {
+            if (!data.collection->is_type_present<ExternalForces3D>()) {
                 c.add_issue({"SESPHFluidSolver3D", "Particles are missing the ExternalForces3D attribute."});
             }
         }
 
-        if(parameters.timestep_generator == nullptr){
+        if (data.timestep_generator == nullptr) {
             c.add_issue({"IISPHFluidSolver3D", "Timestep generator is null"});
         }
 
@@ -176,46 +172,40 @@ namespace FluidSolver
     }
 
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    inline NeighborhoodInterface SESPHFluidSolver3D<Kernel, NeighborhoodSearch,
-                                                    parallel>::create_neighborhood_interface()
-    {
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    inline std::shared_ptr<NeighborhoodInterface> SESPHFluidSolver3D<Kernel, NeighborhoodSearch,
+            parallel>::create_neighborhood_interface() {
         return neighborhood_search.create_interface();
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressure(pIndex_t particleIndex)
-    {
-        float density = collection->get<ParticleData>(particleIndex).density;
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressure(pIndex_t particleIndex) {
+        float density = data.collection->get<ParticleData>(particleIndex).density;
         float pressure = settings.StiffnessK * (density / parameters.rest_density - 1.0f);
         return std::max(pressure, 0.0f);
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(pIndex_t particleIndex)
-    {
-        const vec3& position = collection->get<MovementData3D>(particleIndex).position;
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(pIndex_t particleIndex) {
+        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
 
         float density = 0.0f;
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
-        for (uint32_t neighbor : neighbors)
-        {
-            auto type = collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead)
-            {
+        for (uint32_t neighbor : neighbors) {
+            auto type = data.collection->get<ParticleInfo>(neighbor).type;
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
-            const vec3& neighborPosition = collection->get<MovementData3D>(neighbor).position;
-            float neighborMass = collection->get<ParticleData>(neighbor).mass;
+            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
             density += neighborMass * kernel.GetKernelValue(neighborPosition, position);
         }
         return density;
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeNonPressureAcceleration(
-        pIndex_t particleIndex)
-    {
+            pIndex_t particleIndex) {
         vec3 nonPressureAcceleration = vec3(0.0f);
 
         // Gravity
@@ -227,11 +217,10 @@ namespace FluidSolver
         return nonPressureAcceleration;
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(pIndex_t particleIndex)
-    {
-        const vec3& position = collection->get<MovementData3D>(particleIndex).position;
-        const ParticleData& pData = collection->get<ParticleData>(particleIndex);
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(pIndex_t particleIndex) {
+        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
+        const ParticleData& pData = data.collection->get<ParticleData>(particleIndex);
         const float& density = pData.density;
         const float& pressure = pData.pressure;
         const float& mass = pData.mass;
@@ -240,61 +229,53 @@ namespace FluidSolver
 
         vec3 pressureAcceleration = vec3(0.0f);
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
-        for (uint32_t neighbor : neighbors)
-        {
-            auto type = collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead)
-            {
+        for (uint32_t neighbor : neighbors) {
+            auto type = data.collection->get<ParticleInfo>(neighbor).type;
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
-            const vec3& neighborPosition = collection->get<MovementData3D>(neighbor).position;
-            if (type == ParticleTypeBoundary)
-            {
+            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            if (type == ParticleTypeBoundary) {
                 // simple mirroring is used to calculate the pressure acceleration with a boundary particle
                 pressureAcceleration += -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
-                                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
-            }
-            else
-            {
+                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+            } else {
                 // normal particles
-                const ParticleData& neighbor_pData = collection->get<ParticleData>(neighbor);
+                const ParticleData& neighbor_pData = data.collection->get<ParticleData>(neighbor);
                 const float& neighborMass = neighbor_pData.mass;
                 const float& neighborDensity = neighbor_pData.density;
                 const float& neighborPressure = neighbor_pData.pressure;
 
                 float neighborPressureDivDensitySquared =
-                    neighborDensity == 0.0f ? 0.0f : neighborPressure / Math::pow2(neighborDensity);
+                        neighborDensity == 0.0f ? 0.0f : neighborPressure / Math::pow2(neighborDensity);
 
                 pressureAcceleration += -neighborMass *
-                                        (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
-                                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+                        (pressureDivDensitySquared + neighborPressureDivDensitySquared) *
+                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
             }
         }
         return pressureAcceleration;
     }
 
-    template <typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(pIndex_t particleIndex)
-    {
-        const vec3& position = collection->get<MovementData3D>(particleIndex).position;
-        const vec3& velocity = collection->get<MovementData3D>(particleIndex).velocity;
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(pIndex_t particleIndex) {
+        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
+        const vec3& velocity = data.collection->get<MovementData3D>(particleIndex).velocity;
 
 
         vec3 tmp = vec3(0.0f);
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
-        for (uint32_t neighbor : neighbors)
-        {
-            auto type = collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead)
-            {
+        for (uint32_t neighbor : neighbors) {
+            auto type = data.collection->get<ParticleInfo>(neighbor).type;
+            if (type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
-            const vec3& neighborPosition = collection->get<MovementData3D>(neighbor).position;
-            const vec3& neighborVelocity = collection->get<MovementData3D>(neighbor).velocity;
-            float neighborMass = collection->get<ParticleData>(neighbor).mass;
-            float neighborDensity = collection->get<ParticleData>(neighbor).density;
+            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            const vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
+            float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
+            float neighborDensity = data.collection->get<ParticleData>(neighbor).density;
 
             if (neighborDensity == 0.0f)
                 continue;
@@ -303,9 +284,9 @@ namespace FluidSolver
             vec3 xij = position - neighborPosition;
 
             tmp += (neighborMass / neighborDensity) *
-                   (glm::dot(vij, xij) /
-                    (glm::dot(xij, xij) + 0.01f * parameters.particle_size * parameters.particle_size)) *
-                   kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+                    (glm::dot(vij, xij) /
+                            (glm::dot(xij, xij) + 0.01f * parameters.particle_size * parameters.particle_size)) *
+                    kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
         }
 
         return 2.0f * settings.Viscosity * tmp;
