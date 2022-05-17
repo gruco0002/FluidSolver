@@ -88,22 +88,23 @@ void FluidUi::FluidSolverWindow::render() {
 void FluidUi::FluidSolverWindow::create_empty_simulation() {
     simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ExternalForces>();
+    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulation.simulation->data.collection->add_type<FluidSolver::MovementData>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces>();
     simulation.simulation->parameters.rest_density = 1.0f;
     simulation.simulation->parameters.particle_size = 1.0f;
     simulation.simulation->parameters.gravity = 9.81f;
 
-    simulation.simulation->parameters.fluid_solver = current_type->create_type();
-    simulation.simulation->parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulation.simulation->data.fluid_solver = current_type->create_type();
+    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
-    simulation.simulation->parameters.invalidate = true;
+    simulation.simulation->parameters.notify_that_data_changed();
+    simulation.simulation->data.notify_that_data_changed();
 
 
     FluidSolver::Log::message("Loaded empty scenario");
@@ -114,20 +115,21 @@ void FluidUi::FluidSolverWindow::create_empty_simulation() {
 void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
     simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData3D>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ExternalForces3D>();
+    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulation.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
     simulation.simulation->parameters.rest_density = 1.0f;
     simulation.simulation->parameters.particle_size = 1.0f;
     simulation.simulation->parameters.gravity = 9.81f;
 
-    simulation.simulation->parameters.fluid_solver = current_type->create_type();
-    simulation.simulation->parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulation.simulation->data.fluid_solver = current_type->create_type();
+    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
-    simulation.simulation->parameters.invalidate = true;
+    simulation.simulation->parameters.notify_that_data_changed();
+    simulation.simulation->data.notify_that_data_changed();
 
 
     FluidSolver::Log::message("Loaded empty 3d scenario");
@@ -138,19 +140,22 @@ void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
 void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
     simulation.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->parameters.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::MovementData3D>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->parameters.collection->add_type<FluidSolver::ExternalForces3D>();
+    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulation.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
     simulation.simulation->parameters.rest_density = 1.0f;
     simulation.simulation->parameters.particle_size = 1.0f;
     simulation.simulation->parameters.gravity = 9.81f;
 
 
-    simulation.simulation->parameters.fluid_solver = current_type->create_type();
-    simulation.simulation->parameters.timestep = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulation.simulation->data.fluid_solver = current_type->create_type();
+    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
     simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+
+    simulation.simulation->parameters.notify_that_data_changed();
+    simulation.simulation->data.notify_that_data_changed();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
@@ -164,20 +169,20 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
     sen->settings.number_of_samples_y = 100;
     sen->settings.min_image_value = 0.0f;
     sen->settings.max_image_value = 1.5f;
-    simulation.simulation->parameters.sensors.push_back(sen);
+    simulation.simulation->data.sensors.push_back(sen);
 
 
     for (int x = -5; x < 5; x++) {
         for (int y = -5; y < 5; y++) {
             for (int z = -5; z < 5; z++) {
-                auto index = simulation.simulation->parameters.collection->add();
-                auto& pos = simulation.simulation->parameters.collection->get<FluidSolver::MovementData3D>(index);
+                auto index = simulation.simulation->data.collection->add();
+                auto& pos = simulation.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
                 pos.position = glm::vec3((float)x, (float)y, (float)z);
 
-                auto& info = simulation.simulation->parameters.collection->get<FluidSolver::ParticleInfo>(index);
+                auto& info = simulation.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
                 info.type = FluidSolver::ParticleType::ParticleTypeNormal;
 
-                auto& data = simulation.simulation->parameters.collection->get<FluidSolver::ParticleData>(index);
+                auto& data = simulation.simulation->data.collection->get<FluidSolver::ParticleData>(index);
                 data.density = 1.0f;
                 data.mass = 1.0f;
                 data.pressure = 0.0f;
@@ -186,14 +191,14 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
     }
 
     auto emit_boundary = [&](float x, float y, float z) {
-        auto index = simulation.simulation->parameters.collection->add();
-        auto& pos = simulation.simulation->parameters.collection->get<FluidSolver::MovementData3D>(index);
+        auto index = simulation.simulation->data.collection->add();
+        auto& pos = simulation.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
         pos.position = glm::vec3((float)x, (float)y, (float)z);
 
-        auto& info = simulation.simulation->parameters.collection->get<FluidSolver::ParticleInfo>(index);
+        auto& info = simulation.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
         info.type = FluidSolver::ParticleType::ParticleTypeBoundary;
 
-        auto& data = simulation.simulation->parameters.collection->get<FluidSolver::ParticleData>(index);
+        auto& data = simulation.simulation->data.collection->get<FluidSolver::ParticleData>(index);
         data.density = 1.0f;
         data.mass = 1.0f;
         data.pressure = 0.0f;
@@ -252,7 +257,7 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
 
 
 void FluidUi::FluidSolverWindow::on_new_simulation() {
-    this->current_type = this->solver_types.query_type(simulation.simulation->parameters.fluid_solver);
+    this->current_type = this->solver_types.query_type(simulation.simulation->data.fluid_solver);
     simulation.simulation->manual_initialize();
     auto compatibility_report = simulation.simulation->check();
     if (compatibility_report.has_issues()) {
@@ -374,7 +379,7 @@ void FluidUi::FluidSolverWindow::setup_windows() {
 }
 
 void FluidUi::FluidSolverWindow::execute_one_simulation_step() {
-    simulation.simulation->check_for_initialization();
+
 
     auto compatibility_report = simulation.simulation->check();
     if (compatibility_report.has_issues()) {
@@ -391,7 +396,6 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
     if (!simulation_changed_compared_to_visualization)
         return;
 
-    simulation.simulation->check_for_initialization();
 
     auto compatibility_report = simulation.simulation->check();
     if (compatibility_report.has_issues()) {

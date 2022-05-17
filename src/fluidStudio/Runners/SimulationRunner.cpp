@@ -8,8 +8,6 @@ namespace FluidUi {
         if (simulation == nullptr)
             return;
 
-        simulation->check_for_initialization();
-
         auto compatibility_report = simulation->check();
         if (compatibility_report.has_issues()) {
             compatibility_report.log_issues();

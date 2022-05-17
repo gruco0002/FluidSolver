@@ -53,9 +53,9 @@ void FluidUi::UiLayer::render_component_panel()
         render_component_node("Timestep", {Component::Kind::Timestep, 0});
         render_component_node("Output", {Component::Kind::Output, 0});
 
-        for (size_t i = 0; i < window->simulation.simulation->parameters.sensors.size(); i++)
+        for (size_t i = 0; i < window->simulation.simulation->data.sensors.size(); i++)
         {
-            auto sen = window->simulation.simulation->parameters.sensors[i];
+            auto sen = window->simulation.simulation->data.sensors[i];
             render_component_node(sen->parameters.name.c_str(), {Component::Kind::Sensor, i});
         }
 
@@ -73,44 +73,44 @@ void FluidUi::UiLayer::render_component_panel()
                 if (ImGui::MenuItem("Global Density", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalDensitySensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Pressure", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalPressureSensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Velocity", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalVelocitySensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Energy", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalEnergySensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Global Particle Count", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::GlobalParticleCountSensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("3D Sensor Plane", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::SensorPlane>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
                 if (ImGui::MenuItem("Compressed Neighborhood Storage", nullptr, nullptr, is_safe))
                 {
                     auto sen = std::make_shared<FluidSolver::Sensors::CompressedNeighborStorageSensor>();
-                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->parameters.sensors.size() + 1);
-                    window->simulation.simulation->parameters.sensors.push_back(sen);
+                    sen->parameters.name = "Sensor " + std::to_string(window->simulation.simulation->data.sensors.size() + 1);
+                    window->simulation.simulation->data.sensors.push_back(sen);
                 }
 
                 ImGui::EndMenu();
@@ -237,7 +237,7 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            window->simulation.simulation->parameters.fluid_solver = t->create_type();
+                            window->simulation.simulation->data.fluid_solver = t->create_type();
                         }
                     }
                 }
@@ -261,7 +261,7 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            window->simulation.simulation->parameters.fluid_solver = t->create_type();
+                            window->simulation.simulation->data.fluid_solver = t->create_type();
                         }
                     }
                 }
@@ -284,7 +284,7 @@ void FluidUi::UiLayer::render_solver_component()
                             window->current_type = t;
 
                             // set the new type
-                            window->simulation.simulation->parameters.fluid_solver = t->create_type();
+                            window->simulation.simulation->data.fluid_solver = t->create_type();
                         }
                     }
                 }
@@ -304,7 +304,7 @@ void FluidUi::UiLayer::render_solver_component()
     {
         BeginSubsection("SESPH", [=]() {
             auto v = (FluidSolver::SESPHSettings*)window->current_type->get_settings(
-                window->simulation.simulation->parameters.fluid_solver);
+                window->simulation.simulation->data.fluid_solver);
             render_solver_parameters();
             ImGui::Separator();
             ImGui::InputFloat("Viscosity", &v->Viscosity);
@@ -319,7 +319,7 @@ void FluidUi::UiLayer::render_solver_component()
             ImGui::Separator();
 
             auto v = (FluidSolver::IISPHSettings*)window->current_type->get_settings(
-                window->simulation.simulation->parameters.fluid_solver);
+                window->simulation.simulation->data.fluid_solver);
 
             ImGui::InputFloat("Viscosity", &v->Viscosity);
             ImGui::InputFloat("Max. Density Err.", &v->MaxDensityErrorAllowed);
@@ -334,7 +334,7 @@ void FluidUi::UiLayer::render_solver_component()
     {
         BeginSubsection("3D SESPH", [=]() {
             auto v = (FluidSolver::SESPHSettings3D*)window->current_type->get_settings(
-                window->simulation.simulation->parameters.fluid_solver);
+                window->simulation.simulation->data.fluid_solver);
             render_solver_parameters();
             ImGui::Separator();
             ImGui::InputFloat("Viscosity", &v->Viscosity);
@@ -349,7 +349,7 @@ void FluidUi::UiLayer::render_solver_component()
             ImGui::Separator();
 
             auto v = (FluidSolver::IISPHSettings3D*)window->current_type->get_settings(
-                window->simulation.simulation->parameters.fluid_solver);
+                window->simulation.simulation->data.fluid_solver);
 
             ImGui::InputFloat("Viscosity", &v->viscosity);
             ImGui::InputFloat("Max. Density Err.", &v->max_density_error_allowed);
@@ -364,8 +364,8 @@ void FluidUi::UiLayer::render_solver_component()
 void FluidUi::UiLayer::render_timestep_component()
 {
     BeginSubsection("Timestep", [=]() {
-        auto ct = std::dynamic_pointer_cast<FluidSolver::ConstantTimestepGenerator>(window->simulation.simulation->parameters.timestep);
-        auto dt = std::dynamic_pointer_cast<FluidSolver::DynamicCflTimestepGenerator>(window->simulation.simulation->parameters.timestep);
+        auto ct = std::dynamic_pointer_cast<FluidSolver::ConstantTimestepGenerator>(window->simulation.simulation->data.timestep_generator);
+        auto dt = std::dynamic_pointer_cast<FluidSolver::DynamicCflTimestepGenerator>(window->simulation.simulation->data.timestep_generator);
 
         if (ImGui::BeginCombo("Type", ct ? "Constant" : "Dynamic CFL"))
         {
@@ -377,8 +377,8 @@ void FluidUi::UiLayer::render_timestep_component()
                     dt = nullptr;
 
                     ct = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
-                    window->simulation.simulation->parameters.timestep = ct;
-                    window->simulation.simulation->parameters.invalidate = true;
+                    window->simulation.simulation->data.timestep_generator = ct;
+                    window->simulation.simulation->data.notify_that_data_changed();
                 }
             }
             if (ImGui::Selectable("Dynamic CFL", dt != nullptr))
@@ -389,8 +389,8 @@ void FluidUi::UiLayer::render_timestep_component()
                     dt = nullptr;
 
                     dt = std::make_shared<FluidSolver::DynamicCflTimestepGenerator>();
-                    window->simulation.simulation->parameters.timestep = dt;
-                    window->simulation.simulation->parameters.invalidate = true;
+                    window->simulation.simulation->data.timestep_generator = dt;
+                    window->simulation.simulation->data.notify_that_data_changed();
                 }
             }
             ImGui::EndCombo();
@@ -466,8 +466,8 @@ const char* get_sensor_type_name(const std::shared_ptr<FluidSolver::ISensor>& se
 void FluidUi::UiLayer::render_sensor_component(size_t index)
 {
     FLUID_ASSERT(window != nullptr);
-    FLUID_ASSERT(index < window->simulation.simulation->parameters.sensors.size());
-    auto sen = window->simulation.simulation->parameters.sensors[index];
+    FLUID_ASSERT(index < window->simulation.simulation->data.sensors.size());
+    auto sen = window->simulation.simulation->data.sensors[index];
     BeginSubsection("Sensor", [&]() {
         ImGui::LabelText("Type", get_sensor_type_name(sen));
         if (ImGui::Button("Open Graph"))
@@ -493,15 +493,15 @@ void FluidUi::UiLayer::render_output_component()
 {
     FLUID_ASSERT(window != nullptr);
 
-    auto& output = window->simulation.simulation->parameters.output;
+    auto& output = window->simulation.simulation->output;
     BeginSubsection("Output", [&]() {
-        ImGui::InputText("Directory", &output.parameters.output_folder);
-        if (ImGui::InputInt("Write Interval", (int*)&output.parameters.timesteps_between_sensor_save))
+        ImGui::InputText("Directory", &output->parameters.output_folder);
+        if (ImGui::InputInt("Write Interval", (int*)&output->parameters.timesteps_between_sensor_save))
         {
-            if (output.parameters.timesteps_between_sensor_save == 0 ||
-                output.parameters.timesteps_between_sensor_save == -1)
+            if (output->parameters.timesteps_between_sensor_save == 0 ||
+                output->parameters.timesteps_between_sensor_save == -1)
             {
-                output.parameters.timesteps_between_sensor_save = 1;
+                output->parameters.timesteps_between_sensor_save = 1;
             }
         }
     });
@@ -537,7 +537,7 @@ void FluidUi::UiLayer::render_visualizer_component()
 
                     gl = std::make_shared<FluidSolver::GLParticleRenderer>();
                     window->simulation.visualizer = gl;
-                    window->simulation.simulation->parameters.invalidate = true;
+
                 }
             }
             if (ImGui::Selectable("Continous Visualizer", cv != nullptr))
@@ -554,7 +554,7 @@ void FluidUi::UiLayer::render_visualizer_component()
                     cv->parameters.render_target.height = 100;
                     cv->settings.minimum_render_density = window->simulation.simulation->parameters.rest_density * 0.5f;
                     window->simulation.visualizer = cv;
-                    window->simulation.simulation->parameters.invalidate = true;
+
                 }
             }
             if (ImGui::Selectable("Particle Renderer 3d", gl3d != nullptr))
@@ -570,7 +570,7 @@ void FluidUi::UiLayer::render_visualizer_component()
                     gl3d->parameters.render_target.width = 1920;
                     gl3d->parameters.render_target.height = 1080;
                     window->simulation.visualizer = gl3d;
-                    window->simulation.simulation->parameters.invalidate = true;
+
                 }
             }
             ImGui::EndCombo();
@@ -593,7 +593,7 @@ void FluidUi::UiLayer::render_visualizer_component()
                 visualizer->parameters.render_target.width = 1;
             if (visualizer->parameters.render_target.height == 0 || visualizer->parameters.render_target.height == -1)
                 visualizer->parameters.render_target.height = 1;
-            window->simulation.simulation->parameters.invalidate = true;
+
         }
 
         if (ImGui::Button("Save Image"))
@@ -689,17 +689,17 @@ void FluidUi::UiLayer::delete_component(const Component& component)
         // delete the sensor if existing
 
         // check for existance
-        if (window->simulation.simulation->parameters.sensors.size() <= component.index)
+        if (window->simulation.simulation->data.sensors.size() <= component.index)
         {
             return;
         }
 
         // delete the sensor
-        for (size_t i = component.index; i < window->simulation.simulation->parameters.sensors.size() - 1; i++)
+        for (size_t i = component.index; i < window->simulation.simulation->data.sensors.size() - 1; i++)
         {
-            window->simulation.simulation->parameters.sensors[i] = window->simulation.simulation->parameters.sensors[i + 1];
+            window->simulation.simulation->data.sensors[i] = window->simulation.simulation->data.sensors[i + 1];
         }
-        window->simulation.simulation->parameters.sensors.pop_back();
+        window->simulation.simulation->data.sensors.pop_back();
     }
 }
 
@@ -749,9 +749,9 @@ void FluidUi::UiLayer::initialize()
 
 void FluidUi::UiLayer::render_solver_parameters()
 {
-    ImGui::InputFloat("Gravity", &window->simulation.simulation->parameters.fluid_solver->parameters.gravity);
-    ImGui::InputFloat("Rest Density", &window->simulation.simulation->parameters.fluid_solver->parameters.rest_density);
-    ImGui::InputFloat("Particle Size", &window->simulation.simulation->parameters.fluid_solver->parameters.particle_size);
+    ImGui::InputFloat("Gravity", &window->simulation.simulation->data.fluid_solver->parameters.gravity);
+    ImGui::InputFloat("Rest Density", &window->simulation.simulation->data.fluid_solver->parameters.rest_density);
+    ImGui::InputFloat("Particle Size", &window->simulation.simulation->data.fluid_solver->parameters.particle_size);
 }
 
 void FluidUi::UiLayer::render_menu()
