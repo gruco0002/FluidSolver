@@ -8,7 +8,7 @@
 namespace FluidSolver {
     class SimulatorVisualizerBundle : public Initializable,  public Reportable {
       public:
-        std::shared_ptr<Simulator> simulation = nullptr;
+        std::shared_ptr<Simulator> simulator = nullptr;
         std::shared_ptr<ISimulationVisualizer> visualizer = nullptr;
 
 

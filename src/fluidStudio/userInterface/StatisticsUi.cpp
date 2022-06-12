@@ -18,13 +18,13 @@ void FluidUi::StatisticsUi::render()
         return;
     }
 
-    for (size_t i = 0; i < window->simulator_visualizer_bundle.simulation->data.sensors.size(); i++)
+    for (size_t i = 0; i < window->simulator_visualizer_bundle.simulator->data.sensors.size(); i++)
     {
 
         if (is_sensor_window_open(i))
         {
 
-            auto sen = window->simulator_visualizer_bundle.simulation->data.sensors[i];
+            auto sen = window->simulator_visualizer_bundle.simulator->data.sensors[i];
 
             if (ImGui::Begin(sen->parameters.name.c_str(), sensor_window_open_ptr(i)))
             {

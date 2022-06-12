@@ -1017,10 +1017,10 @@ namespace FluidSolver
 
         // setup basic parameters
         SimulatorVisualizerBundle res;
-        res.simulation = std::make_shared<Simulator>();
-        res.simulation->parameters.notify_that_data_changed();
+        res.simulator = std::make_shared<Simulator>();
+        res.simulator->parameters.notify_that_data_changed();
 
-        res.simulation->data.collection = std::make_shared<ParticleCollection>();
+        res.simulator->data.collection = std::make_shared<ParticleCollection>();
 
         // check version
         YAML::Node config = YAML::LoadFile(filepath);
@@ -1035,8 +1035,8 @@ namespace FluidSolver
         // load the data
         try
         {
-            load_scenario(config["scenario"], *res.simulation);
-            load_solver(*res.simulation, config["solver"]);
+            load_scenario(config["scenario"], *res.simulator);
+            load_solver(*res.simulator, config["solver"]);
             res.visualizer = load_visualizer(config["visualizer"]);
         }
         catch (const std::exception& e)
@@ -1064,8 +1064,8 @@ namespace FluidSolver
 
 
         // save values
-        config["scenario"] = save_scenario(*simulation.simulation);
-        config["solver"] = save_solver(*simulation.simulation);
+        config["scenario"] = save_scenario(*simulation.simulator);
+        config["solver"] = save_solver(*simulation.simulator);
         config["visualizer"] = save_visualizer(simulation.visualizer);
 
         // save data to file
