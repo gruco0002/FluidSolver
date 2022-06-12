@@ -191,7 +191,7 @@ namespace FluidUi
         // create an empty scenario
         window->create_empty_3d_simulation();
 
-        auto collection = window->simulation.simulation->data.collection;
+        auto collection = window->simulator_visualizer_bundle.simulation->data.collection;
 
         // import the data
         for (size_t i = 0; i < vertices.size(); i++)

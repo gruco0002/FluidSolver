@@ -31,7 +31,7 @@ namespace FluidUi {
 
 
       public:
-        FluidSolver::SimulatorVisualizerBundle simulation;
+        FluidSolver::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
 
         bool running = false;

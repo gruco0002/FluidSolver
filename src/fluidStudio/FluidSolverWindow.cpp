@@ -86,25 +86,25 @@ void FluidUi::FluidSolverWindow::render() {
 }
 
 void FluidUi::FluidSolverWindow::create_empty_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
+    simulator_visualizer_bundle.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->data.collection->add_type<FluidSolver::MovementData>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces>();
-    simulation.simulation->parameters.rest_density = 1.0f;
-    simulation.simulation->parameters.particle_size = 1.0f;
-    simulation.simulation->parameters.gravity = 9.81f;
+    simulator_visualizer_bundle.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::MovementData>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ExternalForces>();
+    simulator_visualizer_bundle.simulation->parameters.rest_density = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.particle_size = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.gravity = 9.81f;
 
-    simulation.simulation->data.fluid_solver = current_type->create_type();
-    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
-    simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer>();
+    simulator_visualizer_bundle.simulation->data.fluid_solver = current_type->create_type();
+    simulator_visualizer_bundle.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulator_visualizer_bundle.visualizer = std::make_shared<FluidSolver::GLParticleRenderer>();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
-    simulation.simulation->parameters.notify_that_data_changed();
-    simulation.simulation->data.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->parameters.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->data.notify_that_data_changed();
 
 
     FluidSolver::Log::message("Loaded empty scenario");
@@ -113,23 +113,23 @@ void FluidUi::FluidSolverWindow::create_empty_simulation() {
 }
 
 void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
+    simulator_visualizer_bundle.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
-    simulation.simulation->parameters.rest_density = 1.0f;
-    simulation.simulation->parameters.particle_size = 1.0f;
-    simulation.simulation->parameters.gravity = 9.81f;
+    simulator_visualizer_bundle.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
+    simulator_visualizer_bundle.simulation->parameters.rest_density = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.particle_size = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.gravity = 9.81f;
 
-    simulation.simulation->data.fluid_solver = current_type->create_type();
-    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
-    simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+    simulator_visualizer_bundle.simulation->data.fluid_solver = current_type->create_type();
+    simulator_visualizer_bundle.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulator_visualizer_bundle.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
-    simulation.simulation->parameters.notify_that_data_changed();
-    simulation.simulation->data.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->parameters.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->data.notify_that_data_changed();
 
 
     FluidSolver::Log::message("Loaded empty 3d scenario");
@@ -138,24 +138,24 @@ void FluidUi::FluidSolverWindow::create_empty_3d_simulation() {
 }
 
 void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
-    simulation.simulation = std::make_shared<FluidSolver::Simulator>();
+    simulator_visualizer_bundle.simulation = std::make_shared<FluidSolver::Simulator>();
 
-    simulation.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
-    simulation.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleData>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
-    simulation.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
-    simulation.simulation->parameters.rest_density = 1.0f;
-    simulation.simulation->parameters.particle_size = 1.0f;
-    simulation.simulation->parameters.gravity = 9.81f;
+    simulator_visualizer_bundle.simulation->data.collection = std::make_shared<FluidSolver::ParticleCollection>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::MovementData3D>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleData>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ParticleInfo>();
+    simulator_visualizer_bundle.simulation->data.collection->add_type<FluidSolver::ExternalForces3D>();
+    simulator_visualizer_bundle.simulation->parameters.rest_density = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.particle_size = 1.0f;
+    simulator_visualizer_bundle.simulation->parameters.gravity = 9.81f;
 
 
-    simulation.simulation->data.fluid_solver = current_type->create_type();
-    simulation.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
-    simulation.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+    simulator_visualizer_bundle.simulation->data.fluid_solver = current_type->create_type();
+    simulator_visualizer_bundle.simulation->data.timestep_generator = std::make_shared<FluidSolver::ConstantTimestepGenerator>();
+    simulator_visualizer_bundle.visualizer = std::make_shared<FluidSolver::GLParticleRenderer3D>();
 
-    simulation.simulation->parameters.notify_that_data_changed();
-    simulation.simulation->data.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->parameters.notify_that_data_changed();
+    simulator_visualizer_bundle.simulation->data.notify_that_data_changed();
 
     // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
 
@@ -169,20 +169,20 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
     sen->settings.number_of_samples_y = 100;
     sen->settings.min_image_value = 0.0f;
     sen->settings.max_image_value = 1.5f;
-    simulation.simulation->data.sensors.push_back(sen);
+    simulator_visualizer_bundle.simulation->data.sensors.push_back(sen);
 
 
     for (int x = -5; x < 5; x++) {
         for (int y = -5; y < 5; y++) {
             for (int z = -5; z < 5; z++) {
-                auto index = simulation.simulation->data.collection->add();
-                auto& pos = simulation.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
+                auto index = simulator_visualizer_bundle.simulation->data.collection->add();
+                auto& pos = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
                 pos.position = glm::vec3((float)x, (float)y, (float)z);
 
-                auto& info = simulation.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
+                auto& info = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
                 info.type = FluidSolver::ParticleType::ParticleTypeNormal;
 
-                auto& data = simulation.simulation->data.collection->get<FluidSolver::ParticleData>(index);
+                auto& data = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::ParticleData>(index);
                 data.density = 1.0f;
                 data.mass = 1.0f;
                 data.pressure = 0.0f;
@@ -191,14 +191,14 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
     }
 
     auto emit_boundary = [&](float x, float y, float z) {
-        auto index = simulation.simulation->data.collection->add();
-        auto& pos = simulation.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
+        auto index = simulator_visualizer_bundle.simulation->data.collection->add();
+        auto& pos = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::MovementData3D>(index);
         pos.position = glm::vec3((float)x, (float)y, (float)z);
 
-        auto& info = simulation.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
+        auto& info = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::ParticleInfo>(index);
         info.type = FluidSolver::ParticleType::ParticleTypeBoundary;
 
-        auto& data = simulation.simulation->data.collection->get<FluidSolver::ParticleData>(index);
+        auto& data = simulator_visualizer_bundle.simulation->data.collection->get<FluidSolver::ParticleData>(index);
         data.density = 1.0f;
         data.mass = 1.0f;
         data.pressure = 0.0f;
@@ -257,11 +257,11 @@ void FluidUi::FluidSolverWindow::create_3d_test_simulation() {
 
 
 void FluidUi::FluidSolverWindow::on_new_simulation() {
-    this->current_type = this->solver_types.query_type(simulation.simulation->data.fluid_solver);
-    simulation.simulation->manual_initialize();
+    this->current_type = this->solver_types.query_type(simulator_visualizer_bundle.simulation->data.fluid_solver);
+    simulator_visualizer_bundle.simulation->manual_initialize();
 
     FluidSolver::CompatibilityReport report;
-    simulation.create_compatibility_report(report);
+    simulator_visualizer_bundle.create_compatibility_report(report);
     if (report.has_issues()) {
         report.log_issues();
     }
@@ -281,8 +281,8 @@ void FluidUi::FluidSolverWindow::render_visualization_window() {
 
     in_foreground = in_foreground || ImGui::IsWindowFocused();
 
-    auto glRenderer = std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.visualizer);
-    if (simulation.visualizer == nullptr) {
+    auto glRenderer = std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulator_visualizer_bundle.visualizer);
+    if (simulator_visualizer_bundle.visualizer == nullptr) {
         ImGui::Text("No visualizer is set!");
     } else {
         Engine::Graphics::Texture2D* tex = nullptr;
@@ -383,7 +383,7 @@ void FluidUi::FluidSolverWindow::setup_windows() {
 
 void FluidUi::FluidSolverWindow::execute_one_simulation_step() {
     FluidSolver::CompatibilityReport report;
-    simulation.create_compatibility_report(report);
+    simulator_visualizer_bundle.create_compatibility_report(report);
     if (report.has_issues()) {
         report.log_issues();
         running = false;
@@ -391,7 +391,7 @@ void FluidUi::FluidSolverWindow::execute_one_simulation_step() {
     }
 
 
-    simulation.simulation->execute_simulation_step();
+    simulator_visualizer_bundle.simulation->execute_simulation_step();
     simulation_changed_compared_to_visualization = true;
 }
 
@@ -400,7 +400,7 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
         return;
 
     FluidSolver::CompatibilityReport report;
-    simulation.create_compatibility_report(report);
+    simulator_visualizer_bundle.create_compatibility_report(report);
     if (report.has_issues()) {
         report.log_issues();
         simulation_changed_compared_to_visualization = false;
@@ -409,7 +409,7 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
 
 
     bool is_gl_renderer =
-            std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulation.visualizer) != nullptr;
+            std::dynamic_pointer_cast<FluidSolver::GLRenderer>(simulator_visualizer_bundle.visualizer) != nullptr;
     if (called_from_worker_thread && is_gl_renderer) {
         // an opengl renderer has to be called synchronously in the thread of the windows,
         // since the window owns the required gl context
@@ -418,12 +418,12 @@ void FluidUi::FluidSolverWindow::visualize_simulation(bool called_from_worker_th
 
 
     // visualize the scene
-    simulation.visualizer->render();
+    simulator_visualizer_bundle.visualizer->render();
 
-    if (!is_gl_renderer && simulation.visualizer != nullptr) {
+    if (!is_gl_renderer && simulator_visualizer_bundle.visualizer != nullptr) {
         // if the visualizer is not an opengl renderer, copy the visualized image to be able to update it in another
         // thread
-        render_image_copy = simulation.visualizer->get_image_data();
+        render_image_copy = simulator_visualizer_bundle.visualizer->get_image_data();
     }
 
     // after we are done with the work set the render_image_update flag to true
@@ -473,15 +473,15 @@ void FluidUi::FluidSolverWindow::update_camera() {
         return;
     }
 
-    if (simulation.visualizer == nullptr)
+    if (simulator_visualizer_bundle.visualizer == nullptr)
         return;
 
     if (current_camera_movement == MovementDirection::NoMovement)
         return;
 
-    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulation.visualizer);
-    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulation.visualizer);
-    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulation.visualizer);
+    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulator_visualizer_bundle.visualizer);
+    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulator_visualizer_bundle.visualizer);
+    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
 
     if (gl != nullptr) {
         if (current_camera_movement == MovementDirection::Top) {
@@ -548,12 +548,12 @@ void FluidUi::FluidSolverWindow::drag_viewport(double newX, double newY) {
     last_drag_location = {newX, newY};
 
     // update the viewport accordingly
-    if (simulation.visualizer == nullptr)
+    if (simulator_visualizer_bundle.visualizer == nullptr)
         return;
 
-    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulation.visualizer);
-    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulation.visualizer);
-    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulation.visualizer);
+    auto gl = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer>(simulator_visualizer_bundle.visualizer);
+    auto cv = std::dynamic_pointer_cast<FluidSolver::ContinousVisualizer>(simulator_visualizer_bundle.visualizer);
+    auto gl3d = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
 
 
     if (gl != nullptr) {
