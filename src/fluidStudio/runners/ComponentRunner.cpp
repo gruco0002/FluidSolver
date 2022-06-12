@@ -5,7 +5,7 @@
 namespace FluidUi {
 
     bool ComponentRunner::start_next_computation() {
-        if (is_currently_computing()) {
+        if (computation_status != ComputationStatus::WaitingForNextComputation) {
             return false;
         }
 
@@ -13,21 +13,18 @@ namespace FluidUi {
 
         if (run_asynchronously) {
             // asynchronous computation in another thread
-            currently_computing = true;
+            computation_status = ComputationStatus::IsComputing;
             invoke_computation_start_in_thread = true;
         } else {
             // simple case of synchronous execution
-            currently_computing = true;
+            computation_status = ComputationStatus::IsComputing;
             execute_computation();
-            currently_computing = false;
+            computation_status = ComputationStatus::IsDoneComputing;
         }
 
         return true;
     }
 
-    bool ComponentRunner::is_currently_computing() const {
-        return currently_computing;
-    }
 
     void ComponentRunner::start_or_discard_thread_if_required() {
         if (run_asynchronously) {
@@ -53,7 +50,7 @@ namespace FluidUi {
             if (invoke_computation_start_in_thread) {
                 invoke_computation_start_in_thread = false;
                 execute_computation();
-                currently_computing = false;
+                computation_status = ComputationStatus::IsDoneComputing;
             } else {
                 // there is nothing to do currently
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -65,5 +62,26 @@ namespace FluidUi {
         worker_thread_should_terminate = true;
         worker_thread->join();
         worker_thread = nullptr;
+    }
+
+    ComponentRunner::ComputationStatus ComponentRunner::get_status() const {
+        return computation_status;
+    }
+    bool ComponentRunner::reset_runner_on_done() {
+        if (computation_status != ComputationStatus::IsDoneComputing) {
+            return false;
+        }
+
+        computation_status = ComputationStatus::WaitingForNextComputation;
+        return true;
+    }
+    bool ComponentRunner::is_currently_computing() const {
+        return computation_status == ComputationStatus::IsComputing;
+    }
+    bool ComponentRunner::is_done() const {
+        return computation_status == ComputationStatus::IsDoneComputing;
+    }
+    bool ComponentRunner::is_ready() const {
+        return computation_status == ComputationStatus::WaitingForNextComputation;
     }
 } // namespace FluidUi

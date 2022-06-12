@@ -8,13 +8,27 @@ namespace FluidUi {
 
       public:
 
-        bool is_currently_computing() const;
+        enum class ComputationStatus {
+            IsComputing,
+            IsDoneComputing,
+            WaitingForNextComputation
+        };
+
+        ComputationStatus get_status() const;
 
         bool start_next_computation();
+
+        bool reset_runner_on_done();
 
         virtual ~ComponentRunner();
 
         bool run_asynchronously = false;
+
+        bool is_currently_computing() const;
+
+        bool is_done() const;
+
+        bool is_ready() const;
 
       protected:
 
@@ -22,7 +36,7 @@ namespace FluidUi {
 
       private:
 
-        bool currently_computing = false;
+        ComputationStatus computation_status = ComputationStatus::WaitingForNextComputation;
 
         std::unique_ptr<std::thread> worker_thread;
 

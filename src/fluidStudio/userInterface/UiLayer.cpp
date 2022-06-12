@@ -219,7 +219,7 @@ void FluidUi::UiLayer::render_solver_component()
     BeginSubsection(
         "Solver Setup",
         [=]() {
-            bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
+            bool can_change = window->is_safe_to_access_simulation_data();
 
             if (ImGui::BeginCombo("Solver", window->current_type->name_solver.c_str()))
             {
@@ -766,7 +766,7 @@ void FluidUi::UiLayer::render_menu()
         if (ImGui::BeginMenu("File"))
         {
 
-            bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
+            bool can_change = window->is_safe_to_access_simulation_data();
 
             if (ImGui::MenuItem("New", nullptr, false, can_change))
             {
@@ -822,7 +822,7 @@ void FluidUi::UiLayer::render_menu()
         if (ImGui::BeginMenu("Test"))
         {
 
-            bool can_change = !window->asynchronous_simulation || (!window->running && window->is_done_working());
+            bool can_change = window->is_safe_to_access_simulation_data();
 
             if (ImGui::MenuItem("Test 3D", nullptr, false, can_change))
             {
