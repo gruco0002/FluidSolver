@@ -60,7 +60,9 @@ namespace FluidUi {
 
     ComponentRunner::~ComponentRunner() {
         worker_thread_should_terminate = true;
-        worker_thread->join();
+        if (worker_thread != nullptr) {
+            worker_thread->join();
+        }
         worker_thread = nullptr;
     }
 
