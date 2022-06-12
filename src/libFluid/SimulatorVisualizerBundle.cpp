@@ -26,6 +26,13 @@ namespace FluidSolver {
             simulation->manual_initialize();
         }
         if (visualizer != nullptr) {
+            if (simulation != nullptr) {
+                visualizer->parameters.collection = simulation->data.collection;
+                visualizer->parameters.neighborhood_interface = simulation->get_neighborhood_interface();
+                visualizer->parameters.particle_size = simulation->parameters.particle_size;
+                visualizer->parameters.rest_density = simulation->parameters.rest_density;
+            }
+
             visualizer->initialize();
         }
     }

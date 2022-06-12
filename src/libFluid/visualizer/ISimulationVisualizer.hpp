@@ -30,7 +30,7 @@ namespace FluidSolver
             float rest_density = 0.0f;
             float particle_size = 0.0f;
 
-            NeighborhoodInterface* neighborhood_interface = nullptr;
+            std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
 
         } parameters;
 

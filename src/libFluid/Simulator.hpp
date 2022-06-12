@@ -57,6 +57,8 @@ namespace FluidSolver {
         void initialize() override;
 
         void create_compatibility_report(CompatibilityReport &report) override;
+
+        std::shared_ptr<NeighborhoodInterface> get_neighborhood_interface();
     };
 
 } // namespace FluidSolver

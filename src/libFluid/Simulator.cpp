@@ -160,4 +160,7 @@ namespace FluidSolver {
     Simulator::Simulator() {
         output = std::make_shared<OutputManager>();
     }
+    std::shared_ptr<NeighborhoodInterface> Simulator::get_neighborhood_interface() {
+        return neigborhood_interface;
+    }
 } // namespace FluidSolver
