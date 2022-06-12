@@ -14,6 +14,8 @@ namespace FluidSolver {
     }
 
     void ContinousVisualizer::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(ContinousVisualizer));
 
         if (parameters.collection == nullptr) {

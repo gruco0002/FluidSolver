@@ -5,10 +5,13 @@
 
 #include <memory>
 
+#include "Reportable.hpp"
+#include "Initializable.hpp"
+
 namespace FluidSolver
 {
 
-    class ITimestepGenerator {
+    class ITimestepGenerator : public Initializable, public Reportable {
 
       protected:
         float generated_timestep = 0.0f;
@@ -26,8 +29,7 @@ namespace FluidSolver
 
         virtual float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) = 0;
 
-        virtual ~ITimestepGenerator() = default;
 
-        virtual void create_compatibility_report(CompatibilityReport &report) = 0;
+
     };
 } // namespace FluidSolver

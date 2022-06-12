@@ -5,6 +5,8 @@
 
 namespace FluidSolver {
     void SimulatorVisualizerBundle::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(SimulatorVisualizerBundle));
         if (simulation == nullptr) {
             report.add_issue("Simulation is null!");
@@ -17,6 +19,15 @@ namespace FluidSolver {
         }
 
         report.end_scope();
+    }
+
+    void SimulatorVisualizerBundle::initialize() {
+        if (simulation != nullptr) {
+            simulation->manual_initialize();
+        }
+        if (visualizer != nullptr) {
+            visualizer->initialize();
+        }
     }
 
 } // namespace FluidSolver

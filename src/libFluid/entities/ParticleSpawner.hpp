@@ -17,7 +17,8 @@ namespace FluidSolver {
         } parameters;
 
         void execute_simulation_step(pFloat timestep) override;
-
+        void initialize() override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         float time_left_over = 0.0f;
@@ -29,6 +30,8 @@ namespace FluidSolver {
         void spawn_particle(pIndex_t index, const glm::vec2& position, const glm::vec2& initial_velocity);
 
         bool is_position_free(const glm::vec2& position);
+
+
     };
 
 } // namespace FluidSolver

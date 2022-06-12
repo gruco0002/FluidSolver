@@ -42,6 +42,8 @@ namespace FluidSolver {
 
         void create_compatibility_report(CompatibilityReport& report) override;
 
+        void initialize() override;
+
       private:
         void CalculateDensity(pIndex_t particleIndex);
 
@@ -61,7 +63,7 @@ namespace FluidSolver {
 
         pFloat current_timestep = 0.0f;
 
-        void initialize_if_required();
+
 
       public:
         IISPHSettings settings;
@@ -70,7 +72,7 @@ namespace FluidSolver {
     };
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::initialize_if_required() {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::initialize() {
         FLUID_ASSERT(data.collection != nullptr);
 
         if (data.has_data_changed()) {
@@ -99,6 +101,8 @@ namespace FluidSolver {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver));
 
         if (data.collection == nullptr) {
@@ -141,7 +145,7 @@ namespace FluidSolver {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep) {
-        initialize_if_required();
+        initialize();
 
         FLUID_ASSERT(data.collection != nullptr)
         FLUID_ASSERT(data.collection->is_type_present<MovementData>());

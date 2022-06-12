@@ -2,10 +2,12 @@
 
 namespace FluidSolver {
     void ConstantTimestepGenerator::generate_next_timestep() {
+        initialize();
         generated_timestep = settings.timestep;
     }
 
     void ConstantTimestepGenerator::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
         report.begin_scope(FLUID_NAMEOF(ConstantTimestepGenerator));
         if (settings.timestep <= 0.0f) {
             report.add_issue("Timestep is smaller or equal to zero.");
@@ -27,6 +29,8 @@ namespace FluidSolver {
         float delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
 
         return std::fmin(delta_t_a, delta_t_v);
+    }
+    void ConstantTimestepGenerator::initialize() {
     }
 
 

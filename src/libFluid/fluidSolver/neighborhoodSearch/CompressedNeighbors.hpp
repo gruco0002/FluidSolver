@@ -4,6 +4,8 @@
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <bitset>
 #include <memory>
@@ -17,7 +19,7 @@ namespace FluidSolver
      * @brief Implementation of the compressed neighborhood search as described in
      * the paper 'Compressed Neighbour Lists for SPH' by Band et al. (doi:10.1111/cgf.13890)
      */
-    class CompressedNeighborhoodSearch {
+    class CompressedNeighborhoodSearch : public Initializable, public Reportable {
 
       public:
         using particleIndex_t = pIndex_t;
@@ -118,11 +120,11 @@ namespace FluidSolver
 
         Neighbors get_neighbors(const vec3& position);
 
-        void initialize();
+        void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
 
       private:

@@ -27,6 +27,8 @@ namespace FluidSolver {
 
         void create_compatibility_report(CompatibilityReport& report) override;
 
+        void initialize() override;
+
       private:
         pFloat current_timestep = 0.0f;
 
@@ -40,7 +42,7 @@ namespace FluidSolver {
 
         vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
 
-        void initialize_if_required();
+
 
 
       public:
@@ -49,7 +51,7 @@ namespace FluidSolver {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_simulation_step(Timepoint& timestep) {
-        initialize_if_required();
+        initialize();
 
         FLUID_ASSERT(data.collection->is_type_present<MovementData>());
         FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
@@ -119,7 +121,7 @@ namespace FluidSolver {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::initialize_if_required() {
+    void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::initialize() {
         FLUID_ASSERT(data.collection != nullptr);
 
         if (data.has_data_changed()) {
@@ -143,6 +145,8 @@ namespace FluidSolver {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(SESPHFluidSolver));
 
         if (data.collection == nullptr) {

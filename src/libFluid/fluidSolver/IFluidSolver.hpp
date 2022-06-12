@@ -7,12 +7,14 @@
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "time/ITimestepGenerator.hpp"
 #include "time/Timepoint.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <memory>
 
 namespace FluidSolver {
 
-    class IFluidSolverBase {
+    class IFluidSolverBase : public Initializable, public Reportable {
       public:
         struct SimulationParameters : public DataChangeStruct {
             pFloat rest_density = 1.0f;
@@ -28,11 +30,9 @@ namespace FluidSolver {
 
         virtual void execute_simulation_step(Timepoint& timestep) = 0;
 
-        virtual ~IFluidSolverBase() = default;
-
         virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() = 0;
 
-        virtual void create_compatibility_report(CompatibilityReport& report) = 0;
+
     };
 
     /**

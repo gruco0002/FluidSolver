@@ -3,7 +3,7 @@
 namespace FluidSolver {
 
     void Simulator::execute_simulation_step() {
-        initialize_if_required();
+        initialize();
 
         FLUID_ASSERT(data.fluid_solver != nullptr);
         FLUID_ASSERT(data.collection != nullptr);
@@ -44,7 +44,7 @@ namespace FluidSolver {
         output->timestep_happened();
     }
 
-    void Simulator::initialize_if_required() {
+    void Simulator::initialize() {
         FLUID_ASSERT(data.collection != nullptr);
         FLUID_ASSERT(data.fluid_solver != nullptr);
         FLUID_ASSERT(data.timestep_generator != nullptr);
@@ -123,10 +123,12 @@ namespace FluidSolver {
         parameters.notify_that_data_changed();
         data.notify_that_data_changed();
 
-        initialize_if_required();
+        initialize();
     }
 
     void Simulator::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(Simulator));
 
         if (data.collection == nullptr) {

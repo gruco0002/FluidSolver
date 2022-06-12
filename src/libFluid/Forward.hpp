@@ -34,5 +34,7 @@ namespace FluidSolver
 
     // other stuff
     struct DataChangeStruct;
+    class Initializable;
+    class Reportable;
 
 } // namespace FluidSolver

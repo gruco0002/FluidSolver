@@ -4,6 +4,8 @@
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <list>
 #include <memory>
@@ -14,7 +16,7 @@ namespace FluidSolver
 {
 
 
-    class HashedNeighborhoodSearch {
+    class HashedNeighborhoodSearch : public Initializable, public Reportable {
 
 
       public:
@@ -77,11 +79,11 @@ namespace FluidSolver
 
         Neighbors get_neighbors(const vec2& position);
 
-        void initialize();
+        void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         pFloat grid_cell_size = 0.0f;

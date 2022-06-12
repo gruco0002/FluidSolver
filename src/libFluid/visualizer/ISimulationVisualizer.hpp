@@ -4,13 +4,15 @@
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "visualizer/Image.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <memory>
 
 namespace FluidSolver
 {
 
-    class ISimulationVisualizer {
+    class ISimulationVisualizer: public Initializable, public Reportable {
       public:
         struct Size
         {
@@ -32,14 +34,12 @@ namespace FluidSolver
 
         } parameters;
 
-        virtual void initialize() = 0;
 
         virtual void render() = 0;
 
         virtual Image get_image_data() = 0;
 
-        virtual ~ISimulationVisualizer() = default;
 
-        virtual void create_compatibility_report(CompatibilityReport &report) = 0;
+
     };
 } // namespace FluidSolver

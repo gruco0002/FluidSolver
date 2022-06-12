@@ -16,5 +16,7 @@ namespace FluidSolver {
         void generate_next_timestep() override;
 
         void create_compatibility_report(CompatibilityReport &report) override;
+
+        void initialize() override;
     };
 } // namespace FluidSolver

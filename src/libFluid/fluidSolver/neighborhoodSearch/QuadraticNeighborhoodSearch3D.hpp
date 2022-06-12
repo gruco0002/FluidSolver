@@ -4,6 +4,8 @@
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <memory>
 #include <vector>
@@ -27,7 +29,7 @@ namespace FluidSolver
      * and its runtime performance is bad.
      *
      */
-    class QuadraticNeighborhoodSearch3D {
+    class QuadraticNeighborhoodSearch3D : public Initializable, public Reportable {
       public:
         using particleIndex_t = pIndex_t;
         using particleAmount_t = uint16_t;
@@ -88,11 +90,11 @@ namespace FluidSolver
 
         Neighbors get_neighbors(const vec3& position);
 
-        void initialize();
+        void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         struct NeighborData

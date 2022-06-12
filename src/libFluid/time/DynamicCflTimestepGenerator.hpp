@@ -20,6 +20,7 @@ namespace FluidSolver {
 
         void create_compatibility_report(CompatibilityReport &report) override;
         float get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) override;
+        void initialize() override;
 
       private:
         std::tuple<float, float> calculate_maximum_velocity_and_acceleration();

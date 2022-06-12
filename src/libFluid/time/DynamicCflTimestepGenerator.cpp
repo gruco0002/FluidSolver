@@ -44,6 +44,8 @@ namespace FluidSolver {
     }
 
     void DynamicCflTimestepGenerator::generate_next_timestep() {
+        initialize();
+
         auto [max_velocity, max_acceleration] = calculate_maximum_velocity_and_acceleration();
 
         float timestep = settings.min_timestep;
@@ -59,6 +61,8 @@ namespace FluidSolver {
     }
 
     void DynamicCflTimestepGenerator::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
         report.begin_scope(FLUID_NAMEOF(DynamicCflTimestepGenerator));
 
         if (parameters.particle_collection == nullptr) {
@@ -92,6 +96,9 @@ namespace FluidSolver {
         float delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
 
         return std::fmin(delta_t_a, delta_t_v);
+    }
+    void DynamicCflTimestepGenerator::initialize() {
+
     }
 
 } // namespace FluidSolver

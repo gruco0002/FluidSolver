@@ -82,7 +82,8 @@ namespace FluidSolver {
             return 2.0f * settings.viscosity * tmp;
         }
 
-        void initialize_if_required() {
+              public:
+        void initialize() override {
             FLUID_ASSERT(data.collection != nullptr);
             if (data.has_data_changed()) {
                 data.acknowledge_data_change();
@@ -108,9 +109,8 @@ namespace FluidSolver {
             }
         }
 
-      public:
         virtual void execute_simulation_step(Timepoint& timestep) override {
-            initialize_if_required();
+            initialize();
 
             FLUID_ASSERT(data.collection != nullptr)
             FLUID_ASSERT(data.collection->is_type_present<MovementData3D>());
@@ -528,7 +528,9 @@ namespace FluidSolver {
             return neighborhood_search.create_interface();
         }
 
-        virtual void create_compatibility_report(CompatibilityReport& report) override {
+         void create_compatibility_report(CompatibilityReport& report) override {
+            initialize();
+
             report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver3D));
             if (data.collection == nullptr) {
                 report.add_issue("Particle collection is null.");

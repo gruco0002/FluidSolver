@@ -5,6 +5,8 @@
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "helper/ProtectedUnorderedMap.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <array>
 #include <limits>
@@ -16,7 +18,7 @@ namespace FluidSolver
 {
 
 
-    class HashedNeighborhoodSearch3D {
+    class HashedNeighborhoodSearch3D : public Initializable, public Reportable {
       public:
         using particleIndex_t = pIndex_t;
         using particleAmount_t = uint16_t;
@@ -83,11 +85,11 @@ namespace FluidSolver
 
         Neighbors get_neighbors(const vec3& position);
 
-        void initialize();
+        void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         // Grid data

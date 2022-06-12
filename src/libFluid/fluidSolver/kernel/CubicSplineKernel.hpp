@@ -4,9 +4,12 @@
 #include "CompatibilityReport.hpp"
 #include "FluidInclude.hpp"
 
+#include "Initializable.hpp"
+#include "Reportable.hpp"
+
 namespace FluidSolver
 {
-    class CubicSplineKernel {
+    class CubicSplineKernel : public Initializable, public Reportable {
 
       public:
         pFloat kernel_support;
@@ -21,9 +24,9 @@ namespace FluidSolver
 
         vec2 GetKernelDerivativeReversedValue(const vec2& neighborPosition, const vec2& position) const;
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
-        void initialize();
+        void initialize() override;
 
       private:
         float h = 0.0f;

@@ -14,7 +14,7 @@
 
 namespace FluidSolver {
 
-    class Simulator {
+    class Simulator : public Initializable, public Reportable {
       public:
         struct SimulatorData : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
@@ -43,7 +43,7 @@ namespace FluidSolver {
 
         std::shared_ptr<NeighborhoodInterface> neigborhood_interface = nullptr;
 
-        void initialize_if_required();
+
 
       public:
 
@@ -54,7 +54,9 @@ namespace FluidSolver {
         // TODO: rename in "force_initialization_in_next_execution_step"
         void manual_initialize();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void initialize() override;
+
+        void create_compatibility_report(CompatibilityReport &report) override;
     };
 
 } // namespace FluidSolver

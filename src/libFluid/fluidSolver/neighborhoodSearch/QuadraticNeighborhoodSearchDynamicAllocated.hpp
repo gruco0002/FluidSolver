@@ -4,6 +4,8 @@
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "CompatibilityReport.hpp"
+#include "Reportable.hpp"
+#include "Initializable.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -61,7 +63,7 @@ namespace FluidSolver
      *      NeighborhoodInterface
      * create_interface();
      */
-    class QuadraticNeighborhoodSearchDynamicAllocated {
+    class QuadraticNeighborhoodSearchDynamicAllocated : public Initializable, public Reportable {
       public:
         using particleIndex_t = pIndex_t;
 
@@ -121,11 +123,11 @@ namespace FluidSolver
         Neighbors get_neighbors(const vec2& position);
 
 
-        void initialize();
+        void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report);
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;

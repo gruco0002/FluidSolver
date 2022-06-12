@@ -6,10 +6,12 @@
 #include "DataChangeStruct.hpp"
 
 #include <memory>
+#include "Initializable.hpp"
+#include "Reportable.hpp"
 
 namespace FluidSolver
 {
-    class IEntity {
+    class IEntity : public Initializable, public Reportable {
       public:
         struct SimulationInformation : public DataChangeStruct
         {
@@ -23,6 +25,6 @@ namespace FluidSolver
 
         virtual void execute_simulation_step(pFloat timestep) = 0;
 
-        virtual ~IEntity() = default;
+        ~IEntity() override = default;
     };
 } // namespace FluidSolver

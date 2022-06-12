@@ -7,10 +7,13 @@
 #include "time/ITimestepGenerator.hpp"
 #include "DataChangeStruct.hpp"
 
+#include "Reportable.hpp"
+#include "Initializable.hpp"
+
 
 namespace FluidSolver {
 
-    class ISensor {
+    class ISensor : public Initializable, public Reportable {
       public:
         struct SensorParameters {
             std::string name = "Sensor";
@@ -35,7 +38,11 @@ namespace FluidSolver {
         virtual void save_data_to_file(SensorWriter& writer) = 0;
 
         // TODO: make abstract
-        virtual inline  void create_compatibility_report(CompatibilityReport &report) {
+         inline  void create_compatibility_report(CompatibilityReport &report) override {
+
+        }
+
+         inline void initialize() override {
 
         }
 
