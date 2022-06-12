@@ -1,36 +1,36 @@
 #pragma once
 
 #include "CompatibilityReport.hpp"
+#include "DataChangeStruct.hpp"
+#include "Initializable.hpp"
+#include "Reportable.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "visualizer/Image.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
 
 #include <memory>
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
-    class ISimulationVisualizer: public Initializable, public Reportable {
+    class ISimulationVisualizer : public Initializable, public Reportable {
       public:
-        struct Size
-        {
+        struct Size {
             uint32_t width = 1920;
             uint32_t height = 1080;
         };
 
 
-        struct VisualizerParameter
-        {
-            // this size specifies how large the render target should be in pixels
-            Size render_target;
-
+        struct SimulationData : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
+            std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
             float rest_density = 0.0f;
             float particle_size = 0.0f;
 
-            std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
+        } simulation_data;
+
+        struct VisualizerParameter : public DataChangeStruct {
+            // this size specifies how large the render target should be in pixels
+            Size render_target;
 
         } parameters;
 
@@ -38,8 +38,5 @@ namespace FluidSolver
         virtual void render() = 0;
 
         virtual Image get_image_data() = 0;
-
-
-
     };
 } // namespace FluidSolver

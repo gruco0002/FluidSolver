@@ -1,25 +1,23 @@
 #pragma once
 
 #include "GLRenderer.hpp"
-#include "visualizer/GLParticleVertexArray.hpp"
-#include "visualizer/ISimulationVisualizer.hpp"
-#include "visualizer/Viewport2D.hpp"
 #include "engine/graphics/Framebuffer.hpp"
 #include "engine/graphics/Shader.hpp"
 #include "engine/graphics/Texture2D.hpp"
+#include "visualizer/GLParticleVertexArray.hpp"
+#include "visualizer/ISimulationVisualizer.hpp"
+#include "visualizer/Viewport2D.hpp"
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
 
     class GLParticleRenderer : public ISimulationVisualizer, public GLRenderer {
-
       public:
         virtual Engine::Graphics::Texture2D* get_render_target() override;
 
         virtual void initialize() override;
 
-        virtual void create_compatibility_report(CompatibilityReport &report) override;
+        virtual void create_compatibility_report(CompatibilityReport& report) override;
 
         virtual void render() override;
 
@@ -27,11 +25,8 @@ namespace FluidSolver
 
         virtual ~GLParticleRenderer() override;
 
-        struct Settings
-        {
-
-            enum ColorSelection
-            {
+        struct Settings {
+            enum ColorSelection {
                 Velocity = 0,
                 Acceleration = 1,
                 Mass = 2,
@@ -75,6 +70,8 @@ namespace FluidSolver
         void create_or_update_fbo();
 
         void calc_projection_matrix();
+
+        void create_shader_if_required();
     };
 
 

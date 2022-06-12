@@ -7,10 +7,19 @@ namespace FluidSolver {
     }
 
     void ContinousVisualizer::initialize() {
-        kernel.kernel_support = parameters.particle_size * 2.0f;
-        kernel.initialize();
-        image = Image(parameters.render_target.width, parameters.render_target.height);
-        recalculate_viewport();
+        if (simulation_data.has_data_changed()) {
+            simulation_data.acknowledge_data_change();
+
+            kernel.kernel_support = simulation_data.particle_size * 2.0f;
+            kernel.initialize();
+        }
+
+        if (parameters.has_data_changed()) {
+            parameters.acknowledge_data_change();
+
+            image = Image(parameters.render_target.width, parameters.render_target.height);
+            recalculate_viewport();
+        }
     }
 
     void ContinousVisualizer::create_compatibility_report(CompatibilityReport& report) {
@@ -18,24 +27,24 @@ namespace FluidSolver {
 
         report.begin_scope(FLUID_NAMEOF(ContinousVisualizer));
 
-        if (parameters.collection == nullptr) {
+        if (simulation_data.collection == nullptr) {
             report.add_issue("ParticleCollection is null.");
         } else {
-            if (!parameters.collection->is_type_present<MovementData>()) {
+            if (!simulation_data.collection->is_type_present<MovementData>()) {
                 report.add_issue("Particles are missing the MovementData attribute.");
             }
-            if (!parameters.collection->is_type_present<ParticleData>()) {
+            if (!simulation_data.collection->is_type_present<ParticleData>()) {
                 report.add_issue("Particles are missing the ParticleData attribute.");
             }
-            if (!parameters.collection->is_type_present<ParticleInfo>()) {
+            if (!simulation_data.collection->is_type_present<ParticleInfo>()) {
                 report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
         }
 
-        if (parameters.particle_size <= 0.0f) {
+        if (simulation_data.particle_size <= 0.0f) {
             report.add_issue("Particle size is smaller or equal to zero.");
         }
-        if (parameters.neighborhood_interface == nullptr) {
+        if (simulation_data.neighborhood_interface == nullptr) {
             report.add_issue("Neighborhood search interface is null.");
         }
 
@@ -95,11 +104,11 @@ namespace FluidSolver {
     }
 
     Image::Color ContinousVisualizer::calculate_color_for_pixel(size_t x, size_t y) {
-        FLUID_ASSERT(parameters.neighborhood_interface != nullptr);
-        FLUID_ASSERT(parameters.collection != nullptr);
-        FLUID_ASSERT(parameters.collection->is_type_present<ParticleInfo>());
-        FLUID_ASSERT(parameters.collection->is_type_present<MovementData>());
-        FLUID_ASSERT(parameters.collection->is_type_present<ParticleData>());
+        FLUID_ASSERT(simulation_data.neighborhood_interface != nullptr);
+        FLUID_ASSERT(simulation_data.collection != nullptr);
+        FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(simulation_data.collection->is_type_present<MovementData>());
+        FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleData>());
 
         glm::vec2 position = calculate_particle_space_position_for_pixel(x, y);
 
@@ -108,16 +117,16 @@ namespace FluidSolver {
         float boundaryDensity = 0.0f;
         float normalDensity = 0.0f;
 
-        auto neighbors = parameters.neighborhood_interface->get_neighbors(position);
+        auto neighbors = simulation_data.neighborhood_interface->get_neighbors(position);
 
         for (pIndex_t neighbor : neighbors) {
-            const auto& pi = parameters.collection->get<ParticleInfo>(neighbor);
+            const auto& pi = simulation_data.collection->get<ParticleInfo>(neighbor);
             if (pi.type == ParticleTypeDead) {
                 continue; // don*t calculate unnecessary values for dead particles.
             }
 
-            const auto& pm = parameters.collection->get<MovementData>(neighbor);
-            const auto& pd = parameters.collection->get<ParticleData>(neighbor);
+            const auto& pm = simulation_data.collection->get<MovementData>(neighbor);
+            const auto& pd = simulation_data.collection->get<ParticleData>(neighbor);
 
             float densityContribution = pd.mass * kernel.GetKernelValue(position, pm.position);
 

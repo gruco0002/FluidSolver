@@ -12,9 +12,7 @@ Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target(
 void FluidSolver::GLParticleRenderer::initialize() {
     FLUID_ASSERT(Engine::opengl_context_available());
 
-    CompatibilityReport report;
-    create_compatibility_report(report);
-    if (!report.has_issues()) {
+    if (simulation_data.has_data_changed() || parameters.has_data_changed()) {
         initialize_in_next_render_step = true;
     }
 }
@@ -22,16 +20,16 @@ void FluidSolver::GLParticleRenderer::initialize() {
 void FluidSolver::GLParticleRenderer::create_compatibility_report(CompatibilityReport& report) {
     report.begin_scope(FLUID_NAMEOF(GLParticleRenderer));
 
-    if (parameters.collection == nullptr) {
+    if (simulation_data.collection == nullptr) {
         report.add_issue("ParticleCollection is null.");
     } else {
-        if (!parameters.collection->is_type_present<MovementData>()) {
+        if (!simulation_data.collection->is_type_present<MovementData>()) {
             report.add_issue("Particles are missing the MovementData attribute.");
         }
-        if (!parameters.collection->is_type_present<ParticleData>()) {
+        if (!simulation_data.collection->is_type_present<ParticleData>()) {
             report.add_issue("Particles are missing the ParticleData attribute.");
         }
-        if (!parameters.collection->is_type_present<ParticleInfo>()) {
+        if (!simulation_data.collection->is_type_present<ParticleInfo>()) {
             report.add_issue("Particles are missing the ParticleInfo attribute.");
         }
     }
@@ -41,27 +39,24 @@ void FluidSolver::GLParticleRenderer::create_compatibility_report(CompatibilityR
 }
 
 void FluidSolver::GLParticleRenderer::render() {
+    create_shader_if_required();
+
     if (initialize_in_next_render_step) {
         initialize_in_next_render_step = false;
 
-        FLUID_ASSERT(parameters.collection != nullptr);
-        delete particleVertexArray;
-        particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(parameters.collection);
+        if (simulation_data.has_data_changed()) {
+            FLUID_ASSERT(simulation_data.collection != nullptr);
+            delete particleVertexArray;
+            particleVertexArray = ParticleVertexArray::CreateFromParticleCollection(simulation_data.collection);
 
-        delete particleShader;
-        particleShader = new Engine::Graphics::Shader({
-                Engine::Graphics::Shader::ProgramPart(
-                        Engine::Graphics::Shader::ProgramPartTypeVertex,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererVertexShader)),
-                Engine::Graphics::Shader::ProgramPart(
-                        Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererGeometryShader)),
-                Engine::Graphics::Shader::ProgramPart(
-                        Engine::Graphics::Shader::ProgramPartTypeFragment,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererFragmentShader)),
-        });
+            simulation_data.acknowledge_data_change();
+        }
 
-        create_or_update_fbo();
+        if (parameters.has_data_changed()) {
+            create_or_update_fbo();
+
+            parameters.acknowledge_data_change();
+        }
     }
     calc_projection_matrix();
 
@@ -81,7 +76,7 @@ void FluidSolver::GLParticleRenderer::render() {
 
     particleShader->Bind();
     particleShader->SetValue("projectionMatrix", projectionMatrix);
-    particleShader->SetValue("pointSize", parameters.particle_size);
+    particleShader->SetValue("pointSize", simulation_data.particle_size);
     particleShader->SetValue("colorSelection", (int)settings.colorSelection);
     particleShader->SetValue("bottomColor", settings.bottomColor);
     particleShader->SetValue("bottomValue", settings.bottomValue);
@@ -187,4 +182,20 @@ FluidSolver::Image FluidSolver::GLParticleRenderer::get_image_data() {
         result.data()[i] = c;
     }
     return result;
+}
+void FluidSolver::GLParticleRenderer::create_shader_if_required() {
+    if (particleShader != nullptr)
+        return;
+
+    particleShader = new Engine::Graphics::Shader({
+            Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeVertex,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererVertexShader)),
+            Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeGeometry,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererGeometryShader)),
+            Engine::Graphics::Shader::ProgramPart(
+                    Engine::Graphics::Shader::ProgramPartTypeFragment,
+                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererFragmentShader)),
+    });
 }

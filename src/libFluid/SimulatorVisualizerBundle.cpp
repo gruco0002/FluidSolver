@@ -27,10 +27,25 @@ namespace FluidSolver {
         }
         if (visualizer != nullptr) {
             if (simulation != nullptr) {
-                visualizer->parameters.collection = simulation->data.collection;
-                visualizer->parameters.neighborhood_interface = simulation->get_neighborhood_interface();
-                visualizer->parameters.particle_size = simulation->parameters.particle_size;
-                visualizer->parameters.rest_density = simulation->parameters.rest_density;
+                if (visualizer->simulation_data.collection != simulation->data.collection) {
+                    visualizer->simulation_data.collection = simulation->data.collection;
+                    visualizer->simulation_data.notify_that_data_changed();
+                }
+
+                if (visualizer->simulation_data.neighborhood_interface != simulation->get_neighborhood_interface()) {
+                    visualizer->simulation_data.neighborhood_interface = simulation->get_neighborhood_interface();
+                    visualizer->simulation_data.notify_that_data_changed();
+                }
+
+                if (visualizer->simulation_data.particle_size != simulation->parameters.particle_size) {
+                    visualizer->simulation_data.particle_size = simulation->parameters.particle_size;
+                    visualizer->simulation_data.notify_that_data_changed();
+                }
+
+                if (visualizer->simulation_data.rest_density != simulation->parameters.rest_density) {
+                    visualizer->simulation_data.rest_density = simulation->parameters.rest_density;
+                    visualizer->simulation_data.notify_that_data_changed();
+                }
             }
 
             visualizer->initialize();
