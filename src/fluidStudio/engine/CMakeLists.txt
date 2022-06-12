@@ -43,7 +43,7 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 # packages
-find_path(STB_INCLUDE_DIRS "stb.h")
+find_path(STB_INCLUDE_DIRS "stb_c_lexer.h")
 
 find_package(glm CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
