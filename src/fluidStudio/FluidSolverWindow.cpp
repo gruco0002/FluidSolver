@@ -59,7 +59,7 @@ namespace FluidUi {
             simulation_runner.run_asynchronously = asynchronous_simulation;
             visualization_runner.run_asynchronously = asynchronous_simulation && !is_simulation_visualizer_instance_of_gl_renderer();
 
-            if (running) {
+            if (simulation_should_run) {
                 // check if we are currently rendering data
                 if (!visualization_runner.is_currently_computing()) {
                     // starting a computation if possible (if not, nothing will happen)
@@ -574,7 +574,7 @@ namespace FluidUi {
 
     void FluidSolverWindow::on_key_pressed(int key) {
         if (key == GLFW_KEY_SPACE && simulation_visualization_ui_window_in_foreground) {
-            running = !running;
+            simulation_should_run = !simulation_should_run;
         }
 
         if (simulation_visualization_ui_window_in_foreground) {
@@ -611,5 +611,8 @@ namespace FluidUi {
             return true;
 
         return simulation_runner.is_ready() && visualization_runner.is_ready();
+    }
+    bool FluidSolverWindow::are_calculations_running() const {
+        return !(simulation_runner.is_ready() && visualization_runner.is_ready());
     }
 } // namespace FluidUi

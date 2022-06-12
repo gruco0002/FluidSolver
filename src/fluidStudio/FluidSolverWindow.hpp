@@ -35,12 +35,13 @@ namespace FluidUi {
         FluidSolver::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
 
-        bool running = false;
+        bool simulation_should_run = false;
 
         bool asynchronous_simulation = true;
 
 
         bool is_safe_to_access_simulation_data() const;
+        bool are_calculations_running() const;
 
       public:
         // Loading and creating resources
