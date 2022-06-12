@@ -35,7 +35,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         "userInterface/PlyImport.hpp" "userInterface/PlyImport.cpp"
         "FluidStudioFwd.hpp"
         DirectoryHelper.cpp DirectoryHelper.hpp
-        Runners/ComponentRunner.cpp Runners/ComponentRunner.hpp Runners/SimulationRunner.cpp Runners/SimulationRunner.hpp Runners/VisualizationRunner.cpp Runners/VisualizationRunner.hpp)
+        runners/ComponentRunner.cpp runners/ComponentRunner.hpp runners/SimulationRunner.cpp runners/SimulationRunner.hpp runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

@@ -10,7 +10,5 @@ namespace FluidUi {
       public:
         std::shared_ptr<FluidSolver::ISimulationVisualizer> visualizer = nullptr;
 
-
-
     };
 } // namespace FluidUi
