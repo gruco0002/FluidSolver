@@ -322,19 +322,18 @@ void FluidUi::UiLayer::render_solver_component() {
                 v->notify_that_data_changed();
             }
             ImGui::Separator();
-            if(ImGui::Checkbox("Single-Layer Boundary", &v->single_layer_boundary)){
+            if (ImGui::Checkbox("Single-Layer Boundary", &v->single_layer_boundary)) {
                 v->notify_that_data_changed();
             }
 
-            if(v->single_layer_boundary){
-                if(ImGui::InputFloat("Gamma 1", &v->single_layer_boundary_gamma_1)){
+            if (v->single_layer_boundary) {
+                if (ImGui::InputFloat("Gamma 1", &v->single_layer_boundary_gamma_1)) {
                     v->notify_that_data_changed();
                 }
-                if(ImGui::InputFloat("Gamma 2", &v->single_layer_boundary_gamma_2)){
+                if (ImGui::InputFloat("Gamma 2", &v->single_layer_boundary_gamma_2)) {
                     v->notify_that_data_changed();
                 }
             }
-
         });
     }
 
@@ -672,6 +671,8 @@ void FluidUi::UiLayer::render() {
     if (ply_import) {
         ply_import->render();
     }
+
+    timeline_ui.render();
 }
 
 void FluidUi::UiLayer::initialize() {
@@ -679,6 +680,8 @@ void FluidUi::UiLayer::initialize() {
     statisticsUi.initialize();
     logWindow.window = window;
     logWindow.initialize();
+
+    timeline_ui.window = window;
 
     if (ply_import) {
         ply_import->set_window(window);

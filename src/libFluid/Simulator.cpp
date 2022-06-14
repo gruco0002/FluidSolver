@@ -163,4 +163,7 @@ namespace FluidSolver {
     std::shared_ptr<NeighborhoodInterface> Simulator::get_neighborhood_interface() {
         return neigborhood_interface;
     }
+    void Simulator::set_timepoint(const Timepoint& timepoint) {
+        this->timepoint = timepoint;
+    }
 } // namespace FluidSolver

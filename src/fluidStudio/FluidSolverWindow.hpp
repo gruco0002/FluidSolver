@@ -8,6 +8,7 @@
 #include "engine/graphics/Framebuffer.hpp"
 #include "userInterface/UiLayer.hpp"
 
+#include "TimelineService.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
 
@@ -70,6 +71,8 @@ namespace FluidUi {
         bool is_simulation_visualizer_instance_of_gl_renderer() const;
         bool simulation_changed_compared_to_visualization = false;
 
+      public:
+        TimelineService timeline_service;
 
       private:
         UiLayer uiLayer;

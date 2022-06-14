@@ -1,23 +1,20 @@
-#ifndef FLUIDSOLVER_UILAYER_HPP
-#define FLUIDSOLVER_UILAYER_HPP
+#pragma once
 
 #include "FluidStudioFwd.hpp"
 #include "StatisticsUi.hpp"
+#include "TimelineUi.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/LogWindow.hpp"
 
 #include <memory>
 
-namespace FluidUi
-{
+namespace FluidUi {
 
 
     class UiLayer {
       private:
-        struct Component
-        {
-            enum class Kind
-            {
+        struct Component {
+            enum class Kind {
                 None,
                 Solver,
                 Visualizer,
@@ -47,6 +44,8 @@ namespace FluidUi
         StatisticsUi statisticsUi;
         LogWindow logWindow;
 
+        TimelineUi timeline_ui;
+
         std::unique_ptr<PlyImport> ply_import;
 
         void render_component_panel();
@@ -71,6 +70,3 @@ namespace FluidUi
     };
 
 } // namespace FluidUi
-
-
-#endif // FLUIDSOLVER_UILAYER_HPP

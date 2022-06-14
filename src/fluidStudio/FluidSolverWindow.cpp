@@ -42,6 +42,8 @@ namespace FluidUi {
 
         delete rendered_image;
         rendered_image = nullptr;
+
+        timeline_service.reset();
     }
 
     void FluidSolverWindow::render() {
@@ -68,8 +70,11 @@ namespace FluidUi {
             }
 
             // if the simulation has made a step, we need to update the rendered image and reset the runner
+            // additionally we need to save the step to the timeline
             if (simulation_runner.is_done()) {
                 simulation_changed_compared_to_visualization = true;
+                timeline_service.save_timestep_result();
+
                 simulation_runner.reset_runner_on_done();
             }
 
@@ -311,6 +316,11 @@ namespace FluidUi {
 
         // state that the simulation needs to be rerendered
         simulation_changed_compared_to_visualization = true;
+
+
+        timeline_service.reset();
+        timeline_service.simulator = simulator_visualizer_bundle.simulator;
+        timeline_service.save_timestep_result(); // save initial timestep
     }
 
     void FluidSolverWindow::visualizer_parameter_changed() {

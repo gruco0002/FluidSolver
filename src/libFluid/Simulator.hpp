@@ -26,7 +26,6 @@ namespace FluidSolver {
         } data;
 
 
-
         struct SimulatorParameters : public DataChangeStruct {
             float particle_size = 1.0f;
             float rest_density = 1.0f;
@@ -36,6 +35,8 @@ namespace FluidSolver {
 
         const Timepoint& get_current_timepoint() const;
 
+        void set_timepoint(const Timepoint& timepoint);
+
         std::shared_ptr<OutputManager> output = nullptr;
 
       private:
@@ -44,9 +45,7 @@ namespace FluidSolver {
         std::shared_ptr<NeighborhoodInterface> neigborhood_interface = nullptr;
 
 
-
       public:
-
         Simulator();
 
         void execute_simulation_step();
@@ -56,7 +55,7 @@ namespace FluidSolver {
 
         void initialize() override;
 
-        void create_compatibility_report(CompatibilityReport &report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
         std::shared_ptr<NeighborhoodInterface> get_neighborhood_interface();
     };
