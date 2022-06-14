@@ -321,6 +321,20 @@ void FluidUi::UiLayer::render_solver_component() {
             if (ImGui::InputFloat("Stiffness", &v->StiffnessK)) {
                 v->notify_that_data_changed();
             }
+            ImGui::Separator();
+            if(ImGui::Checkbox("Single-Layer Boundary", &v->single_layer_boundary)){
+                v->notify_that_data_changed();
+            }
+
+            if(v->single_layer_boundary){
+                if(ImGui::InputFloat("Gamma 1", &v->single_layer_boundary_gamma_1)){
+                    v->notify_that_data_changed();
+                }
+                if(ImGui::InputFloat("Gamma 2", &v->single_layer_boundary_gamma_2)){
+                    v->notify_that_data_changed();
+                }
+            }
+
         });
     }
 

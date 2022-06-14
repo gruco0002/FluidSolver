@@ -10,6 +10,10 @@ namespace FluidSolver {
     struct SESPHSettings3D : public DataChangeStruct {
         pFloat StiffnessK = 100000.0f;
         pFloat Viscosity = 5.0f;
+
+        bool single_layer_boundary = false;
+        float single_layer_boundary_gamma_1 = 2.0f;
+        float single_layer_boundary_gamma_2 = 3.0f;
     };
 
     template<typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
@@ -41,8 +45,6 @@ namespace FluidSolver {
         vec3 ComputePressureAcceleration(pIndex_t particleIndex);
 
         vec3 ComputeViscosityAcceleration(pIndex_t particleIndex);
-
-
 
 
       public:
@@ -80,8 +82,6 @@ namespace FluidSolver {
             }
 
             data.collection->get<ParticleData>(i).density = ComputeDensity(i);
-
-
             data.collection->get<ParticleData>(i).pressure = ComputePressure(i);
         });
 
@@ -198,11 +198,21 @@ namespace FluidSolver {
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
             if (type == ParticleTypeDead) {
-                continue; // don*t calculate unnecessary values for dead particles.
+                continue; // don't calculate unnecessary values for dead particles.
             }
+
             const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
             float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
-            density += neighborMass * kernel.GetKernelValue(neighborPosition, position);
+            if (type == ParticleTypeBoundary) {
+                if (settings.single_layer_boundary) {
+                    // we support single layer boundaries, scale the contribution of the boundary particles
+                    density += settings.single_layer_boundary_gamma_1 * neighborMass * kernel.GetKernelValue(neighborPosition, position);
+                } else {
+                    density += neighborMass * kernel.GetKernelValue(neighborPosition, position);
+                }
+            } else if (type == ParticleTypeNormal) {
+                density += neighborMass * kernel.GetKernelValue(neighborPosition, position);
+            }
         }
         return density;
     }
@@ -242,8 +252,15 @@ namespace FluidSolver {
             const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
             if (type == ParticleTypeBoundary) {
                 // simple mirroring is used to calculate the pressure acceleration with a boundary particle
-                pressureAcceleration += -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
-                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+                if (settings.single_layer_boundary) {
+                    // scale the boundary contribution accordingly to support single layer boundaries
+                    pressureAcceleration += -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
+                            kernel.GetKernelDerivativeReversedValue(neighborPosition, position) * settings.single_layer_boundary_gamma_2;
+
+                } else {
+                    pressureAcceleration += -mass * (pressureDivDensitySquared + pressureDivDensitySquared) *
+                            kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+                }
             } else {
                 // normal particles
                 const ParticleData& neighbor_pData = data.collection->get<ParticleData>(neighbor);

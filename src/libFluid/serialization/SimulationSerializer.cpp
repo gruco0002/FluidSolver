@@ -619,6 +619,12 @@ namespace FluidSolver
 
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
         {
@@ -630,6 +636,12 @@ namespace FluidSolver
 
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
         {
@@ -642,6 +654,12 @@ namespace FluidSolver
 
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s))
         {
@@ -801,6 +819,14 @@ namespace FluidSolver
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
+                    if(node["single-layer-boundary-enabled"]){
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
+                        if(res->settings.single_layer_boundary){
+                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
+                       }
+                    }
+
                     simulation.data.fluid_solver = res;
                 }
                 else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
@@ -809,6 +835,14 @@ namespace FluidSolver
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
+
+                    if(node["single-layer-boundary-enabled"]){
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
+                        if(res->settings.single_layer_boundary){
+                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
+                        }
+                    }
 
                     simulation.data.fluid_solver = res;
                 }
@@ -819,6 +853,14 @@ namespace FluidSolver
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
+
+                    if(node["single-layer-boundary-enabled"]){
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
+                        if(res->settings.single_layer_boundary){
+                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
+                        }
+                    }
 
                     simulation.data.fluid_solver = res;
                 }
