@@ -1081,7 +1081,7 @@ namespace FluidSolver
 
     void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath)
     {
-        ParticleSerializer ser(filepath +".new");
+        ParticleSerializer ser(filepath);
         ser.serialize(collection);
     }
 
