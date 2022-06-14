@@ -15,9 +15,6 @@ namespace FluidSolver {
         report.end_scope();
     }
     float ConstantTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
-        // FIXME: for debug purposes
-        return settings.timestep;
-
         FLUID_ASSERT(max_velocity > 0.0f);
         FLUID_ASSERT(max_acceleration > 0.0f);
         FLUID_ASSERT(parameters.particle_size > 0.0f);
