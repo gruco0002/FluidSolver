@@ -21,7 +21,7 @@ namespace FluidUi {
                 }
             }
             ImGui::PushItemWidth(-1);
-            if(ImGui::SliderInt("", &current_index, 0, window->timeline_service.size() - 1)){
+            if(ImGui::SliderInt(" ", &current_index, 0, window->timeline_service.size() - 1)){
                 if (current_index < 0) {
                     current_index = 0;
                 } else if (current_index >= window->timeline_service.size()) {
