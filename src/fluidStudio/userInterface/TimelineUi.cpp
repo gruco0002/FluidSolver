@@ -20,6 +20,17 @@ namespace FluidUi {
                     window->visualizer_parameter_changed();
                 }
             }
+            if(ImGui::SliderInt("t", &current_index, 0, window->timeline_service.size() - 1)){
+                if (current_index < 0) {
+                    current_index = 0;
+                } else if (current_index >= window->timeline_service.size()) {
+                    current_index = window->timeline_service.size() - 1;
+                } else {
+                    window->timeline_service.step_to(current_index);
+                    window->simulator_visualizer_bundle.initialize();
+                    window->visualizer_parameter_changed();
+                }
+            }
         }
         ImGui::End();
     }
