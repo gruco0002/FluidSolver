@@ -20,7 +20,8 @@ namespace FluidUi {
                     window->visualizer_parameter_changed();
                 }
             }
-            if(ImGui::SliderInt("t", &current_index, 0, window->timeline_service.size() - 1)){
+            ImGui::PushItemWidth(-1);
+            if(ImGui::SliderInt("", &current_index, 0, window->timeline_service.size() - 1)){
                 if (current_index < 0) {
                     current_index = 0;
                 } else if (current_index >= window->timeline_service.size()) {
@@ -31,6 +32,7 @@ namespace FluidUi {
                     window->visualizer_parameter_changed();
                 }
             }
+            ImGui::PopItemWidth();
         }
         ImGui::End();
     }
