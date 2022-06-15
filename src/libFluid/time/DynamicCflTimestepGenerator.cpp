@@ -82,8 +82,8 @@ namespace FluidSolver {
         report.end_scope();
     }
     float DynamicCflTimestepGenerator::get_non_cfl_validating_timestep(float max_acceleration, float max_velocity) {
-        FLUID_ASSERT(max_velocity > 0.0f);
-        FLUID_ASSERT(max_acceleration > 0.0f);
+        FLUID_ASSERT(max_velocity >= 0.0f);
+        FLUID_ASSERT(max_acceleration >= 0.0f);
         FLUID_ASSERT(parameters.particle_size > 0.0f);
 
         FLUID_ASSERT(settings.lambda_a > 0.0f);
@@ -92,8 +92,16 @@ namespace FluidSolver {
         FLUID_ASSERT(settings.lambda_v > 0.0f);
         FLUID_ASSERT(settings.lambda_v < 1.0f);
 
-        float delta_t_a = sqrt(parameters.particle_size / max_acceleration) * settings.lambda_a;
-        float delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
+
+        float delta_t_a = settings.max_timestep;
+        float delta_t_v = settings.max_timestep;
+
+        if (max_acceleration > 0.0f) {
+            delta_t_a = sqrt(parameters.particle_size / max_acceleration) * settings.lambda_a;
+        }
+        if (max_velocity > 0.0f) {
+            delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
+        }
 
         return std::fmin(delta_t_a, delta_t_v);
     }
