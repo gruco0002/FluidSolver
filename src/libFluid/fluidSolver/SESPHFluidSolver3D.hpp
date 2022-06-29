@@ -101,6 +101,31 @@ namespace FluidSolver {
             mv.acceleration = pressureAcc + nonPressureAcc;
         });
 
+        // compute max_final_velocity and max_final_acceleration
+        float max_final_velocity;
+        float max_final_acceleration;
+        {
+            float max_final_velocity_squared = 0.0f;
+            float max_final_acceleration_squared = 0.0f;
+            for (size_t i = 0; i < data.collection->size(); i++) {
+                const auto& mv = data.collection->get<MovementData3D>(i);
+                max_final_acceleration_squared = Math::max(max_final_acceleration_squared, glm::dot(mv.acceleration, mv.acceleration));
+                vec3 velocity = mv.velocity + current_timestep * mv.acceleration;
+                max_final_velocity_squared = Math::max(max_final_velocity_squared, glm::dot(velocity, velocity));
+            }
+            max_final_velocity = Math::sqrt(max_final_velocity_squared);
+            max_final_acceleration = Math::sqrt(max_final_acceleration_squared);
+        }
+
+        // correct the timestep if required
+        {
+            float corrected_timestep = data.timestep_generator->get_non_cfl_validating_timestep(max_final_acceleration, max_final_velocity);
+            corrected_timestep = Math::min(corrected_timestep, timestep.desired_time_step);
+            FLUID_ASSERT(corrected_timestep > 0.0f);
+            timestep.actual_time_step = corrected_timestep;
+            current_timestep = timestep.actual_time_step;
+        }
+
         // update velocity and position of all particles
         parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
@@ -112,7 +137,6 @@ namespace FluidSolver {
             }
 
             // integrate using euler cromer
-            // FIXME: adapt timestep if required
             auto& mv = data.collection->get<MovementData3D>(i);
             mv.velocity = mv.velocity + current_timestep * mv.acceleration;
             mv.position = mv.position + current_timestep * mv.velocity;
