@@ -92,6 +92,12 @@ set(LIB_FLUID_SOURCE_FILES
         DataChangeStruct.cpp DataChangeStruct.hpp
         Initializable.hpp
         Reportable.hpp
+        visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
+        visualizer/raytracer/Camera.cpp visualizer/raytracer/Camera.hpp
+        visualizer/raytracer/RenderTarget.cpp visualizer/raytracer/RenderTarget.hpp
+        visualizer/raytracer/ParticleIntersectionAccelerator.cpp visualizer/raytracer/ParticleIntersectionAccelerator.hpp
+        visualizer/raytracer/ToneMapper.cpp visualizer/raytracer/ToneMapper.hpp
+        visualizer/raytracer/Ray.cpp visualizer/raytracer/Ray.hpp
         )
 
 
