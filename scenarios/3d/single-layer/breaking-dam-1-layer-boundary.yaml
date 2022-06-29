@@ -1,0 +1,35 @@
+version: 1
+scenario:
+  particles: breaking-dam-1-layer-boundary.data
+  gravity: 9.81000042
+  particle-size: 1
+  rest-density: 1
+solver:
+  type: sesph-3d
+  neigborhood-search:
+    type: hashed-3d
+  kernel:
+    type: cubic-spline-kernel-3d
+  stiffness: 100000
+  viscosity: 5
+  single-layer-boundary-enabled: true
+  single-layer-settings:
+    gamma-1: 2
+    gamma-2: 3
+  timestep:
+    type: constant
+    timestep: 0.00499999989
+visualizer:
+  type: gl-particle-renderer-3d
+  render-target:
+    width: 1920
+    height: 1080
+  settings:
+    background-color: [0, 0, 0, 1]
+    boundary-color: [0.5, 0.5, 0.5, 1]
+    fluid-color: [0.5, 0.5, 1, 1]
+    light-direction: [8, -12, 1]
+    camera:
+      location: [2.60464978, 22.7073402, 8.05100346]
+      up: [0, 1, 0]
+      looking-at: [0.445054412, 14.86098, 2.41444159]
