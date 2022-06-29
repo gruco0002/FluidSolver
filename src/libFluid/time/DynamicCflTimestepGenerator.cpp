@@ -14,7 +14,7 @@ namespace FluidSolver {
         if (parameters.particle_collection->is_type_present<MovementData3D>()) {
             for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
                 auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
-                if (type != ParticleTypeDead)
+                if (type == ParticleTypeDead)
                     continue;
 
 
@@ -27,7 +27,7 @@ namespace FluidSolver {
         } else {
             for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
                 auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
-                if (type != ParticleTypeDead)
+                if (type == ParticleTypeDead)
                     continue;
 
 
