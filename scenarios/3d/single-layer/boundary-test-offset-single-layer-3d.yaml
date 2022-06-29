@@ -10,12 +10,12 @@ solver:
     type: hashed-3d
   kernel:
     type: cubic-spline-kernel-3d
-  stiffness: 100000
+  stiffness: 10000
   viscosity: 5
   single-layer-boundary-enabled: false
   timestep:
     type: constant
-    timestep: 0.00999999978
+    timestep: 0.01
 visualizer:
   type: gl-particle-renderer-3d
   render-target:
