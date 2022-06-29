@@ -1,6 +1,6 @@
 version: 1
 scenario:
-  particles: boundary-test-single-layer-3d.data
+  particles: boundary-test-multi-layer-3d.data
   gravity: 9.81000042
   particle-size: 1
   rest-density: 1
@@ -27,6 +27,6 @@ visualizer:
     fluid-color: [0.5, 0.5, 1, 1]
     light-direction: [8, -12, 1]
     camera:
-      location: [-11.9953623, 4.29486752, 6.72135162]
+      location: [-10.7295113, 8.21053791, 4.7958765]
       up: [0, 1, 0]
-      looking-at: [-4.00386095, 1.27604866, 1.71908784]
+      looking-at: [-2.89825249, 3.89520359, 0.547466755]
