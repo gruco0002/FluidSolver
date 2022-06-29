@@ -98,6 +98,9 @@ set(LIB_FLUID_SOURCE_FILES
         visualizer/raytracer/ParticleIntersectionAccelerator.cpp visualizer/raytracer/ParticleIntersectionAccelerator.hpp
         visualizer/raytracer/ToneMapper.cpp visualizer/raytracer/ToneMapper.hpp
         visualizer/raytracer/Ray.cpp visualizer/raytracer/Ray.hpp
+        visualizer/raytracer/IntersectionResult.cpp visualizer/raytracer/IntersectionResult.hpp
+        visualizer/raytracer/Skybox.cpp visualizer/raytracer/Skybox.hpp
+        visualizer/raytracer/Sampler.cpp visualizer/raytracer/Sampler.hpp
         )
 
 

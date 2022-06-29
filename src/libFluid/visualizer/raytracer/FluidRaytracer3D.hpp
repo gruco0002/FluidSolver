@@ -6,27 +6,33 @@
 #include "visualizer/raytracer/Camera.hpp"
 #include "visualizer/raytracer/ParticleIntersectionAccelerator.hpp"
 #include "visualizer/raytracer/RenderTarget.hpp"
+#include "visualizer/raytracer/Sampler.hpp"
+#include "visualizer/raytracer/Skybox.hpp"
 #include "visualizer/raytracer/ToneMapper.hpp"
 
-namespace FluidSolver {
-    namespace Raytracer {
-        class FluidRaytracer3D : public ISimulationVisualizer {
-          public:
-            Camera camera;
-            ParticleIntersectionAccelerator accelerator;
-            RenderTarget render_target;
-            ToneMapper tone_mapper;
+namespace FluidSolver::Raytracer {
+    class FluidRaytracer3D : public ISimulationVisualizer {
+      public:
+        Camera camera;
+        ParticleIntersectionAccelerator accelerator;
+        RenderTarget render_target;
+        ToneMapper tone_mapper;
+        Skybox skybox;
+        Sampler sampler;
 
-          private:
-            std::unique_ptr<Image> buffered_image = nullptr;
+        struct Settings {
+            size_t maximum_recursion_depth = 10;
+        } settings;
 
-            LightValue evaluate_ray(Ray& ray);
+      private:
+        std::unique_ptr<Image> buffered_image = nullptr;
 
-          public:
-            void initialize() override;
-            void create_compatibility_report(CompatibilityReport& report) override;
-            void render() override;
-            Image get_image_data() override;
-        };
-    } // namespace Raytracer
-} // namespace FluidSolver
+        LightValue evaluate_ray(Ray& ray);
+
+      public:
+        void initialize() override;
+        void create_compatibility_report(CompatibilityReport& report) override;
+        void render() override;
+        Image get_image_data() override;
+    };
+} // namespace FluidSolver::Raytracer
