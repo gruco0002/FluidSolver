@@ -87,7 +87,12 @@ set(LIB_FLUID_SOURCE_FILES
         "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
-        time/Timepoint.hpp SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp DataChangeStruct.cpp DataChangeStruct.hpp Initializable.hpp Reportable.hpp)
+        time/Timepoint.hpp
+        SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp
+        DataChangeStruct.cpp DataChangeStruct.hpp
+        Initializable.hpp
+        Reportable.hpp
+        )
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})
