@@ -21,7 +21,7 @@ namespace FluidUi {
                 }
             }
             ImGui::PushItemWidth(-1);
-            if(ImGui::SliderInt(" ", &current_index, 0, window->timeline_service.size() - 1)){
+            if (ImGui::SliderInt(" ", &current_index, 0, window->timeline_service.size() - 1)) {
                 if (current_index < 0) {
                     current_index = 0;
                 } else if (current_index >= window->timeline_service.size()) {
@@ -33,6 +33,17 @@ namespace FluidUi {
                 }
             }
             ImGui::PopItemWidth();
+
+            ImGui::Separator();
+            if (window->simulator_visualizer_bundle.simulator != nullptr) {
+                auto timepoint = window->simulator_visualizer_bundle.simulator->get_current_timepoint();
+
+                ImGui::Text("Timepoint Information");
+                ImGui::Text("Number: %d", (int)timepoint.timestep_number);
+                ImGui::Text("Simulation time: %fs", timepoint.simulation_time);
+                ImGui::Text("Desired time step: %fs", timepoint.desired_time_step);
+                ImGui::Text("Actual time step: %fs", timepoint.actual_time_step);
+            }
         }
         ImGui::End();
     }
