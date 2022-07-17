@@ -18,6 +18,10 @@ namespace FluidSolver {
         pFloat gamma = 0.7f;
 
         pFloat viscosity = 5.0f;
+
+        bool single_layer_boundary = false;
+        float single_layer_boundary_gamma_1 = 1.1f;
+        float single_layer_boundary_gamma_2 = 1.1f;
     };
 
     struct IISPHParticleData3D {
@@ -82,7 +86,7 @@ namespace FluidSolver {
             return 2.0f * settings.viscosity * tmp;
         }
 
-              public:
+      public:
         void initialize() override {
             FLUID_ASSERT(data.collection != nullptr);
             if (data.has_data_changed()) {
@@ -186,9 +190,21 @@ namespace FluidSolver {
                         if (type == ParticleTypeDead) {
                             continue; // don't calculate unnecessary values for dead particles.
                         }
-                        const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
-                        float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
-                        density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
+
+                        if (!settings.single_layer_boundary) {
+                            // multi layer boundaries are expected
+                            const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
+                            float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
+                            density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
+                        } else {
+                            // single layer boundaries are activated
+                            const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
+                            float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
+                            if (type == ParticleTypeBoundary) {
+                                neighbor_mass *= settings.single_layer_boundary_gamma_1; // scale the boundary particles contribution
+                            }
+                            density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
+                        }
                     }
 
                     particle_data.density = density;
@@ -229,11 +245,20 @@ namespace FluidSolver {
                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                     movement_data.position));
                         } else if (type == ParticleTypeBoundary) {
-                            neighbor_contribution +=
-                                    neighbor_particle_data.mass *
-                                    glm::dot(iisph_data.predicted_velocity,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
+                            if (settings.single_layer_boundary) {
+                                // TODO: check if we need to include gamma_1 here
+                                neighbor_contribution +=
+                                        neighbor_particle_data.mass *
+                                        glm::dot(iisph_data.predicted_velocity,
+                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                        movement_data.position));
+                            } else {
+                                neighbor_contribution +=
+                                        neighbor_particle_data.mass *
+                                        glm::dot(iisph_data.predicted_velocity,
+                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                        movement_data.position));
+                            }
                         }
                     }
 
@@ -262,10 +287,18 @@ namespace FluidSolver {
                                         kernel.GetKernelDerivativeReversedValue(
                                                 neighbor_movement_data.position, movement_data.position);
                             } else if (type == ParticleTypeBoundary) {
-                                inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
-                                        Math::pow2(parameters.rest_density) *
-                                        kernel.GetKernelDerivativeReversedValue(
-                                                neighbor_movement_data.position, movement_data.position);
+                                if (settings.single_layer_boundary) {
+                                    // TODO: check if we need to include gamma_1 here
+                                    inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
+                                            Math::pow2(parameters.rest_density) *
+                                            kernel.GetKernelDerivativeReversedValue(
+                                                    neighbor_movement_data.position, movement_data.position);
+                                } else {
+                                    inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
+                                            Math::pow2(parameters.rest_density) *
+                                            kernel.GetKernelDerivativeReversedValue(
+                                                    neighbor_movement_data.position, movement_data.position);
+                                }
                             }
                         }
                     }
@@ -299,11 +332,20 @@ namespace FluidSolver {
                                                 kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                         movement_data.position));
                             } else if (type == ParticleTypeBoundary) {
-                                diagonal_element +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(inner_part_of_sum,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
+                                if (settings.single_layer_boundary) {
+                                    // TODO: check if we need to use gamma_1 here
+                                    diagonal_element +=
+                                            neighbor_particle_data.mass *
+                                            glm::dot(inner_part_of_sum,
+                                                    kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                            movement_data.position));
+                                } else {
+                                    diagonal_element +=
+                                            neighbor_particle_data.mass *
+                                            glm::dot(inner_part_of_sum,
+                                                    kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                            movement_data.position));
+                                }
                             }
                         }
 
@@ -352,10 +394,18 @@ namespace FluidSolver {
                                     kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                             movement_data.position);
                         } else if (type == ParticleTypeBoundary) {
-                            pressure_acceleration -= settings.gamma * neighbor_particle_data.mass * 2.0f *
-                                    particle_data.pressure / Math::pow2(parameters.rest_density) *
-                                    kernel.GetKernelDerivativeReversedValue(
-                                            neighbor_movement_data.position, movement_data.position);
+                            if (settings.single_layer_boundary) {
+                                // TODO: check if correct use of gamma_2
+                                pressure_acceleration -= settings.single_layer_boundary_gamma_2 * settings.gamma * neighbor_particle_data.mass * 2.0f *
+                                        particle_data.pressure / Math::pow2(parameters.rest_density) *
+                                        kernel.GetKernelDerivativeReversedValue(
+                                                neighbor_movement_data.position, movement_data.position);
+                            } else {
+                                pressure_acceleration -= settings.gamma * neighbor_particle_data.mass * 2.0f *
+                                        particle_data.pressure / Math::pow2(parameters.rest_density) *
+                                        kernel.GetKernelDerivativeReversedValue(
+                                                neighbor_movement_data.position, movement_data.position);
+                            }
                         }
                     }
 
@@ -395,10 +445,19 @@ namespace FluidSolver {
                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                     movement_data.position));
                         } else if (type == ParticleTypeBoundary) {
-                            ap += neighbor_particle_data.mass *
-                                    glm::dot(movement_data.acceleration,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
+                            if (settings.single_layer_boundary) {
+                                // TODO: check if we need to use gamma_2 here.
+                                // My guess is that we do not need to, since gamma_2 is already part of movement_data.acceleration
+                                ap += neighbor_particle_data.mass *
+                                        glm::dot(movement_data.acceleration,
+                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                        movement_data.position));
+                            } else {
+                                ap += neighbor_particle_data.mass *
+                                        glm::dot(movement_data.acceleration,
+                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                        movement_data.position));
+                            }
                         }
                     }
 
@@ -528,7 +587,7 @@ namespace FluidSolver {
             return neighborhood_search.create_interface();
         }
 
-         void create_compatibility_report(CompatibilityReport& report) override {
+        void create_compatibility_report(CompatibilityReport& report) override {
             initialize();
 
             report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver3D));

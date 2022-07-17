@@ -676,6 +676,12 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
         {
@@ -691,6 +697,12 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
         {
@@ -707,6 +719,12 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if(f->settings.single_layer_boundary){
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
         }
         else
         {
