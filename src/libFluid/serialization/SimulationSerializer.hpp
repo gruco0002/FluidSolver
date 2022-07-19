@@ -8,8 +8,7 @@
 #include <optional>
 #include <yaml-cpp/yaml.h>
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
     class SimulationSerializer {
       private:
@@ -19,8 +18,7 @@ namespace FluidSolver
       public:
         std::string filepath;
 
-        struct Settings
-        {
+        struct Settings {
             bool save_particle_data = true;
             std::string particle_data_relative_filepath = "particles.data";
         } settings;
@@ -36,8 +34,7 @@ namespace FluidSolver
 
         void save_to_file(const SimulatorVisualizerBundle& simulation);
 
-        virtual ~SimulationSerializer()
-        {
+        virtual ~SimulationSerializer() {
         }
 
       public:
@@ -80,9 +77,12 @@ namespace FluidSolver
         std::shared_ptr<Sensors::SensorPlane> load_sensor_plane(const YAML::Node& node);
 
         YAML::Node save_compressed_neighborhood_storage_sensor(
-            const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen);
+                const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen);
         std::shared_ptr<Sensors::CompressedNeighborStorageSensor> load_compressed_neighborhood_storage_sensor(
-            const YAML::Node& node);
+                const YAML::Node& node);
+
+        YAML::Node save_iisph_sensor(const std::shared_ptr<Sensors::IISPHSensor>& sen);
+        std::shared_ptr<Sensors::IISPHSensor> load_iisph_sensor(const YAML::Node& node);
     };
 
 } // namespace FluidSolver
