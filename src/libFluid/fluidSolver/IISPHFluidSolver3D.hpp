@@ -43,6 +43,9 @@ namespace FluidSolver {
 
         IISPHSettings3D settings;
 
+        size_t stat_last_iteration_count = 0;
+        float stat_last_average_predicted_density_error = 0.0f;
+
       private:
         float current_timestep = 0.0f;
 
@@ -485,6 +488,9 @@ namespace FluidSolver {
                     }
                 });
 
+                // log the iteration count until now for statistics
+                this->stat_last_iteration_count = iteration + 1;
+
                 // check if we need further iterations
                 {
                     float max_predicted_density_error = 0.0f;
@@ -530,6 +536,10 @@ namespace FluidSolver {
                         average_predicted_density_error = average_predicted_density_error / (float)average_counter;
                     }
 
+                    // log the average predicted density error
+                    this->stat_last_average_predicted_density_error = average_predicted_density_error;
+
+                    // check termination criteria
                     if (iteration >= settings.min_number_of_iterations - 1) {
                         // we have at least reached the minimum number of iterations
                         if (average_predicted_density_error <= settings.max_density_error_allowed) {
