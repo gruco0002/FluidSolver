@@ -14,6 +14,7 @@
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
+#include "sensors/IisphSensor.hpp"
 
 #include <filesystem>
 #include <functional>
@@ -101,6 +102,12 @@ void FluidUi::UiLayer::render_component_panel() {
                 }
                 if (ImGui::MenuItem("Compressed Neighborhood Storage", nullptr, nullptr, is_safe)) {
                     auto sen = std::make_shared<FluidSolver::Sensors::CompressedNeighborStorageSensor>();
+                    sen->parameters.name = "Sensor " + std::to_string(data.sensors.size() + 1);
+                    data.sensors.push_back(sen);
+                    data.notify_that_data_changed();
+                }
+                if (ImGui::MenuItem("IISPH", nullptr, nullptr, is_safe)) {
+                    auto sen = std::make_shared<FluidSolver::Sensors::IISPHSensor>();
                     sen->parameters.name = "Sensor " + std::to_string(data.sensors.size() + 1);
                     data.sensors.push_back(sen);
                     data.notify_that_data_changed();
@@ -451,6 +458,8 @@ const char* get_sensor_type_name(const std::shared_ptr<FluidSolver::ISensor>& se
         return "3D Sensor Plane";
     } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen)) {
         return "Compressed Neighbor Storage";
+    } else if(std::dynamic_pointer_cast<FluidSolver::Sensors::IISPHSensor>(sen)){
+        return "IISPH";
     }
     return "UNKNOWN";
 }

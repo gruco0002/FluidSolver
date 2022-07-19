@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_STATISTICSUI_HPP
-#define FLUIDSOLVER_STATISTICSUI_HPP
+#pragma once
 
 #include "engine/graphics/Texture2D.hpp"
 #include "sensors/CompressedNeighborsStatistics.hpp"
@@ -9,12 +8,10 @@
 #include <memory>
 #include <vector>
 
-namespace FluidUi
-{
+namespace FluidUi {
     class FluidSolverWindow;
 
     class StatisticsUi {
-
       public:
         FluidSolverWindow* window = nullptr;
 
@@ -39,10 +36,8 @@ namespace FluidUi
         void render_particle_count_sensor(std::shared_ptr<FluidSolver::Sensors::GlobalParticleCountSensor> sensor);
         void render_sensor_plane_sensor(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sensor);
         void render_compressed_neighborhood_storage_sensor(
-            std::shared_ptr<FluidSolver::Sensors::CompressedNeighborStorageSensor> sensor);
+                std::shared_ptr<FluidSolver::Sensors::CompressedNeighborStorageSensor> sensor);
+        void render_iisph_sensor(std::shared_ptr<FluidSolver::Sensors::IISPHSensor> sensor);
     };
 
 } // namespace FluidUi
-
-
-#endif // FLUIDSOLVER_STATISTICSUI_HPP
