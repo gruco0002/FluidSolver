@@ -47,7 +47,7 @@ namespace FluidSolver {
         float current_timestep = 0.0f;
 
         void adapt_collection() {
-            FLUID_ASSERT(!data.collection->is_type_present<IISPHParticleData>());
+            FLUID_ASSERT(!data.collection->is_type_present<IISPHParticleData3D>());
             data.collection->add_type<IISPHParticleData3D>();
         }
 
