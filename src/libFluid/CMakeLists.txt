@@ -92,7 +92,7 @@ set(LIB_FLUID_SOURCE_FILES
         DataChangeStruct.cpp DataChangeStruct.hpp
         Initializable.hpp
         Reportable.hpp
-        )
+        sensors/IisphSensor.cpp sensors/IisphSensor.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})
