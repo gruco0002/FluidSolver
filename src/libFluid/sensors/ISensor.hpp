@@ -25,6 +25,7 @@ namespace FluidSolver {
             std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
             std::shared_ptr<OutputManager> manager = nullptr;
             std::shared_ptr<ParticleCollection> collection = nullptr;
+            std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
         } simulator_data;
 
 
