@@ -5,7 +5,7 @@ find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(tinyply CONFIG REQUIRED)
-
+find_package(imguizmo CONFIG REQUIRED)
 
 # include directories
 include_directories(./)
@@ -45,6 +45,7 @@ target_link_libraries(FluidStudio PUBLIC imgui::imgui)
 target_link_libraries(FluidStudio PUBLIC implot::implot)
 target_link_libraries(FluidStudio PUBLIC unofficial::nativefiledialog::nfd)
 target_link_libraries(FluidStudio PUBLIC tinyply)
+target_link_libraries(FluidStudio PUBLIC imguizmo::imguizmo)
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
