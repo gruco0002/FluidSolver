@@ -1,13 +1,11 @@
-#ifndef FLUIDSOLVER_TAGGROUP_HPP
-#define FLUIDSOLVER_TAGGROUP_HPP
+#pragma once
 
-#include "../FluidInclude.hpp"
-#include "../fluidSolver/ParticleCollection.hpp"
+#include "FluidInclude.hpp"
+#include "fluidSolver/ParticleCollection.hpp"
 
 #include <unordered_set>
 
-namespace FluidSolver
-{
+namespace FluidSolver {
     class TagGroup {
       public:
         std::unordered_set<pTag_t> tags;
@@ -31,8 +29,7 @@ namespace FluidSolver
         using const_pointer = const T*;
         using reference = T&;
 
-        struct TagGroupIterator
-        {
+        struct TagGroupIterator {
             TagGroup* data;
             T current;
 
@@ -52,6 +49,3 @@ namespace FluidSolver
         iterator end();
     };
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_TAGGROUP_HPP

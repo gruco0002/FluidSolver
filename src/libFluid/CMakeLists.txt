@@ -47,10 +47,9 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/ParticleStatistics.hpp"
         "FluidTypes.hpp"
         "FluidInclude.hpp"
-        "group/GroupActions.cpp"
         "group/GroupActions.hpp"
-        "group/RectangleAreaGroup.cpp"
-        "group/RectangleAreaGroup.hpp"
+        "group/AreaGroup.cpp"
+        "group/AreaGroup.hpp"
         "group/TagGroup.cpp"
         "group/TagGroup.hpp"
         "entities/ParticleSpawner.cpp"
@@ -92,7 +91,8 @@ set(LIB_FLUID_SOURCE_FILES
         DataChangeStruct.cpp DataChangeStruct.hpp
         Initializable.hpp
         Reportable.hpp
-        sensors/IisphSensor.cpp sensors/IisphSensor.hpp)
+        sensors/IisphSensor.cpp sensors/IisphSensor.hpp
+        )
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

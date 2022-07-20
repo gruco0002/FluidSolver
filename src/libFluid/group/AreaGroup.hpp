@@ -1,15 +1,13 @@
-#ifndef FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
-#define FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
+#pragma once
 
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 #include <memory>
 
-namespace FluidSolver
-{
+namespace FluidSolver {
 
-    class RectangleAreaGroup {
+    class AreaGroup {
       public:
         Area area = {};
 
@@ -35,9 +33,8 @@ namespace FluidSolver
         using const_pointer = const T*;
         using reference = T&;
 
-        struct RectangleAreaGroupIterator
-        {
-            const RectangleAreaGroup* data;
+        struct RectangleAreaGroupIterator {
+            const AreaGroup* data;
             T current;
 
             bool operator==(const RectangleAreaGroupIterator& other) const;
@@ -62,6 +59,3 @@ namespace FluidSolver
 
 
 } // namespace FluidSolver
-
-
-#endif // FLUIDSOLVER_RECTANGLEAREAGROUP_HPP
