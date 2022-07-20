@@ -52,8 +52,15 @@ namespace FluidSolver {
       private:
         YAML::Node save_particle_spawner(const std::shared_ptr<ParticleSpawner>& spawner);
         std::shared_ptr<ParticleSpawner> load_particle_spawner(const YAML::Node& node);
+
         YAML::Node save_particle_remover(const std::shared_ptr<ParticleRemover>& remover);
         std::shared_ptr<ParticleRemover> load_particle_remover(const YAML::Node& node);
+
+        YAML::Node save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover);
+        std::shared_ptr<ParticleRemover3D> load_particle_remover_3d(const YAML::Node& node);
+
+
+
         YAML::Node save_global_density_sensor(const std::shared_ptr<Sensors::GlobalDensitySensor>& sen);
         std::shared_ptr<Sensors::GlobalDensitySensor> load_global_density_sensor(const YAML::Node& node);
         YAML::Node save_global_pressure_sensor(const std::shared_ptr<Sensors::GlobalPressureSensor>& sen);

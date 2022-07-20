@@ -13,6 +13,7 @@ namespace FluidSolver
     class IEntity;
     class ParticleSpawner;
     class ParticleRemover;
+    class ParticleRemover3D;
 
     // sensors
     class ISensor;

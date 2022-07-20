@@ -3,6 +3,7 @@
 #include "Log.hpp"
 #include "SimulatorVisualizerBundle.hpp"
 #include "entities/ParticleRemover.hpp"
+#include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/IISPHFluidSolver3D.hpp"
@@ -342,6 +343,11 @@ namespace FluidSolver {
             if (rem) {
                 res["entities"].push_back(save_particle_remover(rem));
             }
+
+            auto rem3d = std::dynamic_pointer_cast<ParticleRemover3D>(ent);
+            if (rem3d) {
+                res["entities"].push_back(save_particle_remover_3d(rem3d));
+            }
         }
 
         // save sensors
@@ -408,6 +414,8 @@ namespace FluidSolver {
                     simulation.data.entities.push_back(load_particle_spawner(ent_node));
                 } else if (ent_node["type"].as<std::string>() == "particle-remover") {
                     simulation.data.entities.push_back(load_particle_remover(ent_node));
+                } else if (ent_node["type"].as<std::string>() == "particle-remover-3d") {
+                    simulation.data.entities.push_back(load_particle_remover_3d(ent_node));
                 } else {
                     warning_count++;
                     Log::warning("[LOADING] Unknown entity type: '" + ent_node["type"].as<std::string>() + "'!");
@@ -992,6 +1000,26 @@ namespace FluidSolver {
     std::optional<YAML::Node> SimulationSerializer::serialize_unknown_visualizer(
             const std::shared_ptr<ISimulationVisualizer>& visualizer) {
         return {};
+    }
+
+    YAML::Node SimulationSerializer::save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover) {
+        YAML::Node res;
+        res["type"] = "particle-remover-3d";
+
+        res["volume"]["center"] = remover->parameters.volume.center;
+        res["volume"]["distance-from-center"] = remover->parameters.volume.distance_from_center;
+        res["remove-if-outside"] = remover->parameters.remove_if_outside;
+
+        return res;
+    }
+    std::shared_ptr<ParticleRemover3D> SimulationSerializer::load_particle_remover_3d(const YAML::Node& node) {
+        auto remover = std::make_shared<ParticleRemover3D>();
+
+        remover->parameters.volume.center = node["volume"]["center"].as<glm::vec3>();
+        remover->parameters.volume.distance_from_center = node["volume"]["distance-from-center"].as<glm::vec3>();
+        remover->parameters.remove_if_outside = node["remove-if-outside"].as<bool>();
+
+        return remover;
     }
 
 

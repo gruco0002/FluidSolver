@@ -92,6 +92,7 @@ set(LIB_FLUID_SOURCE_FILES
         Initializable.hpp
         Reportable.hpp
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
+        entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
         )
 
