@@ -1,21 +1,21 @@
 #include "AreaGroup.hpp"
 namespace FluidSolver {
-    bool AreaGroup::RectangleAreaGroupIterator::operator==(
-            const AreaGroup::RectangleAreaGroupIterator& other) const {
+    bool AreaGroup::AreaGroupIterator::operator==(
+            const AreaGroup::AreaGroupIterator& other) const {
         return other.data == data && other.current == current;
     }
 
-    bool AreaGroup::RectangleAreaGroupIterator::operator!=(
-            const AreaGroup::RectangleAreaGroupIterator& other) const {
+    bool AreaGroup::AreaGroupIterator::operator!=(
+            const AreaGroup::AreaGroupIterator& other) const {
         return !(*this == other);
     }
 
-    AreaGroup::T& AreaGroup::RectangleAreaGroupIterator::operator*() {
+    AreaGroup::T& AreaGroup::AreaGroupIterator::operator*() {
         return current;
     }
 
-    AreaGroup::RectangleAreaGroupIterator& AreaGroup::
-            RectangleAreaGroupIterator::operator++() {
+    AreaGroup::AreaGroupIterator& AreaGroup::
+            AreaGroupIterator::operator++() {
         FLUID_ASSERT(data != nullptr)
         FLUID_ASSERT(data->collection != nullptr)
         current++;
@@ -27,11 +27,11 @@ namespace FluidSolver {
         return *this;
     }
 
-    const AreaGroup::RectangleAreaGroupIterator AreaGroup::
-            RectangleAreaGroupIterator::operator++(int) {
+    const AreaGroup::AreaGroupIterator AreaGroup::
+            AreaGroupIterator::operator++(int) {
         FLUID_ASSERT(data != nullptr)
         FLUID_ASSERT(data->collection != nullptr)
-        AreaGroup::RectangleAreaGroupIterator copy = *this;
+        AreaGroup::AreaGroupIterator copy = *this;
         ++(*this);
         return copy;
     }
@@ -50,33 +50,33 @@ namespace FluidSolver {
         return inside == is_inside(index);
     }
 
-    AreaGroup::RectangleAreaGroupIterator AreaGroup::begin() {
-        RectangleAreaGroupIterator it;
+    AreaGroup::AreaGroupIterator AreaGroup::begin() {
+        AreaGroupIterator it;
         it.current = -1;
         it.data = this;
         ++it;
         return it;
     }
 
-    AreaGroup::RectangleAreaGroupIterator AreaGroup::end() {
+    AreaGroup::AreaGroupIterator AreaGroup::end() {
         FLUID_ASSERT(collection != nullptr)
-        RectangleAreaGroupIterator it;
+        AreaGroupIterator it;
         it.data = this;
         it.current = collection->size();
         return it;
     }
 
-    AreaGroup::RectangleAreaGroupIterator AreaGroup::begin() const {
-        RectangleAreaGroupIterator it;
+    AreaGroup::AreaGroupIterator AreaGroup::begin() const {
+        AreaGroupIterator it;
         it.current = -1;
         it.data = this;
         ++it;
         return it;
     }
 
-    AreaGroup::RectangleAreaGroupIterator AreaGroup::end() const {
+    AreaGroup::AreaGroupIterator AreaGroup::end() const {
         FLUID_ASSERT(collection != nullptr)
-        RectangleAreaGroupIterator it;
+        AreaGroupIterator it;
         it.data = this;
         it.current = collection->size();
         return it;

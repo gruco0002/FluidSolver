@@ -20,12 +20,12 @@ namespace FluidSolver {
         bool is_member(pIndex_t index) const;
 
       public:
-        struct RectangleAreaGroupIterator;
+        struct AreaGroupIterator;
 
         // iterator defines
         using T = pIndex_t;
-        using iterator = RectangleAreaGroupIterator;
-        using const_iterator = RectangleAreaGroupIterator;
+        using iterator = AreaGroupIterator;
+        using const_iterator = AreaGroupIterator;
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
@@ -33,28 +33,28 @@ namespace FluidSolver {
         using const_pointer = const T*;
         using reference = T&;
 
-        struct RectangleAreaGroupIterator {
+        struct AreaGroupIterator {
             const AreaGroup* data;
             T current;
 
-            bool operator==(const RectangleAreaGroupIterator& other) const;
+            bool operator==(const AreaGroupIterator& other) const;
 
-            bool operator!=(const RectangleAreaGroupIterator& other) const;
+            bool operator!=(const AreaGroupIterator& other) const;
 
             T& operator*();
 
-            RectangleAreaGroupIterator& operator++();
+            AreaGroupIterator& operator++();
 
-            const RectangleAreaGroupIterator operator++(int);
+            const AreaGroupIterator operator++(int);
         };
 
-        RectangleAreaGroupIterator begin();
+        AreaGroupIterator begin();
 
-        RectangleAreaGroupIterator end();
+        AreaGroupIterator end();
 
-        RectangleAreaGroupIterator begin() const;
+        AreaGroupIterator begin() const;
 
-        RectangleAreaGroupIterator end() const;
+        AreaGroupIterator end() const;
     };
 
 
