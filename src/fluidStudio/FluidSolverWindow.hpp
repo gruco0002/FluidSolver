@@ -9,9 +9,9 @@
 #include "userInterface/UiLayer.hpp"
 
 #include "TimelineService.hpp"
+#include "visualizationOverlay/VisualizationOverlay.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
-#include "VisualizationOverlay.hpp"
 
 namespace FluidUi {
     class FluidSolverWindow : public Engine::Window {
@@ -89,6 +89,7 @@ namespace FluidUi {
 
         VisualizationOverlay visualization_overlay;
         void render_visualization_overlay(float visualization_width, float visualization_height);
+        void render_visualization_overlay_into_framebuffer();
 
       private:
         // visualizer stuff

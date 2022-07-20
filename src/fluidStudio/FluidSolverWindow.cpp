@@ -101,6 +101,9 @@ namespace FluidUi {
                     render_image_copy_updated = true;
                 }
 
+                // render overlay if required
+                render_visualization_overlay_into_framebuffer();
+
                 // reset the runner to make it available for the next computation
                 visualization_runner.reset_runner_on_done();
             }
@@ -642,5 +645,25 @@ namespace FluidUi {
 
         // render overlay
         visualization_overlay.render(visualization_width, visualization_height);
+
+        if(visualization_overlay.has_data_changed()){
+            simulation_changed_compared_to_visualization = true;
+        }
+    }
+    void FluidSolverWindow::render_visualization_overlay_into_framebuffer() {
+        auto gl_renderer = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
+        if (gl_renderer == nullptr)
+            return;
+
+        auto framebuffer = gl_renderer->get_framebuffer();
+        if (framebuffer == nullptr)
+            return;
+
+        // set data of overlay
+        visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
+        visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
+
+        // render overlay
+        visualization_overlay.render_overlay_into_framebuffer(framebuffer);
     }
 } // namespace FluidUi
