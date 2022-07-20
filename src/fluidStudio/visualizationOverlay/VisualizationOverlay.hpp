@@ -2,20 +2,18 @@
 
 #include "engine/graphics/Framebuffer.hpp"
 #include "visualizationOverlay/OverlayCubeRenderer.hpp"
+#include "visualizationOverlay/OverlayInstance.hpp"
 #include <glm/glm.hpp>
 
 namespace FluidUi {
     class VisualizationOverlay {
-
       public:
-
-        VisualizationOverlay();
 
         struct {
             glm::mat4 visualizer_view_matrix;
             glm::mat4 visualizer_projection_matrix;
 
-
+            std::shared_ptr<OverlayInstance> overlay_instance = nullptr;
         } data;
 
 
@@ -28,17 +26,10 @@ namespace FluidUi {
         bool has_data_changed() const;
 
       private:
-
         bool mouse_on_overlay = false;
-
-        OverlayCubeRenderer overlay_renderer;
-
-        glm::mat4 matrix;
-
         bool data_changed = false;
 
-
-
+        OverlayCubeRenderer overlay_cube_renderer;
     };
 
-}
+} // namespace FluidUi
