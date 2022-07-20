@@ -399,7 +399,7 @@ namespace FluidUi {
                 }
 
 
-                // im gui image location finder trick
+                /*  // im gui image location finder trick
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -413,20 +413,25 @@ namespace FluidUi {
                     auto windowPosition = glm::vec2(pos.x + padding.x, pos.y + padding.y);
                     auto windowSize = glm::vec2(width, height);
 
-                    ImGui::PushItemWidth(width);
 
-                    ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
-
-                    ImGui::PopItemWidth();
                 }
                 ImGui::EndChild();
 
-                ImGui::PopStyleVar(3);
+                ImGui::PopStyleVar(3);*/
+
+                //  ImGui::PushItemWidth(width);
+
+                ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
+
+                //    ImGui::PopItemWidth();
+
+
+                render_visualization_overlay(width, height);
             }
         }
         ImGui::End();
 
-        this->simulation_visualization_ui_window_in_foreground = in_foreground;
+        this->simulation_visualization_ui_window_in_foreground = in_foreground && (!visualization_overlay.is_mouse_on_overlay());
     }
 
     void FluidSolverWindow::setup_ui_layer() {
@@ -624,5 +629,18 @@ namespace FluidUi {
     }
     bool FluidSolverWindow::are_calculations_running() const {
         return !(simulation_runner.is_ready() && visualization_runner.is_ready());
+    }
+
+    void FluidSolverWindow::render_visualization_overlay(float visualization_width, float visualization_height) {
+        auto gl_renderer = std::dynamic_pointer_cast<FluidSolver::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
+        if (gl_renderer == nullptr)
+            return;
+
+        // set data of overlay
+        visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
+        visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
+
+        // render overlay
+        visualization_overlay.render(visualization_width, visualization_height);
     }
 } // namespace FluidUi

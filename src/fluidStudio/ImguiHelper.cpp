@@ -1,16 +1,16 @@
 #include "ImguiHelper.hpp"
 
-#include "font/RobotoMedium.cpp"
 #include "DirectoryHelper.hpp"
+#include "font/RobotoMedium.cpp"
 
 #include <GLFW/glfw3.h>
 
-void ImGuiHelper::Init(GLFWwindow* window)
-{
+void ImGuiHelper::Init(GLFWwindow* window) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    auto context = ImGui::CreateContext();
     ImPlot::CreateContext();
+    ImGuizmo::SetImGuiContext(context);
 
 
     ImGuiIO& io = ImGui::GetIO();
@@ -39,8 +39,7 @@ void ImGuiHelper::Init(GLFWwindow* window)
     ImGui::GetStyle().ScaleAllSizes(avgScale);
 }
 
-void ImGuiHelper::Uninit()
-{
+void ImGuiHelper::Uninit() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
 
@@ -48,16 +47,15 @@ void ImGuiHelper::Uninit()
     ImGui::DestroyContext();
 }
 
-void ImGuiHelper::PreRender()
-{
+void ImGuiHelper::PreRender() {
     // feed inputs to dear imgui, start new frame
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 }
 
-void ImGuiHelper::PostRender()
-{
+void ImGuiHelper::PostRender() {
     // Render dear imgui into screen
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -83,6 +83,8 @@ namespace FluidSolver {
 
         } settings;
 
+        const glm::mat4& get_projection_matrix() const;
+
       private:
         glm::mat4 projectionMatrix;
         ParticleVertexArray3D* particleVertexArray = nullptr;

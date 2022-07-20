@@ -177,3 +177,6 @@ void FluidSolver::GLParticleRenderer3D::create_shader_if_required() {
         throw;
     }
 }
+const glm::mat4& FluidSolver::GLParticleRenderer3D::get_projection_matrix() const {
+    return projectionMatrix;
+}

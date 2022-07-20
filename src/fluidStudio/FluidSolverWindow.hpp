@@ -11,6 +11,7 @@
 #include "TimelineService.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
+#include "VisualizationOverlay.hpp"
 
 namespace FluidUi {
     class FluidSolverWindow : public Engine::Window {
@@ -85,6 +86,9 @@ namespace FluidUi {
             float height;
         } visualizer_window_size;
 
+
+        VisualizationOverlay visualization_overlay;
+        void render_visualization_overlay(float visualization_width, float visualization_height);
 
       private:
         // visualizer stuff
