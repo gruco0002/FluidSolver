@@ -163,13 +163,13 @@ void FluidSolver::GLParticleRenderer3D::create_shader_if_required() {
         particleShader = new Engine::Graphics::Shader({
                 Engine::Graphics::Shader::ProgramPart(
                         Engine::Graphics::Shader::ProgramPartTypeVertex,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DVertexShader)),
+                        FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRenderer3DVertexShader)),
                 Engine::Graphics::Shader::ProgramPart(
                         Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DGeometryShader)),
+                        FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRenderer3DGeometryShader)),
                 Engine::Graphics::Shader::ProgramPart(
                         Engine::Graphics::Shader::ProgramPartTypeFragment,
-                        FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRenderer3DFragmentShader)),
+                        FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRenderer3DFragmentShader)),
         });
     } catch (const std::exception& e) {
         FluidSolver::Log::error(std::string("[GLParticleRenderer3D] Could not generate shader for 3D renderer: ") + e.what());

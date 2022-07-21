@@ -2,8 +2,7 @@
 
 #include <string>
 
-namespace FluidUi
-{
+namespace FluidStudio {
     struct Assets
     {
         enum class Asset

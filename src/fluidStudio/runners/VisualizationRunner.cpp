@@ -2,7 +2,7 @@
 
 #include "visualizer/ISimulationVisualizer.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     void VisualizationRunner::execute_computation() {
         if (visualizer == nullptr)
             return;

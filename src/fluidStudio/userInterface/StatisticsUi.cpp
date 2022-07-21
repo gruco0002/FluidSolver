@@ -9,7 +9,7 @@
 
 #include <implot.h>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void StatisticsUi::render() {
         if (!window->is_safe_to_access_simulation_data()) {

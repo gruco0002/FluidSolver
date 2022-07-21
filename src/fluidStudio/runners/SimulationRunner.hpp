@@ -3,7 +3,7 @@
 #include "ComponentRunner.hpp"
 #include "FluidInclude.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     class SimulationRunner : public ComponentRunner {
       public:
 

@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     OverlayInstance::Display ParticleRemoverOverlay::get_display() {
         return Display::Cube;

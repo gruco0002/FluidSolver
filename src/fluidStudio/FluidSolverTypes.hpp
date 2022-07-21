@@ -8,8 +8,7 @@
 #include <string>
 #include <tuple>
 
-namespace FluidUi
-{
+namespace FluidStudio {
     class FluidSolverTypes {
       public:
         enum SolverSettingsType

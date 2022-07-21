@@ -2,8 +2,7 @@
 
 #include "serialization/SimulationSerializer.hpp"
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     class ExtendedSimulationSerializer : public FluidSolver::SimulationSerializer {
 

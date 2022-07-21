@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-namespace FluidUi {
+namespace FluidStudio {
     class FluidSolverWindow;
 
     class StatisticsUi {

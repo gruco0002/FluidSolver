@@ -5,8 +5,7 @@
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
 
     std::shared_ptr<FluidSolver::ISimulationVisualizer> ExtendedSimulationSerializer::deserialize_unknown_visualizer(

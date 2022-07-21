@@ -4,7 +4,7 @@
 #include <ImGuizmo.h>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void VisualizationOverlay::render(float visualization_width, float visualization_height) {
         if (data.overlay_instance == nullptr) {

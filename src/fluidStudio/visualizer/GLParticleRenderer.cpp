@@ -190,12 +190,12 @@ void FluidSolver::GLParticleRenderer::create_shader_if_required() {
     particleShader = new Engine::Graphics::Shader({
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeVertex,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererVertexShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererVertexShader)),
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererGeometryShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererGeometryShader)),
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeFragment,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererFragmentShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererFragmentShader)),
     });
 }

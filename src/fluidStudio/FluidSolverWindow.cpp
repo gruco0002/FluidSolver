@@ -14,7 +14,7 @@
 #include <chrono>
 #include <thread>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height)
         : Window(title, width, height),

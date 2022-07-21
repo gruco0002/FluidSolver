@@ -1,7 +1,6 @@
 #pragma once
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     class PlyImport;
     class UiLayer;

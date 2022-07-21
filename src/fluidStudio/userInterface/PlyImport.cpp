@@ -8,8 +8,7 @@
 #include <nfd.h>
 #include <tinyply.h>
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     const char* particle_type_to_string(FluidSolver::ParticleType type)
     {

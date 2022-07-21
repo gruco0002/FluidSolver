@@ -6,7 +6,7 @@
 #include <imgui.h>
 
 
-void FluidUi::LogWindow::render()
+void FluidStudio::LogWindow::render()
 {
     ImGui::Begin("Logs");
     auto entries = FluidSolver::Log::get_entries();
@@ -41,6 +41,6 @@ void FluidUi::LogWindow::render()
     ImGui::End();
 }
 
-void FluidUi::LogWindow::initialize()
+void FluidStudio::LogWindow::initialize()
 {
 }

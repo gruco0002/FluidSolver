@@ -13,7 +13,7 @@
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     class FluidSolverWindow : public Engine::Window {
       public:
         explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);

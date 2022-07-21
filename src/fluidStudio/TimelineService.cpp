@@ -5,7 +5,7 @@
 #include "DirectoryHelper.hpp"
 #include "serialization/ParticleSerializer.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     void TimelineService::CachedFile::delete_file() {
         if(std::filesystem::exists(path)){
             std::filesystem::remove(path);

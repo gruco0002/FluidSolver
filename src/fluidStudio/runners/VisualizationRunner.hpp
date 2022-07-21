@@ -2,7 +2,7 @@
 #include "ComponentRunner.hpp"
 #include "FluidInclude.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     class VisualizationRunner : public ComponentRunner{
       protected:
         void execute_computation() override;

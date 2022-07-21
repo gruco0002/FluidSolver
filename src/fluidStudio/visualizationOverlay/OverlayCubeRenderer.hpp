@@ -8,7 +8,7 @@
 
 #include <glm/glm.hpp>
 
-namespace FluidUi {
+namespace FluidStudio {
     class OverlayCubeRenderer {
       public:
         struct {

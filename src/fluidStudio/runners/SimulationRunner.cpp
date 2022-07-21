@@ -2,7 +2,7 @@
 
 #include "Simulator.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void SimulationRunner::execute_computation() {
         if (simulation == nullptr)

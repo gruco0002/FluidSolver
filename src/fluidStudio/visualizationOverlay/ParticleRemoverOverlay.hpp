@@ -3,7 +3,7 @@
 #include "entities/ParticleRemover3D.hpp"
 #include "visualizationOverlay/OverlayInstance.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
 
     class ParticleRemoverOverlay : public OverlayInstance {
       public:

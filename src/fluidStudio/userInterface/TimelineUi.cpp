@@ -2,7 +2,7 @@
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void TimelineUi::render() {
         if (window == nullptr)

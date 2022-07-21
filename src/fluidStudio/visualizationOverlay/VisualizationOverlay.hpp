@@ -5,7 +5,7 @@
 #include "visualizationOverlay/OverlayInstance.hpp"
 #include <glm/glm.hpp>
 
-namespace FluidUi {
+namespace FluidStudio {
     class VisualizationOverlay {
       public:
 

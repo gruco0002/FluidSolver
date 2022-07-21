@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <vector>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     class TimelineService {
       public:

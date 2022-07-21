@@ -1,7 +1,7 @@
 #include "OverlayCubeRenderer.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void OverlayCubeRenderer::render(const glm::mat4& model_matrix, float opacity) {
         initialize();

@@ -42,7 +42,7 @@ static void BeginSubsection(const char* name, const std::function<void()>& fnc, 
     }
 }
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void UiLayer::render_component_panel() {
         if (ImGui::Begin("Components")) {

@@ -9,8 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     class PlyImport {
       public:
