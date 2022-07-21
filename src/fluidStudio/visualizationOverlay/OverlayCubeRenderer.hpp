@@ -7,6 +7,7 @@
 #include "engine/graphics/buffer/VertexBuffer.hpp"
 
 #include <glm/glm.hpp>
+#include <memory>
 
 namespace FluidStudio {
     class OverlayCubeRenderer {

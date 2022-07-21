@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <filesystem>
 #include <vector>
 
 namespace LibFluid {
