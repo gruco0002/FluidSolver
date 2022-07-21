@@ -25,6 +25,8 @@ namespace FluidUi {
 
         bool has_data_changed() const;
 
+        void set_new_overlay_instance(std::shared_ptr<OverlayInstance> new_instance);
+
       private:
         bool mouse_on_overlay = false;
         bool data_changed = false;

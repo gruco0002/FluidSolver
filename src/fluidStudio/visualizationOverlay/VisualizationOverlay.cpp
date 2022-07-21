@@ -7,8 +7,6 @@
 namespace FluidUi {
 
     void VisualizationOverlay::render(float visualization_width, float visualization_height) {
-        data_changed = false;
-
         if (data.overlay_instance == nullptr) {
             return;
         }
@@ -42,6 +40,8 @@ namespace FluidUi {
 
 
     void VisualizationOverlay::render_overlay_into_framebuffer(Engine::Graphics::Framebuffer* framebuffer) {
+        data_changed = false;
+
         if (data.overlay_instance == nullptr) {
             return;
         }
@@ -59,5 +59,9 @@ namespace FluidUi {
 
     bool VisualizationOverlay::has_data_changed() const {
         return data_changed;
+    }
+    void VisualizationOverlay::set_new_overlay_instance(std::shared_ptr<OverlayInstance> new_instance) {
+        data.overlay_instance = new_instance;
+        data_changed = true;
     }
 } // namespace FluidUi
