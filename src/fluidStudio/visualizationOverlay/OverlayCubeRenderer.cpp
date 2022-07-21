@@ -259,7 +259,9 @@ out vec4 color;
 
 void main()
 {
-    color = vec4(vec3((float(aFaceId) + 1.0f) / 6.0f), opacity);
+    float brightness_offset = 4.0;
+    float color_value = (float(aFaceId) + 1.0 + brightness_offset) / (6.0 + brightness_offset);
+    color = vec4(color_value, 0.0, color_value, opacity);
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPosition, 1.0);
 }
 
