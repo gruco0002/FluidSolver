@@ -1,11 +1,10 @@
-#ifndef FLUIDSOLVER_GROUPACTIONS_HPP
-#define FLUIDSOLVER_GROUPACTIONS_HPP
+#pragma once
 
 #include "../FluidInclude.hpp"
 #include "../fluidSolver/Particle.hpp"
 #include "../fluidSolver/ParticleCollection.hpp"
 
-namespace FluidSolver::GroupActions
+namespace LibFluid::GroupActions
 {
 
     /**
@@ -66,5 +65,3 @@ namespace FluidSolver::GroupActions
 
 
 } // namespace FluidSolver::GroupActions
-
-#endif // FLUIDSOLVER_GROUPACTIONS_HPP

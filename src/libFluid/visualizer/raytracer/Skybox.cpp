@@ -1,4 +1,4 @@
 #include "Skybox.hpp"
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
 }

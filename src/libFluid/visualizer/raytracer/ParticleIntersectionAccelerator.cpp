@@ -1,4 +1,4 @@
 #include "ParticleIntersectionAccelerator.hpp"
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
 }

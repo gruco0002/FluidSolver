@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace FluidSolver::Parallelization {
+namespace LibFluid::Parallelization {
 
     AtomicFloat::AtomicFloat(float value)
         : value(value) {

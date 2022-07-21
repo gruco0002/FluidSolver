@@ -5,15 +5,15 @@
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct SESPHSettings3D : public DataChangeStruct {
         pFloat StiffnessK = 100000.0f;
         pFloat Viscosity = 5.0f;
 
         bool single_layer_boundary = false;
-        float single_layer_boundary_gamma_1 = 2.0f;
-        float single_layer_boundary_gamma_2 = 3.0f;
+        float single_layer_boundary_gamma_1 = 1.1f;
+        float single_layer_boundary_gamma_2 = 1.1f;
     };
 
     template<typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,

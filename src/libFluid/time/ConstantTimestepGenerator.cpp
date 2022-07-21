@@ -1,6 +1,6 @@
 #include "ConstantTimestepGenerator.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     void ConstantTimestepGenerator::generate_next_timestep() {
         initialize();
         generated_timestep = settings.timestep;

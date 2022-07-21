@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     class Skybox {
       public:

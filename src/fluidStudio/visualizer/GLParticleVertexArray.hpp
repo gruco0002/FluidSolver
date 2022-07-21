@@ -10,8 +10,7 @@
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <memory>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     /**
      * The particle vertex array creates a vertex array object (vao) of point sprites for rendering particles with
@@ -91,7 +90,7 @@ namespace FluidSolver
          * the type of the particle collection.
          */
         static ParticleVertexArray* CreateFromParticleCollection(
-            std::shared_ptr<FluidSolver::ParticleCollection> particleCollection);
+            std::shared_ptr<LibFluid::ParticleCollection> particleCollection);
 
         /**
          * Should be called if the particle collection, its contained particle data or the selection data
@@ -142,7 +141,7 @@ namespace FluidSolver
          * @param particleCollection The
          * particle collection that the vao represents.
          */
-        explicit ParticleVertexArray(std::shared_ptr<FluidSolver::ParticleCollection> particleCollection);
+        explicit ParticleVertexArray(std::shared_ptr<LibFluid::ParticleCollection> particleCollection);
 
         /**
          * Returns the buffer object containing the indices for the point primitives that will be drawed.
@@ -169,7 +168,7 @@ namespace FluidSolver
 
       private:
         uint32_t vaoParticleCount = 0;
-        std::shared_ptr<FluidSolver::ParticleCollection> particleCollection = nullptr;
+        std::shared_ptr<LibFluid::ParticleCollection> particleCollection = nullptr;
 
         std::vector<int8_t> selectionData;
 
@@ -185,7 +184,7 @@ namespace FluidSolver
     class ParticleVertexArrayForCollection : public ParticleVertexArray {
 
       public:
-        explicit ParticleVertexArrayForCollection(std::shared_ptr<FluidSolver::ParticleCollection> collection);
+        explicit ParticleVertexArrayForCollection(std::shared_ptr<LibFluid::ParticleCollection> collection);
 
 
         ~ParticleVertexArrayForCollection() override;
@@ -196,11 +195,11 @@ namespace FluidSolver
         void OnUpdate() override;
 
       private:
-        std::shared_ptr<FluidSolver::ParticleCollection> stripedParticleCollection = nullptr;
+        std::shared_ptr<LibFluid::ParticleCollection> stripedParticleCollection = nullptr;
 
-        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::MovementData>* movementBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleData>* dataBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleInfo>* infoBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData>* movementBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleData>* dataBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo>* infoBuffer = nullptr;
     };
 } // namespace FluidSolver
 

@@ -11,8 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     /**
      * A quadratic neighborhood search that allocates storage dynamically.

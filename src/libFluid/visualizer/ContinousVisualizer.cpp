@@ -1,7 +1,7 @@
 #include "ContinousVisualizer.hpp"
 
 #include "parallelization/StdParallelForEach.hpp"
-namespace FluidSolver {
+namespace LibFluid {
     ContinousVisualizer::ContinousVisualizer()
         : image(0, 0), kernel() {
     }

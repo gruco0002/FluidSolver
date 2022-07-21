@@ -9,10 +9,11 @@
 #include "userInterface/UiLayer.hpp"
 
 #include "TimelineService.hpp"
+#include "visualizationOverlay/VisualizationOverlay.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     class FluidSolverWindow : public Engine::Window {
       public:
         explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
@@ -33,7 +34,7 @@ namespace FluidUi {
 
 
       public:
-        FluidSolver::SimulatorVisualizerBundle simulator_visualizer_bundle;
+        LibFluid::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
 
         bool simulation_should_run = false;
@@ -73,6 +74,7 @@ namespace FluidUi {
 
       public:
         TimelineService timeline_service;
+        VisualizationOverlay visualization_overlay;
 
       private:
         UiLayer uiLayer;
@@ -86,9 +88,13 @@ namespace FluidUi {
         } visualizer_window_size;
 
 
+
+        void render_visualization_overlay(float visualization_width, float visualization_height);
+        void render_visualization_overlay_into_framebuffer();
+
       private:
         // visualizer stuff
-        FluidSolver::Image render_image_copy;
+        LibFluid::Image render_image_copy;
         bool render_image_copy_updated = false;
         Engine::Graphics::Texture2D* rendered_image = nullptr;
 

@@ -1,5 +1,5 @@
 #include "Ray.hpp"
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
 
 }

@@ -2,7 +2,7 @@
 
 #include "FluidAssert.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     float ToneMapper::map_single_channel_with_filmic_tone_mapping(float hdr_value) {
         // ACES tonemapping curve

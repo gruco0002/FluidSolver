@@ -4,7 +4,7 @@
 
 #include <fmt/core.h>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     void CompatibilityReport::log_issues() const {
         for (auto& issue : issues) {

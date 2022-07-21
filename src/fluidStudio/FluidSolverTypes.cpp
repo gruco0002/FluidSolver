@@ -12,15 +12,15 @@
 
 #include <set>
 
-FluidUi::FluidSolverTypes::FluidSolverTypes()
+FluidStudio::FluidSolverTypes::FluidSolverTypes()
 {
     add_types();
     find_possible_names();
 }
 
-void FluidUi::FluidSolverTypes::add_types()
+void FluidStudio::FluidSolverTypes::add_types()
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
     types.push_back(
         {"SESPH", "QuadraticNeighborhoodSearchDynamicAllocated", "CubicSplineKernel",
          []() {
@@ -164,11 +164,11 @@ void FluidUi::FluidSolverTypes::add_types()
          }});
 }
 
-const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::query_type(
-    const FluidUi::FluidSolverTypes::FluidSolverTypeQuery& query, QueryMainFocus focus) const
+const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTypes::query_type(
+    const FluidStudio::FluidSolverTypes::FluidSolverTypeQuery& query, QueryMainFocus focus) const
 {
 
-    const FluidUi::FluidSolverTypes::FluidSolverType* best_so_far = nullptr;
+    const FluidStudio::FluidSolverTypes::FluidSolverType* best_so_far = nullptr;
     int matched_factors = 0;
 
     for (auto& t : types)
@@ -243,8 +243,8 @@ const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::que
     return best_so_far;
 }
 
-const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::query_type(
-    const std::shared_ptr<FluidSolver::IFluidSolverBase>& query) const
+const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTypes::query_type(
+    const std::shared_ptr<LibFluid::IFluidSolverBase>& query) const
 {
     for (auto& t : types)
     {
@@ -256,7 +256,7 @@ const FluidUi::FluidSolverTypes::FluidSolverType* FluidUi::FluidSolverTypes::que
     return nullptr;
 }
 
-void FluidUi::FluidSolverTypes::find_possible_names()
+void FluidStudio::FluidSolverTypes::find_possible_names()
 {
     std::set<std::string> tmp_solver;
     std::set<std::string> tmp_ns;

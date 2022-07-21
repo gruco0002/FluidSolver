@@ -7,7 +7,7 @@
 #include <limits>
 
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
     class CompressedNeighborStorageSensor : public ISensor {
       public:

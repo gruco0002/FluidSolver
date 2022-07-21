@@ -2,7 +2,7 @@
 
 #include "IEntity.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     class ParticleSpawner : public IEntity {
       public:
         struct Parameters {

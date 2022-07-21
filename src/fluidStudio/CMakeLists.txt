@@ -5,7 +5,7 @@ find_package(imgui CONFIG REQUIRED)
 find_package(implot CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 find_package(tinyply CONFIG REQUIRED)
-
+find_package(imguizmo CONFIG REQUIRED)
 
 # include directories
 include_directories(./)
@@ -35,7 +35,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         "userInterface/PlyImport.hpp" "userInterface/PlyImport.cpp"
         "FluidStudioFwd.hpp"
         DirectoryHelper.cpp DirectoryHelper.hpp
-        runners/ComponentRunner.cpp runners/ComponentRunner.hpp runners/SimulationRunner.cpp runners/SimulationRunner.hpp runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp TimelineService.cpp TimelineService.hpp userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp)
+        runners/ComponentRunner.cpp runners/ComponentRunner.hpp runners/SimulationRunner.cpp runners/SimulationRunner.hpp runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp TimelineService.cpp TimelineService.hpp userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp visualizationOverlay/OverlayInstance.hpp visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})
@@ -45,6 +45,7 @@ target_link_libraries(FluidStudio PUBLIC imgui::imgui)
 target_link_libraries(FluidStudio PUBLIC implot::implot)
 target_link_libraries(FluidStudio PUBLIC unofficial::nativefiledialog::nfd)
 target_link_libraries(FluidStudio PUBLIC tinyply)
+target_link_libraries(FluidStudio PUBLIC imguizmo::imguizmo)
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.

@@ -5,7 +5,7 @@
 #include <functional>
 #include <glm/glm.hpp>
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
     class Camera {
       public:
         struct CameraSettings {

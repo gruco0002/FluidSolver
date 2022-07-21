@@ -2,7 +2,7 @@
 
 #include "parallelization/SpinLock.hpp"
 
-namespace FluidSolver::Parallelization {
+namespace LibFluid::Parallelization {
     class AtomicFloat {
       public:
         AtomicFloat(float value);

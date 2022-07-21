@@ -9,8 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     class PlyImport {
       public:
@@ -37,7 +36,7 @@ namespace FluidUi
         std::vector<glm::vec3> colors;
         std::vector<glm::vec3> vertices;
 
-        std::unordered_map<glm::vec3, FluidSolver::ParticleType> mapped_colors;
+        std::unordered_map<glm::vec3, LibFluid::ParticleType> mapped_colors;
 
         void import_data_into_simulation();
     };

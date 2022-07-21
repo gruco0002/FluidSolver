@@ -2,13 +2,13 @@
 
 #include "Simulator.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
 
     void SimulationRunner::execute_computation() {
         if (simulation == nullptr)
             return;
 
-        FluidSolver::CompatibilityReport report;
+        LibFluid::CompatibilityReport report;
         simulation->create_compatibility_report(report);
         if (report.has_issues()) {
             report.log_issues();

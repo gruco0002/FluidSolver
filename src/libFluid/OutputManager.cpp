@@ -4,11 +4,11 @@
 #include <set>
 
 
-void FluidSolver::OutputManager::initialize()
+void LibFluid::OutputManager::initialize()
 {
 }
 
-void FluidSolver::OutputManager::timestep_happened()
+void LibFluid::OutputManager::timestep_happened()
 {
     if (timesteps_since_last_sensor_save >= parameters.timesteps_between_sensor_save)
     {
@@ -17,12 +17,12 @@ void FluidSolver::OutputManager::timestep_happened()
     timesteps_since_last_sensor_save++;
 }
 
-void FluidSolver::OutputManager::manual_save()
+void LibFluid::OutputManager::manual_save()
 {
     save_sensor_data();
 }
 
-FluidSolver::OutputManager::~OutputManager()
+LibFluid::OutputManager::~OutputManager()
 {
     // close and delete sensor writers
     for (auto& [key, value] : sensor_writers)
@@ -32,7 +32,7 @@ FluidSolver::OutputManager::~OutputManager()
     sensor_writers.clear();
 }
 
-void FluidSolver::OutputManager::save_sensor_data()
+void LibFluid::OutputManager::save_sensor_data()
 {
     // creating output directory if it does not exist
     if (!std::filesystem::exists(parameters.output_folder))
@@ -45,9 +45,9 @@ void FluidSolver::OutputManager::save_sensor_data()
 
     {
         // remove unneeded sensor writers
-        std::set<std::shared_ptr<FluidSolver::ISensor>> sensor_set(parameters.sensors.begin(),
+        std::set<std::shared_ptr<LibFluid::ISensor>> sensor_set(parameters.sensors.begin(),
                                                                    parameters.sensors.end());
-        std::vector<std::shared_ptr<FluidSolver::ISensor>> to_remove;
+        std::vector<std::shared_ptr<LibFluid::ISensor>> to_remove;
         for (auto& [key, value] : sensor_writers)
         {
             auto res = sensor_set.find(key);
@@ -92,7 +92,7 @@ void FluidSolver::OutputManager::save_sensor_data()
     }
 }
 
-std::string FluidSolver::OutputManager::remove_invalid_chars_from_filename(const std::string& filename)
+std::string LibFluid::OutputManager::remove_invalid_chars_from_filename(const std::string& filename)
 {
     static const std::string invalid_chars = "\\/:?\"<>|";
 
@@ -113,7 +113,7 @@ std::string FluidSolver::OutputManager::remove_invalid_chars_from_filename(const
     return res;
 }
 
-std::optional<std::filesystem::path> FluidSolver::OutputManager::get_filepath_for_sensor(const ISensor* sensor,
+std::optional<std::filesystem::path> LibFluid::OutputManager::get_filepath_for_sensor(const ISensor* sensor,
                                                                                          std::string desired_filename)
 {
     // creating output directory if it does not exist

@@ -2,8 +2,7 @@
 
 #include "FluidAssert.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
     namespace ParticleCollectionAlgorithm
     {
         void Sort::adapt_collection(std::shared_ptr<ParticleCollection> collection)

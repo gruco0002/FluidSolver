@@ -1,6 +1,6 @@
 #include "Sampler.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
 
 }

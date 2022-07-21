@@ -3,7 +3,7 @@
 #include "visualizer/raytracer/Ray.hpp"
 #include "visualizer/raytracer/IntersectionResult.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
     class ParticleIntersectionAccelerator {
 
       public:

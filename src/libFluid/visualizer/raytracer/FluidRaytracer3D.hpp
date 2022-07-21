@@ -10,7 +10,7 @@
 #include "visualizer/raytracer/Skybox.hpp"
 #include "visualizer/raytracer/ToneMapper.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
     class FluidRaytracer3D : public ISimulationVisualizer {
       public:
         Camera camera;

@@ -8,8 +8,7 @@
 #include "Reportable.hpp"
 #include "Initializable.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class ITimestepGenerator : public Initializable, public Reportable {
 

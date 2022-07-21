@@ -1,6 +1,6 @@
 #include "CubicSplineKernel3D.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     pFloat CubicSplineKernel3D::GetKernelValue(const vec3& position) const {
         FLUID_ASSERT(h != 0.0f);
         FLUID_ASSERT(alpha != 0.0f);

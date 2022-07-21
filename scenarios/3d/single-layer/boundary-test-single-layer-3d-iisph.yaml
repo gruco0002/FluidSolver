@@ -1,0 +1,39 @@
+version: 1
+scenario:
+  particles: boundary-test-single-layer-3d.data
+  gravity: 9.81000042
+  particle-size: 1
+  rest-density: 1
+solver:
+  type: iisph-3d
+  neigborhood-search:
+    type: hashed-3d
+  kernel:
+    type: cubic-spline-kernel-3d
+  gamma: 0.699999988
+  omega: 0.5
+  max-density-error: 0.5
+  max-iterations: 5
+  min-iterations: 2
+  viscosity: 5
+  single-layer-boundary-enabled: true
+  single-layer-settings:
+    gamma-1: 1.10000002
+    gamma-2: 1.10000002
+  timestep:
+    type: constant
+    timestep: 0.200000003
+visualizer:
+  type: gl-particle-renderer-3d
+  render-target:
+    width: 1920
+    height: 1080
+  settings:
+    background-color: [0, 0, 0, 1]
+    boundary-color: [0.5, 0.5, 0.5, 1]
+    fluid-color: [0.5, 0.5, 1, 1]
+    light-direction: [8, -12, 1]
+    camera:
+      location: [-11.9953623, 4.29486752, 6.72135162]
+      up: [0, 1, 0]
+      looking-at: [-4.07333374, 2.10257554, 1.20452929]

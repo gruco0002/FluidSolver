@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     class FluidSolverWindow;
 

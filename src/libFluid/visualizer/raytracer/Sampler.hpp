@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
     class Sampler {
     };
 } // namespace FluidSolver::Raytracer

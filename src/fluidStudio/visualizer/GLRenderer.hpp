@@ -2,8 +2,7 @@
 
 #include "engine/graphics/Texture2D.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class GLRenderer {
 

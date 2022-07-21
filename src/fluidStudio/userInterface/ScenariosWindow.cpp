@@ -6,7 +6,7 @@
 
 #include <filesystem>
 
-void FluidUi::ScenariosWindow::render() {
+void FluidStudio::ScenariosWindow::render() {
     FLUID_ASSERT(initialized)
     FLUID_ASSERT(window != nullptr)
 
@@ -21,7 +21,7 @@ void FluidUi::ScenariosWindow::render() {
     }
 }
 
-void FluidUi::ScenariosWindow::initialize() {
+void FluidStudio::ScenariosWindow::initialize() {
     FLUID_ASSERT(window != nullptr)
     FLUID_ASSERT(initialized == false)
     initialized = true;
@@ -29,7 +29,7 @@ void FluidUi::ScenariosWindow::initialize() {
     update_path();
 }
 
-void FluidUi::ScenariosWindow::update_path() {
+void FluidStudio::ScenariosWindow::update_path() {
     for (auto ptr : scenarios)
         delete[] ptr;
     scenarios.clear();
@@ -48,7 +48,7 @@ void FluidUi::ScenariosWindow::update_path() {
     }
 }
 
-void FluidUi::ScenariosWindow::load() {
+void FluidStudio::ScenariosWindow::load() {
     FLUID_ASSERT(scenarios.size() > 0)
     FLUID_ASSERT(window != nullptr)
     FLUID_ASSERT(current_item >= 0)
@@ -57,7 +57,7 @@ void FluidUi::ScenariosWindow::load() {
     // window->load_scenario(toLoad);
 }
 
-FluidUi::ScenariosWindow::~ScenariosWindow() {
+FluidStudio::ScenariosWindow::~ScenariosWindow() {
     for (auto ptr : scenarios)
         delete[] ptr;
 }

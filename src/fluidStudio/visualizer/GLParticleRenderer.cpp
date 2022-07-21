@@ -5,11 +5,11 @@
 #include <engine/Window.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer::get_render_target() {
+Engine::Graphics::Texture2D* LibFluid::GLParticleRenderer::get_render_target() {
     return fboColorTex;
 }
 
-void FluidSolver::GLParticleRenderer::initialize() {
+void LibFluid::GLParticleRenderer::initialize() {
     FLUID_ASSERT(Engine::opengl_context_available());
 
     if (simulation_data.has_data_changed() || parameters.has_data_changed()) {
@@ -17,7 +17,7 @@ void FluidSolver::GLParticleRenderer::initialize() {
     }
 }
 
-void FluidSolver::GLParticleRenderer::create_compatibility_report(CompatibilityReport& report) {
+void LibFluid::GLParticleRenderer::create_compatibility_report(CompatibilityReport& report) {
     report.begin_scope(FLUID_NAMEOF(GLParticleRenderer));
 
     if (simulation_data.collection == nullptr) {
@@ -38,7 +38,7 @@ void FluidSolver::GLParticleRenderer::create_compatibility_report(CompatibilityR
     report.end_scope();
 }
 
-void FluidSolver::GLParticleRenderer::render() {
+void LibFluid::GLParticleRenderer::render() {
     create_shader_if_required();
 
     if (initialize_in_next_render_step) {
@@ -102,7 +102,7 @@ void FluidSolver::GLParticleRenderer::render() {
     glFlush();
 }
 
-FluidSolver::GLParticleRenderer::~GLParticleRenderer() {
+LibFluid::GLParticleRenderer::~GLParticleRenderer() {
     // cleanup created components
     delete particleVertexArray;
     delete framebuffer;
@@ -111,7 +111,7 @@ FluidSolver::GLParticleRenderer::~GLParticleRenderer() {
     delete particleShader;
 }
 
-void FluidSolver::GLParticleRenderer::create_or_update_fbo() {
+void LibFluid::GLParticleRenderer::create_or_update_fbo() {
     if (this->fboColorTex != nullptr && this->fboColorTex->getWidth() == parameters.render_target.width &&
             this->fboColorTex->getHeight() == parameters.render_target.height)
         return; // no need to update
@@ -144,7 +144,7 @@ glm::mat4 generate_ortho(float left, float right, float top, float bottom) {
 }
 
 
-void FluidSolver::GLParticleRenderer::calc_projection_matrix() {
+void LibFluid::GLParticleRenderer::calc_projection_matrix() {
     // This function fits the particle grid into the fbo without distorting it or culling areas off that should be shown
 
     float width = settings.viewport.right - settings.viewport.left; // particle size is not taken into account
@@ -169,7 +169,7 @@ void FluidSolver::GLParticleRenderer::calc_projection_matrix() {
     projectionMatrix = generated;
 }
 
-FluidSolver::Image FluidSolver::GLParticleRenderer::get_image_data() {
+LibFluid::Image LibFluid::GLParticleRenderer::get_image_data() {
     FLUID_ASSERT(this->fboColorTex != nullptr);
 
     // texture has 3 channels: rgb
@@ -183,19 +183,19 @@ FluidSolver::Image FluidSolver::GLParticleRenderer::get_image_data() {
     }
     return result;
 }
-void FluidSolver::GLParticleRenderer::create_shader_if_required() {
+void LibFluid::GLParticleRenderer::create_shader_if_required() {
     if (particleShader != nullptr)
         return;
 
     particleShader = new Engine::Graphics::Shader({
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeVertex,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererVertexShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererVertexShader)),
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeGeometry,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererGeometryShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererGeometryShader)),
             Engine::Graphics::Shader::ProgramPart(
                     Engine::Graphics::Shader::ProgramPartTypeFragment,
-                    FluidUi::Assets::get_string_asset(FluidUi::Assets::Asset::ParticleRendererFragmentShader)),
+                    FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererFragmentShader)),
     });
 }

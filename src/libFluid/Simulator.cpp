@@ -1,6 +1,6 @@
 #include "Simulator.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     void Simulator::execute_simulation_step() {
         initialize();
@@ -110,6 +110,7 @@ namespace FluidSolver {
                 sen->simulator_data.neighborhood_interface = neigborhood_interface;
                 sen->simulator_data.manager = output;
                 sen->simulator_data.collection = data.collection;
+                sen->simulator_data.fluid_solver = data.fluid_solver;
 
                 sen->simulator_data.notify_that_data_changed();
             }

@@ -5,8 +5,7 @@
 #include <functional>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class ParticleCollection {
       private:

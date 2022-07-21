@@ -5,7 +5,7 @@
 #include "Reportable.hpp"
 #include "Initializable.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     class SimulatorVisualizerBundle : public Initializable,  public Reportable {
       public:
         std::shared_ptr<Simulator> simulator = nullptr;

@@ -23,8 +23,7 @@ INCBIN(gl_particle_renderer_3d_fragment_shader, "visualizer/shader/GLParticleRen
 
 constexpr auto ASSET_BASE_PATH = "../../../src/fluidStudio/";
 
-namespace FluidUi
-{
+namespace FluidStudio {
 
     std::filesystem::path get_asset_path(Assets::Asset asset)
     {

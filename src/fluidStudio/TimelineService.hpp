@@ -5,7 +5,7 @@
 #include <filesystem>
 #include <vector>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     class TimelineService {
       public:
@@ -13,7 +13,7 @@ namespace FluidUi {
 
         void save_timestep_result();
 
-        std::shared_ptr<FluidSolver::Simulator> simulator = nullptr;
+        std::shared_ptr<LibFluid::Simulator> simulator = nullptr;
 
         size_t size() const;
 
@@ -24,11 +24,11 @@ namespace FluidUi {
       private:
         struct CachedFile {
             std::filesystem::path path;
-            FluidSolver::Timepoint timepoint;
+            LibFluid::Timepoint timepoint;
 
             void delete_file();
-            void create_file(std::shared_ptr<FluidSolver::ParticleCollection> particle_collection);
-            std::shared_ptr<FluidSolver::ParticleCollection> read_file();
+            void create_file(std::shared_ptr<LibFluid::ParticleCollection> particle_collection);
+            std::shared_ptr<LibFluid::ParticleCollection> read_file();
         };
 
         size_t current_index = 0;

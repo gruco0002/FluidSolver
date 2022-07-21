@@ -10,8 +10,7 @@
 #include <memory>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     /**
      * @brief Simple quadratic runtime neighborhood search with greedy dynamic memory allocations

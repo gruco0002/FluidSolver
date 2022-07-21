@@ -2,12 +2,12 @@
 
 #include "visualizer/ISimulationVisualizer.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     void VisualizationRunner::execute_computation() {
         if (visualizer == nullptr)
             return;
 
-        FluidSolver::CompatibilityReport report;
+        LibFluid::CompatibilityReport report;
         visualizer->create_compatibility_report(report);
         if (report.has_issues()) {
             report.log_issues();

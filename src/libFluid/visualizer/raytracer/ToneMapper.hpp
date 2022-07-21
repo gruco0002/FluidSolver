@@ -3,7 +3,7 @@
 #include "visualizer/Image.hpp"
 #include "visualizer/raytracer/RenderTarget.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
     class ToneMapper {
       public:
         struct ToneMapperSettings {

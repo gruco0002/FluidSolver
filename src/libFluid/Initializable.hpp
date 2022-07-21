@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FluidSolver {
+namespace LibFluid {
 
     /**
      * Provides an interface / pattern for a cleaner codebase.

@@ -2,7 +2,7 @@
 
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     using parallel = StdParallelForEach;
 
@@ -161,7 +161,7 @@ namespace FluidSolver {
     }
 
     bool QuadraticNeighborhoodSearch3D::NeighborsIterator::operator==(
-            const FluidSolver::QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const {
+            const LibFluid::QuadraticNeighborhoodSearch3D::NeighborsIterator& other) const {
         return data->data == other.data->data && current == other.current;
     }
 

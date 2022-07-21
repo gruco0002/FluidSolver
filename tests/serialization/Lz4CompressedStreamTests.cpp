@@ -15,14 +15,14 @@ TEST(Lz4CompressedStreamTests, TestSmallData) {
 
     // write data
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::output(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::output(filename);
         stream.write(data, data_length);
     }
 
     // read data
     char read_in[data_length];
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::input(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::input(filename);
         stream.read(read_in, data_length);
     }
 
@@ -53,7 +53,7 @@ TEST(Lz4CompressedStreamTests, TestLargeData) {
 
     // write data
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::output(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::output(filename);
         stream.write(data.data(), data.size());
     }
 
@@ -61,7 +61,7 @@ TEST(Lz4CompressedStreamTests, TestLargeData) {
     std::vector<char> read_in;
     read_in.resize(data_length);
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::input(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::input(filename);
         stream.read(read_in.data(), data_length);
     }
 
@@ -84,14 +84,14 @@ TEST(Lz4CompressedStreamTests, TestReadOver) {
 
     // write data
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::output(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::output(filename);
         stream.write(data, data_length);
     }
 
     // read data
     char read_in[data_length + 5];
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::input(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::input(filename);
         stream.read(read_in, data_length + 5);
         EXPECT_TRUE(!stream);
     }
@@ -115,14 +115,14 @@ TEST(Lz4CompressedStreamTests, TestReadAfterDone) {
 
     // write data
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::output(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::output(filename);
         stream.write(data, data_length);
     }
 
     // read data
     char read_in[data_length];
     {
-        FluidSolver::Lz4CompressedStream stream = FluidSolver::Lz4CompressedStream::input(filename);
+        LibFluid::Lz4CompressedStream stream = LibFluid::Lz4CompressedStream::input(filename);
         stream.read(read_in, data_length);
         EXPECT_FALSE(!stream);
 

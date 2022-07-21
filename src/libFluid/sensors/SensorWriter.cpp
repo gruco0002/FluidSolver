@@ -7,7 +7,7 @@
 #include <fmt/core.h>
 
 
-void FluidSolver::SensorWriter::push_back_header(const std::string& header, size_t dimensionality)
+void LibFluid::SensorWriter::push_back_header(const std::string& header, size_t dimensionality)
 {
     if (!in_header_mode)
         return;
@@ -34,7 +34,7 @@ void FluidSolver::SensorWriter::push_back_header(const std::string& header, size
     header_count += dimensionality;
 }
 
-void FluidSolver::SensorWriter::push_back_header(std::initializer_list<std::string> headers)
+void LibFluid::SensorWriter::push_back_header(std::initializer_list<std::string> headers)
 {
     if (!in_header_mode)
         return;
@@ -50,12 +50,12 @@ void FluidSolver::SensorWriter::push_back_header(std::initializer_list<std::stri
     }
 }
 
-bool FluidSolver::SensorWriter::begin_header() const
+bool LibFluid::SensorWriter::begin_header() const
 {
     return in_header_mode;
 }
 
-void FluidSolver::SensorWriter::end_header()
+void LibFluid::SensorWriter::end_header()
 {
     if (!in_header_mode)
         return;
@@ -64,21 +64,21 @@ void FluidSolver::SensorWriter::end_header()
     stream << NEWLINE;
 }
 
-void FluidSolver::SensorWriter::next_value()
+void LibFluid::SensorWriter::next_value()
 {
     FLUID_ASSERT(current_row_position < header_count);
     FLUID_ASSERT(!in_header_mode);
     current_row_position++;
 }
 
-void FluidSolver::SensorWriter::add_seperator_if_required()
+void LibFluid::SensorWriter::add_seperator_if_required()
 {
     FLUID_ASSERT(!in_header_mode);
     if (current_row_position > 0)
         stream << SEPERATOR;
 }
 
-void FluidSolver::SensorWriter::check_correct_dimensionality_at_position(size_t dimensionality) const
+void LibFluid::SensorWriter::check_correct_dimensionality_at_position(size_t dimensionality) const
 {
     FLUID_ASSERT(!in_header_mode);
     FLUID_ASSERT(current_row_position < dimensionality_info.size());
@@ -86,7 +86,7 @@ void FluidSolver::SensorWriter::check_correct_dimensionality_at_position(size_t 
     FLUID_ASSERT(dimensionality == dimensionality_info[current_row_position]);
 }
 
-FluidSolver::SensorWriter::SensorWriter(const std::string& filepath) : filepath(filepath)
+LibFluid::SensorWriter::SensorWriter(const std::string& filepath) : filepath(filepath)
 {
     stream.open(filepath, std::ofstream::out | std::ofstream::binary);
 
@@ -101,7 +101,7 @@ FluidSolver::SensorWriter::SensorWriter(const std::string& filepath) : filepath(
     }
 }
 
-FluidSolver::SensorWriter::~SensorWriter()
+LibFluid::SensorWriter::~SensorWriter()
 {
     if (stream.is_open())
     {
@@ -112,7 +112,7 @@ FluidSolver::SensorWriter::~SensorWriter()
     }
 }
 
-void FluidSolver::SensorWriter::push_back(float value)
+void LibFluid::SensorWriter::push_back(float value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -123,7 +123,7 @@ void FluidSolver::SensorWriter::push_back(float value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(const std::string& value)
+void LibFluid::SensorWriter::push_back(const std::string& value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -134,7 +134,7 @@ void FluidSolver::SensorWriter::push_back(const std::string& value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(const glm::vec2& value)
+void LibFluid::SensorWriter::push_back(const glm::vec2& value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -149,7 +149,7 @@ void FluidSolver::SensorWriter::push_back(const glm::vec2& value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(const glm::vec3& value)
+void LibFluid::SensorWriter::push_back(const glm::vec3& value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -168,7 +168,7 @@ void FluidSolver::SensorWriter::push_back(const glm::vec3& value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(const glm::vec4& value)
+void LibFluid::SensorWriter::push_back(const glm::vec4& value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -191,7 +191,7 @@ void FluidSolver::SensorWriter::push_back(const glm::vec4& value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(int value)
+void LibFluid::SensorWriter::push_back(int value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -202,7 +202,7 @@ void FluidSolver::SensorWriter::push_back(int value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(size_t value)
+void LibFluid::SensorWriter::push_back(size_t value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -213,7 +213,7 @@ void FluidSolver::SensorWriter::push_back(size_t value)
     next_value();
 }
 
-void FluidSolver::SensorWriter::push_back(const FluidSolver::Timepoint& value)
+void LibFluid::SensorWriter::push_back(const LibFluid::Timepoint& value)
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -238,7 +238,7 @@ void FluidSolver::SensorWriter::push_back(const FluidSolver::Timepoint& value)
     // TODO: maybe also write the desired timestep size out to the sensor writer
 }
 
-void FluidSolver::SensorWriter::next()
+void LibFluid::SensorWriter::next()
 {
     FLUID_ASSERT(!in_header_mode);
 
@@ -255,37 +255,37 @@ void FluidSolver::SensorWriter::next()
     current_row_position = 0;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(float value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(float value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const std::string& value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(const std::string& value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const glm::vec2& value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(const glm::vec2& value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const glm::vec3& value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(const glm::vec3& value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const glm::vec4& value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(const glm::vec4& value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(Control control)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(Control control)
 {
     switch (control)
     {
@@ -297,25 +297,25 @@ FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(Control control
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(int value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(int value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(size_t value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(size_t value)
 {
     push_back(value);
     return *this;
 }
 
-FluidSolver::SensorWriter& FluidSolver::SensorWriter::operator<<(const FluidSolver::Timepoint& value)
+LibFluid::SensorWriter& LibFluid::SensorWriter::operator<<(const LibFluid::Timepoint& value)
 {
     push_back(value);
     return *this;
 }
 
-void FluidSolver::SensorWriter::flush()
+void LibFluid::SensorWriter::flush()
 {
     stream.flush();
 }

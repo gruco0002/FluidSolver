@@ -2,10 +2,9 @@
 
 #include <stdexcept>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
-    ParticleVertexArray::ParticleVertexArray(std::shared_ptr<FluidSolver::ParticleCollection> particleCollection)
+    ParticleVertexArray::ParticleVertexArray(std::shared_ptr<LibFluid::ParticleCollection> particleCollection)
     {
         this->particleCollection = particleCollection;
     }
@@ -115,7 +114,7 @@ namespace FluidSolver
     }
 
     ParticleVertexArray* ParticleVertexArray::CreateFromParticleCollection(
-        std::shared_ptr<FluidSolver::ParticleCollection> particleCollection)
+        std::shared_ptr<LibFluid::ParticleCollection> particleCollection)
     {
         return new ParticleVertexArrayForCollection(particleCollection);
 
@@ -125,20 +124,20 @@ namespace FluidSolver
 
     void ParticleVertexArrayForCollection::OnGenerate()
     {
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::MovementData>());
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::ParticleData>());
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::ParticleInfo>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::MovementData>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::ParticleData>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::ParticleInfo>());
 
         // create particle buffers
-        movementBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::MovementData>(
-            &stripedParticleCollection->get<FluidSolver::MovementData>(0), stripedParticleCollection->size(),
+        movementBuffer = new Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData>(
+            &stripedParticleCollection->get<LibFluid::MovementData>(0), stripedParticleCollection->size(),
             Engine::Graphics::Buffer::Buffer::DataModeDynamic);
 
-        dataBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleData>(
-            &stripedParticleCollection->get<FluidSolver::ParticleData>(0), stripedParticleCollection->size(),
+        dataBuffer = new Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleData>(
+            &stripedParticleCollection->get<LibFluid::ParticleData>(0), stripedParticleCollection->size(),
             Engine::Graphics::Buffer::Buffer::DataModeDynamic);
-        infoBuffer = new Engine::Graphics::Buffer::VertexBuffer<FluidSolver::ParticleInfo>(
-            &stripedParticleCollection->get<FluidSolver::ParticleInfo>(0), stripedParticleCollection->size(),
+        infoBuffer = new Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo>(
+            &stripedParticleCollection->get<LibFluid::ParticleInfo>(0), stripedParticleCollection->size(),
             Engine::Graphics::Buffer::Buffer::DataModeDynamic);
 
         // create vertex array object
@@ -146,25 +145,25 @@ namespace FluidSolver
 
             Engine::Graphics::Buffer::VertexArray::BufferBinding(GetIndexBuffer()),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                movementBuffer, 0, 2, offsetof(FluidSolver::MovementData, position), sizeof(FluidSolver::MovementData),
+                movementBuffer, 0, 2, offsetof(LibFluid::MovementData, position), sizeof(LibFluid::MovementData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                movementBuffer, 1, 2, offsetof(FluidSolver::MovementData, velocity), sizeof(FluidSolver::MovementData),
+                movementBuffer, 1, 2, offsetof(LibFluid::MovementData, velocity), sizeof(LibFluid::MovementData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                movementBuffer, 2, 2, offsetof(FluidSolver::MovementData, acceleration),
-                sizeof(FluidSolver::MovementData), Engine::ComponentTypeFloat),
+                movementBuffer, 2, 2, offsetof(LibFluid::MovementData, acceleration),
+                sizeof(LibFluid::MovementData), Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                dataBuffer, 3, 1, offsetof(FluidSolver::ParticleData, mass), sizeof(FluidSolver::ParticleData),
+                dataBuffer, 3, 1, offsetof(LibFluid::ParticleData, mass), sizeof(LibFluid::ParticleData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                dataBuffer, 4, 1, offsetof(FluidSolver::ParticleData, pressure), sizeof(FluidSolver::ParticleData),
+                dataBuffer, 4, 1, offsetof(LibFluid::ParticleData, pressure), sizeof(LibFluid::ParticleData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                dataBuffer, 5, 1, offsetof(FluidSolver::ParticleData, density), sizeof(FluidSolver::ParticleData),
+                dataBuffer, 5, 1, offsetof(LibFluid::ParticleData, density), sizeof(LibFluid::ParticleData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                infoBuffer, 6, 1, offsetof(FluidSolver::ParticleInfo, type), sizeof(FluidSolver::ParticleInfo),
+                infoBuffer, 6, 1, offsetof(LibFluid::ParticleInfo, type), sizeof(LibFluid::ParticleInfo),
                 Engine::ComponentTypeUnsignedByte) //,
             /*Engine::Graphics::Buffer::VertexArray::BufferBinding(
  GetSelectionBuffer(),
@@ -186,33 +185,33 @@ namespace FluidSolver
 
     void ParticleVertexArrayForCollection::OnUpdate()
     {
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::MovementData>());
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::ParticleData>());
-        FLUID_ASSERT(stripedParticleCollection->is_type_present<FluidSolver::ParticleInfo>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::MovementData>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::ParticleData>());
+        FLUID_ASSERT(stripedParticleCollection->is_type_present<LibFluid::ParticleInfo>());
 
         if (movementBuffer->GetElementCount() >= this->GetVaoParticleCount())
         {
             // the size of the buffer is large enough for the particles: Update the data because it is faster
-            movementBuffer->UpdateData(&stripedParticleCollection->get<FluidSolver::MovementData>(0),
+            movementBuffer->UpdateData(&stripedParticleCollection->get<LibFluid::MovementData>(0),
                                        stripedParticleCollection->size());
-            dataBuffer->UpdateData(&stripedParticleCollection->get<FluidSolver::ParticleData>(0),
+            dataBuffer->UpdateData(&stripedParticleCollection->get<LibFluid::ParticleData>(0),
                                    stripedParticleCollection->size());
-            infoBuffer->UpdateData(&stripedParticleCollection->get<FluidSolver::ParticleInfo>(0),
+            infoBuffer->UpdateData(&stripedParticleCollection->get<LibFluid::ParticleInfo>(0),
                                    stripedParticleCollection->size());
         }
         else
         {
             // the buffer is too small, set the data to force a resize
-            movementBuffer->SetData(&stripedParticleCollection->get<FluidSolver::MovementData>(0),
+            movementBuffer->SetData(&stripedParticleCollection->get<LibFluid::MovementData>(0),
                                     stripedParticleCollection->size());
-            dataBuffer->SetData(&stripedParticleCollection->get<FluidSolver::ParticleData>(0),
+            dataBuffer->SetData(&stripedParticleCollection->get<LibFluid::ParticleData>(0),
                                 stripedParticleCollection->size());
-            infoBuffer->SetData(&stripedParticleCollection->get<FluidSolver::ParticleInfo>(0),
+            infoBuffer->SetData(&stripedParticleCollection->get<LibFluid::ParticleInfo>(0),
                                 stripedParticleCollection->size());
         }
     }
 
-    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(std::shared_ptr<FluidSolver::ParticleCollection> collection)
+    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(std::shared_ptr<LibFluid::ParticleCollection> collection)
         : ParticleVertexArray(collection)
     {
         this->stripedParticleCollection = collection;

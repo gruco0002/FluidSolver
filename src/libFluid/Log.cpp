@@ -6,8 +6,7 @@
 #include <fmt/core.h>
 
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     std::vector<Log::Entry> Log::entries;
     std::mutex Log::mutex;
@@ -57,11 +56,11 @@ namespace FluidSolver
     {
         switch (type)
         {
-        case FluidSolver::Log::TYPE_MESSAGE:
+        case LibFluid::Log::TYPE_MESSAGE:
             return "Message";
-        case FluidSolver::Log::TYPE_WARNING:
+        case LibFluid::Log::TYPE_WARNING:
             return "Warning";
-        case FluidSolver::Log::TYPE_ERROR:
+        case LibFluid::Log::TYPE_ERROR:
             return "Error";
         default:
             return "";

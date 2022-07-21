@@ -5,7 +5,7 @@
 #include <fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
 #include <parallelization/StdParallelForEach.hpp>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct SESPHSettings : public DataChangeStruct {
         pFloat StiffnessK = 100000.0f;

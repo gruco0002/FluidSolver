@@ -8,7 +8,7 @@
 #include "visualizer/ISimulationVisualizer.hpp"
 #include "visualizer/Viewport2D.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
 
     class GLParticleRenderer : public ISimulationVisualizer, public GLRenderer {

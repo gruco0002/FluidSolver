@@ -4,7 +4,7 @@
 
 TEST(CubicSplineKernelTest, CompactKernelSupportTest)
 {
-    auto kernel = FluidSolver::CubicSplineKernel();
+    auto kernel = LibFluid::CubicSplineKernel();
 
     kernel.kernel_support = 1.0f;
     kernel.initialize();
@@ -29,7 +29,7 @@ TEST(CubicSplineKernelTest, CompactKernelSupportTest)
 
 TEST(CubicSplineKernelTest, SymmetricKernelTest)
 {
-    auto kernel = FluidSolver::CubicSplineKernel();
+    auto kernel = LibFluid::CubicSplineKernel();
 
     for (float t = 0.0f; t <= 10.0f; t += 0.001f)
     {
@@ -55,7 +55,7 @@ TEST(CubicSplineKernelTest, SymmetricKernelTest)
 
 TEST(CubicSplineKernelTest, NonNegativeTest)
 {
-    auto kernel = FluidSolver::CubicSplineKernel();
+    auto kernel = LibFluid::CubicSplineKernel();
     for (float t = 0.0f; t <= 10.0f; t += 0.001f)
     {
         kernel.kernel_support = 8.5f;
@@ -80,7 +80,7 @@ TEST(CubicSplineKernelTest, NonNegativeTest)
 
 TEST(CubicSplineKernelDerivativeTest, PointSymmetricTest)
 {
-    auto kernel = FluidSolver::CubicSplineKernel();
+    auto kernel = LibFluid::CubicSplineKernel();
 
     for (float t = 0.0f; t <= 10.0f; t += 0.001f)
     {

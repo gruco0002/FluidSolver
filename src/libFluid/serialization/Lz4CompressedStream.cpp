@@ -2,7 +2,7 @@
 #include "FluidAssert.hpp"
 #include <lz4frame.h>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     Lz4CompressedStream::Lz4CompressedStream(const std::filesystem::path& filepath, std::ios_base::openmode mode) {
         if (mode & std::ios_base::in) {
@@ -90,7 +90,7 @@ namespace FluidSolver {
 
                 } else {
                     // the source buffer is empty, read in more data
-                    stream.read(read_source_buffer.new_data(), FluidSolver::Lz4CompressedStream::Buffer::max_size);
+                    stream.read(read_source_buffer.new_data(), LibFluid::Lz4CompressedStream::Buffer::max_size);
                     size_t read_bytes = stream.gcount();
 
                     if (read_bytes == 0) {

@@ -4,8 +4,7 @@
 
 #include <cstdint>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
     using pIndex_t = size_t;
@@ -15,13 +14,17 @@ namespace FluidSolver
     using vec2 = glm::vec2;
     using vec3 = glm::vec3;
 
-    struct Area
-    {
+    struct Area {
         float left;
         float right;
 
         float bottom;
         float top;
+    };
+
+    struct Volume {
+        glm::vec3 center;
+        glm::vec3 distance_from_center;
     };
 
 } // namespace FluidSolver

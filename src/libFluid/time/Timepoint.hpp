@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct Timepoint {
         size_t timestep_number = 0;

@@ -8,8 +8,7 @@
 #include <optional>
 #include <yaml-cpp/yaml.h>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class SimulationSerializer {
       private:
@@ -19,8 +18,7 @@ namespace FluidSolver
       public:
         std::string filepath;
 
-        struct Settings
-        {
+        struct Settings {
             bool save_particle_data = true;
             std::string particle_data_relative_filepath = "particles.data";
         } settings;
@@ -36,8 +34,7 @@ namespace FluidSolver
 
         void save_to_file(const SimulatorVisualizerBundle& simulation);
 
-        virtual ~SimulationSerializer()
-        {
+        virtual ~SimulationSerializer() {
         }
 
       public:
@@ -55,8 +52,15 @@ namespace FluidSolver
       private:
         YAML::Node save_particle_spawner(const std::shared_ptr<ParticleSpawner>& spawner);
         std::shared_ptr<ParticleSpawner> load_particle_spawner(const YAML::Node& node);
+
         YAML::Node save_particle_remover(const std::shared_ptr<ParticleRemover>& remover);
         std::shared_ptr<ParticleRemover> load_particle_remover(const YAML::Node& node);
+
+        YAML::Node save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover);
+        std::shared_ptr<ParticleRemover3D> load_particle_remover_3d(const YAML::Node& node);
+
+
+
         YAML::Node save_global_density_sensor(const std::shared_ptr<Sensors::GlobalDensitySensor>& sen);
         std::shared_ptr<Sensors::GlobalDensitySensor> load_global_density_sensor(const YAML::Node& node);
         YAML::Node save_global_pressure_sensor(const std::shared_ptr<Sensors::GlobalPressureSensor>& sen);
@@ -80,9 +84,12 @@ namespace FluidSolver
         std::shared_ptr<Sensors::SensorPlane> load_sensor_plane(const YAML::Node& node);
 
         YAML::Node save_compressed_neighborhood_storage_sensor(
-            const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen);
+                const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen);
         std::shared_ptr<Sensors::CompressedNeighborStorageSensor> load_compressed_neighborhood_storage_sensor(
-            const YAML::Node& node);
+                const YAML::Node& node);
+
+        YAML::Node save_iisph_sensor(const std::shared_ptr<Sensors::IISPHSensor>& sen);
+        std::shared_ptr<Sensors::IISPHSensor> load_iisph_sensor(const YAML::Node& node);
     };
 
 } // namespace FluidSolver

@@ -5,6 +5,7 @@
 #include <imgui_impl_opengl3.h>
 #include <imgui_stdlib.h>
 #include <implot.h>
+#include <ImGuizmo.h>
 
 #ifdef __linux__
 // linux

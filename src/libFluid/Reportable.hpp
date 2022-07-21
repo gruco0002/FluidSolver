@@ -1,7 +1,7 @@
 #pragma once
 #include "CompatibilityReport.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     /**
      * This interface is used to keep the codebase cleaner.

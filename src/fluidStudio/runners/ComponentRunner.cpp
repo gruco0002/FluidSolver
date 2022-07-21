@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     bool ComponentRunner::start_next_computation() {
         if (computation_status != ComputationStatus::WaitingForNextComputation) {

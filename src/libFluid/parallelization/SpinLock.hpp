@@ -2,7 +2,7 @@
 
 #include <atomic>
 
-namespace FluidSolver::Parallelization {
+namespace LibFluid::Parallelization {
     class SpinLock {
       public:
         void lock();

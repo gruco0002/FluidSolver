@@ -6,7 +6,7 @@
 
 #include <limits>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     namespace Sensors {
 

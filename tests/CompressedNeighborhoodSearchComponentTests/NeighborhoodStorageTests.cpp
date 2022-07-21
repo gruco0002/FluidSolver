@@ -4,7 +4,7 @@
 
 TEST(CompressedNeighborhoodSearch, NeighborhoodStorage1)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     CompressedNeighborhoodSearch::NeighborStorage storage;
     storage.clear();
@@ -31,7 +31,7 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorage1)
 
 TEST(CompressedNeighborhoodSearch, NeighborhoodStorageMove)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     CompressedNeighborhoodSearch::NeighborStorage storage;
     storage.clear();
@@ -66,7 +66,7 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageMove)
 
 TEST(CompressedNeighborhoodSearch, NeighborhoodStorageCopy)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     CompressedNeighborhoodSearch::NeighborStorage storage;
     storage.clear();

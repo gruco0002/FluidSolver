@@ -3,13 +3,13 @@
 #include "ComponentRunner.hpp"
 #include "FluidInclude.hpp"
 
-namespace FluidUi {
+namespace FluidStudio {
     class SimulationRunner : public ComponentRunner {
       public:
 
         SimulationRunner();
 
-        std::shared_ptr<FluidSolver::Simulator> simulation = nullptr;
+        std::shared_ptr<LibFluid::Simulator> simulation = nullptr;
 
       protected:
         void execute_computation() override;

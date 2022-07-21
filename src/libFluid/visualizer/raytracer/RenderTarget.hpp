@@ -3,7 +3,7 @@
 #include <vector>
 
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     struct LightValue {
         float r = 0.0f;

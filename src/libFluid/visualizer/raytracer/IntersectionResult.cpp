@@ -1,4 +1,4 @@
 #include "IntersectionResult.hpp"
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
 }

@@ -1,6 +1,6 @@
 #include "ParticleSpawner.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     void ParticleSpawner::execute_simulation_step(pFloat timestep) {
         initialize();
 

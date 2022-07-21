@@ -2,7 +2,7 @@
 
 #include "FluidAssert.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     void LightValue::add(const LightValue& other) {
         r += other.r;

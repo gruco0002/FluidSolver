@@ -1,7 +1,6 @@
 #pragma once
 
-namespace FluidSolver
-{
+namespace LibFluid {
     class SimulatorVisualizerBundle;
     class Simulator;
     class ITimestepGenerator;
@@ -13,6 +12,7 @@ namespace FluidSolver
     class IEntity;
     class ParticleSpawner;
     class ParticleRemover;
+    class ParticleRemover3D;
 
     // sensors
     class ISensor;
@@ -25,6 +25,7 @@ namespace FluidSolver
         class GlobalParticleCountSensor;
         class SensorPlane;
         class CompressedNeighborStorageSensor;
+        class IISPHSensor;
 
     } // namespace Sensors
     class SensorWriter;

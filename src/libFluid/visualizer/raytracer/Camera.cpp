@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     Ray Camera::generate_ray_for_sample_position(float x, float y) {
         float rel_x = (x + 0.5f) / (float)settings.render_target->get_width();

@@ -2,7 +2,7 @@
 
 #include <thread>
 
-namespace FluidUi {
+namespace FluidStudio {
 
     class ComponentRunner {
 

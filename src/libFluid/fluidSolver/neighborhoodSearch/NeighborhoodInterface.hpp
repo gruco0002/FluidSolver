@@ -5,8 +5,7 @@
 #include <functional>
 
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
     /**

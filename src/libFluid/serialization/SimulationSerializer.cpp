@@ -1,7 +1,9 @@
 #include "SimulationSerializer.hpp"
 
 #include "Log.hpp"
+#include "SimulatorVisualizerBundle.hpp"
 #include "entities/ParticleRemover.hpp"
+#include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/IISPHFluidSolver3D.hpp"
@@ -13,6 +15,7 @@
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "sensors/CompressedNeighborsStatistics.hpp"
+#include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "serialization/ParticleSerializer.hpp"
@@ -20,18 +23,15 @@
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
-#include "SimulatorVisualizerBundle.hpp"
 
 
 #include <filesystem>
 
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
-    YAML::Node SimulationSerializer::save_particle_spawner(const std::shared_ptr<ParticleSpawner>& spawner)
-    {
+    YAML::Node SimulationSerializer::save_particle_spawner(const std::shared_ptr<ParticleSpawner>& spawner) {
         YAML::Node res;
         res["type"] = "particle-spawner";
 
@@ -45,8 +45,7 @@ namespace FluidSolver
         return res;
     }
 
-    std::shared_ptr<ParticleSpawner> SimulationSerializer::load_particle_spawner(const YAML::Node& node)
-    {
+    std::shared_ptr<ParticleSpawner> SimulationSerializer::load_particle_spawner(const YAML::Node& node) {
         auto spawner = std::make_shared<ParticleSpawner>();
         spawner->parameters.position = node["position"].as<glm::vec2>();
         spawner->parameters.direction = node["direction"].as<glm::vec2>();
@@ -57,8 +56,7 @@ namespace FluidSolver
         return spawner;
     }
 
-    YAML::Node SimulationSerializer::save_particle_remover(const std::shared_ptr<ParticleRemover>& remover)
-    {
+    YAML::Node SimulationSerializer::save_particle_remover(const std::shared_ptr<ParticleRemover>& remover) {
         YAML::Node res;
         res["type"] = "particle-remover";
 
@@ -72,8 +70,7 @@ namespace FluidSolver
     }
 
 
-    std::shared_ptr<ParticleRemover> SimulationSerializer::load_particle_remover(const YAML::Node& node)
-    {
+    std::shared_ptr<ParticleRemover> SimulationSerializer::load_particle_remover(const YAML::Node& node) {
         auto remover = std::make_shared<ParticleRemover>();
 
         remover->parameters.area.left = node["area"]["left"].as<float>();
@@ -86,8 +83,7 @@ namespace FluidSolver
     }
 
     YAML::Node SimulationSerializer::save_global_density_sensor(
-        const std::shared_ptr<Sensors::GlobalDensitySensor>& sen)
-    {
+            const std::shared_ptr<Sensors::GlobalDensitySensor>& sen) {
         YAML::Node node;
 
         node["type"] = "global-density-sensor";
@@ -99,8 +95,7 @@ namespace FluidSolver
     }
 
     std::shared_ptr<Sensors::GlobalDensitySensor> SimulationSerializer::load_global_density_sensor(
-        const YAML::Node& node)
-    {
+            const YAML::Node& node) {
         auto res = std::make_shared<Sensors::GlobalDensitySensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -110,8 +105,7 @@ namespace FluidSolver
     }
 
     YAML::Node SimulationSerializer::save_global_pressure_sensor(
-        const std::shared_ptr<Sensors::GlobalPressureSensor>& sen)
-    {
+            const std::shared_ptr<Sensors::GlobalPressureSensor>& sen) {
         YAML::Node node;
 
         node["type"] = "global-pressure-sensor";
@@ -123,8 +117,7 @@ namespace FluidSolver
     }
 
     std::shared_ptr<Sensors::GlobalPressureSensor> SimulationSerializer::load_global_pressure_sensor(
-        const YAML::Node& node)
-    {
+            const YAML::Node& node) {
         auto res = std::make_shared<Sensors::GlobalPressureSensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -134,8 +127,7 @@ namespace FluidSolver
     }
 
     YAML::Node SimulationSerializer::save_global_velocity_sensor(
-        const std::shared_ptr<Sensors::GlobalVelocitySensor>& sen)
-    {
+            const std::shared_ptr<Sensors::GlobalVelocitySensor>& sen) {
         YAML::Node node;
 
         node["type"] = "global-velocity-sensor";
@@ -147,8 +139,7 @@ namespace FluidSolver
     }
 
     std::shared_ptr<Sensors::GlobalVelocitySensor> SimulationSerializer::load_global_velocity_sensor(
-        const YAML::Node& node)
-    {
+            const YAML::Node& node) {
         auto res = std::make_shared<Sensors::GlobalVelocitySensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -157,8 +148,7 @@ namespace FluidSolver
         return res;
     }
 
-    YAML::Node SimulationSerializer::save_sensor_plane(const std::shared_ptr<Sensors::SensorPlane>& sen)
-    {
+    YAML::Node SimulationSerializer::save_sensor_plane(const std::shared_ptr<Sensors::SensorPlane>& sen) {
         YAML::Node node;
 
         node["type"] = "sensor-plane";
@@ -182,28 +172,26 @@ namespace FluidSolver
         node["image"]["max-value"] = sen->settings.max_image_value;
 
 
-        switch (sen->settings.sensor_type)
-        {
-        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
-            node["data"] = "density";
-            break;
-        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
-            node["data"] = "pressure";
-            break;
-        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
-            node["data"] = "velocity";
-            break;
-        default:
-            Log::warning("[Saving] Unknown sensor plane type!");
-            break;
+        switch (sen->settings.sensor_type) {
+            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
+                node["data"] = "density";
+                break;
+            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
+                node["data"] = "pressure";
+                break;
+            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
+                node["data"] = "velocity";
+                break;
+            default:
+                Log::warning("[Saving] Unknown sensor plane type!");
+                break;
         }
 
         node["calculate-every-nth-step"] = sen->settings.calculate_plane_every_nth_step;
 
         return node;
     }
-    std::shared_ptr<Sensors::SensorPlane> SimulationSerializer::load_sensor_plane(const YAML::Node& node)
-    {
+    std::shared_ptr<Sensors::SensorPlane> SimulationSerializer::load_sensor_plane(const YAML::Node& node) {
         auto res = std::make_shared<Sensors::SensorPlane>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -225,20 +213,13 @@ namespace FluidSolver
         res->settings.max_image_value = node["image"]["max-value"].as<float>();
 
         auto kind = node["data"].as<std::string>();
-        if (kind == "density")
-        {
+        if (kind == "density") {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity;
-        }
-        else if (kind == "pressure")
-        {
+        } else if (kind == "pressure") {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure;
-        }
-        else if (kind == "velocity")
-        {
+        } else if (kind == "velocity") {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity;
-        }
-        else
-        {
+        } else {
             Log::error("[LOADING] Unknown sensor plane type '" + kind + "'!");
             error_count++;
         }
@@ -249,8 +230,7 @@ namespace FluidSolver
     }
 
 
-    YAML::Node SimulationSerializer::save_global_energy_sensor(const std::shared_ptr<Sensors::GlobalEnergySensor>& sen)
-    {
+    YAML::Node SimulationSerializer::save_global_energy_sensor(const std::shared_ptr<Sensors::GlobalEnergySensor>& sen) {
         YAML::Node node;
 
         node["type"] = "global-energy-sensor";
@@ -263,8 +243,7 @@ namespace FluidSolver
         return node;
     }
 
-    std::shared_ptr<Sensors::GlobalEnergySensor> SimulationSerializer::load_global_energy_sensor(const YAML::Node& node)
-    {
+    std::shared_ptr<Sensors::GlobalEnergySensor> SimulationSerializer::load_global_energy_sensor(const YAML::Node& node) {
         auto res = std::make_shared<Sensors::GlobalEnergySensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -274,8 +253,7 @@ namespace FluidSolver
     }
 
     YAML::Node SimulationSerializer::save_global_particle_count_sensor(
-        const std::shared_ptr<Sensors::GlobalParticleCountSensor>& sen)
-    {
+            const std::shared_ptr<Sensors::GlobalParticleCountSensor>& sen) {
         YAML::Node node;
 
         node["type"] = "global-particle-count-sensor";
@@ -287,8 +265,7 @@ namespace FluidSolver
     }
 
     std::shared_ptr<Sensors::GlobalParticleCountSensor> SimulationSerializer::load_global_particle_count_sensor(
-        const YAML::Node& node)
-    {
+            const YAML::Node& node) {
         auto res = std::make_shared<Sensors::GlobalParticleCountSensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -297,8 +274,7 @@ namespace FluidSolver
     }
 
     YAML::Node SimulationSerializer::save_compressed_neighborhood_storage_sensor(
-        const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen)
-    {
+            const std::shared_ptr<Sensors::CompressedNeighborStorageSensor>& sen) {
         YAML::Node node;
 
         node["type"] = "compressed-neighborhood-storage-sensor";
@@ -309,8 +285,7 @@ namespace FluidSolver
         return node;
     }
     std::shared_ptr<Sensors::CompressedNeighborStorageSensor> SimulationSerializer::
-        load_compressed_neighborhood_storage_sensor(const YAML::Node& node)
-    {
+            load_compressed_neighborhood_storage_sensor(const YAML::Node& node) {
         auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
         res->parameters.name = node["name"].as<std::string>();
         res->parameters.save_to_file = node["save-to-file"].as<bool>();
@@ -318,22 +293,37 @@ namespace FluidSolver
         return res;
     }
 
+    YAML::Node SimulationSerializer::save_iisph_sensor(const std::shared_ptr<Sensors::IISPHSensor>& sen) {
+        YAML::Node node;
 
-    std::string SimulationSerializer::get_full_particle_data_path()
-    {
+        node["type"] = "iisph-sensor";
+        node["name"] = sen->parameters.name;
+        node["save-to-file"] = sen->parameters.save_to_file;
+        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+
+        return node;
+    }
+    std::shared_ptr<Sensors::IISPHSensor> SimulationSerializer::load_iisph_sensor(const YAML::Node& node) {
+        auto res = std::make_shared<Sensors::IISPHSensor>();
+        res->parameters.name = node["name"].as<std::string>();
+        res->parameters.save_to_file = node["save-to-file"].as<bool>();
+        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].as<bool>();
+        return res;
+    }
+
+
+    std::string SimulationSerializer::get_full_particle_data_path() {
         auto p = std::filesystem::path(filepath);
         auto combined = p.parent_path() / std::filesystem::path(settings.particle_data_relative_filepath);
         return combined.string();
     }
 
-    YAML::Node SimulationSerializer::save_scenario(const Simulator& simulation)
-    {
+    YAML::Node SimulationSerializer::save_scenario(const Simulator& simulation) {
         YAML::Node res;
 
         // save particle data
         res["particles"] = settings.particle_data_relative_filepath;
-        if (settings.save_particle_data)
-        {
+        if (settings.save_particle_data) {
             SimulationSerializer::save_particles(*simulation.data.collection, get_full_particle_data_path());
         }
 
@@ -343,64 +333,57 @@ namespace FluidSolver
         res["rest-density"] = simulation.parameters.rest_density;
 
         // save entities
-        for (auto ent : simulation.data.entities)
-        {
+        for (auto ent : simulation.data.entities) {
             auto spawner = std::dynamic_pointer_cast<ParticleSpawner>(ent);
-            if (spawner)
-            {
+            if (spawner) {
                 res["entities"].push_back(save_particle_spawner(spawner));
             }
 
             auto rem = std::dynamic_pointer_cast<ParticleRemover>(ent);
-            if (rem)
-            {
+            if (rem) {
                 res["entities"].push_back(save_particle_remover(rem));
+            }
+
+            auto rem3d = std::dynamic_pointer_cast<ParticleRemover3D>(ent);
+            if (rem3d) {
+                res["entities"].push_back(save_particle_remover_3d(rem3d));
             }
         }
 
         // save sensors
-        for (auto sen : simulation.data.sensors)
-        {
-
+        for (auto sen : simulation.data.sensors) {
             auto gd = std::dynamic_pointer_cast<Sensors::GlobalDensitySensor>(sen);
-            if (gd)
-            {
+            if (gd) {
                 res["sensors"].push_back(save_global_density_sensor(gd));
             }
 
             auto gp = std::dynamic_pointer_cast<Sensors::GlobalPressureSensor>(sen);
-            if (gp)
-            {
+            if (gp) {
                 res["sensors"].push_back(save_global_pressure_sensor(gp));
             }
 
             auto gv = std::dynamic_pointer_cast<Sensors::GlobalVelocitySensor>(sen);
-            if (gv)
-            {
+            if (gv) {
                 res["sensors"].push_back(save_global_velocity_sensor(gv));
             }
 
             auto ge = std::dynamic_pointer_cast<Sensors::GlobalEnergySensor>(sen);
-            if (ge)
-            {
+            if (ge) {
                 res["sensors"].push_back(save_global_energy_sensor(ge));
             }
 
             auto gc = std::dynamic_pointer_cast<Sensors::GlobalParticleCountSensor>(sen);
-            if (gc)
-            {
+            if (gc) {
                 res["sensors"].push_back(save_global_particle_count_sensor(gc));
             }
 
             auto sp = std::dynamic_pointer_cast<Sensors::SensorPlane>(sen);
-            if (sp)
-            {
+            if (sp) {
                 res["sensors"].push_back(save_sensor_plane(sp));
             }
 
             auto cns = std::dynamic_pointer_cast<Sensors::CompressedNeighborStorageSensor>(sen);
-            if (cns)
-            {
+            if (cns) {
                 res["sensors"].push_back(save_compressed_neighborhood_storage_sensor(cns));
             }
         }
@@ -408,14 +391,11 @@ namespace FluidSolver
         return res;
     }
 
-    void SimulationSerializer::load_scenario(const YAML::Node& node, Simulator& simulation)
-    {
-
+    void SimulationSerializer::load_scenario(const YAML::Node& node, Simulator& simulation) {
         // loading particles from file
         auto particles = node["particles"].as<std::string>();
         auto particles_file = std::filesystem::path(filepath).parent_path() / std::filesystem::path(particles);
-        if (!std::filesystem::exists(particles_file))
-        {
+        if (!std::filesystem::exists(particles_file)) {
             Log::error("[LOADING] Particles file was not found under '" + particles_file.string() + "'!");
             error_count++;
             return;
@@ -428,20 +408,15 @@ namespace FluidSolver
         simulation.parameters.rest_density = node["rest-density"].as<float>();
 
         // loading entities
-        if (node["entities"])
-        {
-            for (auto& ent_node : node["entities"])
-            {
-                if (ent_node["type"].as<std::string>() == "particle-spawner")
-                {
+        if (node["entities"]) {
+            for (auto& ent_node : node["entities"]) {
+                if (ent_node["type"].as<std::string>() == "particle-spawner") {
                     simulation.data.entities.push_back(load_particle_spawner(ent_node));
-                }
-                else if (ent_node["type"].as<std::string>() == "particle-remover")
-                {
+                } else if (ent_node["type"].as<std::string>() == "particle-remover") {
                     simulation.data.entities.push_back(load_particle_remover(ent_node));
-                }
-                else
-                {
+                } else if (ent_node["type"].as<std::string>() == "particle-remover-3d") {
+                    simulation.data.entities.push_back(load_particle_remover_3d(ent_node));
+                } else {
                     warning_count++;
                     Log::warning("[LOADING] Unknown entity type: '" + ent_node["type"].as<std::string>() + "'!");
                 }
@@ -449,41 +424,26 @@ namespace FluidSolver
         }
 
         // loading sensors
-        if (node["sensors"])
-        {
-            for (auto& sen_node : node["sensors"])
-            {
+        if (node["sensors"]) {
+            for (auto& sen_node : node["sensors"]) {
                 auto type_str = sen_node["type"].as<std::string>();
-                if (type_str == "global-density-sensor")
-                {
+                if (type_str == "global-density-sensor") {
                     simulation.data.sensors.push_back(load_global_density_sensor(sen_node));
-                }
-                else if (type_str == "global-pressure-sensor")
-                {
+                } else if (type_str == "global-pressure-sensor") {
                     simulation.data.sensors.push_back(load_global_pressure_sensor(sen_node));
-                }
-                else if (type_str == "global-velocity-sensor")
-                {
+                } else if (type_str == "global-velocity-sensor") {
                     simulation.data.sensors.push_back(load_global_velocity_sensor(sen_node));
-                }
-                else if (type_str == "global-energy-sensor")
-                {
+                } else if (type_str == "global-energy-sensor") {
                     simulation.data.sensors.push_back(load_global_energy_sensor(sen_node));
-                }
-                else if (type_str == "global-particle-count-sensor")
-                {
+                } else if (type_str == "global-particle-count-sensor") {
                     simulation.data.sensors.push_back(load_global_particle_count_sensor(sen_node));
-                }
-                else if (type_str == "sensor-plane")
-                {
+                } else if (type_str == "sensor-plane") {
                     simulation.data.sensors.push_back(load_sensor_plane(sen_node));
-                }
-                else if (type_str == "compressed-neighborhood-storage-sensor")
-                {
+                } else if (type_str == "compressed-neighborhood-storage-sensor") {
                     simulation.data.sensors.push_back(load_compressed_neighborhood_storage_sensor(sen_node));
-                }
-                else
-                {
+                } else if (type_str == "iisph-sensor") {
+                    simulation.data.sensors.push_back(load_iisph_sensor(sen_node));
+                } else {
                     warning_count++;
                     Log::warning("[LOADING] Unknown sensor type '" + type_str + "'!");
                 }
@@ -491,28 +451,22 @@ namespace FluidSolver
         }
     }
 
-    YAML::Node SimulationSerializer::save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep)
-    {
+    YAML::Node SimulationSerializer::save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep) {
         YAML::Node node;
 
-        if (std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep))
-        {
+        if (std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep)) {
             auto t = std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep);
 
             node["type"] = "constant";
             node["timestep"] = t->settings.timestep;
-        }
-        else if (std::dynamic_pointer_cast<DynamicCflTimestepGenerator>(timestep))
-        {
+        } else if (std::dynamic_pointer_cast<DynamicCflTimestepGenerator>(timestep)) {
             auto t = std::dynamic_pointer_cast<DynamicCflTimestepGenerator>(timestep);
 
             node["type"] = "dynamic-cfl";
             node["max-timestep"] = t->settings.max_timestep;
             node["min-timestep"] = t->settings.min_timestep;
             node["cfl"] = t->settings.cfl_number;
-        }
-        else
-        {
+        } else {
             error_count++;
             Log::error("[SAVING] Unsupported timestep type!");
         }
@@ -521,43 +475,34 @@ namespace FluidSolver
         return node;
     }
 
-    std::shared_ptr<ITimestepGenerator> SimulationSerializer::load_timestep(const YAML::Node& node)
-    {
-
-        if (node["type"].as<std::string>() == "constant")
-        {
+    std::shared_ptr<ITimestepGenerator> SimulationSerializer::load_timestep(const YAML::Node& node) {
+        if (node["type"].as<std::string>() == "constant") {
             auto res = std::make_shared<ConstantTimestepGenerator>();
             res->settings.timestep = node["timestep"].as<float>();
             return res;
-        }
-        else if (node["type"].as<std::string>() == "dynamic-cfl")
-        {
+        } else if (node["type"].as<std::string>() == "dynamic-cfl") {
             auto res = std::make_shared<DynamicCflTimestepGenerator>();
             res->settings.max_timestep = node["max-timestep"].as<float>();
             res->settings.min_timestep = node["min-timestep"].as<float>();
             res->settings.cfl_number = node["cfl"].as<float>();
             return res;
-        }
-        else
-        {
+        } else {
             error_count++;
             Log::error("[LOADING] Unknown timestep type '" + node["type"].as<std::string>() + "'!");
         }
         return nullptr;
     }
 
-    YAML::Node SimulationSerializer::save_solver(const Simulator& simulation)
-    {
+    YAML::Node SimulationSerializer::save_solver(const Simulator& simulation) {
         YAML::Node node;
 
         // solver, neighborhood search, kernel
         auto s = simulation.data.fluid_solver;
 
         if (std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(
-                s))
-        {
+                    s)) {
             auto f = std::dynamic_pointer_cast<
-                SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s);
+                    SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s);
 
             node["type"] = "sesph";
             node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated";
@@ -565,9 +510,7 @@ namespace FluidSolver
 
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
-        }
-        else if (std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s)) {
             auto f = std::dynamic_pointer_cast<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s);
             node["type"] = "sesph";
             node["neigborhood-search"]["type"] = "hashed";
@@ -575,12 +518,10 @@ namespace FluidSolver
 
             node["stiffness"] = f->settings.StiffnessK;
             node["viscosity"] = f->settings.Viscosity;
-        }
-        else if (std::dynamic_pointer_cast<
-                     IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<
+                           IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s)) {
             auto f = std::dynamic_pointer_cast<
-                IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s);
+                    IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(s);
 
             node["type"] = "iisph";
             node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated";
@@ -592,9 +533,7 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.MaxNumberOfIterations;
             node["min-iterations"] = f->settings.MinNumberOfIterations;
             node["viscosity"] = f->settings.Viscosity;
-        }
-        else if (std::dynamic_pointer_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s)) {
             auto f = std::dynamic_pointer_cast<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(s);
 
             node["type"] = "iisph";
@@ -607,11 +546,9 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.MaxNumberOfIterations;
             node["min-iterations"] = f->settings.MinNumberOfIterations;
             node["viscosity"] = f->settings.Viscosity;
-        }
-        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s)) {
             auto f =
-                std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
+                    std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
 
             node["type"] = "sesph-3d";
             node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated-3d";
@@ -621,13 +558,11 @@ namespace FluidSolver
             node["viscosity"] = f->settings.Viscosity;
 
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
-            if(f->settings.single_layer_boundary){
+            if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
                 node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
             }
-        }
-        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s)) {
             auto f = std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s);
 
             node["type"] = "sesph-3d";
@@ -638,15 +573,13 @@ namespace FluidSolver
             node["viscosity"] = f->settings.Viscosity;
 
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
-            if(f->settings.single_layer_boundary){
+            if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
                 node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
             }
-        }
-        else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s)) {
             auto f =
-                std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
+                    std::dynamic_pointer_cast<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
 
             node["type"] = "sesph-3d";
             node["neigborhood-search"]["type"] = "compressed-3d";
@@ -656,15 +589,13 @@ namespace FluidSolver
             node["viscosity"] = f->settings.Viscosity;
 
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
-            if(f->settings.single_layer_boundary){
+            if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
                 node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
             }
-        }
-        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s))
-        {
+        } else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s)) {
             auto f =
-                std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
+                    std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(s);
 
             node["type"] = "iisph-3d";
             node["neigborhood-search"]["type"] = "quadratic-dynamic-allocated-3d";
@@ -676,9 +607,13 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
-        }
-        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s))
-        {
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if (f->settings.single_layer_boundary) {
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
+        } else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s)) {
             auto f = std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s);
 
             node["type"] = "iisph-3d";
@@ -691,11 +626,15 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
-        }
-        else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s))
-        {
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if (f->settings.single_layer_boundary) {
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
+        } else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s)) {
             auto f =
-                std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
+                    std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s);
 
             node["type"] = "iisph-3d";
             node["neigborhood-search"]["type"] = "compressed-3d";
@@ -707,9 +646,13 @@ namespace FluidSolver
             node["max-iterations"] = f->settings.max_number_of_iterations;
             node["min-iterations"] = f->settings.min_number_of_iterations;
             node["viscosity"] = f->settings.viscosity;
-        }
-        else
-        {
+
+            node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
+            if (f->settings.single_layer_boundary) {
+                node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
+                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+            }
+        } else {
             error_count++;
             Log::error("[SAVING] Unsupported combination of fluid solver components!");
         }
@@ -722,55 +665,40 @@ namespace FluidSolver
         return node;
     }
 
-    void SimulationSerializer::load_solver(Simulator& simulation, const YAML::Node& node)
-    {
-
+    void SimulationSerializer::load_solver(Simulator& simulation, const YAML::Node& node) {
         simulation.data.fluid_solver = nullptr;
 
-        if (node["type"].as<std::string>() == "sesph")
-        {
-            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel")
-            {
-                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated")
-                {
+        if (node["type"].as<std::string>() == "sesph") {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel") {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated") {
                     auto res = std::make_shared<
-                        SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
+                            SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed") {
                     auto res = std::make_shared<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>();
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else
-                {
+                } else {
                     error_count++;
                     Log::error("[LOADING] Unknown neighborhood search type '" +
-                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                            node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
-            }
-            else
-            {
+            } else {
                 error_count++;
                 Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
             }
-        }
-        else if (node["type"].as<std::string>() == "iisph")
-        {
-            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel")
-            {
-                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated")
-                {
+        } else if (node["type"].as<std::string>() == "iisph") {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel") {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated") {
                     auto res = std::make_shared<
-                        IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
+                            IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
 
                     res->settings.Gamma = node["gamma"].as<float>();
                     res->settings.Omega = node["omega"].as<float>();
@@ -780,9 +708,7 @@ namespace FluidSolver
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed") {
                     auto res = std::make_shared<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>();
 
                     res->settings.Gamma = node["gamma"].as<float>();
@@ -793,98 +719,78 @@ namespace FluidSolver
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else
-                {
+                } else {
                     error_count++;
                     Log::error("[LOADING] Unknown neighborhood search type '" +
-                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                            node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
-            }
-            else
-            {
+            } else {
                 error_count++;
                 Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
             }
-        }
-        else if (node["type"].as<std::string>() == "sesph-3d")
-        {
-            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
-            {
-                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
-                {
+        } else if (node["type"].as<std::string>() == "sesph-3d") {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d") {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d") {
                     auto res =
-                        std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
+                            std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    if(node["single-layer-boundary-enabled"]){
+                    if (node["single-layer-boundary-enabled"]) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
-                        if(res->settings.single_layer_boundary){
-                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
-                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
-                       }
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 = node["single-layer-settings"]["gamma-2"].as<float>();
+                        }
                     }
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d") {
                     auto res = std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    if(node["single-layer-boundary-enabled"]){
+                    if (node["single-layer-boundary-enabled"]) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
-                        if(res->settings.single_layer_boundary){
-                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
-                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 = node["single-layer-settings"]["gamma-2"].as<float>();
                         }
                     }
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d") {
                     auto res =
-                        std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
+                            std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
 
                     res->settings.StiffnessK = node["stiffness"].as<float>();
                     res->settings.Viscosity = node["viscosity"].as<float>();
 
-                    if(node["single-layer-boundary-enabled"]){
+                    if (node["single-layer-boundary-enabled"]) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].as<bool>();
-                        if(res->settings.single_layer_boundary){
-                            res->settings.single_layer_boundary_gamma_1 =  node["single-layer-settings"]["gamma-1"].as<float>();
-                            res->settings.single_layer_boundary_gamma_2 =   node["single-layer-settings"]["gamma-2"].as<float>();
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].as<float>();
+                            res->settings.single_layer_boundary_gamma_2 = node["single-layer-settings"]["gamma-2"].as<float>();
                         }
                     }
 
                     simulation.data.fluid_solver = res;
-                }
-                else
-                {
+                } else {
                     error_count++;
                     Log::error("[LOADING] Unknown neighborhood search type '" +
-                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                            node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
-            }
-            else
-            {
+            } else {
                 error_count++;
                 Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
             }
-        }
-        else if (node["type"].as<std::string>() == "iisph-3d")
-        {
-            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d")
-            {
-                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d")
-                {
+        } else if (node["type"].as<std::string>() == "iisph-3d") {
+            if (node["kernel"]["type"].as<std::string>() == "cubic-spline-kernel-3d") {
+                if (node["neigborhood-search"]["type"].as<std::string>() == "quadratic-dynamic-allocated-3d") {
                     auto res =
-                        std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
+                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>();
 
                     res->settings.gamma = node["gamma"].as<float>();
                     res->settings.omega = node["omega"].as<float>();
@@ -894,9 +800,7 @@ namespace FluidSolver
                     res->settings.viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "hashed-3d") {
                     auto res = std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
 
                     res->settings.gamma = node["gamma"].as<float>();
@@ -907,11 +811,9 @@ namespace FluidSolver
                     res->settings.viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d")
-                {
+                } else if (node["neigborhood-search"]["type"].as<std::string>() == "compressed-3d") {
                     auto res =
-                        std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
+                            std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>();
 
                     res->settings.gamma = node["gamma"].as<float>();
                     res->settings.omega = node["omega"].as<float>();
@@ -921,22 +823,16 @@ namespace FluidSolver
                     res->settings.viscosity = node["viscosity"].as<float>();
 
                     simulation.data.fluid_solver = res;
-                }
-                else
-                {
+                } else {
                     error_count++;
                     Log::error("[LOADING] Unknown neighborhood search type '" +
-                               node["neigborhood-search"]["type"].as<std::string>() + "'!");
+                            node["neigborhood-search"]["type"].as<std::string>() + "'!");
                 }
-            }
-            else
-            {
+            } else {
                 error_count++;
                 Log::error("[LOADING] Unknown kernel type '" + node["kernel"]["type"].as<std::string>() + "'!");
             }
-        }
-        else
-        {
+        } else {
             error_count++;
             Log::error("[LOADING] Unknown solver type '" + node["type"].as<std::string>() + "'!");
         }
@@ -945,15 +841,10 @@ namespace FluidSolver
         simulation.data.timestep_generator = load_timestep(node["timestep"]);
     }
 
-    std::shared_ptr<ISimulationVisualizer> SimulationSerializer::load_visualizer(const YAML::Node& node)
-    {
-
-        if (node["type"].as<std::string>() == "no-visualizer")
-        {
+    std::shared_ptr<ISimulationVisualizer> SimulationSerializer::load_visualizer(const YAML::Node& node) {
+        if (node["type"].as<std::string>() == "no-visualizer") {
             return nullptr;
-        }
-        else if (node["type"].as<std::string>() == "continous")
-        {
+        } else if (node["type"].as<std::string>() == "continous") {
             auto r = std::make_shared<ContinousVisualizer>();
 
             // default parameters
@@ -969,16 +860,11 @@ namespace FluidSolver
             r->settings.minimum_render_density = node["settings"]["minimum-density"].as<float>();
 
             return r;
-        }
-        else
-        {
+        } else {
             auto res = deserialize_unknown_visualizer(node);
-            if (res != nullptr)
-            {
+            if (res != nullptr) {
                 return res;
-            }
-            else
-            {
+            } else {
                 warning_count++;
                 Log::warning("[LOADING] Unknown visualizer type '" + node["type"].as<std::string>() + "'!");
             }
@@ -988,16 +874,12 @@ namespace FluidSolver
     }
 
 
-    YAML::Node SimulationSerializer::save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer)
-    {
+    YAML::Node SimulationSerializer::save_visualizer(const std::shared_ptr<ISimulationVisualizer>& visualizer) {
         YAML::Node node;
 
-        if (visualizer == nullptr)
-        {
+        if (visualizer == nullptr) {
             node["type"] = "no-visualizer";
-        }
-        else if (std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer) != nullptr)
-        {
+        } else if (std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer) != nullptr) {
             auto r = std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer);
             node["type"] = "continous";
 
@@ -1012,16 +894,11 @@ namespace FluidSolver
             // custom parameters for the continous visualizer
             node["settings"]["background"] = r->settings.clear_color;
             node["settings"]["minimum-density"] = r->settings.minimum_render_density;
-        }
-        else
-        {
+        } else {
             auto res = serialize_unknown_visualizer(visualizer);
-            if (res.has_value())
-            {
+            if (res.has_value()) {
                 node = std::move(res.value());
-            }
-            else
-            {
+            } else {
                 warning_count++;
                 Log::warning("[SAVING] Unsupported visualizer type!");
             }
@@ -1031,28 +908,24 @@ namespace FluidSolver
     }
 
 
-    SimulationSerializer::SimulationSerializer(const std::string& filepath) : filepath(filepath)
-    {
+    SimulationSerializer::SimulationSerializer(const std::string& filepath)
+        : filepath(filepath) {
     }
 
     SimulationSerializer::SimulationSerializer(const std::string& filepath, const Settings& settings)
-        : filepath(filepath), settings(settings)
-    {
+        : filepath(filepath), settings(settings) {
     }
 
-    bool SimulationSerializer::has_errors() const
-    {
+    bool SimulationSerializer::has_errors() const {
         return error_count > 0;
     }
 
-    bool SimulationSerializer::has_warnings() const
-    {
+    bool SimulationSerializer::has_warnings() const {
         return warning_count > 0;
     }
 
 
-    SimulatorVisualizerBundle SimulationSerializer::load_from_file()
-    {
+    SimulatorVisualizerBundle SimulationSerializer::load_from_file() {
         // reset error statistics
         error_count = 0;
         warning_count = 0;
@@ -1066,8 +939,7 @@ namespace FluidSolver
 
         // check version
         YAML::Node config = YAML::LoadFile(filepath);
-        if (!config["version"] || config["version"].as<int>() != 1)
-        {
+        if (!config["version"] || config["version"].as<int>() != 1) {
             Log::error("[LOADING] Invalid or missing version. Version has to be 1.");
             error_count++;
             return res;
@@ -1075,14 +947,11 @@ namespace FluidSolver
 
 
         // load the data
-        try
-        {
+        try {
             load_scenario(config["scenario"], *res.simulator);
             load_solver(*res.simulator, config["solver"]);
             res.visualizer = load_visualizer(config["visualizer"]);
-        }
-        catch (const std::exception& e)
-        {
+        } catch (const std::exception& e) {
             this->error_count++;
             Log::error("[LOADING] An exception occured during loading: " + std::string(e.what()));
             return res;
@@ -1093,8 +962,7 @@ namespace FluidSolver
     }
 
 
-    void SimulationSerializer::save_to_file(const SimulatorVisualizerBundle& simulation)
-    {
+    void SimulationSerializer::save_to_file(const SimulatorVisualizerBundle& simulation) {
         // reset error statistics
         error_count = 0;
         warning_count = 0;
@@ -1115,27 +983,43 @@ namespace FluidSolver
         filestream << config;
     }
 
-    void SimulationSerializer::load_particles(ParticleCollection& collection, const std::string& filepath)
-    {
+    void SimulationSerializer::load_particles(ParticleCollection& collection, const std::string& filepath) {
         ParticleSerializer stream(filepath);
         stream.deserialize(collection);
     }
 
-    void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath)
-    {
+    void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath) {
         ParticleSerializer ser(filepath);
         ser.serialize(collection);
     }
 
 
-    std::shared_ptr<ISimulationVisualizer> SimulationSerializer::deserialize_unknown_visualizer(const YAML::Node& node)
-    {
+    std::shared_ptr<ISimulationVisualizer> SimulationSerializer::deserialize_unknown_visualizer(const YAML::Node& node) {
         return nullptr;
     }
     std::optional<YAML::Node> SimulationSerializer::serialize_unknown_visualizer(
-        const std::shared_ptr<ISimulationVisualizer>& visualizer)
-    {
+            const std::shared_ptr<ISimulationVisualizer>& visualizer) {
         return {};
+    }
+
+    YAML::Node SimulationSerializer::save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover) {
+        YAML::Node res;
+        res["type"] = "particle-remover-3d";
+
+        res["volume"]["center"] = remover->parameters.volume.center;
+        res["volume"]["distance-from-center"] = remover->parameters.volume.distance_from_center;
+        res["remove-if-outside"] = remover->parameters.remove_if_outside;
+
+        return res;
+    }
+    std::shared_ptr<ParticleRemover3D> SimulationSerializer::load_particle_remover_3d(const YAML::Node& node) {
+        auto remover = std::make_shared<ParticleRemover3D>();
+
+        remover->parameters.volume.center = node["volume"]["center"].as<glm::vec3>();
+        remover->parameters.volume.distance_from_center = node["volume"]["distance-from-center"].as<glm::vec3>();
+        remover->parameters.remove_if_outside = node["remove-if-outside"].as<bool>();
+
+        return remover;
     }
 
 

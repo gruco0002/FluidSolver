@@ -1,5 +1,5 @@
 #include "DataChangeStruct.hpp"
-namespace FluidSolver {
+namespace LibFluid {
 
     bool DataChangeStruct::has_data_changed() const {
         return data_has_changed;

@@ -47,10 +47,9 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/ParticleStatistics.hpp"
         "FluidTypes.hpp"
         "FluidInclude.hpp"
-        "group/GroupActions.cpp"
         "group/GroupActions.hpp"
-        "group/RectangleAreaGroup.cpp"
-        "group/RectangleAreaGroup.hpp"
+        "group/AreaGroup.cpp"
+        "group/AreaGroup.hpp"
         "group/TagGroup.cpp"
         "group/TagGroup.hpp"
         "entities/ParticleSpawner.cpp"
@@ -92,6 +91,9 @@ set(LIB_FLUID_SOURCE_FILES
         DataChangeStruct.cpp DataChangeStruct.hpp
         Initializable.hpp
         Reportable.hpp
+        sensors/IisphSensor.cpp sensors/IisphSensor.hpp
+        entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
+        group/VolumeGroup.cpp group/VolumeGroup.hpp
         visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
         visualizer/raytracer/Camera.cpp visualizer/raytracer/Camera.hpp
         visualizer/raytracer/RenderTarget.cpp visualizer/raytracer/RenderTarget.hpp

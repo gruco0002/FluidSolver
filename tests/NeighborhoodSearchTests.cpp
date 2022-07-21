@@ -78,21 +78,21 @@ std::vector<glm::vec2> TransformVector(const std::vector<glm::vec2>& positions, 
     return result;
 }
 
-void add_positions(FluidSolver::ParticleCollection& collection, const std::vector<glm::vec2>& positions)
+void add_positions(LibFluid::ParticleCollection& collection, const std::vector<glm::vec2>& positions)
 {
     for (auto pos : positions)
     {
         auto index = collection.add();
-        collection.get<FluidSolver::MovementData>(index).position = pos;
-        collection.get<FluidSolver::ParticleInfo>(index).type = FluidSolver::ParticleType::ParticleTypeNormal;
-        collection.get<FluidSolver::ParticleInfo>(index).tag = collection.size() - 1;
+        collection.get<LibFluid::MovementData>(index).position = pos;
+        collection.get<LibFluid::ParticleInfo>(index).type = LibFluid::ParticleType::ParticleTypeNormal;
+        collection.get<LibFluid::ParticleInfo>(index).tag = collection.size() - 1;
     }
 }
 
-void setup_collection(FluidSolver::ParticleCollection& collection)
+void setup_collection(LibFluid::ParticleCollection& collection)
 {
-    collection.add_type<FluidSolver::MovementData>();
-    collection.add_type<FluidSolver::ParticleInfo>();
+    collection.add_type<LibFluid::MovementData>();
+    collection.add_type<LibFluid::ParticleInfo>();
 }
 
 template <typename T> class NeighborhoodSearchTest : public ::testing::Test {
@@ -104,7 +104,7 @@ TYPED_TEST_SUITE_P(NeighborhoodSearchTest);
 TYPED_TEST_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle)
 {
 
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
     const float radius = 2.0f;
 
@@ -130,7 +130,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle)
 
 TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticles)
 {
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
     const float radius = 2.0f;
 
@@ -160,7 +160,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticles)
 
 TYPED_TEST_P(NeighborhoodSearchTest, ParticlesAtOrigin)
 {
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
     const float radius = 2.0f;
 
@@ -240,7 +240,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, ParticlesAtOrigin)
 
 TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesScaled)
 {
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
     const float radius = 2.0f * 2.0f;
 
@@ -270,7 +270,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesScaled)
 
 TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesRotated)
 {
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
     const float radius = 2.0f;
 
@@ -300,7 +300,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesRotated)
 
 TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving)
 {
-    auto particleCollection = std::make_shared< FluidSolver::ParticleCollection>();
+    auto particleCollection = std::make_shared<LibFluid::ParticleCollection>();
     setup_collection(*particleCollection);
 
     const float radius = 2.01f; // since the particles are perfectly distributed and move perfectly along, floating
@@ -326,7 +326,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving)
         // move the particles
         for (size_t index = 0; index < particleCollection->size(); index++)
         {
-            particleCollection->get<FluidSolver::MovementData>(index).position += movement;
+            particleCollection->get<LibFluid::MovementData>(index).position += movement;
         }
         totalMovement += movement;
 
@@ -360,7 +360,7 @@ REGISTER_TYPED_TEST_SUITE_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle,
 
 
 // placeholder for test bodies
-typedef ::testing::Types<FluidSolver::QuadraticNeighborhoodSearchDynamicAllocated,
-                         FluidSolver::HashedNeighborhoodSearch>
+typedef ::testing::Types<LibFluid::QuadraticNeighborhoodSearchDynamicAllocated,
+        LibFluid::HashedNeighborhoodSearch>
     NeighborhoodSearchTypes;
 INSTANTIATE_TYPED_TEST_SUITE_P(NeighborhoodSearchTypesInstantiation, NeighborhoodSearchTest, NeighborhoodSearchTypes);

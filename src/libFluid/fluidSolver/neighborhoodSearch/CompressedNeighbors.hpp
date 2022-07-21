@@ -11,8 +11,7 @@
 #include <memory>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
     /**

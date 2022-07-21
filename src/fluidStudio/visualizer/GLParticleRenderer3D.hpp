@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct Camera3D {
         glm::vec3 location;
@@ -82,6 +82,10 @@ namespace FluidSolver {
             bool show_particle_memory_location = false;
 
         } settings;
+
+        const glm::mat4& get_projection_matrix() const;
+
+        Engine::Graphics::Framebuffer* get_framebuffer();
 
       private:
         glm::mat4 projectionMatrix;

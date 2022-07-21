@@ -6,8 +6,7 @@
 
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
     class ContinousVisualizer : public ISimulationVisualizer {
 
       public:

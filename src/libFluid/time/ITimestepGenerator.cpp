@@ -1,5 +1,5 @@
 #include "ITimestepGenerator.hpp"
-namespace FluidSolver {
+namespace LibFluid {
 
     float ITimestepGenerator::get_generated_timestep() const {
         return generated_timestep;

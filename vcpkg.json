@@ -1,7 +1,9 @@
 {
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
     "name": "gruco0002-fluid-solver",
     "version-string": "1.2.0",
     "port-version": 0,
+    "builtin-baseline": "8ff168270bc5977384b008bec6e879e15089d850",
     "homepage": "https://github.com/gruco0002/FluidSolver",
     "description": "A simple 2D and 3D SPH Fluid Solver",
     "dependencies": [
@@ -14,6 +16,7 @@
         "libmorton",
         {
             "name": "imgui",
+            "version>=": "1.87",
             "features": [
                 "docking-experimental",
                 "opengl3-binding",
@@ -21,6 +24,10 @@
             ]
         },
         "implot",
+        {
+            "name": "imguizmo",
+            "version>=": "1.83"
+        },
         "fmt",
         "yaml-cpp",
         "nativefiledialog",

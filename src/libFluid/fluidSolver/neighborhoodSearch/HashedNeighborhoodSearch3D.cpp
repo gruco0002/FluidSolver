@@ -5,7 +5,7 @@
 
 #include <libmorton/morton.h>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     using parallel = StdParallelForEach;
 
@@ -235,7 +235,7 @@ namespace FluidSolver {
 
 
     bool HashedNeighborhoodSearch3D::NeighborsIterator::operator==(
-            const FluidSolver::HashedNeighborhoodSearch3D::NeighborsIterator& other) const {
+            const LibFluid::HashedNeighborhoodSearch3D::NeighborsIterator& other) const {
         return data->data == other.data->data && current == other.current;
     }
 

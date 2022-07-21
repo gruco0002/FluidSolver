@@ -1,6 +1,6 @@
 #include "FluidRaytracer3D.hpp"
 
-namespace FluidSolver::Raytracer {
+namespace LibFluid::Raytracer {
 
     void FluidRaytracer3D::initialize() {
         if (simulation_data.has_data_changed()) {
@@ -35,7 +35,7 @@ namespace FluidSolver::Raytracer {
         tone_mapper.map_render_target_to_image(render_target, *buffered_image);
     }
 
-    FluidSolver::Image FluidRaytracer3D::get_image_data() {
+    LibFluid::Image FluidRaytracer3D::get_image_data() {
         if (buffered_image == nullptr) {
             return Image(0, 0);
         }
