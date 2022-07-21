@@ -97,6 +97,7 @@ Engine::Graphics::Buffer::Buffer* Engine::Graphics::Buffer::VertexArray::GetInde
 void Engine::Graphics::Buffer::VertexArray::Draw(GLenum primitiveType, uint32_t count) {
     Bind();
     glDrawElements(primitiveType, count, indexBuffer->GetIndexBufferDataType(), nullptr);
+    Unbind();
 }
 
 Engine::Graphics::Buffer::VertexArray::BufferBinding::BufferBinding(

@@ -21,7 +21,6 @@ namespace FluidUi {
 
         cube_va.cube_va->Draw(GL_TRIANGLES, 6 * 2 * 3);
 
-        cube_va.cube_va->Unbind();
         cube_va.shader->Unbind();
         data.framebuffer->Unbind();
         glFlush();
