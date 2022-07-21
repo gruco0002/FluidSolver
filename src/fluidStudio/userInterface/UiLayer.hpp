@@ -20,7 +20,8 @@ namespace FluidUi {
                 Visualizer,
                 Timestep,
                 Sensor,
-                Output
+                Output,
+                Entity
             } kind = Kind::None;
             size_t index = 0;
 
@@ -59,14 +60,22 @@ namespace FluidUi {
         void render_solver_parameters();
         void render_timestep_component();
         void render_sensor_component(size_t index);
+        void render_entity_component(size_t index);
         void render_output_component();
         void render_visualizer_component();
+
+        void update_selection_based_ui();
+
+        const char* get_entity_type_name(const std::shared_ptr<FluidSolver::IEntity> entity) const;
 
 
         void render_global_energy_sensor_component(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sen);
         void render_sensor_plane_component(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sen);
+        void render_particle_remover_3d_component(std::shared_ptr<FluidSolver::ParticleRemover3D> ent);
 
         void delete_component(const Component& component);
+
+        std::vector<std::string> menu_entity_names;
     };
 
 } // namespace FluidUi

@@ -74,6 +74,7 @@ namespace FluidUi {
 
       public:
         TimelineService timeline_service;
+        VisualizationOverlay visualization_overlay;
 
       private:
         UiLayer uiLayer;
@@ -87,7 +88,7 @@ namespace FluidUi {
         } visualizer_window_size;
 
 
-        VisualizationOverlay visualization_overlay;
+
         void render_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
 
