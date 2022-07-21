@@ -10,7 +10,9 @@ namespace FluidUi {
     }
 
     glm::mat4 ParticleRemoverOverlay::get_matrix() {
-        return glm::translate(glm::scale(glm::mat4(1.0f), entity->parameters.volume.distance_from_center), entity->parameters.volume.center);
+        auto scale = glm::scale(glm::mat4(1.0f), entity->parameters.volume.distance_from_center);
+        auto translation = glm::translate(glm::mat4(1.0f), entity->parameters.volume.center);
+        return translation * scale;
     }
 
     void ParticleRemoverOverlay::set_matrix(const glm::mat4& new_data) {
