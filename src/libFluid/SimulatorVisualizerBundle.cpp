@@ -3,7 +3,7 @@
 #include "Simulator.hpp"
 #include "visualizer/ISimulationVisualizer.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     void SimulatorVisualizerBundle::create_compatibility_report(CompatibilityReport& report) {
         initialize();
 

@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     void Sensors::GlobalDensitySensor::calculate_and_store(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);

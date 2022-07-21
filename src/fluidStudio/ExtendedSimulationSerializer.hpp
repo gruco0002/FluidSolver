@@ -4,16 +4,16 @@
 
 namespace FluidStudio {
 
-    class ExtendedSimulationSerializer : public FluidSolver::SimulationSerializer {
+    class ExtendedSimulationSerializer : public LibFluid::SimulationSerializer {
 
       public:
-        using FluidSolver::SimulationSerializer::SimulationSerializer;
+        using LibFluid::SimulationSerializer::SimulationSerializer;
 
-        virtual std::shared_ptr<FluidSolver::ISimulationVisualizer> deserialize_unknown_visualizer(
+        virtual std::shared_ptr<LibFluid::ISimulationVisualizer> deserialize_unknown_visualizer(
             const YAML::Node&) override;
 
         virtual std::optional<YAML::Node> serialize_unknown_visualizer(
-            const std::shared_ptr<FluidSolver::ISimulationVisualizer>&) override;
+            const std::shared_ptr<LibFluid::ISimulationVisualizer>&) override;
     };
 
 } // namespace FluidUi

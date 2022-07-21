@@ -12,8 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
     class HashedNeighborhoodSearch : public Initializable, public Reportable {

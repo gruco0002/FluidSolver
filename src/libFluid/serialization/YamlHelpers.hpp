@@ -82,9 +82,9 @@ namespace YAML
         }
     };
 
-    template <> struct convert<FluidSolver::Image::Color>
+    template <> struct convert<LibFluid::Image::Color>
     {
-        static Node encode(const FluidSolver::Image::Color& rhs)
+        static Node encode(const LibFluid::Image::Color& rhs)
         {
             Node node;
             node.SetStyle(YAML::EmitterStyle::Flow);
@@ -95,7 +95,7 @@ namespace YAML
             return node;
         }
 
-        static bool decode(const Node& node, FluidSolver::Image::Color& rhs)
+        static bool decode(const Node& node, LibFluid::Image::Color& rhs)
         {
             if (!node.IsSequence() || node.size() != 4)
             {

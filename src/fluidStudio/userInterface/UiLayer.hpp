@@ -66,12 +66,12 @@ namespace FluidStudio {
 
         void update_selection_based_ui();
 
-        const char* get_entity_type_name(const std::shared_ptr<FluidSolver::IEntity> entity) const;
+        const char* get_entity_type_name(const std::shared_ptr<LibFluid::IEntity> entity) const;
 
 
-        void render_global_energy_sensor_component(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sen);
-        void render_sensor_plane_component(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sen);
-        void render_particle_remover_3d_component(std::shared_ptr<FluidSolver::ParticleRemover3D> ent);
+        void render_global_energy_sensor_component(std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sen);
+        void render_sensor_plane_component(std::shared_ptr<LibFluid::Sensors::SensorPlane> sen);
+        void render_particle_remover_3d_component(std::shared_ptr<LibFluid::ParticleRemover3D> ent);
 
         void delete_component(const Component& component);
 

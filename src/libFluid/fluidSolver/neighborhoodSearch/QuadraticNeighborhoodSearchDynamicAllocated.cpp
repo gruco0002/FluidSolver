@@ -4,7 +4,7 @@
 
 #include <functional>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     using parallel = StdParallelForEach;
 

@@ -6,7 +6,7 @@
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
     void IISPHSensor::calculate_and_store(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.fluid_solver != nullptr);

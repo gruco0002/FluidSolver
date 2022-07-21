@@ -4,7 +4,7 @@
 #include "sensors/SensorData.hpp"
 #include "visualizer/Image.hpp"
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
     class SensorPlane : public ISensor {
       public:

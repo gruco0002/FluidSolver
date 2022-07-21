@@ -14,8 +14,7 @@
 #include <set>
 #include <optional>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
     class HashedNeighborhoodSearch3D : public Initializable, public Reportable {

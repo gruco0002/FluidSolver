@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct Camera3D {
         glm::vec3 location;

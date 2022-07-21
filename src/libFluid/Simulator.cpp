@@ -1,6 +1,6 @@
 #include "Simulator.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     void Simulator::execute_simulation_step() {
         initialize();

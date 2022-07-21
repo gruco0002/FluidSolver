@@ -19,17 +19,17 @@ void printHelp(cxxopts::Options& options) {
               << std::endl;
 }
 
-void dump_particle_data(const std::shared_ptr<FluidSolver::ParticleCollection>& collection,
+void dump_particle_data(const std::shared_ptr<LibFluid::ParticleCollection>& collection,
         std::filesystem::path filepath) {
     if (!std::filesystem::exists(filepath.parent_path())) {
         std::filesystem::create_directories(filepath.parent_path());
     }
 
-    FluidSolver::SimulationSerializer::save_particles(*collection, filepath.string());
+    LibFluid::SimulationSerializer::save_particles(*collection, filepath.string());
 }
 
 int main(int argc, char* argv[]) {
-    FluidSolver::Log::print_to_console = true;
+    LibFluid::Log::print_to_console = true;
 
 
     cxxopts::Options options("FluidConsole", "SPH Fluid Solver console application. Allows simulating scenarios "
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
             settings.outputPath = result["output"].as<std::string>();
             settings.dump_every = result["dump"].as<float>();
         } catch (const std::exception& e) {
-            FluidSolver::Log::error("[Console] Invalid or missing arguments: " + std::string(e.what()));
+            LibFluid::Log::error("[Console] Invalid or missing arguments: " + std::string(e.what()));
             return 5;
         }
 
@@ -87,19 +87,19 @@ int main(int argc, char* argv[]) {
 
 
         if (!std::filesystem::exists(settings.filepath)) {
-            FluidSolver::Log::error("[Console] Specified simulation file does not exist!");
+            LibFluid::Log::error("[Console] Specified simulation file does not exist!");
             return 6;
         }
 
 
         if (settings.verbose)
-            FluidSolver::Log::message("[Console] Starting in console mode.");
+            LibFluid::Log::message("[Console] Starting in console mode.");
 
         // Load file
-        FluidSolver::SimulationSerializer s(settings.filepath);
-        FluidSolver::SimulatorVisualizerBundle bundle = s.load_from_file();
+        LibFluid::SimulationSerializer s(settings.filepath);
+        LibFluid::SimulatorVisualizerBundle bundle = s.load_from_file();
         if (s.has_errors()) {
-            FluidSolver::Log::error("[Console] Loading of scenario caused errors!");
+            LibFluid::Log::error("[Console] Loading of scenario caused errors!");
             return 3;
         }
 
@@ -108,10 +108,10 @@ int main(int argc, char* argv[]) {
 
         // check compatibility
         if (settings.verbose)
-            FluidSolver::Log::message("[Console] Checking if components are compatibile with each other.");
+            LibFluid::Log::message("[Console] Checking if components are compatibile with each other.");
 
         bundle.initialize();
-        FluidSolver::CompatibilityReport report;
+        LibFluid::CompatibilityReport report;
         bundle.create_compatibility_report(report);
         if (report.has_issues()) {
             report.log_issues();
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 
         // start simulating
         if (settings.verbose)
-            FluidSolver::Log::message("[Console] Starting simulation process.");
+            LibFluid::Log::message("[Console] Starting simulation process.");
 
         // simulate
         float last_time_message = 0.0f;
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
         size_t dump_counter = 0;
         if (settings.enable_particle_data_dump) {
             if (settings.verbose) {
-                FluidSolver::Log::message("[Console] Dumping initial particle data to file.");
+                LibFluid::Log::message("[Console] Dumping initial particle data to file.");
             }
             dump_particle_data(bundle.simulator->data.collection, std::filesystem::path(settings.outputPath) / "particle-data" / (std::to_string(dump_counter) + ".data"));
             dump_counter++;
@@ -144,7 +144,7 @@ int main(int argc, char* argv[]) {
             // informational log messages
             if (bundle.simulator->get_current_timepoint().simulation_time >= last_time_message) {
                 if (settings.verbose)
-                    FluidSolver::Log::message("[Console] Simulated " + std::to_string(last_time_message) +
+                    LibFluid::Log::message("[Console] Simulated " + std::to_string(last_time_message) +
                             " seconds of the simulation.");
                 last_time_message += 1.0f;
             }
@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
                 last_time_dump += bundle.simulator->get_current_timepoint().actual_time_step;
                 if (last_time_dump >= settings.dump_every) {
                     if (settings.verbose) {
-                        FluidSolver::Log::message("[Console] Dumping particle data to file.");
+                        LibFluid::Log::message("[Console] Dumping particle data to file.");
                     }
 
                     last_time_dump = std::fmodf(last_time_dump, settings.dump_every);
@@ -167,13 +167,13 @@ int main(int argc, char* argv[]) {
         // manual save of the output
         bundle.simulator->output->manual_save();
 
-        FluidSolver::Log::message("[Console] Simulation has finished.");
+        LibFluid::Log::message("[Console] Simulation has finished.");
 
 
         return 0;
     } catch (cxxopts::option_not_exists_exception& exc) {
-        FluidSolver::Log::print_to_console = true;
-        FluidSolver::Log::error(exc.what());
+        LibFluid::Log::print_to_console = true;
+        LibFluid::Log::error(exc.what());
         printHelp(options);
         return 2;
     }

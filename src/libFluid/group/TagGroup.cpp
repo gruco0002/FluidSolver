@@ -1,6 +1,6 @@
 #include "TagGroup.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     bool TagGroup::is_member(pIndex_t index) const {
         FLUID_ASSERT(collection != nullptr)

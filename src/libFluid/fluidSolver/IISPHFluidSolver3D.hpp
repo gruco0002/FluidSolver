@@ -6,7 +6,7 @@
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct IISPHSettings3D : public DataChangeStruct {
         pFloat max_density_error_allowed = 0.001f;

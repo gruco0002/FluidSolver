@@ -4,7 +4,7 @@
 
 #include <tuple>
 
-namespace FluidSolver {
+namespace LibFluid {
     class DynamicCflTimestepGenerator : public ITimestepGenerator {
       public:
         struct DynamicCflTimestepGeneratorSettings {

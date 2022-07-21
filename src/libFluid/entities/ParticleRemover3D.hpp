@@ -2,7 +2,7 @@
 
 #include "IEntity.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     class ParticleRemover3D : public IEntity {
       public:
         struct Parameters {

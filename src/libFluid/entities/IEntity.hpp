@@ -9,8 +9,7 @@
 #include "Initializable.hpp"
 #include "Reportable.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
     class IEntity : public Initializable, public Reportable {
       public:
         struct SimulationInformation : public DataChangeStruct

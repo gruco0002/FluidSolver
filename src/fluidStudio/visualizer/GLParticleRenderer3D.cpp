@@ -6,11 +6,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Engine::Graphics::Texture2D* FluidSolver::GLParticleRenderer3D::get_render_target() {
+Engine::Graphics::Texture2D* LibFluid::GLParticleRenderer3D::get_render_target() {
     return fboColorTex;
 }
 
-void FluidSolver::GLParticleRenderer3D::initialize() {
+void LibFluid::GLParticleRenderer3D::initialize() {
     FLUID_ASSERT(Engine::opengl_context_available());
 
     if (simulation_data.has_data_changed() || parameters.has_data_changed()) {
@@ -18,7 +18,7 @@ void FluidSolver::GLParticleRenderer3D::initialize() {
     }
 }
 
-void FluidSolver::GLParticleRenderer3D::create_compatibility_report(CompatibilityReport& report) {
+void LibFluid::GLParticleRenderer3D::create_compatibility_report(CompatibilityReport& report) {
     report.begin_scope(FLUID_NAMEOF(GLParticleRenderer3D));
     if (simulation_data.collection == nullptr) {
         report.add_issue("ParticleCollection is null.");
@@ -34,7 +34,7 @@ void FluidSolver::GLParticleRenderer3D::create_compatibility_report(Compatibilit
     report.end_scope();
 }
 
-void FluidSolver::GLParticleRenderer3D::render() {
+void LibFluid::GLParticleRenderer3D::render() {
     create_shader_if_required();
 
     if (initialize_in_next_render_step) {
@@ -95,7 +95,7 @@ void FluidSolver::GLParticleRenderer3D::render() {
     glFlush();
 }
 
-FluidSolver::GLParticleRenderer3D::~GLParticleRenderer3D() {
+LibFluid::GLParticleRenderer3D::~GLParticleRenderer3D() {
     // cleanup created components
     delete particleVertexArray;
     delete framebuffer;
@@ -104,7 +104,7 @@ FluidSolver::GLParticleRenderer3D::~GLParticleRenderer3D() {
     delete particleShader;
 }
 
-void FluidSolver::GLParticleRenderer3D::create_or_update_fbo() {
+void LibFluid::GLParticleRenderer3D::create_or_update_fbo() {
     if (this->fboColorTex != nullptr && this->fboColorTex->getWidth() == parameters.render_target.width &&
             this->fboColorTex->getHeight() == parameters.render_target.height)
         return; // no need to update
@@ -133,7 +133,7 @@ void FluidSolver::GLParticleRenderer3D::create_or_update_fbo() {
 }
 
 
-void FluidSolver::GLParticleRenderer3D::calc_projection_matrix() {
+void LibFluid::GLParticleRenderer3D::calc_projection_matrix() {
     auto flipY =
             glm::mat4(1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -141,7 +141,7 @@ void FluidSolver::GLParticleRenderer3D::calc_projection_matrix() {
     projectionMatrix = flipY * glm::perspectiveFov(3.14f * 0.5f, (float)parameters.render_target.width, (float)parameters.render_target.height, 0.1f, 200.0f);
 }
 
-FluidSolver::Image FluidSolver::GLParticleRenderer3D::get_image_data() {
+LibFluid::Image LibFluid::GLParticleRenderer3D::get_image_data() {
     FLUID_ASSERT(this->fboColorTex != nullptr);
 
     // texture has 3 channels: rgb
@@ -155,7 +155,7 @@ FluidSolver::Image FluidSolver::GLParticleRenderer3D::get_image_data() {
     }
     return result;
 }
-void FluidSolver::GLParticleRenderer3D::create_shader_if_required() {
+void LibFluid::GLParticleRenderer3D::create_shader_if_required() {
     if (particleShader != nullptr)
         return;
 
@@ -172,14 +172,14 @@ void FluidSolver::GLParticleRenderer3D::create_shader_if_required() {
                         FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRenderer3DFragmentShader)),
         });
     } catch (const std::exception& e) {
-        FluidSolver::Log::error(std::string("[GLParticleRenderer3D] Could not generate shader for 3D renderer: ") + e.what());
+        LibFluid::Log::error(std::string("[GLParticleRenderer3D] Could not generate shader for 3D renderer: ") + e.what());
         particleShader = nullptr;
         throw;
     }
 }
-const glm::mat4& FluidSolver::GLParticleRenderer3D::get_projection_matrix() const {
+const glm::mat4& LibFluid::GLParticleRenderer3D::get_projection_matrix() const {
     return projectionMatrix;
 }
-Engine::Graphics::Framebuffer* FluidSolver::GLParticleRenderer3D::get_framebuffer() {
+Engine::Graphics::Framebuffer* LibFluid::GLParticleRenderer3D::get_framebuffer() {
     return framebuffer;
 }

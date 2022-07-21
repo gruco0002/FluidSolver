@@ -8,7 +8,7 @@
 #include <optional>
 #include <yaml-cpp/yaml.h>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class SimulationSerializer {
       private:

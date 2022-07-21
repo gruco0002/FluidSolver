@@ -5,7 +5,7 @@
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     struct SESPHSettings3D : public DataChangeStruct {
         pFloat StiffnessK = 100000.0f;

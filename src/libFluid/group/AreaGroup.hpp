@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class AreaGroup {
       public:

@@ -7,7 +7,7 @@
 #include <cstring>
 #include <libmorton/morton.h>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     using parallel = StdParallelForEach;
 
@@ -422,7 +422,7 @@ namespace FluidSolver {
 
 
     bool CompressedNeighborhoodSearch::NeighborsIterator::operator==(
-            const FluidSolver::CompressedNeighborhoodSearch::NeighborsIterator& other) const {
+            const LibFluid::CompressedNeighborhoodSearch::NeighborsIterator& other) const {
         return data->data == other.data->data && current == other.current && current_counter == other.current_counter;
     }
 

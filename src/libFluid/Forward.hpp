@@ -1,7 +1,6 @@
 #pragma once
 
-namespace FluidSolver
-{
+namespace LibFluid {
     class SimulatorVisualizerBundle;
     class Simulator;
     class ITimestepGenerator;

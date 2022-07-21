@@ -26,12 +26,12 @@ namespace FluidStudio {
             std::string name_neighborhood_search;
             std::string name_kernel;
 
-            std::function<std::shared_ptr<FluidSolver::IFluidSolverBase>()> create_type;
+            std::function<std::shared_ptr<LibFluid::IFluidSolverBase>()> create_type;
 
-            std::function<bool(const std::shared_ptr<FluidSolver::IFluidSolverBase>&)> is_type;
+            std::function<bool(const std::shared_ptr<LibFluid::IFluidSolverBase>&)> is_type;
 
             SolverSettingsType settings_type;
-            std::function<void*(std::shared_ptr<FluidSolver::IFluidSolverBase>)> get_settings;
+            std::function<void*(std::shared_ptr<LibFluid::IFluidSolverBase>)> get_settings;
         };
 
         struct FluidSolverTypeQuery
@@ -61,7 +61,7 @@ namespace FluidStudio {
         const FluidSolverType* query_type(const FluidSolverTypeQuery& query,
                                           QueryMainFocus focus = QueryMainFocus::None) const;
 
-        const FluidSolverType* query_type(const std::shared_ptr<FluidSolver::IFluidSolverBase>& query) const;
+        const FluidSolverType* query_type(const std::shared_ptr<LibFluid::IFluidSolverBase>& query) const;
 
 
       private:

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace FluidSolver {
+namespace LibFluid {
     std::tuple<float, float> DynamicCflTimestepGenerator::calculate_maximum_velocity_and_acceleration() {
         FLUID_ASSERT(parameters.particle_collection != nullptr);
         FLUID_ASSERT(parameters.particle_collection->is_type_present<MovementData>() || parameters.particle_collection->is_type_present<MovementData3D>());

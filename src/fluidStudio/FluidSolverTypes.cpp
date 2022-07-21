@@ -20,7 +20,7 @@ FluidStudio::FluidSolverTypes::FluidSolverTypes()
 
 void FluidStudio::FluidSolverTypes::add_types()
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
     types.push_back(
         {"SESPH", "QuadraticNeighborhoodSearchDynamicAllocated", "CubicSplineKernel",
          []() {
@@ -244,7 +244,7 @@ const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTy
 }
 
 const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTypes::query_type(
-    const std::shared_ptr<FluidSolver::IFluidSolverBase>& query) const
+    const std::shared_ptr<LibFluid::IFluidSolverBase>& query) const
 {
     for (auto& t : types)
     {

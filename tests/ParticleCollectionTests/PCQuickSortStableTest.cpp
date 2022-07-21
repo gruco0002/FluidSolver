@@ -6,7 +6,7 @@
 
 TEST(ParticleCollectionAlgorithm, QuickSortStable1)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     std::shared_ptr<ParticleCollection> coll = std::make_shared<ParticleCollection>();
     coll->add_type<ParticleInfo>();
@@ -33,7 +33,7 @@ TEST(ParticleCollectionAlgorithm, QuickSortStable1)
 
 TEST(ParticleCollectionAlgorithm, QuickSortStable2)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     std::shared_ptr<ParticleCollection> coll = std::make_shared<ParticleCollection>();
     coll->add_type<ParticleInfo>();
@@ -61,7 +61,7 @@ TEST(ParticleCollectionAlgorithm, QuickSortStable2)
 
 TEST(ParticleCollectionAlgorithm, QuickSortStable3)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     std::shared_ptr<ParticleCollection> coll = std::make_shared<ParticleCollection>();
     coll->add_type<ParticleInfo>();
@@ -100,7 +100,7 @@ TEST(ParticleCollectionAlgorithm, QuickSortStable3)
 
 TEST(ParticleCollectionAlgorithm, QuickSortStable4)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     std::shared_ptr<ParticleCollection> coll = std::make_shared<ParticleCollection>();
     coll->add_type<ParticleInfo>();
@@ -139,7 +139,7 @@ TEST(ParticleCollectionAlgorithm, QuickSortStable4)
 
 TEST(ParticleCollectionAlgorithm, QuickSortStable5)
 {
-    using namespace FluidSolver;
+    using namespace LibFluid;
 
     struct Index
     {

@@ -6,8 +6,7 @@
 #include "Reportable.hpp"
 #include "Initializable.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class CubicSplineKernel3D : public Initializable, public Reportable {
       public:

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class Lz4CompressedStream {
       public:

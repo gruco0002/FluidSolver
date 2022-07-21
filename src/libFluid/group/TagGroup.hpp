@@ -5,7 +5,7 @@
 
 #include <unordered_set>
 
-namespace FluidSolver {
+namespace LibFluid {
     class TagGroup {
       public:
         std::unordered_set<pTag_t> tags;

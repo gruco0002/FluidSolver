@@ -10,15 +10,15 @@
 
 namespace FluidStudio {
 
-    const char* particle_type_to_string(FluidSolver::ParticleType type)
+    const char* particle_type_to_string(LibFluid::ParticleType type)
     {
         switch (type)
         {
-        case FluidSolver::ParticleTypeNormal:
+        case LibFluid::ParticleTypeNormal:
             return "Normal";
-        case FluidSolver::ParticleTypeBoundary:
+        case LibFluid::ParticleTypeBoundary:
             return "Boundary";
-        case FluidSolver::ParticleTypeDead:
+        case LibFluid::ParticleTypeDead:
             return "Dead";
         default:
             return "Unknown";
@@ -72,22 +72,22 @@ namespace FluidStudio {
                 ImGui::SameLine();
                 if (ImGui::BeginCombo("Type", particle_type_to_string(mapped.second)))
                 {
-                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeNormal),
-                                          mapped.second == FluidSolver::ParticleType::ParticleTypeNormal))
+                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeNormal),
+                                          mapped.second == LibFluid::ParticleType::ParticleTypeNormal))
                     {
-                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeNormal;
+                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeNormal;
                     }
 
-                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeBoundary),
-                                          mapped.second == FluidSolver::ParticleType::ParticleTypeBoundary))
+                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeBoundary),
+                                          mapped.second == LibFluid::ParticleType::ParticleTypeBoundary))
                     {
-                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeBoundary;
+                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeBoundary;
                     }
 
-                    if (ImGui::Selectable(particle_type_to_string(FluidSolver::ParticleType::ParticleTypeDead),
-                                          mapped.second == FluidSolver::ParticleType::ParticleTypeDead))
+                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeDead),
+                                          mapped.second == LibFluid::ParticleType::ParticleTypeDead))
                     {
-                        mapped_colors[mapped.first] = FluidSolver::ParticleType::ParticleTypeDead;
+                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeDead;
                     }
 
                     ImGui::EndCombo();
@@ -180,7 +180,7 @@ namespace FluidStudio {
                 colors.push_back(color);
                 if (mapped_colors.find(color) == mapped_colors.end())
                 {
-                    mapped_colors[color] = FluidSolver::ParticleType::ParticleTypeNormal;
+                    mapped_colors[color] = LibFluid::ParticleType::ParticleTypeNormal;
                 }
             }
         }
@@ -210,14 +210,14 @@ namespace FluidStudio {
                     {
                         size_t index = collection->add();
 
-                        auto& pos = collection->get<FluidSolver::MovementData3D>(index);
+                        auto& pos = collection->get<LibFluid::MovementData3D>(index);
                         pos.position = vertices[i] * (float)scale + glm::vec3((float)x, (float)y, (float)z);
 
-                        auto& info = collection->get<FluidSolver::ParticleInfo>(index);
+                        auto& info = collection->get<LibFluid::ParticleInfo>(index);
 
                         info.type = mapped_colors[colors[i]];
 
-                        auto& data = collection->get<FluidSolver::ParticleData>(index);
+                        auto& data = collection->get<LibFluid::ParticleData>(index);
                         data.density = 1.0f;
                         data.mass = 1.0f;
                         data.pressure = 0.0f;

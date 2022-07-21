@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FluidSolver {
+namespace LibFluid {
 
     // TODO: find a better name
     struct DataChangeStruct {

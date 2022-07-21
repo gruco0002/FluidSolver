@@ -4,7 +4,7 @@
 #include "group/GroupActions.hpp"
 
 
-namespace FluidSolver {
+namespace LibFluid {
     void ParticleRemover::execute_simulation_step(pFloat timestep) {
         AreaGroup group;
         group.area = parameters.area;

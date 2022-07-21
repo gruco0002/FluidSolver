@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
 
 

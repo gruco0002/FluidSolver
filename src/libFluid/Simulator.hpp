@@ -12,7 +12,7 @@
 #include <memory>
 
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class Simulator : public Initializable, public Reportable {
       public:

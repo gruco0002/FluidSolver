@@ -10,7 +10,7 @@
 
 #include <memory>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class ISimulationVisualizer : public Initializable, public Reportable {
       public:

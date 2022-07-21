@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace FluidSolver {
+namespace LibFluid {
 
 
     using pIndex_t = size_t;

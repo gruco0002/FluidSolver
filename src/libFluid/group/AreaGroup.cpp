@@ -1,5 +1,5 @@
 #include "AreaGroup.hpp"
-namespace FluidSolver {
+namespace LibFluid {
     bool AreaGroup::AreaGroupIterator::operator==(
             const AreaGroup::AreaGroupIterator& other) const {
         return other.data == data && other.current == current;

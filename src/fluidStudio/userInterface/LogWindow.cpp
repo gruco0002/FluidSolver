@@ -9,7 +9,7 @@
 void FluidStudio::LogWindow::render()
 {
     ImGui::Begin("Logs");
-    auto entries = FluidSolver::Log::get_entries();
+    auto entries = LibFluid::Log::get_entries();
     if (messages.size() < entries.size())
         messages.resize(entries.size());
     ImGui::Checkbox("Scroll to bottom", &scroll_to_bottom);
@@ -21,11 +21,11 @@ void FluidStudio::LogWindow::render()
     {
         auto& entry = entries[i];
         messages[i] = entry.human_readable();
-        if (entry.type == FluidSolver::Log::Type::TYPE_ERROR)
+        if (entry.type == LibFluid::Log::Type::TYPE_ERROR)
         {
             ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), messages[i].c_str());
         }
-        else if (entry.type == FluidSolver::Log::Type::TYPE_ERROR)
+        else if (entry.type == LibFluid::Log::Type::TYPE_ERROR)
         {
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), messages[i].c_str());
         }

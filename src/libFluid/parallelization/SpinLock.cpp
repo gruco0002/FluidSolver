@@ -1,7 +1,7 @@
 #include "SpinLock.hpp"
 
 
-namespace FluidSolver::Parallelization {
+namespace LibFluid::Parallelization {
 
     void SpinLock::lock() {
         for (;;) {

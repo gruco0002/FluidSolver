@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FluidSolver::Math {
+namespace LibFluid::Math {
     constexpr float PI = 3.14159265358979323846f;
 
     inline float pow2(const float& x) {

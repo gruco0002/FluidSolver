@@ -6,7 +6,7 @@
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
     using parallel = StdParallelForEach;
 

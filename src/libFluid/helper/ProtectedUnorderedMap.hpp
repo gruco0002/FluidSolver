@@ -2,7 +2,7 @@
 
 #include <unordered_map>
 
-namespace FluidSolver::Helper
+namespace LibFluid::Helper
 {
 
     template <typename _Key, typename _Value, typename _Hash = std::hash<_Key>> class ProtectedUnorderedMap {

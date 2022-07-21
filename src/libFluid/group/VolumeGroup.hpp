@@ -2,7 +2,7 @@
 
 #include "FluidInclude.hpp"
 
-namespace FluidSolver{
+namespace LibFluid {
 class VolumeGroup {
 
 

@@ -2,8 +2,7 @@
 
 #include <parallelization/StdParallelForEach.hpp>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     using parallel = StdParallelForEach;
 

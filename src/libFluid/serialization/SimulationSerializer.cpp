@@ -28,7 +28,7 @@
 #include <filesystem>
 
 
-namespace FluidSolver {
+namespace LibFluid {
 
 
     YAML::Node SimulationSerializer::save_particle_spawner(const std::shared_ptr<ParticleSpawner>& spawner) {

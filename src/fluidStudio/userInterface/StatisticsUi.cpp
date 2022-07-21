@@ -21,28 +21,28 @@ namespace FluidStudio {
                 auto sen = window->simulator_visualizer_bundle.simulator->data.sensors[i];
 
                 if (ImGui::Begin(sen->parameters.name.c_str(), sensor_window_open_ptr(i))) {
-                    if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalDensitySensor>(sen)) {
+                    if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen)) {
                         render_density_sensor_graph(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalDensitySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalPressureSensor>(sen)) {
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen)) {
                         render_pressure_sensor_graph(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalPressureSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalVelocitySensor>(sen)) {
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen)) {
                         render_velocity_sensor_graph(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalVelocitySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen)) {
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
                         render_energy_sensor_graph(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalEnergySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen)) {
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen)) {
                         render_particle_count_sensor(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::GlobalParticleCountSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen)) {
-                        render_sensor_plane_sensor(std::dynamic_pointer_cast<FluidSolver::Sensors::SensorPlane>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen)) {
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
+                        render_sensor_plane_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen)) {
                         render_compressed_neighborhood_storage_sensor(
-                                std::dynamic_pointer_cast<FluidSolver::Sensors::CompressedNeighborStorageSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<FluidSolver::Sensors::IISPHSensor>(sen)) {
-                        render_iisph_sensor(std::dynamic_pointer_cast<FluidSolver::Sensors::IISPHSensor>(sen));
+                                std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen)) {
+                        render_iisph_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen));
                     }
                 }
 
@@ -61,11 +61,11 @@ namespace FluidStudio {
         open_sensor_windows[index] = true;
     }
 
-    void plot_mmadata(const FluidSolver::SensorData<FluidSolver::Sensors::MMAData>& data) {
+    void plot_mmadata(const LibFluid::SensorData<LibFluid::Sensors::MMAData>& data) {
         ImPlot::PlotLineG(
                 "Avg",
                 [](void* data, int x) {
-                    auto s = (FluidSolver::SensorData<FluidSolver::Sensors::MMAData>*)data;
+                    auto s = (LibFluid::SensorData<LibFluid::Sensors::MMAData>*)data;
                     return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].average);
                 },
                 (void*)&data, data.size());
@@ -73,7 +73,7 @@ namespace FluidStudio {
         ImPlot::PlotLineG(
                 "Min",
                 [](void* data, int x) {
-                    auto s = (FluidSolver::SensorData<FluidSolver::Sensors::MMAData>*)data;
+                    auto s = (LibFluid::SensorData<LibFluid::Sensors::MMAData>*)data;
                     return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].minimum);
                 },
                 (void*)&data, data.size());
@@ -81,7 +81,7 @@ namespace FluidStudio {
         ImPlot::PlotLineG(
                 "Max",
                 [](void* data, int x) {
-                    auto s = (FluidSolver::SensorData<FluidSolver::Sensors::MMAData>*)data;
+                    auto s = (LibFluid::SensorData<LibFluid::Sensors::MMAData>*)data;
                     return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].maximum);
                 },
                 (void*)&data, data.size());
@@ -101,7 +101,7 @@ namespace FluidStudio {
     }
 
     void StatisticsUi::render_density_sensor_graph(
-            std::shared_ptr<FluidSolver::Sensors::GlobalDensitySensor> sensor) {
+            std::shared_ptr<LibFluid::Sensors::GlobalDensitySensor> sensor) {
         if (ImPlot::BeginPlot("Density")) {
             plot_mmadata(sensor->data);
             ImPlot::EndPlot();
@@ -109,7 +109,7 @@ namespace FluidStudio {
     }
 
     void StatisticsUi::render_pressure_sensor_graph(
-            std::shared_ptr<FluidSolver::Sensors::GlobalPressureSensor> sensor) {
+            std::shared_ptr<LibFluid::Sensors::GlobalPressureSensor> sensor) {
         if (ImPlot::BeginPlot("Pressure")) {
             plot_mmadata(sensor->data);
             ImPlot::EndPlot();
@@ -117,19 +117,19 @@ namespace FluidStudio {
     }
 
     void StatisticsUi::render_velocity_sensor_graph(
-            std::shared_ptr<FluidSolver::Sensors::GlobalVelocitySensor> sensor) {
+            std::shared_ptr<LibFluid::Sensors::GlobalVelocitySensor> sensor) {
         if (ImPlot::BeginPlot("Velocity")) {
             plot_mmadata(sensor->data);
             ImPlot::EndPlot();
         }
     }
 
-    void StatisticsUi::render_energy_sensor_graph(std::shared_ptr<FluidSolver::Sensors::GlobalEnergySensor> sensor) {
+    void StatisticsUi::render_energy_sensor_graph(std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sensor) {
         if (ImPlot::BeginPlot("Energy")) {
             ImPlot::PlotLineG(
                     "Kin",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::GlobalEnergySensor::EnergyData>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::GlobalEnergySensor::EnergyData>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].kinetic);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -137,7 +137,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Pot",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::GlobalEnergySensor::EnergyData>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::GlobalEnergySensor::EnergyData>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].potential);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -147,13 +147,13 @@ namespace FluidStudio {
     }
 
     void StatisticsUi::render_particle_count_sensor(
-            std::shared_ptr<FluidSolver::Sensors::GlobalParticleCountSensor> sensor) {
+            std::shared_ptr<LibFluid::Sensors::GlobalParticleCountSensor> sensor) {
         if (ImPlot::BeginPlot("Energy")) {
             ImPlot::PlotLineG(
                     "Normal",
                     [](void* data, int x) {
                         auto s =
-                                (FluidSolver::SensorData<FluidSolver::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
+                                (LibFluid::SensorData<LibFluid::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].normal_particles);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -162,7 +162,7 @@ namespace FluidStudio {
                     "Boundary",
                     [](void* data, int x) {
                         auto s =
-                                (FluidSolver::SensorData<FluidSolver::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
+                                (LibFluid::SensorData<LibFluid::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].boundary_particles);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -171,7 +171,7 @@ namespace FluidStudio {
                     "Inactive",
                     [](void* data, int x) {
                         auto s =
-                                (FluidSolver::SensorData<FluidSolver::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
+                                (LibFluid::SensorData<LibFluid::Sensors::GlobalParticleCountSensor::ParticleCountData>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].inactive_particles);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -181,10 +181,10 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<FluidSolver::Sensors::SensorPlane> sensor) {
+    void StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<LibFluid::Sensors::SensorPlane> sensor) {
         auto& image = sensor->get_last_image();
 
-        FluidSolver::ISimulationVisualizer::Size size;
+        LibFluid::ISimulationVisualizer::Size size;
         size.width = image.width();
         size.height = image.height();
 
@@ -233,12 +233,12 @@ namespace FluidStudio {
     }
 
     void StatisticsUi::render_compressed_neighborhood_storage_sensor(
-            std::shared_ptr<FluidSolver::Sensors::CompressedNeighborStorageSensor> sensor) {
+            std::shared_ptr<LibFluid::Sensors::CompressedNeighborStorageSensor> sensor) {
         if (ImPlot::BeginPlot("Neighborhood Storage")) {
             ImPlot::PlotLineG(
                     "Neighbors Avg",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_average);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -246,7 +246,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Neighbors Max",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_maximum);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -254,7 +254,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Neighbors Min",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].neighbor_count_minimum);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -262,7 +262,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Delta Bytes Avg",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_average);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -270,7 +270,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Delta Bytes Max",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_maximum);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -278,7 +278,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Delta Bytes Min",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::CompressedNeighborStorageSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::CompressedNeighborStorageSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].used_delta_bytes_minimum);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -286,12 +286,12 @@ namespace FluidStudio {
             ImPlot::EndPlot();
         }
     }
-    void StatisticsUi::render_iisph_sensor(std::shared_ptr<FluidSolver::Sensors::IISPHSensor> sensor) {
+    void StatisticsUi::render_iisph_sensor(std::shared_ptr<LibFluid::Sensors::IISPHSensor> sensor) {
         if (ImPlot::BeginPlot("Neighborhood Storage")) {
             ImPlot::PlotLineG(
                     "Iteration Count",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::IISPHSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::IISPHSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].stat_last_iteration_count);
                     },
                     (void*)&sensor->data, sensor->data.size());
@@ -299,7 +299,7 @@ namespace FluidStudio {
             ImPlot::PlotLineG(
                     "Avg Pred Density Error",
                     [](void* data, int x) {
-                        auto s = (FluidSolver::SensorData<FluidSolver::Sensors::IISPHSensor::Info>*)data;
+                        auto s = (LibFluid::SensorData<LibFluid::Sensors::IISPHSensor::Info>*)data;
                         return ImPlotPoint(s->times()[x].simulation_time, s->data()[x].stat_last_average_predicted_density_error);
                     },
                     (void*)&sensor->data, sensor->data.size());

@@ -2,8 +2,7 @@
 
 #include "FluidInclude.hpp"
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     enum ParticleType
     {

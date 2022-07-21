@@ -7,7 +7,7 @@
 #include <future>
 #include <memory>
 
-namespace FluidSolver::ParticleCollectionAlgorithm
+namespace LibFluid::ParticleCollectionAlgorithm
 {
     class Sort {
       public:

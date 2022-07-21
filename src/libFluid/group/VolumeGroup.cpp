@@ -2,7 +2,7 @@
 
 #include "fluidSolver/ParticleCollection.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     bool VolumeGroup::VolumeGroupIterator::operator==(
             const VolumeGroup::VolumeGroupIterator& other) const {

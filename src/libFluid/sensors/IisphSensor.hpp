@@ -4,7 +4,7 @@
 #include "sensors/ISensor.hpp"
 #include "sensors/SensorData.hpp"
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
     class IISPHSensor : public ISensor {
       public:

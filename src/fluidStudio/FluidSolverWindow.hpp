@@ -34,7 +34,7 @@ namespace FluidStudio {
 
 
       public:
-        FluidSolver::SimulatorVisualizerBundle simulator_visualizer_bundle;
+        LibFluid::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
 
         bool simulation_should_run = false;
@@ -94,7 +94,7 @@ namespace FluidStudio {
 
       private:
         // visualizer stuff
-        FluidSolver::Image render_image_copy;
+        LibFluid::Image render_image_copy;
         bool render_image_copy_updated = false;
         Engine::Graphics::Texture2D* rendered_image = nullptr;
 

@@ -8,8 +8,7 @@
 #include <string>
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     class SensorWriter {
 
@@ -56,7 +55,7 @@ namespace FluidSolver
         void push_back(const glm::vec4& value);
         void push_back(int value);
         void push_back(size_t value);
-        void push_back(const FluidSolver::Timepoint& value);
+        void push_back(const LibFluid::Timepoint& value);
 
         void next();
 
@@ -69,7 +68,7 @@ namespace FluidSolver
         SensorWriter& operator<<(const glm::vec4& value);
         SensorWriter& operator<<(int value);
         SensorWriter& operator<<(size_t value);
-        SensorWriter& operator<<(const FluidSolver::Timepoint& value);
+        SensorWriter& operator<<(const LibFluid::Timepoint& value);
 
         SensorWriter& operator<<(Control control);
     };
@@ -87,7 +86,7 @@ namespace FluidSolver
     {
         push_back_header(header, 4);
     }
-    template <> inline void SensorWriter::push_back_header<FluidSolver::Timepoint>(const std::string& header)
+    template <> inline void SensorWriter::push_back_header<LibFluid::Timepoint>(const std::string& header)
     {
         push_back_header(
             {header + " - Number", header + " - Sim Time", header + " - Sys Time", header + " - Timestep"});

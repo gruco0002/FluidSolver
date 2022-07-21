@@ -2,7 +2,7 @@
 
 #include "time/ITimestepGenerator.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
     class ConstantTimestepGenerator : public ITimestepGenerator {
       public:
         struct ConstantTimestepGeneratorSettings {

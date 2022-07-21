@@ -8,18 +8,18 @@
 namespace FluidStudio {
 
 
-    std::shared_ptr<FluidSolver::ISimulationVisualizer> ExtendedSimulationSerializer::deserialize_unknown_visualizer(
+    std::shared_ptr<LibFluid::ISimulationVisualizer> ExtendedSimulationSerializer::deserialize_unknown_visualizer(
         const YAML::Node& node)
     {
         if (node["type"].as<std::string>() == "gl-particle-renderer")
         {
-            if (!FluidSolver::GLRenderer::is_opengl_available())
+            if (!LibFluid::GLRenderer::is_opengl_available())
             {
-                FluidSolver::Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not "
+                LibFluid::Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not "
                                         "initialized but visualizer requires OpenGL!");
                 return nullptr;
             }
-            auto r = std::make_shared<FluidSolver::GLParticleRenderer>();
+            auto r = std::make_shared<LibFluid::GLParticleRenderer>();
 
             // default parameters
             r->settings.viewport.left = node["viewport"]["left"].as<float>();
@@ -35,7 +35,7 @@ namespace FluidStudio {
             r->settings.bottomValue = node["settings"]["bottom"]["value"].as<float>();
             r->settings.bottomColor = node["settings"]["bottom"]["color"].as<glm::vec4>();
             r->settings.colorSelection =
-                (FluidSolver::GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"]
+                (LibFluid::GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"]
                     .as<int>();
             r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].as<glm::vec4>();
             r->settings.backgroundClearColor = node["settings"]["colors"]["background"].as<glm::vec4>();
@@ -45,13 +45,13 @@ namespace FluidStudio {
         }
         else if (node["type"].as<std::string>() == "gl-particle-renderer-3d")
         {
-            if (!FluidSolver::GLRenderer::is_opengl_available())
+            if (!LibFluid::GLRenderer::is_opengl_available())
             {
-                FluidSolver::Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not "
+                LibFluid::Log::error("[LOADING] Visualizer is not supported in this context. OpenGL was not "
                                         "initialized but visualizer requires OpenGL!");
                 return nullptr;
             }
-            auto r = std::make_shared<FluidSolver::GLParticleRenderer3D>();
+            auto r = std::make_shared<LibFluid::GLParticleRenderer3D>();
 
             // default parameters
             r->parameters.render_target.width = node["render-target"]["width"].as<size_t>();
@@ -74,11 +74,11 @@ namespace FluidStudio {
     }
 
     std::optional<YAML::Node> ExtendedSimulationSerializer::serialize_unknown_visualizer(
-        const std::shared_ptr<FluidSolver::ISimulationVisualizer>& visualizer)
+        const std::shared_ptr<LibFluid::ISimulationVisualizer>& visualizer)
     {
-        if (std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer>(visualizer) != nullptr)
+        if (std::dynamic_pointer_cast<const LibFluid::GLParticleRenderer>(visualizer) != nullptr)
         {
-            auto r = std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer>(visualizer);
+            auto r = std::dynamic_pointer_cast<const LibFluid::GLParticleRenderer>(visualizer);
             YAML::Node node;
 
             node["type"] = "gl-particle-renderer";
@@ -103,9 +103,9 @@ namespace FluidStudio {
 
             return node;
         }
-        else if (std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer3D>(visualizer) != nullptr)
+        else if (std::dynamic_pointer_cast<const LibFluid::GLParticleRenderer3D>(visualizer) != nullptr)
         {
-            auto r = std::dynamic_pointer_cast<const FluidSolver::GLParticleRenderer3D>(visualizer);
+            auto r = std::dynamic_pointer_cast<const LibFluid::GLParticleRenderer3D>(visualizer);
             YAML::Node node;
 
             node["type"] = "gl-particle-renderer-3d";

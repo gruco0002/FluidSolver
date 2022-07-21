@@ -2,7 +2,7 @@
 
 #include <limits>
 
-namespace FluidSolver {
+namespace LibFluid {
     float CubicSplineKernel::GetKernelValue(const glm::vec2& position) const {
         FLUID_ASSERT(h != 0.0f);
         FLUID_ASSERT(alpha != 0.0f);

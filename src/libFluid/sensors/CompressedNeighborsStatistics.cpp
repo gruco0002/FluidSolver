@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace FluidSolver::Sensors {
+namespace LibFluid::Sensors {
 
 
     void CompressedNeighborStorageSensor::calculate_and_store(const Timepoint& timepoint) {

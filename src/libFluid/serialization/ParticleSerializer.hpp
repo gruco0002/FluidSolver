@@ -6,7 +6,7 @@
 
 #include <filesystem>
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class ParticleSerializer {
       public:

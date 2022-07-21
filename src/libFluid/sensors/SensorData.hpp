@@ -4,8 +4,7 @@
 
 #include <vector>
 
-namespace FluidSolver
-{
+namespace LibFluid {
 
     template <typename T> class SensorData {
 

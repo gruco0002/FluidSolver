@@ -3,7 +3,7 @@
 #include "group/GroupActions.hpp"
 #include "group/VolumeGroup.hpp"
 
-namespace FluidSolver {
+namespace LibFluid {
 
     void ParticleRemover3D::execute_simulation_step(pFloat timestep) {
         VolumeGroup group;

@@ -36,7 +36,7 @@ namespace FluidStudio {
     OverlayInstance::AllowedTransforms ParticleRemoverOverlay::get_allowed_transforms() {
         return AllowedTransforms::TranslateAndScale;
     }
-    ParticleRemoverOverlay::ParticleRemoverOverlay(std::shared_ptr<FluidSolver::ParticleRemover3D> entity) {
+    ParticleRemoverOverlay::ParticleRemoverOverlay(std::shared_ptr<LibFluid::ParticleRemover3D> entity) {
         this->entity = entity;
     }
 } // namespace FluidUi

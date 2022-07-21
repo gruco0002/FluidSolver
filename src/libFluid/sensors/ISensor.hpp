@@ -11,7 +11,7 @@
 #include "Initializable.hpp"
 
 
-namespace FluidSolver {
+namespace LibFluid {
 
     class ISensor : public Initializable, public Reportable {
       public:

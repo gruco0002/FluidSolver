@@ -61,7 +61,7 @@ class SizeTIterator {
 };
 
 
-void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, const std::function<void(size_t i)>& fn) {
+void LibFluid::StdParallelForEach::loop_for(size_t from, size_t to, const std::function<void(size_t i)>& fn) {
     size_t chunked_to = from + (to - from) / chunk_size;
     if ((to - from) % chunk_size != 0)
         chunked_to++;
@@ -83,7 +83,7 @@ void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, const std
 #endif
 }
 
-void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, size_t step,
+void LibFluid::StdParallelForEach::loop_for(size_t from, size_t to, size_t step,
         const std::function<void(size_t i)>& fn) {
     size_t steps = ((to - 1) - from) / step + 1;
 #ifndef __clang__
@@ -93,7 +93,7 @@ void FluidSolver::StdParallelForEach::loop_for(size_t from, size_t to, size_t st
     tbb::parallel_for(size_t(0), steps, [&fn, from, step](size_t i) { fn(from + i * step); });
 #endif
 }
-float FluidSolver::StdParallelForEach::loop_for_max(size_t from, size_t to, const std::function<float(size_t)>& fn) {
+float LibFluid::StdParallelForEach::loop_for_max(size_t from, size_t to, const std::function<float(size_t)>& fn) {
     size_t chunked_to = from + (to - from) / chunk_size;
     if ((to - from) % chunk_size != 0)
         chunked_to++;

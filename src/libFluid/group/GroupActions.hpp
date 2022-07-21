@@ -4,7 +4,7 @@
 #include "../fluidSolver/Particle.hpp"
 #include "../fluidSolver/ParticleCollection.hpp"
 
-namespace FluidSolver::GroupActions
+namespace LibFluid::GroupActions
 {
 
     /**
