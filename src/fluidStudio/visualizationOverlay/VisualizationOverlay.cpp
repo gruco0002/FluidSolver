@@ -20,9 +20,22 @@ namespace FluidUi {
 
         auto matrix = data.overlay_instance->get_matrix();
 
+        auto mode = ImGuizmo::OPERATION::TRANSLATE;
+        switch (data.overlay_instance->get_allowed_transforms()) {
+            case OverlayInstance::AllowedTransforms::Translate:
+                mode = ImGuizmo::OPERATION::TRANSLATE;
+                break;
+            case OverlayInstance::AllowedTransforms::Scale:
+                mode = ImGuizmo::OPERATION::SCALE;
+                break;
+            case OverlayInstance::AllowedTransforms::TranslateAndScale:
+                mode = ImGuizmo::OPERATION::TRANSLATE | ImGuizmo::OPERATION::SCALE;
+                break;
+        }
+
         // ImGuizmo::DrawCubes(glm::value_ptr(data.visualizer_view_matrix), glm::value_ptr(data.visualizer_projection_matrix), glm::value_ptr(matrix), 1);
         // ImGuizmo::DrawGrid(glm::value_ptr(data.visualizer_view_matrix), glm::value_ptr(data.visualizer_projection_matrix),glm::value_ptr(matrix), 2.0f);
-        if (ImGuizmo::Manipulate(glm::value_ptr(data.visualizer_view_matrix), glm::value_ptr(data.visualizer_projection_matrix), ImGuizmo::OPERATION::TRANSLATE | ImGuizmo::OPERATION::SCALE, ImGuizmo::MODE::LOCAL, glm::value_ptr(matrix))) {
+        if (ImGuizmo::Manipulate(glm::value_ptr(data.visualizer_view_matrix), glm::value_ptr(data.visualizer_projection_matrix), mode, ImGuizmo::MODE::WORLD, glm::value_ptr(matrix))) {
             // data changed
             data_changed = true;
             data.overlay_instance->set_matrix(matrix);
