@@ -14,7 +14,10 @@ void ImGuiHelper::Init(GLFWwindow* window) {
 
 
     ImGuiIO& io = ImGui::GetIO();
+
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
     io.IniFilename = FluidStudio::DirectoryHelper::imgui_config_file();
 
     // taking high-dpi displays into account
