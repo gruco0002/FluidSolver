@@ -41,7 +41,7 @@ namespace FluidUi {
             data.overlay_instance->set_matrix(matrix);
         }
 
-        if (ImGuizmo::IsOver() || ImGuizmo::IsUsing()) {
+        if (ImGuizmo::IsUsing()) {
             mouse_on_overlay = true;
         } else {
             mouse_on_overlay = false;
