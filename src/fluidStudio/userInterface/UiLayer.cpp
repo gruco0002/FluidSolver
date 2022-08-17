@@ -407,9 +407,7 @@ namespace FluidStudio {
                     if (ImGui::InputFloat("Gamma 1", &v->single_layer_boundary_gamma_1)) {
                         v->notify_that_data_changed();
                     }
-                    if (ImGui::InputFloat("Gamma 2", &v->single_layer_boundary_gamma_2)) {
-                        v->notify_that_data_changed();
-                    }
+                    // TODO: eventually gamma should be in here
                 }
             });
         }

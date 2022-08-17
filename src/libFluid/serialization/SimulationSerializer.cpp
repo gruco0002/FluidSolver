@@ -611,7 +611,7 @@ namespace LibFluid {
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
             if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
-                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+                // TODO: eventually gamma should be in here
             }
         } else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s)) {
             auto f = std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(s);
@@ -630,7 +630,7 @@ namespace LibFluid {
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
             if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
-                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+                // TODO: eventually gamma should be in here
             }
         } else if (std::dynamic_pointer_cast<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(s)) {
             auto f =
@@ -650,7 +650,7 @@ namespace LibFluid {
             node["single-layer-boundary-enabled"] = f->settings.single_layer_boundary;
             if (f->settings.single_layer_boundary) {
                 node["single-layer-settings"]["gamma-1"] = f->settings.single_layer_boundary_gamma_1;
-                node["single-layer-settings"]["gamma-2"] = f->settings.single_layer_boundary_gamma_2;
+                // TODO: eventually gamma should be in here
             }
         } else {
             error_count++;
