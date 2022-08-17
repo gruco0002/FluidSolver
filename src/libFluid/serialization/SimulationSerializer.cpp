@@ -224,7 +224,7 @@ namespace LibFluid {
             error_count++;
         }
 
-        if (node["calculate-every-nth-step"]) {
+        if (node.contains("calculate-every-nth-step")) {
             res->settings.calculate_plane_every_nth_step = node["calculate-every-nth-step"].get<size_t>();
         } else {
             res->settings.calculate_plane_every_nth_step = 1;
@@ -413,7 +413,7 @@ namespace LibFluid {
         simulation.parameters.rest_density = node["rest-density"].get<float>();
 
         // loading entities
-        if (node["entities"]) {
+        if (node.contains("entities")) {
             for (auto& ent_node : node["entities"]) {
                 if (ent_node["type"].get<std::string>() == "particle-spawner") {
                     simulation.data.entities.push_back(load_particle_spawner(ent_node));
@@ -429,7 +429,7 @@ namespace LibFluid {
         }
 
         // loading sensors
-        if (node["sensors"]) {
+        if (node.contains("sensors")) {
             for (auto& sen_node : node["sensors"]) {
                 auto type_str = sen_node["type"].get<std::string>();
                 if (type_str == "global-density-sensor") {
@@ -742,7 +742,7 @@ namespace LibFluid {
                     res->settings.StiffnessK = node["stiffness"].get<float>();
                     res->settings.Viscosity = node["viscosity"].get<float>();
 
-                    if (node["single-layer-boundary-enabled"]) {
+                    if (node.contains("single-layer-boundary-enabled")) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
                         if (res->settings.single_layer_boundary) {
                             res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
@@ -757,7 +757,7 @@ namespace LibFluid {
                     res->settings.StiffnessK = node["stiffness"].get<float>();
                     res->settings.Viscosity = node["viscosity"].get<float>();
 
-                    if (node["single-layer-boundary-enabled"]) {
+                    if (node.contains("single-layer-boundary-enabled")) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
                         if (res->settings.single_layer_boundary) {
                             res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
@@ -773,7 +773,7 @@ namespace LibFluid {
                     res->settings.StiffnessK = node["stiffness"].get<float>();
                     res->settings.Viscosity = node["viscosity"].get<float>();
 
-                    if (node["single-layer-boundary-enabled"]) {
+                    if (node.contains("single-layer-boundary-enabled")) {
                         res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
                         if (res->settings.single_layer_boundary) {
                             res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
@@ -949,7 +949,7 @@ namespace LibFluid {
             stream >> config;
         }
 
-        if (!config["version"] || config["version"].get<int>() != 1) {
+        if (!config.contains("version") || config["version"].get<int>() != 1) {
             Log::error("[LOADING] Invalid or missing version. Version has to be 1.");
             error_count++;
             return res;
