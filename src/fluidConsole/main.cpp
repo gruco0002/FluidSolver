@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
             cxxopts::value<float>()->default_value("60.0"))(
             "v,verbose", "If this flag is provided more information is printed to the console",
             cxxopts::value<
-                    bool>())("f,file", "[Required] Filepath to a scenario yaml file",
+                    bool>())("f,file", "[Required] Filepath to a scenario json file",
             cxxopts::value<
                     std::string>())("o,output",
             "Path to the output folder which will later contain the sensor data.",

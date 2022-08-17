@@ -29,7 +29,7 @@ namespace FluidStudio {
 
         auto home_directory = get_home_directory();
         s_studio_directory = (std::filesystem::path(home_directory) / ".FluidStudio/").string();
-        s_config_file = (std::filesystem::path(home_directory) / ".FluidStudio/config.yaml").string();
+        s_config_file = (std::filesystem::path(home_directory) / ".FluidStudio/config.json").string();
         s_imgui_config_file = (std::filesystem::path(home_directory) / ".FluidStudio/imgui.ini").string();
 
 

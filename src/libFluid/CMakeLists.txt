@@ -1,7 +1,7 @@
 find_package(Threads REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(fmt CONFIG REQUIRED)
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 find_package(lz4 CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
@@ -74,7 +74,6 @@ set(LIB_FLUID_SOURCE_FILES
         "helper/ProtectedUnorderedMap.hpp"
         "CompatibilityReport.hpp" "CompatibilityReport.cpp"
         "helper/stb_implementation.cpp"
-        "serialization/YamlHelpers.hpp"
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         "Forward.hpp"
         "FluidMath.hpp"
@@ -94,6 +93,7 @@ set(LIB_FLUID_SOURCE_FILES
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
+        serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
         )
 
 
@@ -103,7 +103,7 @@ target_include_directories(libFluid PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_include_directories(libFluid PUBLIC ${STB_INCLUDE_DIRS})
 target_link_libraries(libFluid PUBLIC Threads::Threads)
 target_link_libraries(libFluid PUBLIC fmt::fmt)
-target_link_libraries(libFluid PUBLIC yaml-cpp)
+target_link_libraries(libFluid PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(libFluid PUBLIC lz4::lz4)
 
 if (UNIX OR APPLE)

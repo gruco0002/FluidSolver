@@ -780,7 +780,7 @@ namespace FluidStudio {
                     // open scenario
 
                     char* p = nullptr;
-                    auto res = NFD_OpenDialog("yaml", nullptr, &p);
+                    auto res = NFD_OpenDialog("json", nullptr, &p);
                     if (res == NFD_OKAY) {
                         std::string path(p);
                         free(p);
@@ -835,16 +835,16 @@ namespace FluidStudio {
 
 
             ImGui::TextWrapped(
-                    "Save the current simulation as yaml file. Optionally you can save the particle data. If it already exists "
+                    "Save the current simulation as json file. Optionally you can save the particle data. If it already exists "
                     "and you do not want to override it, make sure to uncheck the checkbox and provide the name of the current "
-                    "particle data file relative to the yaml file in the text field.");
+                    "particle data file relative to the json file in the text field.");
 
             ImGui::Separator();
 
             if (ImGui::Button("Choose")) {
                 char* p = nullptr;
 
-                auto res = NFD_SaveDialog("yaml", nullptr, &p);
+                auto res = NFD_SaveDialog("json", nullptr, &p);
                 if (res == NFD_OKAY) {
                     if (path != nullptr)
                         free(path);
