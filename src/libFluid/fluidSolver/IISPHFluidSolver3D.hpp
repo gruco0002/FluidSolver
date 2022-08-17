@@ -15,13 +15,14 @@ namespace LibFluid {
         size_t max_number_of_iterations = 100;
 
         pFloat omega = 0.5f;
+
+        // TODO: rename gamma to single_layer_boundary_gamma_2 if we can fully ignore gamma in multi layer scenarios
         pFloat gamma = 0.7f;
 
         pFloat viscosity = 5.0f;
 
         bool single_layer_boundary = false;
         float single_layer_boundary_gamma_1 = 1.1f;
-        float single_layer_boundary_gamma_2 = 1.1f;
     };
 
     struct IISPHParticleData3D {
@@ -248,20 +249,11 @@ namespace LibFluid {
                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                     movement_data.position));
                         } else if (type == ParticleTypeBoundary) {
-                            if (settings.single_layer_boundary) {
-                                // TODO: check if we need to include gamma_1 here
-                                neighbor_contribution +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(iisph_data.predicted_velocity,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
-                            } else {
-                                neighbor_contribution +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(iisph_data.predicted_velocity,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
-                            }
+                            neighbor_contribution +=
+                                    neighbor_particle_data.mass *
+                                    glm::dot(iisph_data.predicted_velocity,
+                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                    movement_data.position));
                         }
                     }
 
@@ -290,14 +282,15 @@ namespace LibFluid {
                                         kernel.GetKernelDerivativeReversedValue(
                                                 neighbor_movement_data.position, movement_data.position);
                             } else if (type == ParticleTypeBoundary) {
+                                // TODO: gamma is used here even if single layer boundaries are deactivated?
                                 if (settings.single_layer_boundary) {
-                                    // TODO: check if we need to include gamma_1 here
                                     inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
                                             Math::pow2(parameters.rest_density) *
                                             kernel.GetKernelDerivativeReversedValue(
                                                     neighbor_movement_data.position, movement_data.position);
                                 } else {
-                                    inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
+                                    // TODO: check if we can leave out gamma here
+                                    inner_part_of_sum -= 2.0f * neighbor_particle_data.mass /
                                             Math::pow2(parameters.rest_density) *
                                             kernel.GetKernelDerivativeReversedValue(
                                                     neighbor_movement_data.position, movement_data.position);
@@ -335,20 +328,11 @@ namespace LibFluid {
                                                 kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                         movement_data.position));
                             } else if (type == ParticleTypeBoundary) {
-                                if (settings.single_layer_boundary) {
-                                    // TODO: check if we need to use gamma_1 here
-                                    diagonal_element +=
-                                            neighbor_particle_data.mass *
-                                            glm::dot(inner_part_of_sum,
-                                                    kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                            movement_data.position));
-                                } else {
-                                    diagonal_element +=
-                                            neighbor_particle_data.mass *
-                                            glm::dot(inner_part_of_sum,
-                                                    kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                            movement_data.position));
-                                }
+                                diagonal_element +=
+                                        neighbor_particle_data.mass *
+                                        glm::dot(inner_part_of_sum,
+                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                        movement_data.position));
                             }
                         }
 
@@ -397,14 +381,15 @@ namespace LibFluid {
                                     kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                             movement_data.position);
                         } else if (type == ParticleTypeBoundary) {
+                            // TODO: gamma was used here even for multi layer boundaries
                             if (settings.single_layer_boundary) {
-                                // TODO: check if correct use of gamma_2
-                                pressure_acceleration -= settings.single_layer_boundary_gamma_2 * settings.gamma * neighbor_particle_data.mass * 2.0f *
+                                pressure_acceleration -= settings.gamma * neighbor_particle_data.mass * 2.0f *
                                         particle_data.pressure / Math::pow2(parameters.rest_density) *
                                         kernel.GetKernelDerivativeReversedValue(
                                                 neighbor_movement_data.position, movement_data.position);
                             } else {
-                                pressure_acceleration -= settings.gamma * neighbor_particle_data.mass * 2.0f *
+                                // TODO: check if we can ignore gamma in scenarios with multi layer boundaries
+                                pressure_acceleration -= neighbor_particle_data.mass * 2.0f *
                                         particle_data.pressure / Math::pow2(parameters.rest_density) *
                                         kernel.GetKernelDerivativeReversedValue(
                                                 neighbor_movement_data.position, movement_data.position);
@@ -448,19 +433,10 @@ namespace LibFluid {
                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
                                                     movement_data.position));
                         } else if (type == ParticleTypeBoundary) {
-                            if (settings.single_layer_boundary) {
-                                // TODO: check if we need to use gamma_2 here.
-                                // My guess is that we do not need to, since gamma_2 is already part of movement_data.acceleration
-                                ap += neighbor_particle_data.mass *
-                                        glm::dot(movement_data.acceleration,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
-                            } else {
-                                ap += neighbor_particle_data.mass *
-                                        glm::dot(movement_data.acceleration,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
-                            }
+                            ap += neighbor_particle_data.mass *
+                                    glm::dot(movement_data.acceleration,
+                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                    movement_data.position));
                         }
                     }
 
@@ -639,4 +615,4 @@ namespace LibFluid {
         }
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid
