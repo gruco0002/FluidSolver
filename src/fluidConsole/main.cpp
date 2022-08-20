@@ -164,9 +164,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // manual save of the output
-        bundle.simulator->output->manual_save();
-
+     
         LibFluid::Log::message("[Console] Simulation has finished.");
 
 
