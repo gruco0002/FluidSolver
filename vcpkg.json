@@ -29,7 +29,10 @@
             "version>=": "1.83"
         },
         "fmt",
-        "yaml-cpp",
+        {
+            "name": "nlohmann-json",
+            "version>=": "3.10.5"
+        },
         "nativefiledialog",
         {
             "name": "tbb",

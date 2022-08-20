@@ -1,4 +1,5 @@
 #include "VertexArray.hpp"
+#include <stdexcept>
 
 
 Engine::Graphics::Buffer::VertexArray::~VertexArray() {

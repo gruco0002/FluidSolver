@@ -1,7 +1,7 @@
 find_package(Threads REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(fmt CONFIG REQUIRED)
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 find_package(lz4 CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
@@ -41,8 +41,7 @@ set(LIB_FLUID_SOURCE_FILES
         "FluidAssert.hpp"
         "fluidSolver/ParticleCollectionAlgorithm.cpp"
         "fluidSolver/ParticleCollectionAlgorithm.hpp"
-        "sensors/SensorData.cpp"
-        "sensors/SensorData.hpp"
+        "sensors/SensorDataStore.hpp"
         "sensors/ParticleStatistics.cpp"
         "sensors/ParticleStatistics.hpp"
         "FluidTypes.hpp"
@@ -57,15 +56,14 @@ set(LIB_FLUID_SOURCE_FILES
         "entities/IEntity.hpp"
         "entities/ParticleRemover.cpp"
         "entities/ParticleRemover.hpp"
-        "sensors/ISensor.hpp"
+        "sensors/SensorBase.hpp"
         "Log.hpp" "Log.cpp"
         "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "parallelization/NoParallelization.hpp" "parallelization/NoParallelization.cpp"
         "parallelization/StdParallelForEach.hpp" "parallelization/StdParallelForEach.cpp"
         "serialization/SimulationSerializer.hpp" "serialization/SimulationSerializer.cpp"      
         "visualizer/Image.hpp" "visualizer/Image.cpp"
-        "sensors/SensorWriter.hpp" "sensors/SensorWriter.cpp"
-        "OutputManager.hpp" "OutputManager.cpp"      
+        "sensors/OutputManager.hpp" "sensors/OutputManager.cpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
         "fluidSolver/kernel/CubicSplineKernel3D.hpp" "fluidSolver/kernel/CubicSplineKernel3D.cpp"
         "fluidSolver/SESPHFluidSolver3D.hpp"
@@ -74,7 +72,6 @@ set(LIB_FLUID_SOURCE_FILES
         "helper/ProtectedUnorderedMap.hpp"
         "CompatibilityReport.hpp" "CompatibilityReport.cpp"
         "helper/stb_implementation.cpp"
-        "serialization/YamlHelpers.hpp"
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         "Forward.hpp"
         "FluidMath.hpp"
@@ -94,6 +91,9 @@ set(LIB_FLUID_SOURCE_FILES
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
+        serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
+        sensors/Sensor.hpp
+        serialization/Base64.cpp serialization/Base64.hpp
         visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
         visualizer/raytracer/Camera.cpp visualizer/raytracer/Camera.hpp
         visualizer/raytracer/RenderTarget.cpp visualizer/raytracer/RenderTarget.hpp
@@ -112,7 +112,7 @@ target_include_directories(libFluid PUBLIC ${LIBMORTON_INCLUDE_DIRS})
 target_include_directories(libFluid PUBLIC ${STB_INCLUDE_DIRS})
 target_link_libraries(libFluid PUBLIC Threads::Threads)
 target_link_libraries(libFluid PUBLIC fmt::fmt)
-target_link_libraries(libFluid PUBLIC yaml-cpp)
+target_link_libraries(libFluid PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(libFluid PUBLIC lz4::lz4)
 
 if (UNIX OR APPLE)

@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "scenario": {
+    "particles": "3d-100x100x100-breaking-dam.data",
+    "gravity": 9.81000042,
+    "particle-size": 1,
+    "rest-density": 1
+  },
+  "solver": {
+    "type": "sesph-3d",
+    "neigborhood-search": {
+      "type": "compressed-3d"
+    },
+    "kernel": {
+      "type": "cubic-spline-kernel-3d"
+    },
+    "stiffness": 100000,
+    "viscosity": 5,
+    "timestep": {
+      "type": "constant",
+      "timestep": 0.00499999989
+    }
+  },
+  "visualizer": {
+    "type": "gl-particle-renderer-3d",
+    "render-target": {
+      "width": 1920,
+      "height": 1080
+    },
+    "settings": {
+      "background-color": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "boundary-color": [
+        0.5,
+        0.5,
+        0.5,
+        1
+      ],
+      "fluid-color": [
+        0.5,
+        0.5,
+        1,
+        1
+      ],
+      "light-direction": [
+        8,
+        -12,
+        1
+      ],
+      "camera": {
+        "location": [
+          46.7688408,
+          141.660065,
+          -29.6404152
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "looking-at": [
+          43.5454063,
+          133.329437,
+          -25.3732529
+        ]
+      }
+    }
+  }
+}

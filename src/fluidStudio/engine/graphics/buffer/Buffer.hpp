@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include <cstddef>
+#include <stdint.h>
 
 namespace Engine {
     namespace Graphics {

@@ -8,37 +8,6 @@
 
 namespace LibFluid::Sensors {
 
-    void IISPHSensor::calculate_and_store(const Timepoint& timepoint) {
-        FLUID_ASSERT(simulator_data.fluid_solver != nullptr);
-        FLUID_ASSERT(is_type_compatible());
-
-        data.push_back(timepoint, {get_last_iteration_count(), get_last_average_predicted_density_error()});
-    }
-
-    void IISPHSensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<size_t>("Last Iteration Count");
-            writer.push_back_header<float>("Last Avg Pred Density Error");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.stat_last_iteration_count << tmp.stat_last_average_predicted_density_error << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
-    }
-
     void IISPHSensor::create_compatibility_report(CompatibilityReport& report) {
         report.begin_scope("IISPH Sensor");
         if (simulator_data.fluid_solver == nullptr) {
@@ -107,4 +76,21 @@ namespace LibFluid::Sensors {
         }
         return false;
     }
-} // namespace FluidSolver::Sensors
+    std::vector<SensorDataFieldDefinition> IISPHSensor::get_definitions() {
+        return {{"Last Iteration Count",
+                        SensorDataFieldDefinition::FieldType::Int,
+                        "",
+                        ""},
+                {"Last Average Predicted Density Error",
+                        SensorDataFieldDefinition::FieldType::Float,
+                        "",
+                        ""}};
+    }
+    IISPHSensorInfo IISPHSensor::calculate_for_timepoint(const Timepoint& timepoint) {
+        return {get_last_iteration_count(), get_last_average_predicted_density_error()};
+    }
+    void IISPHSensor::add_data_fields_to_json_array(nlohmann::json& array, const IISPHSensorInfo& data) {
+        array.push_back((int)data.stat_last_iteration_count);
+        array.push_back((float)data.stat_last_average_predicted_density_error);
+    }
+} // namespace LibFluid::Sensors

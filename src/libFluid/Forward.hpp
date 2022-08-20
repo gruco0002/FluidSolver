@@ -7,6 +7,8 @@ namespace LibFluid {
     class ISimulationVisualizer;
     class ParticleCollection;
     class IFluidSolverBase;
+    class NeighborhoodInterface;
+    struct Timepoint;
 
     // entities
     class IEntity;
@@ -15,7 +17,11 @@ namespace LibFluid {
     class ParticleRemover3D;
 
     // sensors
-    class ISensor;
+    class Sensor;
+
+    template <typename T>
+    class SensorBase;
+
     namespace Sensors
     {
         class GlobalDensitySensor;
