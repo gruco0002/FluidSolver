@@ -1,12 +1,12 @@
 #pragma once
 
-#include "sensors/ISensor.hpp"
-#include "sensors/SensorData.hpp"
+#include "sensors/SensorBase.hpp"
 #include "visualizer/Image.hpp"
 
 namespace LibFluid::Sensors {
 
-    class SensorPlane : public ISensor {
+    // TODO: make an abstract class in terms of output dimensionality and unit
+    class SensorPlane : public SensorBase<std::vector<glm::vec3>> {
       public:
         enum class SensorPlaneType {
             SensorPlaneTypeDensity,
@@ -15,9 +15,9 @@ namespace LibFluid::Sensors {
         };
 
         struct SensorPlaneSettings {
-            vec3 origin = vec3(0.0f, 0.0f, 0.0f);
-            vec3 span_x = vec3(1.0f, 0.0f, 0.0f);
-            vec3 span_y = vec3(0.0f, 1.0f, 0.0f);
+            glm::vec3 origin = glm::vec3(0.0f, 0.0f, 0.0f);
+            glm::vec3 span_x = glm::vec3(1.0f, 0.0f, 0.0f);
+            glm::vec3 span_y = glm::vec3(0.0f, 1.0f, 0.0f);
 
             float width = 30.0f;
             float height = 10.0f;
@@ -37,24 +37,19 @@ namespace LibFluid::Sensors {
         } settings;
 
 
-        virtual void calculate_and_store(const Timepoint& timepoint) override;
+        std::vector<SensorDataFieldDefinition> get_definitions() override;
+        std::vector<glm::vec3> calculate_for_timepoint(const Timepoint& timepoint) override;
+        void add_data_fields_to_json_array(nlohmann::json& array, const std::vector<glm::vec3>& data) override;
 
-        virtual void save_data_to_file(SensorWriter& writer) override;
 
-        virtual void create_compatibility_report(CompatibilityReport& report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
         const Image& get_last_image() const;
-
 
       private:
         Image last_image = Image(1, 1);
 
-        std::vector<vec3> last_values;
-
-        Image get_image_representation() const;
-
-        SensorData<std::string> data;
-        size_t saved_data_until = 0;
+        Image get_image_representation(const std::vector<glm::vec3>& data) const;
     };
 
-} // namespace FluidSolver::Sensors
+} // namespace LibFluid::Sensors

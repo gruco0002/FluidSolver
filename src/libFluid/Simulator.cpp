@@ -37,11 +37,8 @@ namespace LibFluid {
 
         // measure sensor data
         for (auto sen : data.sensors) {
-            sen->calculate_and_store(timepoint);
+            sen->execute_timestep(timepoint);
         }
-
-        // call the output manager
-        output->timestep_happened();
     }
 
     void Simulator::initialize() {
@@ -114,8 +111,6 @@ namespace LibFluid {
 
                 sen->simulator_data.notify_that_data_changed();
             }
-
-            output->parameters.sensors = data.sensors;
         }
     }
 
@@ -167,4 +162,4 @@ namespace LibFluid {
     void Simulator::set_timepoint(const Timepoint& timepoint) {
         this->timepoint = timepoint;
     }
-} // namespace FluidSolver
+} // namespace LibFluid

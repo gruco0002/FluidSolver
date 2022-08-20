@@ -89,7 +89,7 @@ namespace LibFluid {
         node["type"] = "global-density-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -99,7 +99,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::GlobalDensitySensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep_data_in_memory"].get<bool>();
 
         return res;
     }
@@ -111,7 +111,7 @@ namespace LibFluid {
         node["type"] = "global-pressure-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -121,7 +121,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::GlobalPressureSensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
 
         return res;
     }
@@ -133,7 +133,7 @@ namespace LibFluid {
         node["type"] = "global-velocity-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -143,7 +143,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::GlobalVelocitySensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
 
         return res;
     }
@@ -154,7 +154,7 @@ namespace LibFluid {
         node["type"] = "sensor-plane";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         // sensor plane custom settings
         node["size"]["width"] = sen->settings.width;
@@ -195,7 +195,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::SensorPlane>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
 
         // sensor plane custom settings
         res->settings.width = node["size"]["width"].get<float>();
@@ -241,7 +241,7 @@ namespace LibFluid {
         node["type"] = "global-energy-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         node["relative-zero-height"] = sen->settings.relative_zero_height;
 
@@ -252,7 +252,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::GlobalEnergySensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
         res->settings.relative_zero_height = node["relative-zero-height"].get<float>();
         return res;
     }
@@ -264,7 +264,7 @@ namespace LibFluid {
         node["type"] = "global-particle-count-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -274,7 +274,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::GlobalParticleCountSensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
         return res;
     }
 
@@ -285,7 +285,7 @@ namespace LibFluid {
         node["type"] = "compressed-neighborhood-storage-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -294,7 +294,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
         return res;
     }
 
@@ -304,7 +304,7 @@ namespace LibFluid {
         node["type"] = "iisph-sensor";
         node["name"] = sen->parameters.name;
         node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory-after-saving"] = sen->parameters.keep_data_in_memory_after_saving;
+        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
 
         return node;
     }
@@ -312,7 +312,7 @@ namespace LibFluid {
         auto res = std::make_shared<Sensors::IISPHSensor>();
         res->parameters.name = node["name"].get<std::string>();
         res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory_after_saving = node["keep-data-in-memory-after-saving"].get<bool>();
+        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
         return res;
     }
 

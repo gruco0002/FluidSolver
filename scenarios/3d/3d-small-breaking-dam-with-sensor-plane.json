@@ -10,7 +10,7 @@
         "type": "sensor-plane",
         "name": "Sensor Plane 1",
         "save-to-file": false,
-        "keep-data-in-memory-after-saving": false,
+        "keep-data-in-memory": false,
         "size": {
           "width": 40,
           "height": 20

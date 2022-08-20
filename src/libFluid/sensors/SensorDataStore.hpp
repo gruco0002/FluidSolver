@@ -6,7 +6,7 @@
 
 namespace LibFluid {
 
-    template <typename T> class SensorData {
+    template <typename T> class SensorDataStore {
 
       private:
         std::vector<T> values;

@@ -1,20 +1,28 @@
 #include "ParticleStatistics.hpp"
 
-#include "FluidAssert.hpp"
+#include "FluidInclude.hpp"
 #include "Simulator.hpp"
 
 #include <algorithm>
 
-namespace LibFluid {
+namespace LibFluid::Sensors {
 
-    void Sensors::GlobalDensitySensor::calculate_and_store(const Timepoint& timepoint) {
+    std::vector<SensorDataFieldDefinition> GlobalDensitySensor::get_definitions() {
+        return {
+                {"Maximum Density", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Minimum Density", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Average Density", SensorDataFieldDefinition::FieldType::Float, "", ""},
+        };
+    }
+
+    MaxMinAvgSensorData GlobalDensitySensor::calculate_for_timepoint(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);
         auto collection = simulator_data.collection;
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
 
         // calculate data;
-        MMAData d;
+        MaxMinAvgSensorData d;
 
         size_t counter = 0;
         for (size_t i = 0; i < collection->size(); i++) {
@@ -33,44 +41,30 @@ namespace LibFluid {
             d.average = d.average / counter;
         }
 
-        // save the calculated results
-        data.push_back(timepoint, d);
+        return d;
     }
 
-    void Sensors::GlobalDensitySensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<float>("Density Avg");
-            writer.push_back_header<float>("Density Min");
-            writer.push_back_header<float>("Density Max");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
+    void GlobalDensitySensor::add_data_fields_to_json_array(nlohmann::json& array, const MaxMinAvgSensorData& data) {
+        array.push_back(data.maximum);
+        array.push_back(data.minimum);
+        array.push_back(data.average);
     }
 
-
-    void Sensors::GlobalPressureSensor::calculate_and_store(const Timepoint& timepoint) {
+    std::vector<SensorDataFieldDefinition> GlobalPressureSensor::get_definitions() {
+        return {
+                {"Maximum Pressure", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Minimum Pressure", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Average Pressure", SensorDataFieldDefinition::FieldType::Float, "", ""},
+        };
+    }
+    MaxMinAvgSensorData GlobalPressureSensor::calculate_for_timepoint(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);
         auto collection = simulator_data.collection;
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
 
         // calculate data;
-        MMAData d;
+        MaxMinAvgSensorData d;
 
         size_t counter = 0;
         for (size_t i = 0; i < collection->size(); i++) {
@@ -89,44 +83,30 @@ namespace LibFluid {
             d.average = d.average / counter;
         }
 
-        // save the calculated results
-        data.push_back(timepoint, d);
+        return d;
+    }
+    void GlobalPressureSensor::add_data_fields_to_json_array(nlohmann::json& array, const MaxMinAvgSensorData& data) {
+        array.push_back(data.maximum);
+        array.push_back(data.minimum);
+        array.push_back(data.average);
     }
 
-    void Sensors::GlobalPressureSensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<float>("Pressure Avg");
-            writer.push_back_header<float>("Pressure Min");
-            writer.push_back_header<float>("Pressure Max");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
+    std::vector<SensorDataFieldDefinition> GlobalVelocitySensor::get_definitions() {
+        return {
+                {"Maximum Velocity", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Minimum Velocity", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Average Velocity", SensorDataFieldDefinition::FieldType::Float, "", ""},
+        };
     }
 
-
-    void Sensors::GlobalVelocitySensor::calculate_and_store(const Timepoint& timepoint) {
+    MaxMinAvgSensorData GlobalVelocitySensor::calculate_for_timepoint(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);
         auto collection = simulator_data.collection;
         FLUID_ASSERT(collection->is_type_present<MovementData>());
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
 
         // calculate data;
-        MMAData d;
+        MaxMinAvgSensorData d;
 
         size_t counter = 0;
         for (size_t i = 0; i < collection->size(); i++) {
@@ -146,61 +126,22 @@ namespace LibFluid {
             d.average = d.average / counter;
         }
 
-        // save the calculated results
-        data.push_back(timepoint, d);
+        return d;
     }
-
-    void Sensors::GlobalVelocitySensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<float>("Velocity Avg");
-            writer.push_back_header<float>("Velocity Min");
-            writer.push_back_header<float>("Velocity Max");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.average << tmp.minimum << tmp.maximum << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
-    }
-
-    void Sensors::GlobalEnergySensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<float>("Kinetic");
-            writer.push_back_header<float>("Potential");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.kinetic << tmp.potential << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
+    void GlobalVelocitySensor::add_data_fields_to_json_array(nlohmann::json& array, const MaxMinAvgSensorData& data) {
+        array.push_back(data.maximum);
+        array.push_back(data.minimum);
+        array.push_back(data.average);
     }
 
 
-    void Sensors::GlobalEnergySensor::calculate_and_store(const Timepoint& timepoint) {
+    std::vector<SensorDataFieldDefinition> GlobalEnergySensor::get_definitions() {
+        return {
+                {"Kinetic Energy", SensorDataFieldDefinition::FieldType::Float, "", ""},
+                {"Potential Energy", SensorDataFieldDefinition::FieldType::Float, "", ""},
+        };
+    }
+    EnergySensorData GlobalEnergySensor::calculate_for_timepoint(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);
         auto collection = simulator_data.collection;
         FLUID_ASSERT(collection->is_type_present<MovementData>());
@@ -208,7 +149,7 @@ namespace LibFluid {
         FLUID_ASSERT(collection->is_type_present<ParticleData>());
 
         // calculate data;
-        EnergyData d;
+        EnergySensorData d;
 
         for (size_t i = 0; i < collection->size(); i++) {
             const MovementData& mData = collection->get<MovementData>(i);
@@ -224,18 +165,27 @@ namespace LibFluid {
             }
         }
 
-        // save the calculated results
-        data.push_back(timepoint, d);
+        return d;
+    }
+    void GlobalEnergySensor::add_data_fields_to_json_array(nlohmann::json& array, const EnergySensorData& data) {
+        array.push_back(data.kinetic);
+        array.push_back(data.potential);
     }
 
-
-    void Sensors::GlobalParticleCountSensor::calculate_and_store(const Timepoint& timepoint) {
+    std::vector<SensorDataFieldDefinition> GlobalParticleCountSensor::get_definitions() {
+        return {
+                {"Normal Particles", SensorDataFieldDefinition::FieldType::Int, "", ""},
+                {"Boundary Particles", SensorDataFieldDefinition::FieldType::Int, "", ""},
+                {"Inactive Particles", SensorDataFieldDefinition::FieldType::Int, "", ""},
+        };
+    }
+    ParticleCountSensorData GlobalParticleCountSensor::calculate_for_timepoint(const Timepoint& timepoint) {
         FLUID_ASSERT(simulator_data.collection != nullptr);
         auto collection = simulator_data.collection;
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
 
         // calculate data;
-        ParticleCountData d;
+        ParticleCountSensorData d;
 
         for (size_t i = 0; i < collection->size(); i++) {
             const ParticleInfo& iData = collection->get<ParticleInfo>(i);
@@ -249,33 +199,11 @@ namespace LibFluid {
             }
         }
 
-        // save the calculated results
-        data.push_back(timepoint, d);
+        return d;
     }
-
-    void Sensors::GlobalParticleCountSensor::save_data_to_file(SensorWriter& writer) {
-        if (writer.begin_header()) {
-            writer.push_back_header<Timepoint>("Timepoint");
-            writer.push_back_header<size_t>("Normal");
-            writer.push_back_header<size_t>("Boundary");
-            writer.push_back_header<size_t>("Inactive");
-            writer.end_header();
-        }
-
-
-        // data writing
-        for (size_t i = saved_data_until; i < data.size(); i++) {
-            auto& tmp = data.data()[i];
-            writer << data.times()[i] << tmp.normal_particles << tmp.boundary_particles << tmp.inactive_particles
-                   << SensorWriter::Control::Next;
-        }
-
-
-        if (parameters.keep_data_in_memory_after_saving) {
-            saved_data_until = data.size();
-        } else {
-            data.clear();
-            saved_data_until = 0;
-        }
+    void GlobalParticleCountSensor::add_data_fields_to_json_array(nlohmann::json& array, const ParticleCountSensorData& data) {
+        array.push_back(data.normal_particles);
+        array.push_back(data.boundary_particles);
+        array.push_back(data.inactive_particles);
     }
-} // namespace FluidSolver
+} // namespace LibFluid::Sensors

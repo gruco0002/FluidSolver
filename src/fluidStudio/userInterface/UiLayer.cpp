@@ -468,7 +468,7 @@ namespace FluidStudio {
         });
     }
 
-    const char* get_sensor_type_name(const std::shared_ptr<LibFluid::ISensor>& sen) {
+    const char* get_sensor_type_name(const std::shared_ptr<LibFluid::Sensor>& sen) {
         if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen)) {
             return "Global Density";
         } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen)) {
@@ -500,7 +500,7 @@ namespace FluidStudio {
             }
             ImGui::InputText("Name", &sen->parameters.name);
             ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
-            ImGui::Checkbox("Keep Data after Saving", &sen->parameters.keep_data_in_memory_after_saving);
+            ImGui::Checkbox("Keep Data in Memory", &sen->parameters.keep_data_in_memory);
         });
 
         if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
@@ -516,12 +516,6 @@ namespace FluidStudio {
         auto& output = window->simulator_visualizer_bundle.simulator->output;
         BeginSubsection("Output", [&]() {
             ImGui::InputText("Directory", &output->parameters.output_folder);
-            if (ImGui::InputInt("Write Interval", (int*)&output->parameters.timesteps_between_sensor_save)) {
-                if (output->parameters.timesteps_between_sensor_save == 0 ||
-                        output->parameters.timesteps_between_sensor_save == -1) {
-                    output->parameters.timesteps_between_sensor_save = 1;
-                }
-            }
         });
     }
 
@@ -1027,4 +1021,4 @@ namespace FluidStudio {
 
         window->visualization_overlay.set_new_overlay_instance(new_overlay_instance);
     }
-} // namespace FluidUi
+} // namespace FluidStudio

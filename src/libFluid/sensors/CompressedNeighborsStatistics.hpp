@@ -1,32 +1,30 @@
 #pragma once
 
 #include "FluidInclude.hpp"
-#include "sensors/ISensor.hpp"
-#include "sensors/SensorData.hpp"
+#include "sensors/SensorBase.hpp"
 
 #include <limits>
 
 
 namespace LibFluid::Sensors {
 
-    class CompressedNeighborStorageSensor : public ISensor {
+    struct CompressedNeighborStorageSensorInfo {
+        float used_delta_bytes_average = 0.0f;
+        float used_delta_bytes_minimum = std::numeric_limits<float>::max();
+        float used_delta_bytes_maximum = std::numeric_limits<float>::lowest();
+
+        float neighbor_count_average = 0.0f;
+        float neighbor_count_minimum = std::numeric_limits<float>::max();
+        float neighbor_count_maximum = std::numeric_limits<float>::lowest();
+    };
+
+    class CompressedNeighborStorageSensor : public SensorBase<CompressedNeighborStorageSensorInfo> {
       public:
-        struct Info {
-            float used_delta_bytes_average = 0.0f;
-            float used_delta_bytes_minimum = std::numeric_limits<float>::max();
-            float used_delta_bytes_maximum = std::numeric_limits<float>::lowest();
-
-            float neighbor_count_average = 0.0f;
-            float neighbor_count_minimum = std::numeric_limits<float>::max();
-            float neighbor_count_maximum = std::numeric_limits<float>::lowest();
-        };
-
-        SensorData<Info> data;
-
-        virtual void calculate_and_store(const Timepoint& timepoint) override;
-        virtual void save_data_to_file(SensorWriter& writer) override;
+        std::vector<SensorDataFieldDefinition> get_definitions() override;
+        CompressedNeighborStorageSensorInfo calculate_for_timepoint(const Timepoint& timepoint) override;
+        void add_data_fields_to_json_array(nlohmann::json& array, const CompressedNeighborStorageSensorInfo& data) override;
 
         virtual void create_compatibility_report(CompatibilityReport& report) override;
     };
 
-} // namespace FluidSolver::Sensors
+} // namespace LibFluid::Sensors

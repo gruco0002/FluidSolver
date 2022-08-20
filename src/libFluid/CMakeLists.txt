@@ -41,8 +41,7 @@ set(LIB_FLUID_SOURCE_FILES
         "FluidAssert.hpp"
         "fluidSolver/ParticleCollectionAlgorithm.cpp"
         "fluidSolver/ParticleCollectionAlgorithm.hpp"
-        "sensors/SensorData.cpp"
-        "sensors/SensorData.hpp"
+        "sensors/SensorDataStore.hpp"
         "sensors/ParticleStatistics.cpp"
         "sensors/ParticleStatistics.hpp"
         "FluidTypes.hpp"
@@ -57,15 +56,14 @@ set(LIB_FLUID_SOURCE_FILES
         "entities/IEntity.hpp"
         "entities/ParticleRemover.cpp"
         "entities/ParticleRemover.hpp"
-        "sensors/ISensor.hpp"
+        "sensors/SensorBase.hpp"
         "Log.hpp" "Log.cpp"
         "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "parallelization/NoParallelization.hpp" "parallelization/NoParallelization.cpp"
         "parallelization/StdParallelForEach.hpp" "parallelization/StdParallelForEach.cpp"
         "serialization/SimulationSerializer.hpp" "serialization/SimulationSerializer.cpp"      
         "visualizer/Image.hpp" "visualizer/Image.cpp"
-        "sensors/SensorWriter.hpp" "sensors/SensorWriter.cpp"
-        "OutputManager.hpp" "OutputManager.cpp"      
+        "sensors/OutputManager.hpp" "sensors/OutputManager.cpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
         "fluidSolver/kernel/CubicSplineKernel3D.hpp" "fluidSolver/kernel/CubicSplineKernel3D.cpp"
         "fluidSolver/SESPHFluidSolver3D.hpp"
@@ -94,6 +92,8 @@ set(LIB_FLUID_SOURCE_FILES
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
         serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
+        sensors/Sensor.hpp
+        serialization/Base64.cpp serialization/Base64.hpp
         )
 
 

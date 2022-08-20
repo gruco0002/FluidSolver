@@ -45,6 +45,7 @@ namespace LibFluid {
         Color& get(size_t x, size_t y);
 
         void save_as_png(const std::string& filepath) const;
+        std::vector<uint8_t> get_as_png() const;
     };
 
 
