@@ -359,6 +359,11 @@ namespace LibFluid {
             if (cns) {
                 res["sensors"].push_back(save_compressed_neighborhood_storage_sensor(cns));
             }
+
+            auto iisph = std::dynamic_pointer_cast<Sensors::IISPHSensor>(sen);
+            if (iisph) {
+                res["sensors"].push_back(save_iisph_sensor(iisph));
+            }
         }
 
         return res;
