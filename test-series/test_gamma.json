@@ -1,0 +1,87 @@
+{
+    "scenario": {
+        "gravity": 9.8100004196167,
+        "particle-size": 1.0,
+        "particles": "test_gamma.data",
+        "rest-density": 1.0,
+        "sensors": [
+            {
+                "filename": "iisph.sensor",
+                "keep-data-in-memory": false,
+                "name": "IISPH Sensor",
+                "save-to-file": true,
+                "type": "iisph-sensor"
+            }
+        ]
+    },
+    "solver": {
+        "gamma": 0.699999988079071,
+        "kernel": {
+            "type": "cubic-spline-kernel-3d"
+        },
+        "max-density-error": 0.5,
+        "max-iterations": 5,
+        "min-iterations": 2,
+        "neigborhood-search": {
+            "type": "hashed-3d"
+        },
+        "omega": 0.5,
+        "single-layer-boundary-enabled": false,
+        "timestep": {
+            "timestep": 0.05000000074505806,
+            "type": "constant"
+        },
+        "type": "iisph-3d",
+        "viscosity": 5.0
+    },
+    "version": 1,
+    "visualizer": {
+        "render-target": {
+            "height": 1080,
+            "width": 1920
+        },
+        "settings": {
+            "background-color": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "boundary-color": [
+                0.5,
+                0.5,
+                0.5,
+                1.0
+            ],
+            "camera": {
+                "location": [
+                    -11.995362281799316,
+                    4.294867515563965,
+                    6.721351623535156
+                ],
+                "looking-at": [
+                    -4.073333740234375,
+                    2.1025755405426025,
+                    1.2045292854309082
+                ],
+                "up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ]
+            },
+            "fluid-color": [
+                0.5,
+                0.5,
+                1.0,
+                1.0
+            ],
+            "light-direction": [
+                8.0,
+                -12.0,
+                1.0
+            ]
+        },
+        "type": "gl-particle-renderer-3d"
+    }
+}

@@ -1,4 +1,4 @@
-import yaml
+import json
 import os
 import subprocess
 
@@ -24,6 +24,9 @@ class Parameter:
 
     def reset(self):
         self._current = 0
+
+    def path_as_string(self):
+        return ".".join(self.parameter_path)
 
 
 class TestSeriesRunner:
@@ -55,7 +58,7 @@ class TestSeriesRunner:
     def _create_file(self, new_filename: str):
         # open existing file
         with open(self.base_file, "r") as stream:
-            data = yaml.safe_load(stream)
+            data = json.load(stream)
 
         # set params accordingly
         for param in self.parameters:
@@ -69,12 +72,12 @@ class TestSeriesRunner:
 
         # write to new file
         with open(new_filename, "w+") as stream:
-            stream.write(yaml.safe_dump(data))
+            stream.write(json.dumps(data, indent=4))
 
     def _create_param_documentation(self) -> list:
-        res = [str(self._instance_counter)]
+        res = {"instanceId": self._instance_counter}
         for param in self.parameters:
-            res += [str(param.current())]
+            res[param.path_as_string()] = param.current()
         return res
 
     def _create_output_directory(self) -> str:
@@ -83,7 +86,7 @@ class TestSeriesRunner:
         return result
 
     def _run_instance(self):
-        new_filepath = "i" + str(self._instance_counter) + ".yaml"
+        new_filepath = "i" + str(self._instance_counter) + ".json"
         self._create_file(new_filepath)
         output_directory = self._create_output_directory()
 
@@ -97,15 +100,9 @@ class TestSeriesRunner:
         subprocess.call((self.executable, "-f " + final_file, "-o " +
                         output_directory, "-l " + str(self.simulation_length)))
 
-    def _save_documentation(self):
-        header = ["instance id"]
-        for param in self.parameters:
-            header.append(" ".join(param.parameter_path))
-
-        document = [header] + self._documentation
-        with open("instance_docs.csv", "w+", newline="\r\n") as stream:
-            lines = list([";".join(line) for line in document])
-            stream.writelines(lines)
+    def _save_documentation(self):        
+        with open("instance_docs.json", "w+") as stream:
+            stream.write(json.dumps(self._documentation, indent=4))
 
     def evaluate(self):
         assert(self._instance_counter == 0)
