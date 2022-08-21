@@ -499,8 +499,10 @@ namespace FluidStudio {
                 statisticsUi.open_sensor_window(index);
             }
             ImGui::InputText("Name", &sen->parameters.name);
-            ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
             ImGui::Checkbox("Keep Data in Memory", &sen->parameters.keep_data_in_memory);
+            ImGui::Separator();
+            ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
+            ImGui::InputText("Filename", &sen->parameters.filename);
         });
 
         if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {

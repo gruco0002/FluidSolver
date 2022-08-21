@@ -59,7 +59,8 @@ namespace LibFluid {
         nlohmann::json save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover);
         std::shared_ptr<ParticleRemover3D> load_particle_remover_3d(const nlohmann::json& node);
 
-
+        void save_basic_sensor_data(nlohmann::json &sensor_object, const std::shared_ptr<Sensor>& sensor);
+        void load_basic_sensor_data(const nlohmann::json &sensor_object, std::shared_ptr<Sensor> sensor);
 
         nlohmann::json save_global_density_sensor(const std::shared_ptr<Sensors::GlobalDensitySensor>& sen);
         std::shared_ptr<Sensors::GlobalDensitySensor> load_global_density_sensor(const nlohmann::json& node);

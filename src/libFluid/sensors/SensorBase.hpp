@@ -120,7 +120,7 @@ namespace LibFluid {
                     // the sensor never wrote something to a file
 
                     // retrieve a unique id
-                    sensor_output_identifier = simulator_data.manager->generate_sensor_output_identifier();
+                    sensor_output_identifier = simulator_data.manager->generate_sensor_output_identifier(*this);
 
                     // generate the header
                     auto header = generate_header();

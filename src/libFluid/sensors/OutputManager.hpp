@@ -17,7 +17,7 @@ namespace LibFluid {
 
         ~OutputManager();
 
-        size_t generate_sensor_output_identifier();
+        size_t generate_sensor_output_identifier(const Sensor& sensor);
 
         std::ofstream& get_stream(size_t sensor_output_identifier);
 
@@ -25,6 +25,7 @@ namespace LibFluid {
         size_t sensor_output_identifier_counter = 0;
 
         std::map<size_t, std::ofstream> sensor_streams;
+        std::map<size_t, std::string> sensor_filenames;
 
         static std::string remove_invalid_chars_from_filename(const std::string& filename);
 

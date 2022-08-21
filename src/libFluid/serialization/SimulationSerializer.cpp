@@ -87,9 +87,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "global-density-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
@@ -97,9 +95,7 @@ namespace LibFluid {
     std::shared_ptr<Sensors::GlobalDensitySensor> SimulationSerializer::load_global_density_sensor(
             const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::GlobalDensitySensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep_data_in_memory"].get<bool>();
+        load_basic_sensor_data(node, res);
 
         return res;
     }
@@ -109,9 +105,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "global-pressure-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
@@ -119,9 +113,7 @@ namespace LibFluid {
     std::shared_ptr<Sensors::GlobalPressureSensor> SimulationSerializer::load_global_pressure_sensor(
             const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::GlobalPressureSensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
 
         return res;
     }
@@ -131,9 +123,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "global-velocity-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
@@ -141,9 +131,7 @@ namespace LibFluid {
     std::shared_ptr<Sensors::GlobalVelocitySensor> SimulationSerializer::load_global_velocity_sensor(
             const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::GlobalVelocitySensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
 
         return res;
     }
@@ -152,9 +140,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "sensor-plane";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         // sensor plane custom settings
         node["size"]["width"] = sen->settings.width;
@@ -193,9 +179,7 @@ namespace LibFluid {
     }
     std::shared_ptr<Sensors::SensorPlane> SimulationSerializer::load_sensor_plane(const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::SensorPlane>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
 
         // sensor plane custom settings
         res->settings.width = node["size"]["width"].get<float>();
@@ -239,9 +223,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "global-energy-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         node["relative-zero-height"] = sen->settings.relative_zero_height;
 
@@ -250,9 +232,7 @@ namespace LibFluid {
 
     std::shared_ptr<Sensors::GlobalEnergySensor> SimulationSerializer::load_global_energy_sensor(const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::GlobalEnergySensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
         res->settings.relative_zero_height = node["relative-zero-height"].get<float>();
         return res;
     }
@@ -262,9 +242,7 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "global-particle-count-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
@@ -272,9 +250,7 @@ namespace LibFluid {
     std::shared_ptr<Sensors::GlobalParticleCountSensor> SimulationSerializer::load_global_particle_count_sensor(
             const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::GlobalParticleCountSensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
         return res;
     }
 
@@ -283,18 +259,14 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "compressed-neighborhood-storage-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
     std::shared_ptr<Sensors::CompressedNeighborStorageSensor> SimulationSerializer::
             load_compressed_neighborhood_storage_sensor(const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
         return res;
     }
 
@@ -302,17 +274,13 @@ namespace LibFluid {
         nlohmann::json node;
 
         node["type"] = "iisph-sensor";
-        node["name"] = sen->parameters.name;
-        node["save-to-file"] = sen->parameters.save_to_file;
-        node["keep-data-in-memory"] = sen->parameters.keep_data_in_memory;
+        save_basic_sensor_data(node, sen);
 
         return node;
     }
     std::shared_ptr<Sensors::IISPHSensor> SimulationSerializer::load_iisph_sensor(const nlohmann::json& node) {
         auto res = std::make_shared<Sensors::IISPHSensor>();
-        res->parameters.name = node["name"].get<std::string>();
-        res->parameters.save_to_file = node["save-to-file"].get<bool>();
-        res->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+        load_basic_sensor_data(node, res);
         return res;
     }
 
@@ -1030,6 +998,25 @@ namespace LibFluid {
         remover->parameters.remove_if_outside = node["remove-if-outside"].get<bool>();
 
         return remover;
+    }
+
+    void SimulationSerializer::save_basic_sensor_data(nlohmann::json& sensor_object, const std::shared_ptr<Sensor>& sensor) {
+        sensor_object["name"] = sensor->parameters.name;
+        sensor_object["save-to-file"] = sensor->parameters.save_to_file;
+        sensor_object["keep-data-in-memory"] = sensor->parameters.keep_data_in_memory;
+        sensor_object["filename"] = sensor->parameters.filename;
+    }
+
+    void SimulationSerializer::load_basic_sensor_data(const nlohmann::json& sensor_object, std::shared_ptr<Sensor> sensor) {
+        sensor->parameters.name = sensor_object["name"].get<std::string>();
+        sensor->parameters.save_to_file = sensor_object["save-to-file"].get<bool>();
+        sensor->parameters.keep_data_in_memory = sensor_object["keep-data-in-memory"].get<bool>();
+        if (!sensor_object.contains("filename")) {
+            warning_count++;
+            sensor->parameters.filename = "xyz.sensor";
+        } else {
+            sensor->parameters.filename = sensor_object["filename"].get<std::string>();
+        }
     }
 
 
