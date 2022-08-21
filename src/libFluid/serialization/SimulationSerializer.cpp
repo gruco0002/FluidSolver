@@ -948,7 +948,7 @@ namespace LibFluid {
         nlohmann::json config;
 
         // set version
-        config["version"] = "1";
+        config["version"] = 1;
 
 
         // save values
