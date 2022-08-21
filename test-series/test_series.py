@@ -31,14 +31,17 @@ class Parameter:
 
 class TestSeriesRunner:
 
-    def __init__(self, executable: str, base_file: str, parameters: list, simulation_length=60.0):
+    def __init__(self, executable: str, base_file: str, parameters: list, simulation_length=60.0, output_directory="./output"):
         self.executable = executable
         self.base_file = base_file
         self.parameters = parameters
         self.simulation_length = simulation_length
+        self.output_directory = output_directory
 
         self._instance_counter = 0
         self._documentation = []
+
+        os.makedirs(self.output_directory)
 
     def _param_recurse(self, index=0):
         assert(index < len(self.parameters))
@@ -70,6 +73,9 @@ class TestSeriesRunner:
             # set value
             obj[param.parameter_path[-1]] = param.current()
 
+        # correct the data path to avoid copying the particle data
+        data["scenario"]["particles"] = "../" +  data["scenario"]["particles"]
+
         # write to new file
         with open(new_filename, "w+") as stream:
             stream.write(json.dumps(data, indent=4))
@@ -81,12 +87,14 @@ class TestSeriesRunner:
         return res
 
     def _create_output_directory(self) -> str:
-        result = "i" + str(self._instance_counter) + "/"
+        result = self.output_directory + "/i" + \
+            str(self._instance_counter) + "/"
         os.makedirs(result)
         return result
 
     def _run_instance(self):
-        new_filepath = "i" + str(self._instance_counter) + ".json"
+        new_filepath = self.output_directory + "/i" + \
+            str(self._instance_counter) + ".json"
         self._create_file(new_filepath)
         output_directory = self._create_output_directory()
 
@@ -97,11 +105,11 @@ class TestSeriesRunner:
         self._instance_counter += 1
 
     def _run_simulation(self, final_file, output_directory):
-        subprocess.call((self.executable, "-f " + final_file, "-o " +
-                        output_directory, "-l " + str(self.simulation_length)))
+        subprocess.call((self.executable, "-f", "" + final_file + "", "-o",
+                        output_directory, "-l", str(self.simulation_length)), cwd=os.getcwd())
 
-    def _save_documentation(self):        
-        with open("instance_docs.json", "w+") as stream:
+    def _save_documentation(self):
+        with open(self.output_directory + "/instance_docs.json", "w+") as stream:
             stream.write(json.dumps(self._documentation, indent=4))
 
     def evaluate(self):
