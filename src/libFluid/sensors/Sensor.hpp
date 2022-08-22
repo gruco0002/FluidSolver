@@ -6,6 +6,8 @@
 #include "Reportable.hpp"
 #include "time/Timepoint.hpp"
 
+#include <memory>
+
 
 namespace LibFluid {
     class Sensor : public Initializable, public Reportable {
