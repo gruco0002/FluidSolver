@@ -777,6 +777,14 @@ namespace LibFluid {
                     res->settings.max_number_of_iterations = node["max-iterations"].get<size_t>();
                     res->settings.viscosity = node["viscosity"].get<float>();
 
+                    if (node.contains("single-layer-boundary-enabled")) {
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
+                            // TODO: move gamme here as gamma-2
+                        }
+                    }
+
                     simulation.data.fluid_solver = res;
                 } else if (node["neigborhood-search"]["type"].get<std::string>() == "hashed-3d") {
                     auto res = std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>();
@@ -787,6 +795,14 @@ namespace LibFluid {
                     res->settings.min_number_of_iterations = node["min-iterations"].get<size_t>();
                     res->settings.max_number_of_iterations = node["max-iterations"].get<size_t>();
                     res->settings.viscosity = node["viscosity"].get<float>();
+
+                    if (node.contains("single-layer-boundary-enabled")) {
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
+                            // TODO: move gamme here as gamma-2
+                        }
+                    }
 
                     simulation.data.fluid_solver = res;
                 } else if (node["neigborhood-search"]["type"].get<std::string>() == "compressed-3d") {
@@ -799,6 +815,14 @@ namespace LibFluid {
                     res->settings.min_number_of_iterations = node["min-iterations"].get<size_t>();
                     res->settings.max_number_of_iterations = node["max-iterations"].get<size_t>();
                     res->settings.viscosity = node["viscosity"].get<float>();
+
+                    if (node.contains("single-layer-boundary-enabled")) {
+                        res->settings.single_layer_boundary = node["single-layer-boundary-enabled"].get<bool>();
+                        if (res->settings.single_layer_boundary) {
+                            res->settings.single_layer_boundary_gamma_1 = node["single-layer-settings"]["gamma-1"].get<float>();
+                            // TODO: move gamme here as gamma-2
+                        }
+                    }
 
                     simulation.data.fluid_solver = res;
                 } else {
