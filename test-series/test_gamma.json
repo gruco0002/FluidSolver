@@ -26,9 +26,12 @@
             "type": "hashed-3d"
         },
         "omega": 0.5,
-        "single-layer-boundary-enabled": false,
+        "single-layer-boundary-enabled": true,
+        "single-layer-settings": {
+            "gamma-1": 1.100000023841858
+        },
         "timestep": {
-            "timestep": 0.05000000074505806,
+            "timestep": 0.50000000149011612,
             "type": "constant"
         },
         "type": "iisph-3d",

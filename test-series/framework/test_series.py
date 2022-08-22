@@ -2,6 +2,8 @@ import json
 import os
 import subprocess
 
+from framework.sensor import SensorReader
+
 
 class Parameter:
 
@@ -58,6 +60,9 @@ class TestSeriesRunner:
 
             param.next()
 
+        # reset so that next iteration invoked from one level up can start
+        param.reset()
+
     def _create_file(self, new_filename: str):
         # open existing file
         with open(self.base_file, "r") as stream:
@@ -74,7 +79,7 @@ class TestSeriesRunner:
             obj[param.parameter_path[-1]] = param.current()
 
         # correct the data path to avoid copying the particle data
-        data["scenario"]["particles"] = "../" +  data["scenario"]["particles"]
+        data["scenario"]["particles"] = "../" + data["scenario"]["particles"]
 
         # write to new file
         with open(new_filename, "w+") as stream:
@@ -116,3 +121,32 @@ class TestSeriesRunner:
         assert(self._instance_counter == 0)
         self._param_recurse()
         self._save_documentation()
+
+
+class TestSeriesSensorAnalyzer:
+
+    def __init__(self, documentation_path: str, sensor_filename: str) -> None:
+        self.documentation_path = documentation_path
+        self.sensor_filename = sensor_filename
+
+        self._sensor_readers = []
+        self._instance_information = []
+
+        self._read_files()
+
+    def get_instances(self) -> list:
+        return zip(self._instance_information, self._sensor_readers)
+
+    def _read_files(self):
+        with open(self.documentation_path, "r") as f:
+            documentation_data = json.load(f)
+            for instance in documentation_data:
+                self._instance_information.append(instance)
+                reader = self._read_instance_sensor(instance["instanceId"])
+                self._sensor_readers.append(reader)
+
+    def _read_instance_sensor(self, instanceId: int) -> SensorReader:
+        dir = os.path.dirname(self.documentation_path)
+        path = os.path.join(dir, "i" + str(instanceId), self.sensor_filename)
+
+        return SensorReader(path)
