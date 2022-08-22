@@ -125,9 +125,9 @@ class TestSeriesRunner:
 
 class TestSeriesSensorAnalyzer:
 
-    def __init__(self, documentation_path: str, sensor_filename: str) -> None:
+    def __init__(self, documentation_path: str, sensor_filenames: list) -> None:
         self.documentation_path = documentation_path
-        self.sensor_filename = sensor_filename
+        self.sensor_filenames = sensor_filenames
 
         self._sensor_readers = []
         self._instance_information = []
@@ -145,8 +145,13 @@ class TestSeriesSensorAnalyzer:
                 reader = self._read_instance_sensor(instance["instanceId"])
                 self._sensor_readers.append(reader)
 
-    def _read_instance_sensor(self, instanceId: int) -> SensorReader:
+    def _read_instance_sensor(self, instanceId: int) -> list:
         dir = os.path.dirname(self.documentation_path)
-        path = os.path.join(dir, "i" + str(instanceId), self.sensor_filename)
 
-        return SensorReader(path)
+        readers = []
+        for sensor_filename in self.sensor_filenames:
+            path = os.path.join(dir, "i" + str(instanceId),
+                                sensor_filename)
+            readers.append(SensorReader(path))
+
+        return readers

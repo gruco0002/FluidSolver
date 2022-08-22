@@ -32,7 +32,26 @@ class SensorReader:
         return avg
 
     def get_data_max(self, field_name: str) -> float:
-        pass  # TODO: implement
+        index = self._get_index_from_fieldname(field_name)
+
+        data = self._indexed_data[index]
+
+        res = data[0]
+        for value in data:
+            res = max(res, value)
+
+        return res
+
+    def get_data_min(self, field_name: str) -> float:
+        index = self._get_index_from_fieldname(field_name)
+
+        data = self._indexed_data[index]
+
+        res = data[0]
+        for value in data:
+            res = min(res, value)
+
+        return res
 
     def get_name(self):
         return self._sensor_name

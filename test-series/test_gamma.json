@@ -56,7 +56,7 @@
             "gamma-1": 1.100000023841858
         },
         "timestep": {
-            "timestep": 0.5,
+            "timestep": 0.1,
             "type": "constant"
         },
         "type": "iisph-3d",
