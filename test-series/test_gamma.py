@@ -1,6 +1,13 @@
 import argparse
 import os
 
+# used for plotting
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+
 import framework.test_series as test_series
 
 
@@ -29,20 +36,35 @@ def analyze_data():
 
         iisph_sensor, particle_count_sensor = sensor_readers
 
-        gamma1.append(instance_info["solver.single-layer-settings.gamma-1"])
-        gamma2.append(instance_info["solver.gamma"])
-
         mean_iter_count = iisph_sensor.get_data_mean("Last Iteration Count")
         max_inactive_particles = particle_count_sensor.get_data_max(
             "Inactive Particles")
 
-        avg_iteration_count.append(mean_iter_count)
         if max_inactive_particles > 0:
             valid_simulation.append(False)
         else:
             valid_simulation.append(True)
 
-    print(list(zip(gamma1, gamma2, avg_iteration_count, valid_simulation)))
+            gamma1.append(
+                instance_info["solver.single-layer-settings.gamma-1"])
+            gamma2.append(instance_info["solver.gamma"])
+            avg_iteration_count.append(mean_iter_count)
+
+    _show_plot(gamma1, gamma2, avg_iteration_count)
+
+
+def _show_plot(gamma1, gamma2, avg_iteration_count):
+
+    df = pd.DataFrame.from_dict(
+        np.array([gamma1, gamma2, avg_iteration_count]).T)
+    df.columns = ['Gamma 1', 'Gamma 2', 'Average Iteration Count']
+
+    pivotted = df.pivot('Gamma 1', 'Gamma 2', 'Average Iteration Count')
+
+    ax = sns.heatmap(pivotted, cmap='RdBu')
+
+    plt.title("Average Iteration Count")
+    plt.show()
 
 
 if __name__ == "__main__":
