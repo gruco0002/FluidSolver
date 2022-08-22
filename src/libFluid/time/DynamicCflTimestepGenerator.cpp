@@ -103,10 +103,11 @@ namespace LibFluid {
             delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
         }
 
-        return std::fmin(delta_t_a, delta_t_v);
+        auto new_timestep = std::fmin(delta_t_a, delta_t_v);
+
+        return std::fmax(new_timestep, MIN_ALLOWED_TIMESTEP);
     }
     void DynamicCflTimestepGenerator::initialize() {
-
     }
 
-} // namespace FluidSolver
+} // namespace LibFluid

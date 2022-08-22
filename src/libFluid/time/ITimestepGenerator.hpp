@@ -15,6 +15,8 @@ namespace LibFluid {
       protected:
         float generated_timestep = 0.0f;
 
+       static constexpr float MIN_ALLOWED_TIMESTEP = 0.000001f;
+
       public:
         struct TimestepParameters
         {
