@@ -13,13 +13,16 @@ import framework.test_series as test_series
 
 def create_data():
     param_gamma2 = test_series.Parameter(
-        ["solver", "gamma"], [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
+        ["solver", "gamma"], [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8])
 
     param_gamma1 = test_series.Parameter(["solver", "single-layer-settings", "gamma-1"], [
-                                         0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5])
+                                         0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5])
+
+    param_timestep = test_series.Parameter(["solver", "timestep", "timestep"], [
+                                           0.075, 0.05, 0.025, 0.01])
 
     runner = test_series.TestSeriesRunner(
-        "./../cmake-build-relwithdebinfo/FluidConsole", "test_gamma.json", [param_gamma1, param_gamma2], simulation_length=10.0)
+        "./../cmake-build-relwithdebinfo/FluidConsole", "test_gamma.json", [param_timestep, param_gamma1, param_gamma2], simulation_length=10.0)
     runner.evaluate()
 
 
@@ -27,43 +30,64 @@ def analyze_data():
     analyzer = test_series.TestSeriesSensorAnalyzer(
         "./output/instance_docs.json", ["iisph.sensor", "particleCount.sensor"])
 
-    gamma1 = []
-    gamma2 = []
-    avg_iteration_count = []
-    valid_simulation = []
+    
+    gamma1 = {}
+    gamma2 = {}
+    avg_iteration_count = {}
 
     for instance_info, sensor_readers in analyzer.get_instances():
 
+        timestep = instance_info["solver.timestep.timestep"]
+        if timestep not in gamma1:
+            gamma1[timestep] = []
+            gamma2[timestep] = []
+            avg_iteration_count[timestep] = []
+        
         iisph_sensor, particle_count_sensor = sensor_readers
 
         mean_iter_count = iisph_sensor.get_data_mean("Last Iteration Count")
         max_inactive_particles = particle_count_sensor.get_data_max(
             "Inactive Particles")
 
-        if max_inactive_particles > 0:
-            valid_simulation.append(False)
-        else:
-            valid_simulation.append(True)
-
-            gamma1.append(
+        gamma1[timestep].append(
                 instance_info["solver.single-layer-settings.gamma-1"])
-            gamma2.append(instance_info["solver.gamma"])
-            avg_iteration_count.append(mean_iter_count)
+        gamma2[timestep].append(instance_info["solver.gamma"])
+        if max_inactive_particles > 0:
+            # invalid simulation
+            avg_iteration_count[timestep].append(np.nan)
+        else:
+            # valid simulation            
+            avg_iteration_count[timestep].append(mean_iter_count)
 
     _show_plot(gamma1, gamma2, avg_iteration_count)
 
 
 def _show_plot(gamma1, gamma2, avg_iteration_count):
 
-    df = pd.DataFrame.from_dict(
-        np.array([gamma1, gamma2, avg_iteration_count]).T)
-    df.columns = ['Gamma 1', 'Gamma 2', 'Average Iteration Count']
+    max_iter = 100.0
+    min_iter = 2.0
 
-    pivotted = df.pivot('Gamma 1', 'Gamma 2', 'Average Iteration Count')
+   
 
-    ax = sns.heatmap(pivotted, cmap='RdBu')
+    timesteps = sorted(list(gamma1.keys()))
 
-    plt.title("Average Iteration Count")
+    fig, axes = plt.subplots(1, len(timesteps))
+
+    for i, timestep in enumerate(timesteps):
+
+        ax = axes[i]
+
+        df = pd.DataFrame.from_dict(
+            np.array([gamma1[timestep], gamma2[timestep], avg_iteration_count[timestep]]).T)
+        df.columns = ['Gamma 1', 'Gamma 2', 'Average Iteration Count']
+
+        pivotted = df.pivot('Gamma 1', 'Gamma 2', 'Average Iteration Count')
+
+        mask = pivotted.isnull()
+        sns.heatmap(pivotted, cmap="viridis", ax=ax, mask=mask)
+        ax.set_title("Timestep " + str(timestep) + "s")
+
+    fig.suptitle("Average Iteration Count")
     plt.show()
 
 
