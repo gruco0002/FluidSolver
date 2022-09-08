@@ -53,6 +53,54 @@ class SensorReader:
 
         return res
 
+    def get_data_variance(self, field_name: str) -> float:
+        """ Returns the population variance
+
+            See https://en.wikipedia.org/wiki/Variance#Population_variance
+
+        """
+        return self.get_data_population_variance(field_name)
+
+    def get_data_population_variance(self, field_name: str) -> float:
+        """ Returns the population variance
+
+            See https://en.wikipedia.org/wiki/Variance#Population_variance
+
+        """
+        index = self._get_index_from_fieldname(field_name)
+        data = self._indexed_data[index]
+
+        mean = self.get_data_mean(field_name)
+        agg = 0.0
+        for value in data:
+            term = value - mean
+            agg += term * term
+
+        if len(data) > 0:
+            agg /= len(data)
+
+        return agg
+
+    def get_data_sample_variance(self, field_name: str) -> float:
+        """ Returns the unbiased sample variance
+
+            See https://en.wikipedia.org/wiki/Variance#Unbiased_sample_variance
+
+        """
+        index = self._get_index_from_fieldname(field_name)
+        data = self._indexed_data[index]
+
+        mean = self.get_data_mean(field_name)
+        agg = 0.0
+        for value in data:
+            term = value - mean
+            agg += term * term
+
+        if len(data) > 1:
+            agg /= len(data) - 1
+
+        return agg
+
     def get_name(self):
         return self._sensor_name
 
