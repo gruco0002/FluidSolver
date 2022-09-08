@@ -4,6 +4,7 @@ import os
 # used for plotting
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import LogNorm
 import seaborn as sns
 import pandas as pd
 
@@ -28,12 +29,12 @@ def create_data():
 
 def analyze_data():
     analyzer = test_series.TestSeriesSensorAnalyzer(
-        "./output/instance_docs.json", ["iisph.sensor", "particleCount.sensor"])
+        "./output/instance_docs.json", ["iisph.sensor", "particleCount.sensor", "density.sensor"])
 
-    
     gamma1 = {}
     gamma2 = {}
     avg_iteration_count = {}
+    avg_density_variance = {}
 
     for instance_info, sensor_readers in analyzer.get_instances():
 
@@ -42,32 +43,34 @@ def analyze_data():
             gamma1[timestep] = []
             gamma2[timestep] = []
             avg_iteration_count[timestep] = []
-        
-        iisph_sensor, particle_count_sensor = sensor_readers
+            avg_density_variance[timestep] = []
+
+        iisph_sensor, particle_count_sensor, density_sensor = sensor_readers
 
         mean_iter_count = iisph_sensor.get_data_mean("Last Iteration Count")
+
+        variance = density_sensor.get_data_sample_variance("Average Density")
+
         max_inactive_particles = particle_count_sensor.get_data_max(
             "Inactive Particles")
 
         gamma1[timestep].append(
-                instance_info["solver.single-layer-settings.gamma-1"])
+            instance_info["solver.single-layer-settings.gamma-1"])
         gamma2[timestep].append(instance_info["solver.gamma"])
         if max_inactive_particles > 0:
             # invalid simulation
             avg_iteration_count[timestep].append(np.nan)
+            avg_density_variance[timestep].append(np.nan)
         else:
-            # valid simulation            
+            # valid simulation
             avg_iteration_count[timestep].append(mean_iter_count)
+            avg_density_variance[timestep].append(variance)
 
-    _show_plot(gamma1, gamma2, avg_iteration_count)
+    _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count)
+    _show_plot_density_variance(gamma1, gamma2, avg_density_variance)
 
 
-def _show_plot(gamma1, gamma2, avg_iteration_count):
-
-    max_iter = 100.0
-    min_iter = 2.0
-
-   
+def _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count):
 
     timesteps = sorted(list(gamma1.keys()))
 
@@ -88,6 +91,34 @@ def _show_plot(gamma1, gamma2, avg_iteration_count):
         ax.set_title("Timestep " + str(timestep) + "s")
 
     fig.suptitle("Average Iteration Count")
+    plt.show()
+
+
+def _show_plot_density_variance(gamma1, gamma2, avg_density_variance):
+
+    max_iter = 100.0
+    min_iter = 2.0
+
+    timesteps = sorted(list(gamma1.keys()))
+
+    fig, axes = plt.subplots(1, len(timesteps))
+
+    for i, timestep in enumerate(timesteps):
+
+        ax = axes[i]
+
+        df = pd.DataFrame.from_dict(
+            np.array([gamma1[timestep], gamma2[timestep], np.sqrt(avg_density_variance[timestep])]).T)
+        df.columns = ['Gamma 1', 'Gamma 2', 'Standard Deviation of Average Density']
+
+        pivotted = df.pivot('Gamma 1', 'Gamma 2',
+                            'Standard Deviation of Average Density')
+
+        mask = pivotted.isnull()
+        sns.heatmap(pivotted, cmap="viridis", ax=ax, mask=mask, norm=LogNorm())
+        ax.set_title("Timestep " + str(timestep) + "s")
+
+    fig.suptitle("Standard Deviation of Average Density")
     plt.show()
 
 
