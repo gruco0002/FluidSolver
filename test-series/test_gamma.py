@@ -35,6 +35,7 @@ def analyze_data():
     gamma2 = {}
     avg_iteration_count = {}
     avg_density_variance = {}
+    avg_density_avg = {}
 
     for instance_info, sensor_readers in analyzer.get_instances():
 
@@ -44,12 +45,14 @@ def analyze_data():
             gamma2[timestep] = []
             avg_iteration_count[timestep] = []
             avg_density_variance[timestep] = []
+            avg_density_avg[timestep] = []
 
         iisph_sensor, particle_count_sensor, density_sensor = sensor_readers
 
         mean_iter_count = iisph_sensor.get_data_mean("Last Iteration Count")
 
         variance = density_sensor.get_data_sample_variance("Average Density")
+        avg_dens = density_sensor.get_data_mean("Average Density")
 
         max_inactive_particles = particle_count_sensor.get_data_max(
             "Inactive Particles")
@@ -61,13 +64,16 @@ def analyze_data():
             # invalid simulation
             avg_iteration_count[timestep].append(np.nan)
             avg_density_variance[timestep].append(np.nan)
+            avg_density_avg[timestep].append(np.nan)
         else:
             # valid simulation
             avg_iteration_count[timestep].append(mean_iter_count)
             avg_density_variance[timestep].append(variance)
+            avg_density_avg[timestep].append(avg_dens)
 
     _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count)
     _show_plot_density_variance(gamma1, gamma2, avg_density_variance)
+    _show_plot_average_density(gamma1, gamma2, avg_density_avg)
 
 
 def _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count):
@@ -93,6 +99,28 @@ def _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count):
     fig.suptitle("Average Iteration Count")
     plt.show()
 
+def _show_plot_average_density(gamma1, gamma2, avg_density_avg):
+
+    timesteps = sorted(list(gamma1.keys()))
+
+    fig, axes = plt.subplots(1, len(timesteps))
+
+    for i, timestep in enumerate(timesteps):
+
+        ax = axes[i]
+
+        df = pd.DataFrame.from_dict(
+            np.array([gamma1[timestep], gamma2[timestep], avg_density_avg[timestep]]).T)
+        df.columns = ['Gamma 1', 'Gamma 2', 'Average Density']
+
+        pivotted = df.pivot('Gamma 1', 'Gamma 2', 'Average Density')
+
+        mask = pivotted.isnull()
+        sns.heatmap(pivotted, cmap="viridis", ax=ax, mask=mask)
+        ax.set_title("Timestep " + str(timestep) + "s")
+
+    fig.suptitle("Average Density")
+    plt.show()
 
 def _show_plot_density_variance(gamma1, gamma2, avg_density_variance):
 
