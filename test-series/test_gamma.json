@@ -36,6 +36,13 @@
                 "name": "Particle Count Sensor",
                 "save-to-file": true,
                 "type": "global-particle-count-sensor"
+            },
+            {
+                "filename": "density.sensor",
+                "keep-data-in-memory": false,
+                "name": "Density Sensor",
+                "save-to-file": true,
+                "type": "global-density-sensor"
             }
         ]
     },
@@ -56,7 +63,7 @@
             "gamma-1": 1.100000023841858
         },
         "timestep": {
-            "timestep": 0.05000000149011612,
+            "timestep": 0.05000000074505806,
             "type": "constant"
         },
         "type": "iisph-3d",
