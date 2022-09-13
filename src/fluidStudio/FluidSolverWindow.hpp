@@ -83,7 +83,7 @@ namespace FluidStudio {
 
       private:
 
-        std::unique_ptr<FluidStudio::UiLayer> ui_layer;
+        std::shared_ptr<FluidStudio::UiLayer> ui_layer;
 
         void render_visualization_ui_window();
         void setup_ui_layer();

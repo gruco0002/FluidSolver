@@ -441,7 +441,7 @@ namespace FluidStudio {
     }
 
     void FluidSolverWindow::setup_ui_layer() {
-        ui_layer = std::make_unique<FluidStudio::UiLayer>();
+        ui_layer = std::make_shared<FluidStudio::UiLayer>();
         ui_layer->window = this;
         ui_layer->initialize();
     }
