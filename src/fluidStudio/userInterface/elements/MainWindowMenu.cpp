@@ -1,9 +1,9 @@
 #include "MainWindowMenu.hpp"
 
 #include "ExtendedSimulationSerializer.hpp"
-#include "userInterface/PlyImportWindow.hpp"
+#include "PlyImportWindow.hpp"
 
-#include <ImguiHelper.hpp>
+#include "ImguiHelper.hpp"
 #include <nfd.h>
 
 namespace FluidStudio {

@@ -1,5 +1,6 @@
 #include "ComponentSettingsWindow.hpp"
 
+#include "ComponentPanelWindow.hpp"
 #include "ImguiHelper.hpp"
 #include "fluidSolver/IISPHFluidSolver.hpp"
 #include "fluidSolver/IISPHFluidSolver3D.hpp"
@@ -8,9 +9,8 @@
 #include "sensors/IisphSensor.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
-#include "userInterface/ComponentPanelWindow.hpp"
 
-#include "userInterface/SensorGraphWindows.hpp"
+#include "SensorGraphWindows.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"

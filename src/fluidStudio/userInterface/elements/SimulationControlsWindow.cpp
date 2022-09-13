@@ -1,6 +1,6 @@
 #include "SimulationControlsWindow.hpp"
 
-#include <ImguiHelper.hpp>
+#include "ImguiHelper.hpp"
 
 namespace FluidStudio {
     void SimulationControlsWindow::update() {

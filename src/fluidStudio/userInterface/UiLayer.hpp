@@ -1,13 +1,13 @@
 #pragma once
 
-#include "userInterface/ComponentPanelWindow.hpp"
-#include "userInterface/ComponentSettingsWindow.hpp"
-#include "userInterface/LogWindow.hpp"
-#include "userInterface/MainWindowMenu.hpp"
-#include "userInterface/PlyImportWindow.hpp"
-#include "userInterface/SensorGraphWindows.hpp"
-#include "userInterface/SimulationControlsWindow.hpp"
-#include "userInterface/TimelineWindow.hpp"
+#include "userInterface/elements/ComponentPanelWindow.hpp"
+#include "userInterface/elements/ComponentSettingsWindow.hpp"
+#include "userInterface/elements/LogWindow.hpp"
+#include "userInterface/elements/MainWindowMenu.hpp"
+#include "userInterface/elements/PlyImportWindow.hpp"
+#include "userInterface/elements/SensorGraphWindows.hpp"
+#include "userInterface/elements/SimulationControlsWindow.hpp"
+#include "userInterface/elements/TimelineWindow.hpp"
 
 
 namespace FluidStudio {
