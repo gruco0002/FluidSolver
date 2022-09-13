@@ -16,14 +16,14 @@ namespace FluidStudio {
     void ComponentPanelWindow::update() {
         if (ImGui::Begin("Components")) {
             // Draw components
-            render_component_node("Solver", {Component::Kind::Solver, 0});
-            render_component_node("Visualizer", {Component::Kind::Visualizer, 0});
-            render_component_node("Timestep", {Component::Kind::Timestep, 0});
-            render_component_node("Output", {Component::Kind::Output, 0});
+            update_component_node("Solver", {Component::Kind::Solver, 0});
+            update_component_node("Visualizer", {Component::Kind::Visualizer, 0});
+            update_component_node("Timestep", {Component::Kind::Timestep, 0});
+            update_component_node("Output", {Component::Kind::Output, 0});
 
             for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
                 auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
-                render_component_node(sen->parameters.name.c_str(), {Component::Kind::Sensor, i});
+                update_component_node(sen->parameters.name.c_str(), {Component::Kind::Sensor, i});
             }
 
             menu_entity_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
@@ -33,7 +33,7 @@ namespace FluidStudio {
                 if (menu_entity_names[i] != name) {
                     menu_entity_names[i] = name;
                 }
-                render_component_node(menu_entity_names[i].c_str(), {Component::Kind::Entity, i});
+                update_component_node(menu_entity_names[i].c_str(), {Component::Kind::Entity, i});
             }
 
 
@@ -122,7 +122,7 @@ namespace FluidStudio {
         }
     }
 
-    void ComponentPanelWindow::render_component_node(const char* name, const Component& component) {
+    void ComponentPanelWindow::update_component_node(const char* name, const Component& component) {
         ImGuiTreeNodeFlags flags = ((component == m_selection) ? ImGuiTreeNodeFlags_Selected : 0) |
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_FramePadding;

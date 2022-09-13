@@ -22,7 +22,7 @@ namespace FluidStudio {
         void update_menu();
         void update_selection_based_ui();
         void delete_component(const Component& component);
-        void render_component_node(const char* name, const Component& component);
+        void update_component_node(const char* name, const Component& component);
     };
 
 } // namespace FluidStudio

@@ -41,29 +41,29 @@ namespace FluidStudio {
         if (ImGui::Begin("Properties")) {
             auto& selection = ui_data.collection().get<ComponentPanelWindow>().selection();
             if (selection.kind != Component::Kind::None) {
-                render_component_settings(selection);
+                update_component_settings(selection);
             }
         }
         ImGui::End();
     }
 
-    void ComponentSettingsWindow::render_component_settings(const Component& component) {
+    void ComponentSettingsWindow::update_component_settings(const Component& component) {
         if (component.kind == Component::Kind::Solver) {
-            render_solver_component();
+            update_solver_component();
         } else if (component.kind == Component::Kind::Timestep) {
-            render_timestep_component();
+            update_timestep_component();
         } else if (component.kind == Component::Kind::Sensor) {
-            render_sensor_component(component.index);
+            update_sensor_component(component.index);
         } else if (component.kind == Component::Kind::Output) {
-            render_output_component();
+            update_output_component();
         } else if (component.kind == Component::Kind::Visualizer) {
-            render_visualizer_component();
+            update_visualizer_component();
         } else if (component.kind == Component::Kind::Entity) {
-            render_entity_component(component.index);
+            update_entity_component(component.index);
         }
     }
 
-    void ComponentSettingsWindow::render_solver_component() {
+    void ComponentSettingsWindow::update_solver_component() {
         BeginSubsection(
                 "Solver Setup",
                 [=]() {
@@ -142,7 +142,7 @@ namespace FluidStudio {
             BeginSubsection("SESPH", [=]() {
                 auto v = (LibFluid::SESPHSettings*)ui_data.window().current_type->get_settings(
                         ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver);
-                render_solver_parameters();
+                update_solver_parameters();
                 ImGui::Separator();
                 if (ImGui::InputFloat("Viscosity", &v->Viscosity)) {
                     v->notify_that_data_changed();
@@ -155,7 +155,7 @@ namespace FluidStudio {
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
             BeginSubsection("IISPH", [=]() {
-                render_solver_parameters();
+                update_solver_parameters();
                 ImGui::Separator();
 
                 auto v = (LibFluid::IISPHSettings*)ui_data.window().current_type->get_settings(
@@ -186,7 +186,7 @@ namespace FluidStudio {
             BeginSubsection("3D SESPH", [=]() {
                 auto v = (LibFluid::SESPHSettings3D*)ui_data.window().current_type->get_settings(
                         ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver);
-                render_solver_parameters();
+                update_solver_parameters();
                 ImGui::Separator();
                 if (ImGui::InputFloat("Viscosity", &v->Viscosity)) {
                     v->notify_that_data_changed();
@@ -212,7 +212,7 @@ namespace FluidStudio {
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH3D) {
             BeginSubsection("3D IISPH", [=]() {
-                render_solver_parameters();
+                update_solver_parameters();
                 ImGui::Separator();
 
                 auto v = (LibFluid::IISPHSettings3D*)ui_data.window().current_type->get_settings(
@@ -252,7 +252,7 @@ namespace FluidStudio {
         }
     }
 
-    void ComponentSettingsWindow::render_solver_parameters() {
+    void ComponentSettingsWindow::update_solver_parameters() {
         if (ImGui::InputFloat("Gravity", &ui_data.window().simulator_visualizer_bundle.simulator->parameters.gravity)) {
             ui_data.window().simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
         }
@@ -265,7 +265,7 @@ namespace FluidStudio {
     }
 
 
-    void ComponentSettingsWindow::render_sensor_plane_component(std::shared_ptr<LibFluid::Sensors::SensorPlane> sen) {
+    void ComponentSettingsWindow::update_sensor_plane_component(std::shared_ptr<LibFluid::Sensors::SensorPlane> sen) {
         BeginSubsection("Value", [&] {
             using namespace LibFluid::Sensors;
 
@@ -331,7 +331,7 @@ namespace FluidStudio {
         });
     }
 
-    void ComponentSettingsWindow::render_entity_component(size_t index) {
+    void ComponentSettingsWindow::update_entity_component(size_t index) {
         FLUID_ASSERT(index < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
         auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[index];
         BeginSubsection("Entity", [&]() {
@@ -339,12 +339,12 @@ namespace FluidStudio {
         });
 
         if (std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent)) {
-            render_particle_remover_3d_component(std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent));
+            update_particle_remover_3d_component(std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent));
         }
     }
 
 
-    void ComponentSettingsWindow::render_particle_remover_3d_component(std::shared_ptr<LibFluid::ParticleRemover3D> ent) {
+    void ComponentSettingsWindow::update_particle_remover_3d_component(std::shared_ptr<LibFluid::ParticleRemover3D> ent) {
         BeginSubsection("Volume", [&] {
             ImGui::InputFloat3("Center", reinterpret_cast<float*>(&ent->parameters.volume.center));
             ImGui::InputFloat3("Distance", reinterpret_cast<float*>(&ent->parameters.volume.distance_from_center));
@@ -355,7 +355,7 @@ namespace FluidStudio {
     }
 
 
-    void ComponentSettingsWindow::render_timestep_component() {
+    void ComponentSettingsWindow::update_timestep_component() {
         BeginSubsection("Timestep", [=]() {
             auto ct = std::dynamic_pointer_cast<LibFluid::ConstantTimestepGenerator>(ui_data.window().simulator_visualizer_bundle.simulator->data.timestep_generator);
             auto dt = std::dynamic_pointer_cast<LibFluid::DynamicCflTimestepGenerator>(ui_data.window().simulator_visualizer_bundle.simulator->data.timestep_generator);
@@ -431,7 +431,7 @@ namespace FluidStudio {
         return "UNKNOWN";
     }
 
-    void ComponentSettingsWindow::render_sensor_component(size_t index) {
+    void ComponentSettingsWindow::update_sensor_component(size_t index) {
         FLUID_ASSERT(index < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
         auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[index];
         BeginSubsection("Sensor", [&]() {
@@ -447,20 +447,20 @@ namespace FluidStudio {
         });
 
         if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
-            render_global_energy_sensor_component(std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
+            update_global_energy_sensor_component(std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
         } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
-            render_sensor_plane_component(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
+            update_sensor_plane_component(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
         }
     }
 
-    void ComponentSettingsWindow::render_output_component() {
+    void ComponentSettingsWindow::update_output_component() {
         auto& output = ui_data.window().simulator_visualizer_bundle.simulator->output;
         BeginSubsection("Output", [&]() {
             ImGui::InputText("Directory", &output->parameters.output_folder);
         });
     }
 
-    void ComponentSettingsWindow::render_visualizer_component() {
+    void ComponentSettingsWindow::update_visualizer_component() {
         BeginSubsection("Visualizer", [&]() {
             if (ImGui::Button("Update Visualization")) {
                 ui_data.window().visualizer_parameter_changed();
@@ -606,7 +606,7 @@ namespace FluidStudio {
         });
     }
 
-    void ComponentSettingsWindow::render_global_energy_sensor_component(
+    void ComponentSettingsWindow::update_global_energy_sensor_component(
             std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sen) {
         BeginSubsection("Zero-Levels", [&]() { ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height); });
     }
