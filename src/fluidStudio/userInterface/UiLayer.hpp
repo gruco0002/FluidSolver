@@ -2,7 +2,7 @@
 
 #include "FluidStudioFwd.hpp"
 #include "StatisticsUi.hpp"
-#include "TimelineUi.hpp"
+#include "TimelineWindow.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/LogWindow.hpp"
 #include "userInterface/MainWindowMenu.hpp"
@@ -47,8 +47,6 @@ namespace FluidStudio {
         StatisticsUi statisticsUi;
 
 
-        TimelineUi timeline_ui;
-
 
         void render_component_panel();
         void render_component_properties_panel();
@@ -84,6 +82,7 @@ namespace FluidStudio {
         MainWindowMenu main_window_menu;
         PlyImportWindow ply_import_window;
         LogWindow log_window;
+        TimelineWindow timeline_window;
     };
 
 } // namespace FluidStudio

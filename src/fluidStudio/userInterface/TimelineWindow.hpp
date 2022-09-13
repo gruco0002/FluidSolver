@@ -1,13 +1,12 @@
 #pragma once
 
+#include "userInterface/UiElement.hpp"
+
 namespace FluidStudio {
-    class FluidSolverWindow;
 
-    class TimelineUi {
+    class TimelineWindow final : public UiElement {
       public:
-        FluidSolverWindow* window = nullptr;
-
-        void render();
+        void update() override;
 
       private:
         int current_index = 0;

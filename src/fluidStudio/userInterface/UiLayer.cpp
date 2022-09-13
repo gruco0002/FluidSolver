@@ -698,6 +698,7 @@ namespace FluidStudio {
         main_window_menu.update();
         ply_import_window.update();
         log_window.update();
+        timeline_window.update();
 
 
         // OLD STUFF
@@ -708,9 +709,6 @@ namespace FluidStudio {
 
         // render other windows
         statisticsUi.render();
-
-
-        timeline_ui.render();
     }
 
     void UiLayer::initialize() {
@@ -722,26 +720,20 @@ namespace FluidStudio {
         ui_element_collection.add(main_window_menu);
         ui_element_collection.add(ply_import_window);
         ui_element_collection.add(log_window);
+        ui_element_collection.add(timeline_window);
 
         // initialize all elements
         simulation_controls_window.initialize(data);
         main_window_menu.initialize(data);
         ply_import_window.initialize(data);
         log_window.initialize(data);
+        timeline_window.initialize(data);
 
 
         // old code
         // TODO: remove and replace
         statisticsUi.window = window;
         statisticsUi.initialize();
-        logWindow.window = window;
-        logWindow.initialize();
-
-        timeline_ui.window = window;
-
-        if (ply_import) {
-            ply_import->set_window(window);
-        }
     }
 
 

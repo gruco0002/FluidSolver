@@ -38,7 +38,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         runners/SimulationRunner.cpp runners/SimulationRunner.hpp
         runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp
         TimelineService.cpp TimelineService.hpp
-        userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp
+        userInterface/TimelineWindow.cpp userInterface/TimelineWindow.hpp
         visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp
         visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp
         visualizationOverlay/OverlayInstance.hpp
