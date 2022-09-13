@@ -12,7 +12,7 @@
 #include "sensors/IisphSensor.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
-#include "userInterface/PlyImport.hpp"
+#include "userInterface/PlyImportWindow.hpp"
 #include "visualizationOverlay/ParticleRemoverOverlay.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
@@ -149,27 +149,6 @@ namespace FluidStudio {
         update_selection_based_ui();
     }
 
-    void UiLayer::render_simulation_controls() {
-        ImGui::Begin("Simulation Controls");
-        if (window->simulation_should_run) {
-            ImGui::TextColored(ImColor(0.1f, 0.8f, 0.1f), "Running");
-        } else if (window->are_calculations_running()) {
-            ImGui::TextColored(ImColor(0.8f, 0.8f, 0.1f), "Paused, pending calculations");
-        } else {
-            ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Paused");
-        }
-
-        if (ImGui::Button("Run")) {
-            this->window->simulation_should_run = true;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Pause")) {
-            this->window->simulation_should_run = false;
-        }
-
-        ImGui::Checkbox("Asynchronous", &window->asynchronous_simulation);
-        ImGui::End();
-    }
 
     void UiLayer::render_component_node(const char* name, const Component& component) {
         ImGuiTreeNodeFlags flags = ((component == selection) ? ImGuiTreeNodeFlags_Selected : 0) |
@@ -707,7 +686,6 @@ namespace FluidStudio {
     }
 
     UiLayer::UiLayer() {
-        this->ply_import = std::make_unique<PlyImport>(window);
     }
 
     UiLayer::~UiLayer() {
@@ -715,25 +693,45 @@ namespace FluidStudio {
     }
 
     void UiLayer::render() {
-        render_menu();
-        render_simulation_controls();
+        // NEW STUFF // TODO: if done remove this comment
+        simulation_controls_window.update();
+        main_window_menu.update();
+        ply_import_window.update();
+        log_window.update();
 
-        // render component controls
+
+        // OLD STUFF
+        // TODO: replace with new, more structured ui code
+
         render_component_panel();
         render_component_properties_panel();
 
         // render other windows
         statisticsUi.render();
-        logWindow.render();
 
-        if (ply_import) {
-            ply_import->render();
-        }
 
         timeline_ui.render();
     }
 
     void UiLayer::initialize() {
+        // new code // TODO: if done remove this comment
+        UiData data(window, ui_element_collection);
+
+        // add all elements to the collection
+        ui_element_collection.add(simulation_controls_window);
+        ui_element_collection.add(main_window_menu);
+        ui_element_collection.add(ply_import_window);
+        ui_element_collection.add(log_window);
+
+        // initialize all elements
+        simulation_controls_window.initialize(data);
+        main_window_menu.initialize(data);
+        ply_import_window.initialize(data);
+        log_window.initialize(data);
+
+
+        // old code
+        // TODO: remove and replace
         statisticsUi.window = window;
         statisticsUi.initialize();
         logWindow.window = window;
@@ -759,126 +757,6 @@ namespace FluidStudio {
         }
     }
 
-    void UiLayer::render_menu() {
-        static bool save_menu_open = false;
-
-
-        if (ImGui::BeginMainMenuBar()) {
-            if (ImGui::BeginMenu("File")) {
-                bool can_change = window->is_safe_to_access_simulation_data();
-
-                if (ImGui::MenuItem("New", nullptr, false, can_change)) {
-                    // create a new scenario
-                    window->create_empty_simulation();
-                }
-
-                if (ImGui::MenuItem("Open", nullptr, false, can_change)) {
-                    // open scenario
-
-                    char* p = nullptr;
-                    auto res = NFD_OpenDialog("json", nullptr, &p);
-                    if (res == NFD_OKAY) {
-                        std::string path(p);
-                        free(p);
-
-                        // load simulation
-                        ExtendedSimulationSerializer s(path);
-                        auto simulation = s.load_from_file();
-                        if (!s.has_errors()) {
-                            window->simulator_visualizer_bundle = simulation;
-                            window->on_new_simulation();
-                        }
-                    }
-                }
-
-                if (ImGui::MenuItem("Save", nullptr, false, can_change)) {
-                    save_menu_open = true;
-                }
-
-                if (ImGui::BeginMenu("Import", can_change)) {
-                    if (ImGui::MenuItem("Ply File", nullptr, false, can_change)) {
-                        if (ply_import) {
-                            ply_import->show();
-                        }
-                    }
-
-                    ImGui::EndMenu();
-                }
-
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Test")) {
-                bool can_change = window->is_safe_to_access_simulation_data();
-
-                if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
-                    window->create_3d_test_simulation();
-                }
-
-                ImGui::EndMenu();
-            }
-
-
-            ImGui::EndMainMenuBar();
-        }
-
-
-        if (ImGui::BeginPopupModal("Save Simulation")) {
-            static char* path = nullptr;
-            static std::string particle_filepath = "particles.data";
-            static bool save_particle_data = true;
-
-
-            ImGui::TextWrapped(
-                    "Save the current simulation as json file. Optionally you can save the particle data. If it already exists "
-                    "and you do not want to override it, make sure to uncheck the checkbox and provide the name of the current "
-                    "particle data file relative to the json file in the text field.");
-
-            ImGui::Separator();
-
-            if (ImGui::Button("Choose")) {
-                char* p = nullptr;
-
-                auto res = NFD_SaveDialog("json", nullptr, &p);
-                if (res == NFD_OKAY) {
-                    if (path != nullptr)
-                        free(path);
-                    path = p;
-                    particle_filepath = std::filesystem::path(path).filename().replace_extension(".data").string();
-                } else {
-                    free(p);
-                }
-            }
-            ImGui::SameLine();
-            if (path != nullptr) {
-                ImGui::LabelText("File", path);
-            } else {
-                ImGui::LabelText("File", "Not selected");
-            }
-
-            ImGui::Separator();
-            ImGui::Checkbox("Save Particle Data", &save_particle_data);
-            ImGui::InputText("Particle File", &particle_filepath);
-
-            if (ImGui::Button("Close")) {
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Save") && path != nullptr) {
-                // Save
-                ExtendedSimulationSerializer s(path, {save_particle_data, particle_filepath});
-                s.save_to_file(window->simulator_visualizer_bundle);
-                ImGui::CloseCurrentPopup();
-            }
-
-            ImGui::EndPopup();
-        }
-        if (save_menu_open) {
-            save_menu_open = false;
-            ImGui::OpenPopup("Save Simulation");
-        }
-    }
 
     void UiLayer::render_component_properties_panel() {
         if (ImGui::Begin("Properties")) {

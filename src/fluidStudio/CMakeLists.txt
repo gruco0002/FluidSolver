@@ -18,7 +18,6 @@ set(FLUID_STUDIO_SOURCE_FILES
         "FluidSolverWindow.cpp"
         "FluidSolverWindow.hpp"
         "ImguiHelper.cpp" "ImguiHelper.hpp"
-        "userInterface/ScenariosWindow.cpp" "userInterface/ScenariosWindow.hpp"
         "userInterface/UiLayer.cpp" "userInterface/UiLayer.hpp"
         "FluidSolverTypes.cpp" "FluidSolverTypes.hpp"
         "userInterface/StatisticsUi.cpp" "userInterface/StatisticsUi.hpp"
@@ -32,10 +31,19 @@ set(FLUID_STUDIO_SOURCE_FILES
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
         "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         "Assets.hpp" "Assets.cpp"
-        "userInterface/PlyImport.hpp" "userInterface/PlyImport.cpp"
+        "userInterface/PlyImportWindow.hpp" "userInterface/PlyImportWindow.cpp"
         "FluidStudioFwd.hpp"
         DirectoryHelper.cpp DirectoryHelper.hpp
-        runners/ComponentRunner.cpp runners/ComponentRunner.hpp runners/SimulationRunner.cpp runners/SimulationRunner.hpp runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp TimelineService.cpp TimelineService.hpp userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp visualizationOverlay/OverlayInstance.hpp visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp)
+        runners/ComponentRunner.cpp runners/ComponentRunner.hpp
+        runners/SimulationRunner.cpp runners/SimulationRunner.hpp
+        runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp
+        TimelineService.cpp TimelineService.hpp
+        userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp
+        visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp
+        visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp
+        visualizationOverlay/OverlayInstance.hpp
+        visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp
+        userInterface/SimulationControlsWindow.cpp userInterface/SimulationControlsWindow.hpp userInterface/UiData.hpp userInterface/UiData.cpp userInterface/MainWindowMenu.cpp userInterface/MainWindowMenu.hpp userInterface/UiElement.cpp userInterface/UiElement.hpp userInterface/UiElementCollection.cpp userInterface/UiElementCollection.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

@@ -1,25 +1,18 @@
 #pragma once
 
+#include "userInterface/UiElement.hpp"
 #include <string>
 #include <vector>
 
 namespace FluidStudio {
 
-    class FluidSolverWindow;
-
-    class LogWindow {
-
+    class LogWindow final : public UiElement {
       public:
-        FluidSolverWindow* window = nullptr;
-
-        void render();
-
-        void initialize();
-
-        bool scroll_to_bottom = true;
+        void update() override;
 
       private:
         std::vector<std::string> messages;
+        bool scroll_to_bottom = true;
     };
 
-} // namespace FluidUi
+} // namespace FluidStudio

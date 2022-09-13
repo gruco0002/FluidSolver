@@ -5,8 +5,10 @@
 #include "TimelineUi.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/LogWindow.hpp"
+#include "userInterface/MainWindowMenu.hpp"
+#include "userInterface/PlyImportWindow.hpp"
+#include "userInterface/SimulationControlsWindow.hpp"
 
-#include <memory>
 
 namespace FluidStudio {
 
@@ -43,15 +45,12 @@ namespace FluidStudio {
 
       private:
         StatisticsUi statisticsUi;
-        LogWindow logWindow;
+
 
         TimelineUi timeline_ui;
 
-        std::unique_ptr<PlyImport> ply_import;
 
         void render_component_panel();
-        void render_simulation_controls();
-        void render_menu();
         void render_component_properties_panel();
 
         void render_component_node(const char* name, const Component& component);
@@ -76,6 +75,15 @@ namespace FluidStudio {
         void delete_component(const Component& component);
 
         std::vector<std::string> menu_entity_names;
+
+
+      private:
+        UiElementCollection ui_element_collection;
+
+        SimulationControlsWindow simulation_controls_window;
+        MainWindowMenu main_window_menu;
+        PlyImportWindow ply_import_window;
+        LogWindow log_window;
     };
 
-} // namespace FluidUi
+} // namespace FluidStudio

@@ -6,14 +6,19 @@
 #include "engine/RectangleRenderer.hpp"
 #include "engine/Window.hpp"
 #include "engine/graphics/Framebuffer.hpp"
-#include "userInterface/UiLayer.hpp"
 
 #include "TimelineService.hpp"
-#include "visualizationOverlay/VisualizationOverlay.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
+#include "visualizationOverlay/VisualizationOverlay.hpp"
+#include "visualizer/Image.hpp"
+
+#include <memory>
 
 namespace FluidStudio {
+
+    class UiLayer;
+
     class FluidSolverWindow : public Engine::Window {
       public:
         explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
@@ -77,7 +82,9 @@ namespace FluidStudio {
         VisualizationOverlay visualization_overlay;
 
       private:
-        UiLayer uiLayer;
+
+        std::unique_ptr<FluidStudio::UiLayer> ui_layer;
+
         void render_visualization_ui_window();
         void setup_ui_layer();
         bool simulation_visualization_ui_window_in_foreground = false;

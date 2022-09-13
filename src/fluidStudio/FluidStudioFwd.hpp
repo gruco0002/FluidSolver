@@ -2,7 +2,7 @@
 
 namespace FluidStudio {
 
-    class PlyImport;
+    class PlyImportWindow;
     class UiLayer;
     class FluidSolverWindow;
     class FluidSolverTypes;
