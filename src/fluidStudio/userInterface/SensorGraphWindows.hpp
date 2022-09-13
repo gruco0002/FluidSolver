@@ -5,21 +5,20 @@
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 
+#include "userInterface/UiElement.hpp"
+
 #include <memory>
 #include <vector>
 
+
 namespace FluidStudio {
-    class FluidSolverWindow;
 
-    class StatisticsUi {
+
+    class SensorGraphWindows final : public UiElement {
       public:
-        FluidSolverWindow* window = nullptr;
-
-        void render();
-        void initialize();
+        void update() override;
 
         void open_sensor_window(size_t index);
-
         bool is_sensor_window_open(size_t index);
 
       private:
@@ -40,4 +39,4 @@ namespace FluidStudio {
         void render_iisph_sensor(std::shared_ptr<LibFluid::Sensors::IISPHSensor> sensor);
     };
 
-} // namespace FluidUi
+} // namespace FluidStudio

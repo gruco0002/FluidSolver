@@ -20,7 +20,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         "ImguiHelper.cpp" "ImguiHelper.hpp"
         "userInterface/UiLayer.cpp" "userInterface/UiLayer.hpp"
         "FluidSolverTypes.cpp" "FluidSolverTypes.hpp"
-        "userInterface/StatisticsUi.cpp" "userInterface/StatisticsUi.hpp"
+        "userInterface/SensorGraphWindows.cpp" "userInterface/SensorGraphWindows.hpp"
         "userInterface/LogWindow.cpp" "userInterface/LogWindow.hpp"
         "visualizer/GLParticleRenderer.hpp" "visualizer/GLParticleRenderer.cpp"
         "visualizer/GLParticleVertexArray.hpp" "visualizer/GLParticleVertexArray.cpp"
@@ -43,7 +43,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp
         visualizationOverlay/OverlayInstance.hpp
         visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp
-        userInterface/SimulationControlsWindow.cpp userInterface/SimulationControlsWindow.hpp userInterface/UiData.hpp userInterface/UiData.cpp userInterface/MainWindowMenu.cpp userInterface/MainWindowMenu.hpp userInterface/UiElement.cpp userInterface/UiElement.hpp userInterface/UiElementCollection.cpp userInterface/UiElementCollection.hpp)
+        userInterface/SimulationControlsWindow.cpp userInterface/SimulationControlsWindow.hpp userInterface/UiData.hpp userInterface/UiData.cpp userInterface/MainWindowMenu.cpp userInterface/MainWindowMenu.hpp userInterface/UiElement.cpp userInterface/UiElement.hpp userInterface/UiElementCollection.hpp userInterface/ComponentPanelWindow.cpp userInterface/ComponentPanelWindow.hpp userInterface/SimulationComponent.cpp userInterface/SimulationComponent.hpp userInterface/ComponentSettingsWindow.cpp userInterface/ComponentSettingsWindow.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

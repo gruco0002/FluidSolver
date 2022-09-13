@@ -13,6 +13,7 @@ namespace FluidStudio {
         UiElementCollection& collection() const;
 
         explicit UiData(FluidSolverWindow* window, UiElementCollection& collection);
+        UiData();
 
       private:
         FluidSolverWindow* m_window = nullptr;

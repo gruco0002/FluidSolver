@@ -17,6 +17,7 @@ namespace FluidStudio {
         m_window = window;
         m_collection = &collection;
     }
+    UiData::UiData() = default;
 
 
 } // namespace FluidStudio

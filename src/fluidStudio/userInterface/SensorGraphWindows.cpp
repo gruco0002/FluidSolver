@@ -1,4 +1,4 @@
-#include "StatisticsUi.hpp"
+#include "SensorGraphWindows.hpp"
 
 #include "FluidInclude.hpp"
 #include "FluidSolverWindow.hpp"
@@ -11,52 +11,7 @@
 #include <implot.h>
 
 namespace FluidStudio {
-
-    void StatisticsUi::render() {
-        if (!window->is_safe_to_access_simulation_data()) {
-            return;
-        }
-
-        for (size_t i = 0; i < window->simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
-            if (is_sensor_window_open(i)) {
-                auto sen = window->simulator_visualizer_bundle.simulator->data.sensors[i];
-
-                if (ImGui::Begin(sen->parameters.name.c_str(), sensor_window_open_ptr(i))) {
-                    if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen)) {
-                        render_density_sensor_graph(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen)) {
-                        render_pressure_sensor_graph(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen)) {
-                        render_velocity_sensor_graph(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
-                        render_energy_sensor_graph(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen)) {
-                        render_particle_count_sensor(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
-                        render_sensor_plane_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen)) {
-                        render_compressed_neighborhood_storage_sensor(
-                                std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen));
-                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen)) {
-                        render_iisph_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen));
-                    }
-                }
-
-                ImGui::End();
-            }
-        }
-    }
-
-    void StatisticsUi::initialize() {
-        FLUID_ASSERT(window != nullptr)
-    }
-
-    void StatisticsUi::open_sensor_window(size_t index) {
+    void SensorGraphWindows::open_sensor_window(size_t index) {
         if (open_sensor_windows.size() <= index)
             open_sensor_windows.resize(index + 1, false);
         open_sensor_windows[index] = true;
@@ -88,20 +43,20 @@ namespace FluidStudio {
                 (void*)&data, data.size());
     }
 
-    bool StatisticsUi::is_sensor_window_open(size_t index) {
+    bool SensorGraphWindows::is_sensor_window_open(size_t index) {
         if (open_sensor_windows.size() <= index)
             return false;
         return open_sensor_windows[index];
     }
 
-    bool* StatisticsUi::sensor_window_open_ptr(size_t index) {
+    bool* SensorGraphWindows::sensor_window_open_ptr(size_t index) {
         if (open_sensor_windows.size() <= index) {
             open_sensor_windows.resize(index + 1, false);
         }
         return (bool*)&(open_sensor_windows[index]);
     }
 
-    void StatisticsUi::render_density_sensor_graph(
+    void SensorGraphWindows::render_density_sensor_graph(
             std::shared_ptr<LibFluid::Sensors::GlobalDensitySensor> sensor) {
         if (ImPlot::BeginPlot("Density")) {
             plot_mmadata(sensor->get_sensor_data_store());
@@ -109,7 +64,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_pressure_sensor_graph(
+    void SensorGraphWindows::render_pressure_sensor_graph(
             std::shared_ptr<LibFluid::Sensors::GlobalPressureSensor> sensor) {
         if (ImPlot::BeginPlot("Pressure")) {
             plot_mmadata(sensor->get_sensor_data_store());
@@ -117,7 +72,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_velocity_sensor_graph(
+    void SensorGraphWindows::render_velocity_sensor_graph(
             std::shared_ptr<LibFluid::Sensors::GlobalVelocitySensor> sensor) {
         if (ImPlot::BeginPlot("Velocity")) {
             plot_mmadata(sensor->get_sensor_data_store());
@@ -125,7 +80,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_energy_sensor_graph(std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sensor) {
+    void SensorGraphWindows::render_energy_sensor_graph(std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sensor) {
         if (ImPlot::BeginPlot("Energy")) {
             ImPlot::PlotLineG(
                     "Kin",
@@ -147,7 +102,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_particle_count_sensor(
+    void SensorGraphWindows::render_particle_count_sensor(
             std::shared_ptr<LibFluid::Sensors::GlobalParticleCountSensor> sensor) {
         if (ImPlot::BeginPlot("Energy")) {
             ImPlot::PlotLineG(
@@ -182,7 +137,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_sensor_plane_sensor(std::shared_ptr<LibFluid::Sensors::SensorPlane> sensor) {
+    void SensorGraphWindows::render_sensor_plane_sensor(std::shared_ptr<LibFluid::Sensors::SensorPlane> sensor) {
         auto& image = sensor->get_last_image();
 
         LibFluid::ISimulationVisualizer::Size size;
@@ -233,7 +188,7 @@ namespace FluidStudio {
         }
     }
 
-    void StatisticsUi::render_compressed_neighborhood_storage_sensor(
+    void SensorGraphWindows::render_compressed_neighborhood_storage_sensor(
             std::shared_ptr<LibFluid::Sensors::CompressedNeighborStorageSensor> sensor) {
         if (ImPlot::BeginPlot("Neighborhood Storage")) {
             ImPlot::PlotLineG(
@@ -287,7 +242,7 @@ namespace FluidStudio {
             ImPlot::EndPlot();
         }
     }
-    void StatisticsUi::render_iisph_sensor(std::shared_ptr<LibFluid::Sensors::IISPHSensor> sensor) {
+    void SensorGraphWindows::render_iisph_sensor(std::shared_ptr<LibFluid::Sensors::IISPHSensor> sensor) {
         if (ImPlot::BeginPlot("Neighborhood Storage")) {
             ImPlot::PlotLineG(
                     "Iteration Count",
@@ -307,6 +262,45 @@ namespace FluidStudio {
 
 
             ImPlot::EndPlot();
+        }
+    }
+    void SensorGraphWindows::update() {
+        if (!ui_data.window().is_safe_to_access_simulation_data()) {
+            return;
+        }
+
+        for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
+            if (is_sensor_window_open(i)) {
+                auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
+
+                if (ImGui::Begin(sen->parameters.name.c_str(), sensor_window_open_ptr(i))) {
+                    if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen)) {
+                        render_density_sensor_graph(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen)) {
+                        render_pressure_sensor_graph(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen)) {
+                        render_velocity_sensor_graph(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
+                        render_energy_sensor_graph(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen)) {
+                        render_particle_count_sensor(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
+                        render_sensor_plane_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen)) {
+                        render_compressed_neighborhood_storage_sensor(
+                                std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen));
+                    } else if (std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen)) {
+                        render_iisph_sensor(std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen));
+                    }
+                }
+
+                ImGui::End();
+            }
         }
     }
 } // namespace FluidStudio
