@@ -3,6 +3,7 @@
 #include "userInterface/SimulationComponent.hpp"
 #include "userInterface/UiElement.hpp"
 #include "userInterface/elements/componentSettings/SensorSettingsElement.hpp"
+#include "userInterface/elements/componentSettings/SolverSettingsElement.hpp"
 
 #include "entities/ParticleRemover3D.hpp"
 
@@ -17,11 +18,10 @@ namespace FluidStudio {
 
       private:
         SensorSettingsElement sensor_settings_element;
+        SolverSettingsElement solver_settings_element;
 
         void update_component_settings(const Component& component);
 
-        void update_solver_component();
-        void update_solver_parameters();
         void update_timestep_component();
         void update_entity_component(size_t index);
         void update_output_component();

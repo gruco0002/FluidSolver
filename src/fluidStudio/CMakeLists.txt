@@ -53,6 +53,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/ComponentSettingsWindow.cpp userInterface/elements/ComponentSettingsWindow.hpp
         userInterface/StyledImGuiElements.cpp userInterface/StyledImGuiElements.hpp
         userInterface/elements/componentSettings/SensorSettingsElement.cpp userInterface/elements/componentSettings/SensorSettingsElement.hpp
+        userInterface/elements/componentSettings/SolverSettingsElement.cpp userInterface/elements/componentSettings/SolverSettingsElement.hpp
         )
 
 
