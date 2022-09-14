@@ -15,27 +15,11 @@
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 
+#include "userInterface/StyledImGuiElements.hpp"
+
 
 namespace FluidStudio {
 
-
-    static void BeginSubsection(const char* name, const std::function<void()>& fnc, void* ptr_id = nullptr) {
-        const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed |
-                ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap |
-                ImGuiTreeNodeFlags_FramePadding;
-
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2 {4, 4});
-        ImGui::Separator();
-        if (ptr_id == nullptr)
-            ptr_id = (void*)name;
-        bool open = ImGui::TreeNodeEx(ptr_id, treeNodeFlags, name);
-        ImGui::PopStyleVar();
-
-        if (open) {
-            fnc();
-            ImGui::TreePop();
-        }
-    }
 
     void ComponentSettingsWindow::update() {
         if (ImGui::Begin("Properties")) {
@@ -64,82 +48,83 @@ namespace FluidStudio {
     }
 
     void ComponentSettingsWindow::update_solver_component() {
-        BeginSubsection(
-                "Solver Setup",
-                [=]() {
-                    bool can_change = ui_data.window().is_safe_to_access_simulation_data();
+        if (StyledImGuiElements::slim_tree_node("Solver Setup", (void*)0x37af7de)) {
+            bool can_change = ui_data.window().is_safe_to_access_simulation_data();
 
-                    if (ImGui::BeginCombo("Solver", ui_data.window().current_type->name_solver.c_str())) {
-                        for (auto& name : ui_data.window().solver_types.names_solver) {
-                            if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_solver == name)) {
-                                FluidSolverTypes::FluidSolverTypeQuery q;
-                                q.name_solver = name;
-                                q.name_neighborhood_search = ui_data.window().current_type->name_neighborhood_search;
-                                q.name_kernel = ui_data.window().current_type->name_kernel;
-                                auto t = ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Solver);
-                                if (t && can_change) {
-                                    ui_data.window().current_type = t;
+            if (ImGui::BeginCombo("Solver", ui_data.window().current_type->name_solver.c_str())) {
+                for (auto& name : ui_data.window().solver_types.names_solver) {
+                    if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_solver == name)) {
+                        FluidSolverTypes::FluidSolverTypeQuery q;
+                        q.name_solver = name;
+                        q.name_neighborhood_search = ui_data.window().current_type->name_neighborhood_search;
+                        q.name_kernel = ui_data.window().current_type->name_kernel;
+                        auto t = ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Solver);
+                        if (t && can_change) {
+                            ui_data.window().current_type = t;
 
-                                    // set the new type
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
-                                }
-                            }
+                            // set the new type
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
                         }
-                        ImGui::EndCombo();
                     }
+                }
+                ImGui::EndCombo();
+            }
 
-                    if (ImGui::BeginCombo("N. Search", ui_data.window().current_type->name_neighborhood_search.c_str())) {
-                        for (auto& name : ui_data.window().solver_types.names_neighborhood_search) {
-                            if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_neighborhood_search == name)) {
-                                FluidSolverTypes::FluidSolverTypeQuery q;
-                                q.name_solver = ui_data.window().current_type->name_solver;
-                                q.name_neighborhood_search = name;
-                                q.name_kernel = ui_data.window().current_type->name_kernel;
-                                auto t =
-                                        ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::NeighborhoodSearch);
-                                if (t && can_change) {
-                                    ui_data.window().current_type = t;
+            if (ImGui::BeginCombo("N. Search", ui_data.window().current_type->name_neighborhood_search.c_str())) {
+                for (auto& name : ui_data.window().solver_types.names_neighborhood_search) {
+                    if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_neighborhood_search == name)) {
+                        FluidSolverTypes::FluidSolverTypeQuery q;
+                        q.name_solver = ui_data.window().current_type->name_solver;
+                        q.name_neighborhood_search = name;
+                        q.name_kernel = ui_data.window().current_type->name_kernel;
+                        auto t =
+                                ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::NeighborhoodSearch);
+                        if (t && can_change) {
+                            ui_data.window().current_type = t;
 
-                                    // set the new type
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
-                                }
-                            }
+                            // set the new type
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
                         }
-                        ImGui::EndCombo();
                     }
+                }
+                ImGui::EndCombo();
+            }
 
-                    if (ImGui::BeginCombo("Kernel", ui_data.window().current_type->name_kernel.c_str())) {
-                        for (auto& name : ui_data.window().solver_types.names_kernel) {
-                            if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_kernel == name)) {
-                                FluidSolverTypes::FluidSolverTypeQuery q;
-                                q.name_solver = ui_data.window().current_type->name_solver;
-                                q.name_neighborhood_search = ui_data.window().current_type->name_neighborhood_search;
-                                q.name_kernel = name;
-                                auto t = ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Kernel);
-                                if (t && can_change) {
-                                    ui_data.window().current_type = t;
+            if (ImGui::BeginCombo("Kernel", ui_data.window().current_type->name_kernel.c_str())) {
+                for (auto& name : ui_data.window().solver_types.names_kernel) {
+                    if (ImGui::Selectable(name.c_str(), ui_data.window().current_type->name_kernel == name)) {
+                        FluidSolverTypes::FluidSolverTypeQuery q;
+                        q.name_solver = ui_data.window().current_type->name_solver;
+                        q.name_neighborhood_search = ui_data.window().current_type->name_neighborhood_search;
+                        q.name_kernel = name;
+                        auto t = ui_data.window().solver_types.query_type(q, FluidSolverTypes::QueryMainFocus::Kernel);
+                        if (t && can_change) {
+                            ui_data.window().current_type = t;
 
-                                    // set the new type
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
-                                    ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
-                                }
-                            }
+                            // set the new type
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver = t->create_type();
+                            ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
                         }
-                        ImGui::EndCombo();
                     }
+                }
+                ImGui::EndCombo();
+            }
 
-                    if (!can_change) {
-                        ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Config change not possible");
-                        ImGui::TextWrapped("Since you are running the simulation in asynchronous mode, you cannot change the "
-                                           "solver setup if the simulation is running or has not stopped running!");
-                    }
-                },
-                (void*)0x37af7de);
+            if (!can_change) {
+                ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Config change not possible");
+                ImGui::TextWrapped("Since you are running the simulation in asynchronous mode, you cannot change the "
+                                   "solver setup if the simulation is running or has not stopped running!");
+            }
+
+
+            ImGui::TreePop();
+        }
+
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH) {
-            BeginSubsection("SESPH", [=]() {
+            if (StyledImGuiElements::slim_tree_node("SESPH")) {
                 auto v = (LibFluid::SESPHSettings*)ui_data.window().current_type->get_settings(
                         ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver);
                 update_solver_parameters();
@@ -150,11 +135,13 @@ namespace FluidStudio {
                 if (ImGui::InputFloat("Stiffness", &v->StiffnessK)) {
                     v->notify_that_data_changed();
                 }
-            });
+
+                ImGui::TreePop();
+            }
         }
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH) {
-            BeginSubsection("IISPH", [=]() {
+            if (StyledImGuiElements::slim_tree_node("IISPH")) {
                 update_solver_parameters();
                 ImGui::Separator();
 
@@ -179,11 +166,12 @@ namespace FluidStudio {
                 if (ImGui::InputFloat("Omega", &v->Omega)) {
                     v->notify_that_data_changed();
                 }
-            });
+                ImGui::TreePop();
+            }
         }
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeSESPH3D) {
-            BeginSubsection("3D SESPH", [=]() {
+            if (StyledImGuiElements::slim_tree_node("3D SESPH")) {
                 auto v = (LibFluid::SESPHSettings3D*)ui_data.window().current_type->get_settings(
                         ui_data.window().simulator_visualizer_bundle.simulator->data.fluid_solver);
                 update_solver_parameters();
@@ -207,11 +195,12 @@ namespace FluidStudio {
                         v->notify_that_data_changed();
                     }
                 }
-            });
+                ImGui::TreePop();
+            }
         }
 
         if (ui_data.window().current_type->settings_type == FluidSolverTypes::SolverSettingsTypeIISPH3D) {
-            BeginSubsection("3D IISPH", [=]() {
+            if (StyledImGuiElements::slim_tree_node("3D IISPH")) {
                 update_solver_parameters();
                 ImGui::Separator();
 
@@ -248,7 +237,8 @@ namespace FluidStudio {
                     }
                     // TODO: eventually gamma should be in here
                 }
-            });
+                ImGui::TreePop();
+            }
         }
     }
 
@@ -266,7 +256,7 @@ namespace FluidStudio {
 
 
     void ComponentSettingsWindow::update_sensor_plane_component(std::shared_ptr<LibFluid::Sensors::SensorPlane> sen) {
-        BeginSubsection("Value", [&] {
+        if (StyledImGuiElements::slim_tree_node("Value")) {
             using namespace LibFluid::Sensors;
 
             const char* current_type_name = nullptr;
@@ -309,34 +299,44 @@ namespace FluidStudio {
                     sen->settings.calculate_plane_every_nth_step = 1;
                 }
             }
-        });
 
-        BeginSubsection("Location & Size", [&] {
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Location & Size")) {
             ImGui::InputFloat3("Origin", (float*)&sen->settings.origin);
             ImGui::InputFloat3("Span X", (float*)&sen->settings.span_x);
             ImGui::InputFloat3("Span Y", (float*)&sen->settings.span_y);
             ImGui::InputFloat("Width", &sen->settings.width);
             ImGui::InputFloat("Height", &sen->settings.height);
-        });
 
-        BeginSubsection("Samples", [&] {
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Samples")) {
             ImGui::InputInt("X-Samples", (int*)&sen->settings.number_of_samples_x);
             ImGui::InputInt("Y-Samples", (int*)&sen->settings.number_of_samples_y);
             ImGui::InputInt("Sub-Samples", (int*)&sen->settings.sub_sample_grid_size);
-        });
 
-        BeginSubsection("Image", [&] {
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Image")) {
             ImGui::InputFloat("Min. value", &sen->settings.min_image_value);
             ImGui::InputFloat("Max. value", &sen->settings.max_image_value);
-        });
+
+            ImGui::TreePop();
+        }
     }
 
     void ComponentSettingsWindow::update_entity_component(size_t index) {
         FLUID_ASSERT(index < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
         auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[index];
-        BeginSubsection("Entity", [&]() {
+        if (StyledImGuiElements::slim_tree_node("Entity")) {
             ImGui::LabelText("Type", Component::get_entity_type_name(ent));
-        });
+
+            ImGui::TreePop();
+        }
 
         if (std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent)) {
             update_particle_remover_3d_component(std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent));
@@ -345,18 +345,23 @@ namespace FluidStudio {
 
 
     void ComponentSettingsWindow::update_particle_remover_3d_component(std::shared_ptr<LibFluid::ParticleRemover3D> ent) {
-        BeginSubsection("Volume", [&] {
+        if (StyledImGuiElements::slim_tree_node("Volume")) {
             ImGui::InputFloat3("Center", reinterpret_cast<float*>(&ent->parameters.volume.center));
             ImGui::InputFloat3("Distance", reinterpret_cast<float*>(&ent->parameters.volume.distance_from_center));
-        });
-        BeginSubsection("Settings", [&] {
+
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Settings")) {
             ImGui::Checkbox("Remove if Outside", &ent->parameters.remove_if_outside);
-        });
+
+            ImGui::TreePop();
+        }
     }
 
 
     void ComponentSettingsWindow::update_timestep_component() {
-        BeginSubsection("Timestep", [=]() {
+        if (StyledImGuiElements::slim_tree_node("Timestep")) {
             auto ct = std::dynamic_pointer_cast<LibFluid::ConstantTimestepGenerator>(ui_data.window().simulator_visualizer_bundle.simulator->data.timestep_generator);
             auto dt = std::dynamic_pointer_cast<LibFluid::DynamicCflTimestepGenerator>(ui_data.window().simulator_visualizer_bundle.simulator->data.timestep_generator);
 
@@ -407,7 +412,9 @@ namespace FluidStudio {
                     dt->settings = LibFluid::DynamicCflTimestepGenerator::DynamicCflTimestepGeneratorSettings();
                 }
             }
-        });
+
+            ImGui::TreePop();
+        }
     }
 
     const char* get_sensor_type_name(const std::shared_ptr<LibFluid::Sensor>& sen) {
@@ -434,7 +441,8 @@ namespace FluidStudio {
     void ComponentSettingsWindow::update_sensor_component(size_t index) {
         FLUID_ASSERT(index < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
         auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[index];
-        BeginSubsection("Sensor", [&]() {
+
+        if (StyledImGuiElements::slim_tree_node("Sensor")) {
             ImGui::LabelText("Type", get_sensor_type_name(sen));
             if (ImGui::Button("Open Graph")) {
                 ui_data.collection().get<SensorGraphWindows>().open_sensor_window(index);
@@ -444,7 +452,9 @@ namespace FluidStudio {
             ImGui::Separator();
             ImGui::Checkbox("Save to File", &sen->parameters.save_to_file);
             ImGui::InputText("Filename", &sen->parameters.filename);
-        });
+
+            ImGui::TreePop();
+        }
 
         if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
             update_global_energy_sensor_component(std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
@@ -455,13 +465,16 @@ namespace FluidStudio {
 
     void ComponentSettingsWindow::update_output_component() {
         auto& output = ui_data.window().simulator_visualizer_bundle.simulator->output;
-        BeginSubsection("Output", [&]() {
+
+        if (StyledImGuiElements::slim_tree_node("Output")) {
             ImGui::InputText("Directory", &output->parameters.output_folder);
-        });
+
+            ImGui::TreePop();
+        }
     }
 
     void ComponentSettingsWindow::update_visualizer_component() {
-        BeginSubsection("Visualizer", [&]() {
+        if (StyledImGuiElements::slim_tree_node("Visualizer")) {
             if (ImGui::Button("Update Visualization")) {
                 ui_data.window().visualizer_parameter_changed();
             }
@@ -517,7 +530,10 @@ namespace FluidStudio {
                 }
                 ImGui::EndCombo();
             }
-        });
+
+            ImGui::TreePop();
+        }
+
 
         if (ui_data.window().simulator_visualizer_bundle.visualizer == nullptr) {
             return;
@@ -525,7 +541,7 @@ namespace FluidStudio {
 
         FLUID_ASSERT(ui_data.window().simulator_visualizer_bundle.visualizer != nullptr);
 
-        BeginSubsection("Output", [&] {
+        if (StyledImGuiElements::slim_tree_node("Output")) {
             auto visualizer = ui_data.window().simulator_visualizer_bundle.visualizer;
 
             if (ImGui::InputInt2("Render Target", (int*)&visualizer->parameters.render_target)) {
@@ -540,14 +556,15 @@ namespace FluidStudio {
                 auto data = ui_data.window().simulator_visualizer_bundle.visualizer->get_image_data();
                 data.save_as_png("visualizer-output.png");
             }
-        });
 
+            ImGui::TreePop();
+        }
 
         auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(ui_data.window().simulator_visualizer_bundle.visualizer);
         auto cv = std::dynamic_pointer_cast<LibFluid::ContinousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
         auto gl3d = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
-        BeginSubsection("Colors", [&] {
+        if (StyledImGuiElements::slim_tree_node("Colors")) {
             if (gl != nullptr) {
                 ImGui::ColorEdit4("Background", (float*)&gl->settings.backgroundClearColor);
                 ImGui::ColorEdit4("Boundary", (float*)&gl->settings.boundaryParticleColor);
@@ -581,9 +598,11 @@ namespace FluidStudio {
 
                 ImGui::Checkbox("Memory Location", &gl3d->settings.show_particle_memory_location);
             }
-        });
 
-        BeginSubsection("View", [&] {
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("View")) {
             if (gl != nullptr) {
                 ImGui::InputFloat4("Viewport", (float*)&gl->settings.viewport);
             }
@@ -603,12 +622,18 @@ namespace FluidStudio {
                     ui_data.window().visualizer_parameter_changed();
                 }
             }
-        });
+
+            ImGui::TreePop();
+        }
     }
 
     void ComponentSettingsWindow::update_global_energy_sensor_component(
             std::shared_ptr<LibFluid::Sensors::GlobalEnergySensor> sen) {
-        BeginSubsection("Zero-Levels", [&]() { ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height); });
+        if (StyledImGuiElements::slim_tree_node("Zero-Levels")) {
+            ImGui::InputFloat("Zero Height", &sen->settings.relative_zero_height);
+
+            ImGui::TreePop();
+        }
     }
 
 } // namespace FluidStudio

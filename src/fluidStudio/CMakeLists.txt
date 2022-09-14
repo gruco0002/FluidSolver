@@ -43,7 +43,16 @@ set(FLUID_STUDIO_SOURCE_FILES
         visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp
         visualizationOverlay/OverlayInstance.hpp
         visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp
-        userInterface/elements/SimulationControlsWindow.cpp userInterface/elements/SimulationControlsWindow.hpp userInterface/UiData.hpp userInterface/UiData.cpp userInterface/elements/MainWindowMenu.cpp userInterface/elements/MainWindowMenu.hpp userInterface/UiElement.cpp userInterface/UiElement.hpp userInterface/UiElementCollection.hpp userInterface/elements/ComponentPanelWindow.cpp userInterface/elements/ComponentPanelWindow.hpp userInterface/SimulationComponent.cpp userInterface/SimulationComponent.hpp userInterface/elements/ComponentSettingsWindow.cpp userInterface/elements/ComponentSettingsWindow.hpp)
+        userInterface/elements/SimulationControlsWindow.cpp userInterface/elements/SimulationControlsWindow.hpp
+        userInterface/UiData.hpp userInterface/UiData.cpp
+        userInterface/elements/MainWindowMenu.cpp userInterface/elements/MainWindowMenu.hpp
+        userInterface/UiElement.cpp userInterface/UiElement.hpp
+        userInterface/UiElementCollection.hpp
+        userInterface/elements/ComponentPanelWindow.cpp userInterface/elements/ComponentPanelWindow.hpp
+        userInterface/SimulationComponent.cpp userInterface/SimulationComponent.hpp
+        userInterface/elements/ComponentSettingsWindow.cpp userInterface/elements/ComponentSettingsWindow.hpp
+        userInterface/StyledImGuiElements.cpp userInterface/StyledImGuiElements.hpp
+        )
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})
