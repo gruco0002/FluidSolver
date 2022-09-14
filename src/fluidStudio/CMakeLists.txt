@@ -54,6 +54,9 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/StyledImGuiElements.cpp userInterface/StyledImGuiElements.hpp
         userInterface/elements/componentSettings/SensorSettingsElement.cpp userInterface/elements/componentSettings/SensorSettingsElement.hpp
         userInterface/elements/componentSettings/SolverSettingsElement.cpp userInterface/elements/componentSettings/SolverSettingsElement.hpp
+        userInterface/elements/componentSettings/TimestepSettingsElement.cpp userInterface/elements/componentSettings/TimestepSettingsElement.hpp
+        userInterface/elements/componentSettings/VisualizerSettingsElement.cpp userInterface/elements/componentSettings/VisualizerSettingsElement.hpp
+        userInterface/elements/componentSettings/EntitySettingsElement.cpp userInterface/elements/componentSettings/EntitySettingsElement.hpp
         )
 
 
