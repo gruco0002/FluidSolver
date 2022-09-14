@@ -12,17 +12,17 @@ namespace FluidStudio {
       public:
         void update() override;
 
-        const Component& selection() const;
+        const SimulationComponent& selection() const;
 
       private:
         std::vector<std::string> menu_entity_names;
 
-        Component m_selection;
+        SimulationComponent m_selection;
 
         void update_menu();
         void update_selection_based_ui();
-        void delete_component(const Component& component);
-        void update_component_node(const char* name, const Component& component);
+        void delete_component(const SimulationComponent& component);
+        void update_component_node(const char* name, const SimulationComponent& component);
     };
 
 } // namespace FluidStudio

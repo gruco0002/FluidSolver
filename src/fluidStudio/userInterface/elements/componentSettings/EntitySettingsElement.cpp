@@ -10,7 +10,7 @@ namespace FluidStudio {
 
     void EntitySettingsElement::update() {
         auto& selection = ui_data.collection().get<ComponentPanelWindow>().selection();
-        if (selection.kind != Component::Kind::Entity) {
+        if (selection.kind != SimulationComponent::Kind::Entity) {
             return;
         }
         auto index = selection.index;
@@ -19,7 +19,7 @@ namespace FluidStudio {
 
         auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[index];
         if (StyledImGuiElements::slim_tree_node("Entity")) {
-            ImGui::LabelText("Type", Component::get_entity_type_name(ent));
+            ImGui::LabelText("Type", SimulationComponent::get_entity_type_name(ent));
 
             ImGui::TreePop();
         }

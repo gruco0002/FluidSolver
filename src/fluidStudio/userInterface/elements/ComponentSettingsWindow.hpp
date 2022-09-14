@@ -22,7 +22,7 @@ namespace FluidStudio {
         VisualizerSettingsElement visualizer_settings_element;
         EntitySettingsElement entity_settings_element;
 
-        void update_component_settings(const Component& component);
+        void update_component_settings(const SimulationComponent& component);
 
         void update_output_component();
     };

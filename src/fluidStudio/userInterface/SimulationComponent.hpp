@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <memory>
 namespace FluidStudio {
-    struct Component {
+    struct SimulationComponent {
         enum class Kind {
             None,
             Solver,
@@ -16,9 +16,9 @@ namespace FluidStudio {
         } kind = Kind::None;
         size_t index = 0;
 
-        bool operator==(const Component& other) const;
+        bool operator==(const SimulationComponent& other) const;
 
-        bool operator!=(const Component& other) const;
+        bool operator!=(const SimulationComponent& other) const;
 
         bool can_delete() const;
 

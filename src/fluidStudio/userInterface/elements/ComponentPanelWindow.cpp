@@ -16,24 +16,24 @@ namespace FluidStudio {
     void ComponentPanelWindow::update() {
         if (ImGui::Begin("Components")) {
             // Draw components
-            update_component_node("Solver", {Component::Kind::Solver, 0});
-            update_component_node("Visualizer", {Component::Kind::Visualizer, 0});
-            update_component_node("Timestep", {Component::Kind::Timestep, 0});
-            update_component_node("Output", {Component::Kind::Output, 0});
+            update_component_node("Solver", {SimulationComponent::Kind::Solver, 0});
+            update_component_node("Visualizer", {SimulationComponent::Kind::Visualizer, 0});
+            update_component_node("Timestep", {SimulationComponent::Kind::Timestep, 0});
+            update_component_node("Output", {SimulationComponent::Kind::Output, 0});
 
             for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
                 auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
-                update_component_node(sen->parameters.name.c_str(), {Component::Kind::Sensor, i});
+                update_component_node(sen->parameters.name.c_str(), {SimulationComponent::Kind::Sensor, i});
             }
 
             menu_entity_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
             for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size(); i++) {
                 auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i];
-                auto name = "Entity " + std::to_string(i + 1) + ": " + Component::get_entity_type_name(ent);
+                auto name = "Entity " + std::to_string(i + 1) + ": " + SimulationComponent::get_entity_type_name(ent);
                 if (menu_entity_names[i] != name) {
                     menu_entity_names[i] = name;
                 }
-                update_component_node(menu_entity_names[i].c_str(), {Component::Kind::Entity, i});
+                update_component_node(menu_entity_names[i].c_str(), {SimulationComponent::Kind::Entity, i});
             }
 
 
@@ -122,7 +122,7 @@ namespace FluidStudio {
         }
     }
 
-    void ComponentPanelWindow::update_component_node(const char* name, const Component& component) {
+    void ComponentPanelWindow::update_component_node(const char* name, const SimulationComponent& component) {
         ImGuiTreeNodeFlags flags = ((component == m_selection) ? ImGuiTreeNodeFlags_Selected : 0) |
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_FramePadding;
@@ -160,8 +160,8 @@ namespace FluidStudio {
     }
 
 
-    void ComponentPanelWindow::delete_component(const Component& component) {
-        if (component.kind == Component::Kind::Sensor) {
+    void ComponentPanelWindow::delete_component(const SimulationComponent& component) {
+        if (component.kind == SimulationComponent::Kind::Sensor) {
             // delete the sensor if existing
 
             // check for existance
@@ -175,7 +175,7 @@ namespace FluidStudio {
             }
             ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.pop_back();
             ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
-        } else if (component.kind == Component::Kind::Entity) {
+        } else if (component.kind == SimulationComponent::Kind::Entity) {
             // delete the entity if existing
 
             // check for existance
@@ -197,7 +197,7 @@ namespace FluidStudio {
     void ComponentPanelWindow::update_selection_based_ui() {
         std::shared_ptr<OverlayInstance> new_overlay_instance = nullptr;
         auto current_overlay_instance = ui_data.window().visualization_overlay.data.overlay_instance;
-        if (m_selection.kind == Component::Kind::Entity) {
+        if (m_selection.kind == SimulationComponent::Kind::Entity) {
             // check if overlay needs to be activated / deactivated
             auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[m_selection.index];
 
@@ -215,7 +215,7 @@ namespace FluidStudio {
 
         ui_data.window().visualization_overlay.set_new_overlay_instance(new_overlay_instance);
     }
-    const Component& ComponentPanelWindow::selection() const {
+    const SimulationComponent& ComponentPanelWindow::selection() const {
         return m_selection;
     }
 

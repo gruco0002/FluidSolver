@@ -34,7 +34,7 @@ namespace FluidStudio {
 
     void SensorSettingsElement::update() {
         auto& selection = ui_data.collection().get<ComponentPanelWindow>().selection();
-        if (selection.kind != Component::Kind::Sensor) {
+        if (selection.kind != SimulationComponent::Kind::Sensor) {
             return;
         }
         auto index = selection.index;
