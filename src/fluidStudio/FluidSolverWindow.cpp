@@ -10,9 +10,12 @@
 #include "visualizer/GLParticleRenderer3D.hpp"
 #include "visualizer/GLRenderer.hpp"
 
+#include "userInterface/UiLayer.hpp"
+
 #include <GLFW/glfw3.h>
 #include <chrono>
 #include <thread>
+
 
 namespace FluidStudio {
 
@@ -122,7 +125,7 @@ namespace FluidStudio {
             auto id = ImGui::DockSpaceOverViewport();
 
             render_visualization_ui_window();
-            uiLayer.render();
+            ui_layer->render();
 
             ImGuiHelper::PostRender();
         }
@@ -438,8 +441,9 @@ namespace FluidStudio {
     }
 
     void FluidSolverWindow::setup_ui_layer() {
-        uiLayer.window = this;
-        uiLayer.initialize();
+        ui_layer = std::make_shared<FluidStudio::UiLayer>();
+        ui_layer->window = this;
+        ui_layer->initialize();
     }
 
 
@@ -646,7 +650,7 @@ namespace FluidStudio {
         // render overlay
         visualization_overlay.render(visualization_width, visualization_height);
 
-        if(visualization_overlay.has_data_changed()){
+        if (visualization_overlay.has_data_changed()) {
             simulation_changed_compared_to_visualization = true;
         }
     }
@@ -666,4 +670,4 @@ namespace FluidStudio {
         // render overlay
         visualization_overlay.render_overlay_into_framebuffer(framebuffer);
     }
-} // namespace FluidUi
+} // namespace FluidStudio

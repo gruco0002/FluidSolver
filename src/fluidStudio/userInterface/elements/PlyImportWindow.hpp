@@ -4,6 +4,8 @@
 #include "FluidStudioFwd.hpp"
 #include "fluidSolver/Particle.hpp"
 
+#include "userInterface/UiElement.hpp"
+
 #include <glm/gtx/hash.hpp>
 #include <string>
 #include <unordered_map>
@@ -11,18 +13,13 @@
 
 namespace FluidStudio {
 
-    class PlyImport {
+    class PlyImportWindow final : public UiElement {
       public:
-        void render();
+        void update() override;
 
-        void show();
-
-        void set_window(FluidSolverWindow* window);
-
-        explicit PlyImport(FluidSolverWindow* window);
+        void open_window();
 
       private:
-        FluidSolverWindow* window;
         bool visible = false;
 
         std::string current_file;
@@ -31,15 +28,18 @@ namespace FluidStudio {
 
         int scale = 1;
 
-        void load_colors_if_required();
-
         std::vector<glm::vec3> colors;
         std::vector<glm::vec3> vertices;
 
         std::unordered_map<glm::vec3, LibFluid::ParticleType> mapped_colors;
 
+      private:
+        void load_colors_if_required();
+
         void import_data_into_simulation();
+
+        void reset();
     };
 
 
-} // namespace FluidUi
+} // namespace FluidStudio
