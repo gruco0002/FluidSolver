@@ -1,14 +1,14 @@
 #include "FluidSolverTypes.hpp"
 
-#include "fluidSolver/IISPHFluidSolver.hpp"
-#include "fluidSolver/IISPHFluidSolver3D.hpp"
-#include "fluidSolver/SESPHFluidSolver.hpp"
-#include "fluidSolver/SESPHFluidSolver3D.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel.hpp"
 #include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
+#include "fluidSolver/solver/IISPHFluidSolver.hpp"
+#include "fluidSolver/solver/IISPHFluidSolver3D.hpp"
+#include "fluidSolver/solver/SESPHFluidSolver.hpp"
+#include "fluidSolver/solver/SESPHFluidSolver3D.hpp"
 
 #include <set>
 

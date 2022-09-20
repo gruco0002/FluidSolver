@@ -1,9 +1,9 @@
 #pragma once
 
-#include <fluidSolver/IFluidSolver.hpp>
-#include <fluidSolver/kernel/CubicSplineKernel.hpp>
-#include <fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp>
-#include <parallelization/StdParallelForEach.hpp>
+#include "fluidSolver/IFluidSolver.hpp"
+#include "fluidSolver/kernel/CubicSplineKernel.hpp"
+#include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
+#include "parallelization/StdParallelForEach.hpp"
 
 namespace LibFluid {
 

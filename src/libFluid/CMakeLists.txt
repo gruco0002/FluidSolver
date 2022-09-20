@@ -17,7 +17,7 @@ include_directories(./)
 
 
 set(LIB_FLUID_SOURCE_FILES       
-        "fluidSolver/SESPHFluidSolver.hpp"
+        "fluidSolver/solver/SESPHFluidSolver.hpp"
         "fluidSolver/kernel/CubicSplineKernel.cpp"
         "fluidSolver/kernel/CubicSplineKernel.hpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.cpp"
@@ -27,7 +27,7 @@ set(LIB_FLUID_SOURCE_FILES
         "Simulator.cpp" "Simulator.hpp"
         "visualizer/ISimulationVisualizer.hpp"
         "fluidSolver/IFluidSolver.hpp"        
-        "fluidSolver/IISPHFluidSolver.hpp"
+        "fluidSolver/solver/IISPHFluidSolver.hpp"
         "time/TimestepGenerator.cpp"
         "time/TimestepGenerator.hpp"
         "time/ConstantTimestepGenerator.cpp"
@@ -66,7 +66,7 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/OutputManager.hpp" "sensors/OutputManager.cpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
         "fluidSolver/kernel/CubicSplineKernel3D.hpp" "fluidSolver/kernel/CubicSplineKernel3D.cpp"
-        "fluidSolver/SESPHFluidSolver3D.hpp"
+        "fluidSolver/solver/SESPHFluidSolver3D.hpp"
         "visualizer/Viewport2D.hpp"
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.cpp"
         "helper/ProtectedUnorderedMap.hpp"
@@ -75,7 +75,7 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
         "Forward.hpp"
         "FluidMath.hpp"
-        "fluidSolver/IISPHFluidSolver3D.hpp"
+        "fluidSolver/solver/IISPHFluidSolver3D.hpp"
         "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         "sensors/CompressedNeighborsStatistics.hpp" "sensors/CompressedNeighborsStatistics.cpp"
         "serialization/ParticleSerializer.cpp" "serialization/ParticleSerializer.hpp"
