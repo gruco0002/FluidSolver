@@ -53,7 +53,7 @@ set(LIB_FLUID_SOURCE_FILES
         "group/TagGroup.hpp"
         "entities/ParticleSpawner.cpp"
         "entities/ParticleSpawner.hpp"
-        "entities/IEntity.hpp"
+        "entities/SimulationEntity.hpp"
         "entities/ParticleRemover.cpp"
         "entities/ParticleRemover.hpp"
         "sensors/SensorBase.hpp"

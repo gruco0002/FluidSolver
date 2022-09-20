@@ -2,7 +2,7 @@
 
 #include "CompatibilityReport.hpp"
 #include "DataChangeStruct.hpp"
-#include "entities/IEntity.hpp"
+#include "entities/SimulationEntity.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/OutputManager.hpp"
@@ -21,7 +21,7 @@ namespace LibFluid {
             std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
             std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
 
-            std::vector<std::shared_ptr<IEntity>> entities;
+            std::vector<std::shared_ptr<SimulationEntity>> entities;
             std::vector<std::shared_ptr<Sensor>> sensors;
         } data;
 

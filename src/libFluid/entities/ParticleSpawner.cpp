@@ -5,12 +5,12 @@ namespace LibFluid {
         initialize();
 
 
-        FLUID_ASSERT(sim.collection != nullptr)
-        FLUID_ASSERT(sim.collection->is_type_present<ParticleInfo>())
-        FLUID_ASSERT(sim.collection->is_type_present<MovementData>())
-        FLUID_ASSERT(sim.collection->is_type_present<ParticleData>())
+        FLUID_ASSERT(simulation_data.collection != nullptr)
+        FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleInfo>())
+        FLUID_ASSERT(simulation_data.collection->is_type_present<MovementData>())
+        FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleData>())
 
-        FLUID_ASSERT(sim.particle_size > 0.0f)
+        FLUID_ASSERT(simulation_data.particle_size > 0.0f)
 
         FLUID_ASSERT(parameters.direction != vec2(0.0f))
         FLUID_ASSERT(parameters.width > 0.0f)
@@ -24,7 +24,7 @@ namespace LibFluid {
 
 
         // assume that the particles move away by their velocity
-        if (time_left_over * parameters.initial_velocity >= sim.particle_size) {
+        if (time_left_over * parameters.initial_velocity >= simulation_data.particle_size) {
             // there should be enough place to spawn the particles
 
             // calculated required data
@@ -34,9 +34,9 @@ namespace LibFluid {
             float width = parameters.width;
 
             // spawn particles along width
-            for (float x = -width / 2.0f; x <= width / 2.0f; x += sim.particle_size) {
+            for (float x = -width / 2.0f; x <= width / 2.0f; x += simulation_data.particle_size) {
                 glm::vec2 pos = parameters.position + orth_direction * x +
-                        (time_left_over * parameters.initial_velocity - sim.particle_size) * normalized_direction;
+                        (time_left_over * parameters.initial_velocity - simulation_data.particle_size) * normalized_direction;
 
                 // check if the position is free (avoid spawning particles inside each other, as this would represent
                 // invalid states)
@@ -54,8 +54,8 @@ namespace LibFluid {
     }
 
     pIndex_t ParticleSpawner::get_or_add_particle() {
-        while (last_index_checked < sim.collection->size()) {
-            if (sim.collection->get<ParticleInfo>(last_index_checked).type == ParticleType::ParticleTypeDead) {
+        while (last_index_checked < simulation_data.collection->size()) {
+            if (simulation_data.collection->get<ParticleInfo>(last_index_checked).type == ParticleType::ParticleTypeDead) {
                 // reuse the current particle
                 return last_index_checked;
             }
@@ -63,42 +63,42 @@ namespace LibFluid {
         }
 
         // could not find a dead particle --> add a new one
-        auto index = sim.collection->add();
+        auto index = simulation_data.collection->add();
         return index;
     }
 
     void ParticleSpawner::spawn_particle(pIndex_t index, const glm::vec2& position,
             const glm::vec2& initial_velocity) {
-        FLUID_ASSERT(index < sim.collection->size());
+        FLUID_ASSERT(index < simulation_data.collection->size());
 
         // set the particle type to normal
-        sim.collection->get<ParticleInfo>(index).type = ParticleType::ParticleTypeNormal;
+        simulation_data.collection->get<ParticleInfo>(index).type = ParticleType::ParticleTypeNormal;
         ;
 
         // set default particle data
-        auto& pd = sim.collection->get<ParticleData>(index);
+        auto& pd = simulation_data.collection->get<ParticleData>(index);
         pd.density = parameters.rest_density;
         pd.mass = parameters.mass;
         pd.pressure = 0.0f;
 
         // set movement data and position
-        auto& md = sim.collection->get<MovementData>(index);
+        auto& md = simulation_data.collection->get<MovementData>(index);
         md.position = position;
         md.acceleration = glm::vec2(0.0f);
         md.velocity = initial_velocity;
     }
 
     bool ParticleSpawner::is_position_free(const glm::vec2& position) {
-        FLUID_ASSERT(sim.neighborhood_interface != nullptr);
-        FLUID_ASSERT(sim.collection != nullptr);
+        FLUID_ASSERT(simulation_data.neighborhood_interface != nullptr);
+        FLUID_ASSERT(simulation_data.collection != nullptr);
 
         const float epsilon = 0.95f;
 
-        float min_distance_squared = (sim.particle_size * epsilon) * (sim.particle_size * epsilon);
+        float min_distance_squared = (simulation_data.particle_size * epsilon) * (simulation_data.particle_size * epsilon);
 
-        auto neighbors = sim.neighborhood_interface->get_neighbors(position);
+        auto neighbors = simulation_data.neighborhood_interface->get_neighbors(position);
         for (auto& neighbor : neighbors) {
-            auto& neighbor_pos = sim.collection->get<MovementData>(neighbor).position;
+            auto& neighbor_pos = simulation_data.collection->get<MovementData>(neighbor).position;
             vec2 diff = neighbor_pos - position;
             float distance_squared = glm::dot(diff, diff);
             if (distance_squared < min_distance_squared) {
@@ -109,8 +109,8 @@ namespace LibFluid {
         return true;
     }
     void ParticleSpawner::initialize() {
-        if (sim.has_data_changed()) {
-            sim.acknowledge_data_change();
+        if (simulation_data.has_data_changed()) {
+            simulation_data.acknowledge_data_change();
 
             time_left_over = 0.0f;
         }

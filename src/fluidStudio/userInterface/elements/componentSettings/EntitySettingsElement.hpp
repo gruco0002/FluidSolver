@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/IEntity.hpp"
+#include "entities/SimulationEntity.hpp"
 #include "userInterface/UiElement.hpp"
 
 namespace FluidStudio {
@@ -9,6 +9,6 @@ namespace FluidStudio {
         void update() override;
 
       private:
-        void update_particle_remover_3d_component(std::shared_ptr<LibFluid::IEntity> tmp);
+        void update_particle_remover_3d_component(std::shared_ptr<LibFluid::SimulationEntity> tmp);
     };
 } // namespace FluidStudio

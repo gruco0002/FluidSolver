@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IEntity.hpp"
+#include "SimulationEntity.hpp"
 
 namespace LibFluid {
-    class ParticleRemover3D : public IEntity {
+    class ParticleRemover3D : public SimulationEntity {
       public:
         struct Parameters {
             Volume volume = {};

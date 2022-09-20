@@ -64,9 +64,9 @@ namespace LibFluid {
             for (auto ent : data.entities) {
                 FLUID_ASSERT(ent != nullptr);
 
-                ent->sim.gravity = parameters.gravity;
-                ent->sim.particle_size = parameters.particle_size;
-                ent->sim.notify_that_data_changed();
+                ent->simulation_data.gravity = parameters.gravity;
+                ent->simulation_data.particle_size = parameters.particle_size;
+                ent->simulation_data.notify_that_data_changed();
             }
 
             for (auto sen : data.sensors) {
@@ -96,10 +96,10 @@ namespace LibFluid {
 
             for (auto ent : data.entities) {
                 FLUID_ASSERT(ent != nullptr);
-                ent->sim.collection = data.collection;
-                ent->sim.neighborhood_interface = neigborhood_interface;
+                ent->simulation_data.collection = data.collection;
+                ent->simulation_data.neighborhood_interface = neigborhood_interface;
 
-                ent->sim.notify_that_data_changed();
+                ent->simulation_data.notify_that_data_changed();
             }
 
             for (auto sen : data.sensors) {

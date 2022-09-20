@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IEntity.hpp"
+#include "SimulationEntity.hpp"
 
 namespace LibFluid {
-    class ParticleSpawner : public IEntity {
+    class ParticleSpawner : public SimulationEntity {
       public:
         struct Parameters {
             vec2 position = vec2(0.0f);

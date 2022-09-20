@@ -18,7 +18,7 @@ namespace FluidStudio {
 
         return false;
     }
-    const char* SimulationComponent::get_entity_type_name(const std::shared_ptr<LibFluid::IEntity> entity) {
+    const char* SimulationComponent::get_entity_type_name(const std::shared_ptr<LibFluid::SimulationEntity> entity) {
         if (std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(entity)) {
             return "Particle Remover 3D";
         }

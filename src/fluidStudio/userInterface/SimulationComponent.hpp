@@ -1,6 +1,6 @@
 #pragma once
 
-#include "entities/IEntity.hpp"
+#include "entities/SimulationEntity.hpp"
 #include <cstddef>
 #include <memory>
 namespace FluidStudio {
@@ -23,6 +23,6 @@ namespace FluidStudio {
         bool can_delete() const;
 
 
-        static const char* get_entity_type_name(const std::shared_ptr<LibFluid::IEntity> entity);
+        static const char* get_entity_type_name(const std::shared_ptr<LibFluid::SimulationEntity> entity);
     };
 } // namespace FluidStudio

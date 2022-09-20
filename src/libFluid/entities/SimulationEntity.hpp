@@ -1,29 +1,30 @@
 #pragma once
 
+#include "DataChangeStruct.hpp"
 #include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "DataChangeStruct.hpp"
 
-#include <memory>
 #include "Initializable.hpp"
 #include "Reportable.hpp"
+#include <memory>
+
+
 
 namespace LibFluid {
-    class IEntity : public Initializable, public Reportable {
+    class SimulationEntity : public Initializable, public Reportable {
       public:
-        struct SimulationInformation : public DataChangeStruct
-        {
-
+        struct SimulationInformation : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             float gravity = 0.0f;
             float particle_size = 0.0f;
             std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
 
-        } sim;
+        } simulation_data;
 
+    
         virtual void execute_simulation_step(pFloat timestep) = 0;
 
-        ~IEntity() override = default;
+        ~SimulationEntity() override = default;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

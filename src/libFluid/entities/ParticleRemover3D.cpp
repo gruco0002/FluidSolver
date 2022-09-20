@@ -8,7 +8,7 @@ namespace LibFluid {
     void ParticleRemover3D::execute_simulation_step(pFloat timestep) {
         VolumeGroup group;
         group.volume = parameters.volume;
-        group.collection = sim.collection;
+        group.collection = simulation_data.collection;
         group.inside = !parameters.remove_if_outside;
         GroupActions::remove(group);
     }

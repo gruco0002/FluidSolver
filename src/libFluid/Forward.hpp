@@ -11,7 +11,7 @@ namespace LibFluid {
     struct Timepoint;
 
     // entities
-    class IEntity;
+    class SimulationEntity;
     class ParticleSpawner;
     class ParticleRemover;
     class ParticleRemover3D;

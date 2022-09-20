@@ -30,7 +30,7 @@ namespace FluidStudio {
     }
 
 
-    void EntitySettingsElement::update_particle_remover_3d_component(std::shared_ptr<LibFluid::IEntity> tmp) {
+    void EntitySettingsElement::update_particle_remover_3d_component(std::shared_ptr<LibFluid::SimulationEntity> tmp) {
         auto ent = std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(tmp);
 
         if (StyledImGuiElements::slim_tree_node("Volume")) {
