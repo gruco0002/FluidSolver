@@ -16,7 +16,7 @@ namespace LibFluid {
             float rest_density = 1.0f;
         } parameters;
 
-        void execute_simulation_step(pFloat timestep) override;
+        void execute_simulation_step(const Timepoint& timepoint, bool before_solver) override;
         void initialize() override;
         void create_compatibility_report(CompatibilityReport& report) override;
 

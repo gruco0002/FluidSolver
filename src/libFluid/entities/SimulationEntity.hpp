@@ -2,18 +2,24 @@
 
 #include "DataChangeStruct.hpp"
 #include "FluidInclude.hpp"
-#include "fluidSolver/ParticleCollection.hpp"
-#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-
 #include "Initializable.hpp"
 #include "Reportable.hpp"
-#include <memory>
+#include "fluidSolver/ParticleCollection.hpp"
+#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "time/Timepoint.hpp"
 
+#include <memory>
 
 
 namespace LibFluid {
     class SimulationEntity : public Initializable, public Reportable {
       public:
+        enum class EntityExecutionPoint {
+            BeforeSolver,
+            AfterSolver,
+            BeforeAndAfterSolver
+        };
+
         struct SimulationInformation : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             float gravity = 0.0f;
@@ -22,8 +28,13 @@ namespace LibFluid {
 
         } simulation_data;
 
-    
-        virtual void execute_simulation_step(pFloat timestep) = 0;
+
+        struct EntitySettings : public DataChangeStruct {
+            EntityExecutionPoint execution_point = EntityExecutionPoint::AfterSolver;
+        } settings;
+
+
+        virtual void execute_simulation_step(const Timepoint& timepoint, bool before_solver) = 0;
 
         ~SimulationEntity() override = default;
     };

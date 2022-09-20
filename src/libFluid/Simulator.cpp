@@ -22,13 +22,23 @@ namespace LibFluid {
             timepoint.actual_time_step = current_timestep;
         }
 
+        // simulate entities before simulation step
+        for (auto ent : data.entities) {
+            if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeSolver ||
+                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->execute_simulation_step(timepoint, true);
+            }
+        }
+
         // simulate
         data.fluid_solver->execute_simulation_step(timepoint);
 
-        // simulate entities
+        // simulate entities after simulation step
         for (auto ent : data.entities) {
-            // TODO: improve entity time step is fixed
-            ent->execute_simulation_step(timepoint.actual_time_step);
+            if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::AfterSolver ||
+                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->execute_simulation_step(timepoint, false);
+            }
         }
 
         // update simulation time

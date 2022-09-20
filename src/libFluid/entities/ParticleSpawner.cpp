@@ -1,7 +1,7 @@
 #include "ParticleSpawner.hpp"
 
 namespace LibFluid {
-    void ParticleSpawner::execute_simulation_step(pFloat timestep) {
+    void ParticleSpawner::execute_simulation_step(const Timepoint& timepoint, bool before_solver) {
         initialize();
 
 
@@ -20,7 +20,7 @@ namespace LibFluid {
         this->last_index_checked = 0;
 
         // add time
-        time_left_over += timestep;
+        time_left_over += timepoint.actual_time_step;
 
 
         // assume that the particles move away by their velocity
@@ -114,8 +114,12 @@ namespace LibFluid {
 
             time_left_over = 0.0f;
         }
+
+        if (settings.has_data_changed()) {
+            settings.acknowledge_data_change();
+        }
     }
     void ParticleSpawner::create_compatibility_report(CompatibilityReport& report) {
         initialize();
     }
-} // namespace FluidSolver
+} // namespace LibFluid
