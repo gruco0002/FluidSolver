@@ -7,7 +7,7 @@
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
 #include "sensors/OutputManager.hpp"
 #include "sensors/Sensor.hpp"
-#include "time/ITimestepGenerator.hpp"
+#include "time/TimestepGenerator.hpp"
 
 #include <memory>
 
@@ -19,7 +19,7 @@ namespace LibFluid {
         struct SimulatorData : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
-            std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
+            std::shared_ptr<TimestepGenerator> timestep_generator = nullptr;
 
             std::vector<std::shared_ptr<SimulationEntity>> entities;
             std::vector<std::shared_ptr<Sensor>> sensors;

@@ -3,12 +3,12 @@
 #include "CompatibilityReport.hpp"
 #include "DataChangeStruct.hpp"
 #include "FluidInclude.hpp"
-#include "ParticleCollection.hpp"
-#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "time/ITimestepGenerator.hpp"
-#include "time/Timepoint.hpp"
-#include "Reportable.hpp"
 #include "Initializable.hpp"
+#include "ParticleCollection.hpp"
+#include "Reportable.hpp"
+#include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "time/Timepoint.hpp"
+#include "time/TimestepGenerator.hpp"
 
 #include <memory>
 
@@ -24,7 +24,7 @@ namespace LibFluid {
         } parameters;
 
         struct SimulationData : public DataChangeStruct {
-            std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
+            std::shared_ptr<TimestepGenerator> timestep_generator = nullptr;
             std::shared_ptr<ParticleCollection> collection = nullptr;
         } data;
 

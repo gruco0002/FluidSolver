@@ -10,7 +10,7 @@
 
 namespace LibFluid {
 
-    class ITimestepGenerator : public Initializable, public Reportable {
+    class TimestepGenerator : public Initializable, public Reportable {
 
       protected:
         float generated_timestep = 0.0f;

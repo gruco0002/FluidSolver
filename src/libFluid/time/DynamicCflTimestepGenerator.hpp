@@ -1,11 +1,11 @@
 #pragma once
 
-#include "time/ITimestepGenerator.hpp"
+#include "time/TimestepGenerator.hpp"
 
 #include <tuple>
 
 namespace LibFluid {
-    class DynamicCflTimestepGenerator : public ITimestepGenerator {
+    class DynamicCflTimestepGenerator : public TimestepGenerator {
       public:
         struct DynamicCflTimestepGeneratorSettings {
             float max_timestep = 0.02f;

@@ -75,8 +75,8 @@ namespace LibFluid {
         std::string get_full_particle_data_path();
         nlohmann::json save_scenario(const Simulator& simulation);
         void load_scenario(const nlohmann::json& node, Simulator& simulation);
-        nlohmann::json save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep);
-        std::shared_ptr<ITimestepGenerator> load_timestep(const nlohmann::json& node);
+        nlohmann::json save_timestep(const std::shared_ptr<TimestepGenerator>& timestep);
+        std::shared_ptr<TimestepGenerator> load_timestep(const nlohmann::json& node);
         nlohmann::json save_solver(const Simulator& simulation);
         void load_solver(Simulator& simulation, const nlohmann::json& node);
         std::shared_ptr<ISimulationVisualizer> load_visualizer(const nlohmann::json& node);

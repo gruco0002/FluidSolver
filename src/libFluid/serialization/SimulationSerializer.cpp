@@ -429,7 +429,7 @@ namespace LibFluid {
         }
     }
 
-    nlohmann::json SimulationSerializer::save_timestep(const std::shared_ptr<ITimestepGenerator>& timestep) {
+    nlohmann::json SimulationSerializer::save_timestep(const std::shared_ptr<TimestepGenerator>& timestep) {
         nlohmann::json node;
 
         if (std::dynamic_pointer_cast<ConstantTimestepGenerator>(timestep)) {
@@ -453,7 +453,7 @@ namespace LibFluid {
         return node;
     }
 
-    std::shared_ptr<ITimestepGenerator> SimulationSerializer::load_timestep(const nlohmann::json& node) {
+    std::shared_ptr<TimestepGenerator> SimulationSerializer::load_timestep(const nlohmann::json& node) {
         if (node["type"].get<std::string>() == "constant") {
             auto res = std::make_shared<ConstantTimestepGenerator>();
             res->settings.timestep = node["timestep"].get<float>();

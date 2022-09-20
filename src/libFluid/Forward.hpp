@@ -3,7 +3,7 @@
 namespace LibFluid {
     class SimulatorVisualizerBundle;
     class Simulator;
-    class ITimestepGenerator;
+    class TimestepGenerator;
     class ISimulationVisualizer;
     class ParticleCollection;
     class IFluidSolverBase;

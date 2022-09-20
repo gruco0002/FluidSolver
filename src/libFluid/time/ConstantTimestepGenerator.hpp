@@ -1,9 +1,9 @@
 #pragma once
 
-#include "time/ITimestepGenerator.hpp"
+#include "time/TimestepGenerator.hpp"
 
 namespace LibFluid {
-    class ConstantTimestepGenerator : public ITimestepGenerator {
+    class ConstantTimestepGenerator : public TimestepGenerator {
       public:
         struct ConstantTimestepGeneratorSettings {
             float timestep = 0.001f;
