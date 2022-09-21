@@ -143,8 +143,8 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleData>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleInfo>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ExternalForces>();
-        simulator_visualizer_bundle.simulator->parameters.rest_density = 1.0f;
-        simulator_visualizer_bundle.simulator->parameters.particle_size = 1.0f;
+        simulator_visualizer_bundle.simulator->parameters.rest_density = 1000.0f;
+        simulator_visualizer_bundle.simulator->parameters.particle_size = 0.1f;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
         simulator_visualizer_bundle.simulator->data.fluid_solver = current_type->create_type();
@@ -170,12 +170,14 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleData>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleInfo>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ExternalForces3D>();
-        simulator_visualizer_bundle.simulator->parameters.rest_density = 1.0f;
-        simulator_visualizer_bundle.simulator->parameters.particle_size = 1.0f;
+        simulator_visualizer_bundle.simulator->parameters.rest_density = 1000.0f;
+        simulator_visualizer_bundle.simulator->parameters.particle_size = 0.1f;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
-        simulator_visualizer_bundle.simulator->data.fluid_solver = current_type->create_type();
-        simulator_visualizer_bundle.simulator->data.timestep_generator = std::make_shared<LibFluid::ConstantTimestepGenerator>();
+        simulator_visualizer_bundle.simulator->data.fluid_solver = solver_types.query_type({"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D"})->create_type();
+        auto timestep_generator = std::make_shared<LibFluid::ConstantTimestepGenerator>();
+        timestep_generator->settings.timestep = 0.01f;
+        simulator_visualizer_bundle.simulator->data.timestep_generator = timestep_generator;
         simulator_visualizer_bundle.visualizer = std::make_shared<LibFluid::GLParticleRenderer3D>();
 
         simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
@@ -195,8 +197,8 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleData>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleInfo>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ExternalForces3D>();
-        simulator_visualizer_bundle.simulator->parameters.rest_density = 1.0f;
-        simulator_visualizer_bundle.simulator->parameters.particle_size = 1.0f;
+        simulator_visualizer_bundle.simulator->parameters.rest_density = 1000.0f;
+        simulator_visualizer_bundle.simulator->parameters.particle_size = 0.1f;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
 

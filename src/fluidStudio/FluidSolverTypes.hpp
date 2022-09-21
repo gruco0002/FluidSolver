@@ -1,5 +1,4 @@
-#ifndef FLUIDSOLVER_FLUIDSOLVERTYPES_HPP
-#define FLUIDSOLVER_FLUIDSOLVERTYPES_HPP
+#pragma once
 
 #include "fluidSolver/IFluidSolver.hpp"
 
@@ -11,17 +10,14 @@
 namespace FluidStudio {
     class FluidSolverTypes {
       public:
-        enum SolverSettingsType
-        {
+        enum SolverSettingsType {
             SolverSettingsTypeIISPH,
             SolverSettingsTypeSESPH,
             SolverSettingsTypeSESPH3D,
             SolverSettingsTypeIISPH3D
         };
 
-        struct FluidSolverType
-        {
-
+        struct FluidSolverType {
             std::string name_solver;
             std::string name_neighborhood_search;
             std::string name_kernel;
@@ -34,8 +30,7 @@ namespace FluidStudio {
             std::function<void*(std::shared_ptr<LibFluid::IFluidSolverBase>)> get_settings;
         };
 
-        struct FluidSolverTypeQuery
-        {
+        struct FluidSolverTypeQuery {
             std::string name_solver;
             std::string name_neighborhood_search;
             std::string name_kernel;
@@ -49,8 +44,7 @@ namespace FluidStudio {
 
         FluidSolverTypes();
 
-        enum class QueryMainFocus
-        {
+        enum class QueryMainFocus {
             None,
             Solver,
             NeighborhoodSearch,
@@ -59,7 +53,7 @@ namespace FluidStudio {
 
 
         const FluidSolverType* query_type(const FluidSolverTypeQuery& query,
-                                          QueryMainFocus focus = QueryMainFocus::None) const;
+                QueryMainFocus focus = QueryMainFocus::None) const;
 
         const FluidSolverType* query_type(const std::shared_ptr<LibFluid::IFluidSolverBase>& query) const;
 
@@ -70,7 +64,4 @@ namespace FluidStudio {
         void find_possible_names();
     };
 
-} // namespace FluidUi
-
-
-#endif // FLUIDSOLVER_FLUIDSOLVERTYPES_HPP
+} // namespace FluidStudio
