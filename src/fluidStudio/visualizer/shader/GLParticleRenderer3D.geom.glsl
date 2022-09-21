@@ -3,9 +3,10 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 29) out;
 
-uniform float pointSize;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+
+uniform float particleSize;
 
 out vec4 oColor;
 out vec3 oNormal;
@@ -47,7 +48,7 @@ void main(){
     );
 
     for(int i = 0; i < 29; i++){
-        gl_Position = projectionMatrix * viewMatrix * vec4((position + SCALE * ICOSAHEDRON_COORDINATES[ICOSAHEDRON_FACES[i]]), 1.0);
+        gl_Position = projectionMatrix * viewMatrix * vec4((position + particleSize * SCALE * ICOSAHEDRON_COORDINATES[ICOSAHEDRON_FACES[i]]), 1.0);
         oNormal = normalize(ICOSAHEDRON_COORDINATES[ICOSAHEDRON_FACES[i]]);
         EmitVertex();     
            
