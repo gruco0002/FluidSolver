@@ -91,6 +91,8 @@ namespace FluidStudio {
         parameters.particle_size = particle_size;
         parameters.notify_that_data_changed();
 
+        ui_data.window().simulator_visualizer_bundle.initialize();
+
         auto collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
 
         // import the data
