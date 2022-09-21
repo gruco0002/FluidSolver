@@ -17,9 +17,9 @@ namespace LibFluid {
     class IFluidSolverBase : public Initializable, public Reportable {
       public:
         struct SimulationParameters : public DataChangeStruct {
-            pFloat rest_density = 1.0f;
-            pFloat gravity = 9.81f;
-            pFloat particle_size = 1.0f;
+            pFloat rest_density = 1000.0f; // 1000 kg m^-3
+            pFloat gravity = 9.81f; // 9.81 m s^-2
+            pFloat particle_size = 0.1f; // 10cm
 
         } parameters;
 
