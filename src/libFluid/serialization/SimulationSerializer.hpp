@@ -5,8 +5,8 @@
 #include "visualizer/ISimulationVisualizer.hpp"
 
 #include <memory>
-#include <optional>
 #include <nlohmann/json.hpp>
+#include <optional>
 
 namespace LibFluid {
 
@@ -59,8 +59,8 @@ namespace LibFluid {
         nlohmann::json save_particle_remover_3d(const std::shared_ptr<ParticleRemover3D>& remover);
         std::shared_ptr<ParticleRemover3D> load_particle_remover_3d(const nlohmann::json& node);
 
-        void save_basic_sensor_data(nlohmann::json &sensor_object, const std::shared_ptr<Sensor>& sensor);
-        void load_basic_sensor_data(const nlohmann::json &sensor_object, std::shared_ptr<Sensor> sensor);
+        void save_basic_sensor_data(nlohmann::json& sensor_object, const std::shared_ptr<Sensor>& sensor);
+        void load_basic_sensor_data(const nlohmann::json& sensor_object, std::shared_ptr<Sensor> sensor);
 
         nlohmann::json save_global_density_sensor(const std::shared_ptr<Sensors::GlobalDensitySensor>& sen);
         std::shared_ptr<Sensors::GlobalDensitySensor> load_global_density_sensor(const nlohmann::json& node);
@@ -91,6 +91,9 @@ namespace LibFluid {
 
         nlohmann::json save_iisph_sensor(const std::shared_ptr<Sensors::IISPHSensor>& sen);
         std::shared_ptr<Sensors::IISPHSensor> load_iisph_sensor(const nlohmann::json& node);
+
+        nlohmann::json save_boundary_preprocessor(const std::shared_ptr<BoundaryPreprocessor>& ent);
+        std::shared_ptr<BoundaryPreprocessor> load_boundary_preprocessor(const nlohmann::json& node);
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

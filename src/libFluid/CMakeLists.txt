@@ -94,7 +94,7 @@ set(LIB_FLUID_SOURCE_FILES
         serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
         sensors/Sensor.hpp
         serialization/Base64.cpp serialization/Base64.hpp
-        )
+        entities/BoundaryPreprocessor.cpp entities/BoundaryPreprocessor.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

@@ -1,6 +1,7 @@
 #include "ComponentPanelWindow.hpp"
 
 #include "ImguiHelper.hpp"
+#include "entities/BoundaryPreprocessor.hpp"
 #include "entities/ParticleRemover.hpp"
 #include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
@@ -116,6 +117,12 @@ namespace FluidStudio {
                     data.notify_that_data_changed();
                 }
 
+                if (ImGui::MenuItem("Boundary Preprocessor", nullptr, nullptr, is_safe)) {
+                    auto ent = std::make_shared<LibFluid::BoundaryPreprocessor>();
+                    data.entities.push_back(ent);
+                    data.notify_that_data_changed();
+                }
+
                 ImGui::EndMenu();
             }
             ImGui::EndPopup();
@@ -191,7 +198,6 @@ namespace FluidStudio {
             ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         }
     }
-
 
 
     void ComponentPanelWindow::update_selection_based_ui() {

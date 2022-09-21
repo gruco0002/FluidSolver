@@ -2,6 +2,7 @@
 
 #include "Log.hpp"
 #include "SimulatorVisualizerBundle.hpp"
+#include "entities/BoundaryPreprocessor.hpp"
 #include "entities/ParticleRemover.hpp"
 #include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
@@ -321,6 +322,11 @@ namespace LibFluid {
             if (rem3d) {
                 res["entities"].push_back(save_particle_remover_3d(rem3d));
             }
+
+            auto prep = std::dynamic_pointer_cast<BoundaryPreprocessor>(ent);
+            if (prep) {
+                res["entities"].push_back(save_boundary_preprocessor(prep));
+            }
         }
 
         // save sensors
@@ -388,12 +394,16 @@ namespace LibFluid {
         // loading entities
         if (node.contains("entities")) {
             for (auto& ent_node : node["entities"]) {
-                if (ent_node["type"].get<std::string>() == "particle-spawner") {
+                auto node_type = ent_node["type"].get<std::string>();
+
+                if (node_type == "particle-spawner") {
                     simulation.data.entities.push_back(load_particle_spawner(ent_node));
-                } else if (ent_node["type"].get<std::string>() == "particle-remover") {
+                } else if (node_type == "particle-remover") {
                     simulation.data.entities.push_back(load_particle_remover(ent_node));
-                } else if (ent_node["type"].get<std::string>() == "particle-remover-3d") {
+                } else if (node_type == "particle-remover-3d") {
                     simulation.data.entities.push_back(load_particle_remover_3d(ent_node));
+                } else if (node_type == "boundary-preprocessor") {
+                    simulation.data.entities.push_back(load_boundary_preprocessor(ent_node));
                 } else {
                     warning_count++;
                     Log::warning("[LOADING] Unknown entity type: '" + ent_node["type"].get<std::string>() + "'!");
@@ -1046,6 +1056,17 @@ namespace LibFluid {
         } else {
             sensor->parameters.filename = sensor_object["filename"].get<std::string>();
         }
+    }
+    nlohmann::json SimulationSerializer::save_boundary_preprocessor(const std::shared_ptr<BoundaryPreprocessor>& ent) {
+        nlohmann::json res;
+        res["type"] = "boundary-preprocessor";
+
+        return res;
+    }
+    std::shared_ptr<BoundaryPreprocessor> SimulationSerializer::load_boundary_preprocessor(const nlohmann::json& node) {
+        auto res = std::make_shared<BoundaryPreprocessor>();
+
+        return res;
     }
 
 

@@ -15,6 +15,7 @@ namespace LibFluid {
     class ParticleSpawner;
     class ParticleRemover;
     class ParticleRemover3D;
+    class BoundaryPreprocessor;
 
     // sensors
     class Sensor;
