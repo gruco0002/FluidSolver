@@ -1,5 +1,6 @@
 #include "PlyImportWindow.hpp"
 
+#include "FluidMath.hpp"
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 
@@ -84,6 +85,12 @@ namespace FluidStudio {
         // create an empty scenario
         ui_data.window().create_empty_3d_simulation();
 
+        // set the parameters of the simulation to the specified ones
+        auto& parameters = ui_data.window().simulator_visualizer_bundle.simulator->parameters;
+        parameters.rest_density = rest_density;
+        parameters.particle_size = particle_size;
+        parameters.notify_that_data_changed();
+
         auto collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
 
         // import the data
@@ -94,14 +101,15 @@ namespace FluidStudio {
             if (mapped_colors.find(colors[i]) == mapped_colors.end())
                 continue;
 
+            auto scaled_vertex = vertices[i] * particle_size;
 
-            for (int x = 0; x < scale; x++) {
-                for (int y = 0; y < scale; y++) {
-                    for (int z = 0; z < scale; z++) {
+            for (int x = 0; x < particle_multiplier; x++) {
+                for (int y = 0; y < particle_multiplier; y++) {
+                    for (int z = 0; z < particle_multiplier; z++) {
                         size_t index = collection->add();
 
                         auto& pos = collection->get<LibFluid::MovementData3D>(index);
-                        pos.position = vertices[i] * (float)scale + glm::vec3((float)x, (float)y, (float)z);
+                        pos.position = scaled_vertex * (float)particle_multiplier + glm::vec3((float)x, (float)y, (float)z);
 
                         auto& info = collection->get<LibFluid::ParticleInfo>(index);
 
@@ -140,10 +148,25 @@ namespace FluidStudio {
                 }
             }
 
-            if (ImGui::InputInt("Scale", &this->scale)) {
-                if (scale <= 0)
-                    scale = 1;
+            if (ImGui::InputInt("Particle Multiplier", &this->particle_multiplier)) {
+                if (particle_multiplier <= 0)
+                    particle_multiplier = 1;
             }
+
+            if (ImGui::InputFloat("Particle Size (m)", &particle_size)) {
+                if (particle_size <= 0) {
+                    particle_size = 1.0f;
+                }
+            }
+
+            if (ImGui::InputFloat("Rest Density (kg/m^3)", &rest_density)) {
+                if (rest_density <= 0) {
+                    rest_density = 1000.0f;
+                }
+            }
+
+            float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
+            ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
             ImGui::Separator();
 
@@ -178,7 +201,6 @@ namespace FluidStudio {
                     ImGui::EndCombo();
                 }
 
-
                 ImGui::PopID();
                 i++;
             }
@@ -199,7 +221,7 @@ namespace FluidStudio {
     void PlyImportWindow::reset() {
         current_file = "";
         loaded_file = "";
-        scale = 1;
+        particle_multiplier = 1;
         colors.clear();
         vertices.clear();
         mapped_colors.clear();
