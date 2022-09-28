@@ -91,6 +91,7 @@ namespace LibFluid {
         }
 
       public:
+
         void initialize() override {
             FLUID_ASSERT(data.collection != nullptr);
             if (data.has_data_changed()) {
@@ -117,7 +118,22 @@ namespace LibFluid {
             }
         }
 
-        virtual void execute_simulation_step(Timepoint& timestep) override {
+        void execute_neighborhood_search() override {
+            initialize();
+
+            FLUID_ASSERT(data.collection != nullptr)
+            FLUID_ASSERT(data.collection->is_type_present<MovementData3D>());
+            FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
+            FLUID_ASSERT(data.collection->is_type_present<ParticleInfo>());
+            FLUID_ASSERT(data.collection->is_type_present<ExternalForces3D>());
+            FLUID_ASSERT(data.collection->is_type_present<IISPHParticleData3D>());
+
+            // find neighbors for all particles
+            FLUID_ASSERT(neighborhood_search.collection == data.collection);
+            neighborhood_search.find_neighbors();
+        }
+
+        void execute_simulation_step(Timepoint& timestep) override {
             initialize();
 
             FLUID_ASSERT(data.collection != nullptr)
@@ -136,10 +152,6 @@ namespace LibFluid {
 
             // set the current timestep
             current_timestep = timestep.desired_time_step;
-
-            // find neighbors for all particles
-            FLUID_ASSERT(neighborhood_search.collection == data.collection);
-            neighborhood_search.find_neighbors();
 
             // set pressure to zero, calculate density, calculate non pressure accelerations and predicted velocity
             parallel::loop_for(0, data.collection->size(), [&](size_t particle_index) {

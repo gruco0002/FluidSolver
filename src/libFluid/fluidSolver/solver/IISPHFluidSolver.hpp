@@ -30,7 +30,7 @@ namespace LibFluid {
     template<typename Kernel = CubicSplineKernel,
             typename NeighborhoodSearch = QuadraticNeighborhoodSearchDynamicAllocated,
             typename parallel = StdParallelForEach>
-    class IISPHFluidSolver : public IFluidSolverBase {
+    class IISPHFluidSolver final : public IFluidSolverBase {
       public:
         Kernel kernel;
 
@@ -41,6 +41,8 @@ namespace LibFluid {
         std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override;
 
         void create_compatibility_report(CompatibilityReport& report) override;
+
+        void execute_neighborhood_search() override;
 
         void initialize() override;
 
@@ -62,7 +64,6 @@ namespace LibFluid {
         void ComputePressure();
 
         pFloat current_timestep = 0.0f;
-
 
 
       public:
@@ -163,10 +164,6 @@ namespace LibFluid {
 
         current_timestep = timestep.desired_time_step;
 
-
-        // find neighbors for all particles
-        FLUID_ASSERT(neighborhood_search.collection == data.collection);
-        neighborhood_search.find_neighbors();
 
         // calculating density and non pressure accelerations
         parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
@@ -542,4 +539,20 @@ namespace LibFluid {
         FLUID_ASSERT(!collection.is_type_present<IISPHParticleData>());
         collection.add_type<IISPHParticleData>();
     }
-} // namespace FluidSolver
+
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_neighborhood_search() {
+        initialize();
+
+        FLUID_ASSERT(data.collection != nullptr)
+        FLUID_ASSERT(data.collection->is_type_present<MovementData>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(data.collection->is_type_present<ExternalForces>());
+        FLUID_ASSERT(data.collection->is_type_present<IISPHParticleData>());
+
+        // find neighbors for all particles
+        FLUID_ASSERT(neighborhood_search.collection == data.collection);
+        neighborhood_search.find_neighbors();
+    }
+} // namespace LibFluid

@@ -18,8 +18,8 @@ namespace LibFluid {
       public:
         struct SimulationParameters : public DataChangeStruct {
             pFloat rest_density = 1000.0f; // 1000 kg m^-3
-            pFloat gravity = 9.81f; // 9.81 m s^-2
-            pFloat particle_size = 0.1f; // 10cm
+            pFloat gravity = 9.81f;        // 9.81 m s^-2
+            pFloat particle_size = 0.1f;   // 10cm
 
         } parameters;
 
@@ -29,10 +29,9 @@ namespace LibFluid {
         } data;
 
         virtual void execute_simulation_step(Timepoint& timestep) = 0;
+        virtual void execute_neighborhood_search() = 0;
 
         virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() = 0;
-
-
     };
 
     /**
@@ -84,4 +83,4 @@ namespace LibFluid {
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

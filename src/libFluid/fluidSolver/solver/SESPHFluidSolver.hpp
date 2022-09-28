@@ -28,6 +28,7 @@ namespace LibFluid {
         void create_compatibility_report(CompatibilityReport& report) override;
 
         void initialize() override;
+        void execute_neighborhood_search() override;
 
       private:
         pFloat current_timestep = 0.0f;
@@ -41,8 +42,6 @@ namespace LibFluid {
         vec2 ComputePressureAcceleration(pIndex_t particleIndex);
 
         vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
-
-
 
 
       public:
@@ -64,9 +63,6 @@ namespace LibFluid {
 
         current_timestep = timestep.desired_time_step;
 
-        // find neighbors for all particles
-        FLUID_ASSERT(neighborhood_search.collection == data.collection);
-        neighborhood_search.find_neighbors();
 
         // calculate density and pressure for all particles
         parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
@@ -293,4 +289,17 @@ namespace LibFluid {
 
         return 2.0f * settings.Viscosity * tmp;
     }
-} // namespace FluidSolver
+    template<typename Kernel, typename NeighborhoodSearch, typename parallel>
+    void SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::execute_neighborhood_search() {
+        initialize();
+
+        FLUID_ASSERT(data.collection->is_type_present<MovementData>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleData>());
+        FLUID_ASSERT(data.collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(data.collection->is_type_present<ExternalForces>());
+
+        // find neighbors for all particles
+        FLUID_ASSERT(neighborhood_search.collection == data.collection);
+        neighborhood_search.find_neighbors();
+    }
+} // namespace LibFluid
