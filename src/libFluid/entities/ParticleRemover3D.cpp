@@ -6,6 +6,8 @@
 namespace LibFluid {
 
     void ParticleRemover3D::execute_simulation_step(const Timepoint& timepoint, bool before_solver) {
+        initialize();
+
         VolumeGroup group;
         group.volume = parameters.volume;
         group.collection = simulation_data.collection;

@@ -16,6 +16,8 @@ namespace LibFluid {
     void ParticleRemover::create_compatibility_report(CompatibilityReport& report) {
     }
     void ParticleRemover::execute_simulation_step(const Timepoint& timepoint, bool before_solver) {
+        initialize();
+
         AreaGroup group;
         group.area = parameters.area;
         group.collection = simulation_data.collection;
