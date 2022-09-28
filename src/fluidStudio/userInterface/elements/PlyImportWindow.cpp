@@ -76,7 +76,7 @@ namespace FluidStudio {
 
                 colors.push_back(color);
                 if (mapped_colors.find(color) == mapped_colors.end()) {
-                    mapped_colors[color] = LibFluid::ParticleType::ParticleTypeNormal;
+                    mapped_colors[color] = MapInformation();
                 }
             }
         }
@@ -115,7 +115,9 @@ namespace FluidStudio {
 
                         auto& info = collection->get<LibFluid::ParticleInfo>(index);
 
-                        info.type = mapped_colors[colors[i]];
+                        const auto& map_info = mapped_colors[colors[i]];
+                        info.type = map_info.particle_type;
+                        info.tag = map_info.particle_tag;
 
                         auto& data = collection->get<LibFluid::ParticleData>(index);
                         data.density = rest_density;
@@ -182,27 +184,36 @@ namespace FluidStudio {
                 ImGui::Bullet();
                 ImGui::PopStyleColor();
 
+                const auto& mapped_info = mapped.second;
+
                 ImGui::Text("Color %d:", (i + 1));
                 ImGui::SameLine();
-                if (ImGui::BeginCombo("Type", particle_type_to_string(mapped.second))) {
+
+                ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.3f);
+
+                if (ImGui::BeginCombo("Type", particle_type_to_string(mapped_info.particle_type))) {
                     if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeNormal),
-                                mapped.second == LibFluid::ParticleType::ParticleTypeNormal)) {
-                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeNormal;
+                                mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeNormal)) {
+                        mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeNormal;
                     }
 
                     if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeBoundary),
-                                mapped.second == LibFluid::ParticleType::ParticleTypeBoundary)) {
-                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeBoundary;
+                                mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeBoundary)) {
+                        mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeBoundary;
                     }
 
                     if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeDead),
-                                mapped.second == LibFluid::ParticleType::ParticleTypeDead)) {
-                        mapped_colors[mapped.first] = LibFluid::ParticleType::ParticleTypeDead;
+                                mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeDead)) {
+                        mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeDead;
                     }
 
                     ImGui::EndCombo();
                 }
 
+                ImGui::SameLine();
+                ImGui::InputInt("Tag", reinterpret_cast<int*>(&mapped_colors[mapped.first].particle_tag));
+
+                ImGui::PopItemWidth();
                 ImGui::PopID();
                 i++;
             }

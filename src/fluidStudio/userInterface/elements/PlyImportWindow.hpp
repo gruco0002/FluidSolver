@@ -33,7 +33,12 @@ namespace FluidStudio {
         std::vector<glm::vec3> colors;
         std::vector<glm::vec3> vertices;
 
-        std::unordered_map<glm::vec3, LibFluid::ParticleType> mapped_colors;
+        struct MapInformation {
+            LibFluid::ParticleType particle_type = LibFluid::ParticleTypeNormal;
+            LibFluid::pTag_t particle_tag = 0;
+        };
+
+        std::unordered_map<glm::vec3, MapInformation> mapped_colors;
 
       private:
         void load_colors_if_required();
