@@ -118,8 +118,8 @@ namespace FluidStudio {
                         info.type = mapped_colors[colors[i]];
 
                         auto& data = collection->get<LibFluid::ParticleData>(index);
-                        data.density = 1.0f;
-                        data.mass = 1.0f;
+                        data.density = rest_density;
+                        data.mass = get_particle_mass();
                         data.pressure = 0.0f;
                     }
                 }
@@ -167,7 +167,7 @@ namespace FluidStudio {
                 }
             }
 
-            float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
+            float particle_mass = get_particle_mass();
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
             ImGui::Separator();
@@ -227,5 +227,9 @@ namespace FluidStudio {
         colors.clear();
         vertices.clear();
         mapped_colors.clear();
+    }
+    float PlyImportWindow::get_particle_mass() const {
+        float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
+        return particle_mass;
     }
 } // namespace FluidStudio

@@ -41,6 +41,8 @@ namespace FluidStudio {
         void import_data_into_simulation();
 
         void reset();
+
+        float get_particle_mass() const;
     };
 
 
