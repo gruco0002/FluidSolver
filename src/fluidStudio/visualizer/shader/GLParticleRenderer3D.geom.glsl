@@ -10,10 +10,12 @@ uniform float particleSize;
 
 out vec4 oColor;
 out vec3 oNormal;
+flat out int o_is_selected;
 
 in VS_OUT {
     vec4 color;
     int discarded;
+    int is_selected;
 } gs_in[];
 
 void main(){
@@ -24,6 +26,7 @@ void main(){
 
     oColor = gs_in[0].color;
     vec3 position = gl_in[0].gl_Position.xyz;
+    o_is_selected = gs_in[0].is_selected;
 
     const float GOLDEN_RATIO = 1.61803;
     const vec3 ICOSAHEDRON_COORDINATES[12] = vec3[](

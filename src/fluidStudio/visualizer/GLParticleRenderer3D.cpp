@@ -81,6 +81,7 @@ void LibFluid::GLParticleRenderer3D::render() {
     particleShader->SetValue("numberOfParticles", (float)simulation_data.collection->size());
     particleShader->SetValue("showParticleMemoryLocation", settings.show_particle_memory_location ? 1 : 0);
     particleShader->SetValue("particleSize", simulation_data.particle_size);
+    particleShader->SetValue("selectedTag", 1);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
