@@ -24,6 +24,7 @@ namespace LibFluid {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             float gravity = 0.0f;
             float particle_size = 0.0f;
+            float rest_density = 0.0f;
             std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
 
         } simulation_data;
