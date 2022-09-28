@@ -10,5 +10,6 @@ namespace FluidStudio {
 
       private:
         void update_particle_remover_3d_component(std::shared_ptr<LibFluid::SimulationEntity> tmp);
+        void update_boundary_preprocessor_component(std::shared_ptr<LibFluid::SimulationEntity>tmp);
     };
 } // namespace FluidStudio

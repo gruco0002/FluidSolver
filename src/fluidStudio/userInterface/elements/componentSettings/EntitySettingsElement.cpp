@@ -5,6 +5,7 @@
 #include "userInterface/SimulationComponent.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
+#include "entities/BoundaryPreprocessor.hpp"
 
 namespace FluidStudio {
 
@@ -25,13 +26,18 @@ namespace FluidStudio {
         }
 
         if (std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent)) {
-            update_particle_remover_3d_component(std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(ent));
+            update_particle_remover_3d_component(ent);
+        }
+
+        if(std::dynamic_pointer_cast<LibFluid::BoundaryPreprocessor>(ent)){
+            update_boundary_preprocessor_component(ent);
         }
     }
 
 
     void EntitySettingsElement::update_particle_remover_3d_component(std::shared_ptr<LibFluid::SimulationEntity> tmp) {
         auto ent = std::dynamic_pointer_cast<LibFluid::ParticleRemover3D>(tmp);
+        FLUID_ASSERT(ent != nullptr);
 
         if (StyledImGuiElements::slim_tree_node("Volume")) {
             ImGui::InputFloat3("Center", reinterpret_cast<float*>(&ent->parameters.volume.center));
@@ -45,6 +51,18 @@ namespace FluidStudio {
 
             ImGui::TreePop();
         }
+    }
+    void EntitySettingsElement::update_boundary_preprocessor_component(std::shared_ptr<LibFluid::SimulationEntity> tmp) {
+        auto ent = std::dynamic_pointer_cast<LibFluid::BoundaryPreprocessor>(tmp);
+        FLUID_ASSERT(ent != nullptr);
+
+        if (StyledImGuiElements::slim_tree_node("Parameters")) {
+        
+
+            ImGui::TreePop();
+        }
+
+
     }
 
 } // namespace FluidStudio
