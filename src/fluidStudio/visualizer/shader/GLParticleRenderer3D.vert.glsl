@@ -5,7 +5,7 @@ layout (location = 0) in uint aType;
 layout (location = 4) in uint aTag;
 
 #define PARTICLE_TYPE_BOUNDARY 1u
-#define PARTICLE_TYPE_DEAD 2u
+#define PARTICLE_TYPE_INACTIVE 2u
 
 uniform vec4 particleColor;
 uniform vec4 boundaryColor;
@@ -41,7 +41,7 @@ void main()
         vs_out.is_selected = 1;
     }
 
-    if(aType == PARTICLE_TYPE_DEAD) {
+    if(aType == PARTICLE_TYPE_INACTIVE) {
         vs_out.discarded = 1;
     } else if(aType == PARTICLE_TYPE_BOUNDARY) {
         vs_out.color = boundaryColor;

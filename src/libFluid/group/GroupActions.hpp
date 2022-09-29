@@ -60,7 +60,7 @@ namespace LibFluid::GroupActions
 
     template <typename Group> void remove(const Group& group)
     {
-        set_type<Group>(group, ParticleType::ParticleTypeDead);
+        set_type<Group>(group, ParticleType::ParticleTypeInactive);
     }
 
 

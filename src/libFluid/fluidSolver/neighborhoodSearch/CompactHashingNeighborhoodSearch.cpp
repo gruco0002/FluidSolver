@@ -41,7 +41,7 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighbors()
     // searching neighbors
     for (particleIndex_t particleIndex = 0; particleIndex < particleCollection->GetSize(); particleIndex++)
     {
-        if (particleCollection->GetParticleType(particleIndex) == ParticleType::ParticleTypeDead)
+        if (particleCollection->GetParticleType(particleIndex) == ParticleType::ParticleTypeInactive)
         {
             continue;
         }
@@ -224,8 +224,8 @@ void FluidSolver::CompactHashingNeighborhoodSearch::FindNeighborsForCellForParti
     {
 
         auto neighborIndex = (*current).particleIndex.value;
-        // check if the neighbor is dead and skip iff so
-        if (particleCollection->GetParticleType(neighborIndex) == ParticleType::ParticleTypeDead)
+        // check if the neighbor is inactive and skip iff so
+        if (particleCollection->GetParticleType(neighborIndex) == ParticleType::ParticleTypeInactive)
         {
             continue;
         }

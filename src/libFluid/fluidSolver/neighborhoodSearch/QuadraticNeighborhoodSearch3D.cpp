@@ -45,12 +45,12 @@ namespace LibFluid {
             auto& data = neighbor_data[i];
             data.size = 0;
 
-            if (collection->get<ParticleInfo>(i).type == ParticleTypeDead)
+            if (collection->get<ParticleInfo>(i).type == ParticleTypeInactive)
                 return;
 
             auto& mv_i = collection->get<MovementData3D>(i);
             for (particleIndex_t j = 0; j < collection->size(); j++) {
-                if (collection->get<ParticleInfo>(j).type == ParticleTypeDead)
+                if (collection->get<ParticleInfo>(j).type == ParticleTypeInactive)
                     continue;
 
                 auto& mv_j = collection->get<MovementData3D>(j);

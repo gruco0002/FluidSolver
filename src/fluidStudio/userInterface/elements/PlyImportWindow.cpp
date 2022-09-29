@@ -17,8 +17,8 @@ namespace FluidStudio {
                 return "Normal";
             case LibFluid::ParticleTypeBoundary:
                 return "Boundary";
-            case LibFluid::ParticleTypeDead:
-                return "Dead";
+            case LibFluid::ParticleTypeInactive:
+                return "Inactive";
             default:
                 return "Unknown";
         }
@@ -202,9 +202,9 @@ namespace FluidStudio {
                         mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeBoundary;
                     }
 
-                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeDead),
-                                mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeDead)) {
-                        mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeDead;
+                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeInactive),
+                                mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeInactive)) {
+                        mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeInactive;
                     }
 
                     ImGui::EndCombo();

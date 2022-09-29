@@ -194,7 +194,7 @@ namespace LibFluid::Sensors {
                 d.normal_particles++;
             } else if (iData.type == ParticleType::ParticleTypeBoundary) {
                 d.boundary_particles++;
-            } else if (iData.type == ParticleType::ParticleTypeDead) {
+            } else if (iData.type == ParticleType::ParticleTypeInactive) {
                 d.inactive_particles++;
             }
         }

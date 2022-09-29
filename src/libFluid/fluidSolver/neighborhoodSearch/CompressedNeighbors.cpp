@@ -173,7 +173,7 @@ namespace LibFluid {
         parallel::loop_for(0, collection->size(), [&](size_t particle_index) {
             const auto& particle_info = collection->get<ParticleInfo>(particle_index);
             auto& information = collection->get<ParticleInformation>(particle_index);
-            if (particle_info.type == ParticleTypeDead) {
+            if (particle_info.type == ParticleTypeInactive) {
                 information.cell_index = -1;
                 information.first_particle_of_cell = false;
                 information.cell_location = GridCellLocation::undefined();
@@ -204,7 +204,7 @@ namespace LibFluid {
             cell_to_particle_map.clear();
             for (size_t particle_index = 0; particle_index < collection->size(); particle_index++) {
                 const auto& particle_info = collection->get<ParticleInfo>(particle_index);
-                if (particle_info.type == ParticleTypeDead) {
+                if (particle_info.type == ParticleTypeInactive) {
                     break;
                 }
 
@@ -227,7 +227,7 @@ namespace LibFluid {
         {
             parallel::loop_for(0, collection->size(), [&](size_t particle_index) {
                 const auto& pi = collection->get<ParticleInfo>(particle_index);
-                if (pi.type == ParticleTypeDead) {
+                if (pi.type == ParticleTypeInactive) {
                     return;
                 }
                 const auto& mv_particle = collection->get<MovementData3D>(particle_index);

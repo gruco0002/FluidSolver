@@ -66,8 +66,8 @@ namespace LibFluid {
             auto neighbors = neighborhood_search.get_neighbors(particleIndex);
             for (uint32_t neighbor : neighbors) {
                 auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                if (type == ParticleTypeDead) {
-                    continue; // don*t calculate unnecessary values for dead particles.
+                if (type == ParticleTypeInactive) {
+                    continue; // don*t calculate unnecessary values for inactive particles.
                 }
 
                 const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
@@ -157,7 +157,7 @@ namespace LibFluid {
             parallel::loop_for(0, data.collection->size(), [&](size_t particle_index) {
                 auto particle_type = data.collection->get<ParticleInfo>(particle_index).type;
 
-                if (particle_type == ParticleTypeDead) {
+                if (particle_type == ParticleTypeInactive) {
                     return; // don't calculate unnecessary data
                 }
 
@@ -203,8 +203,8 @@ namespace LibFluid {
                     auto neighbors = neighborhood_search.get_neighbors(particle_index);
                     for (uint32_t neighbor : neighbors) {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeDead) {
-                            continue; // don't calculate unnecessary values for dead particles.
+                        if (type == ParticleTypeInactive) {
+                            continue; // don't calculate unnecessary values for inactive particles.
                         }
 
                         if (!settings.single_layer_boundary) {
@@ -231,8 +231,8 @@ namespace LibFluid {
             // compute source term and diagonal element
             parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                 auto type = data.collection->get<ParticleInfo>(i).type;
-                if (type == ParticleTypeDead)
-                    return; // we do not want to process dead particles
+                if (type == ParticleTypeInactive)
+                    return; // we do not want to process inactive particles
                 if (type == ParticleTypeBoundary)
                     return; // we do not want to process boundary particles
 
@@ -246,8 +246,8 @@ namespace LibFluid {
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeDead) {
-                            continue; // don*t calculate unnecessary values for dead particles.
+                        if (type == ParticleTypeInactive) {
+                            continue; // don*t calculate unnecessary values for inactive particles.
                         }
 
                         auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
@@ -281,8 +281,8 @@ namespace LibFluid {
                         auto neighbors = neighborhood_search.get_neighbors(i);
                         for (auto neighbor : neighbors) {
                             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                            if (type == ParticleTypeDead) {
-                                continue; // don't calculate unnecessary values for dead particles.
+                            if (type == ParticleTypeInactive) {
+                                continue; // don't calculate unnecessary values for inactive particles.
                             }
 
                             auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
@@ -317,8 +317,8 @@ namespace LibFluid {
                         auto neighbors = neighborhood_search.get_neighbors(i);
                         for (auto neighbor : neighbors) {
                             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                            if (type == ParticleTypeDead) {
-                                continue; // don't calculate unnecessary values for dead particles.
+                            if (type == ParticleTypeInactive) {
+                                continue; // don't calculate unnecessary values for inactive particles.
                             }
 
                             auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
@@ -363,8 +363,8 @@ namespace LibFluid {
                 // compute pressure acceleration
                 parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                     auto type = data.collection->get<ParticleInfo>(i).type;
-                    if (type == ParticleTypeDead)
-                        return; // we do not want to process dead particles
+                    if (type == ParticleTypeInactive)
+                        return; // we do not want to process inactive particles
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
@@ -377,8 +377,8 @@ namespace LibFluid {
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeDead) {
-                            continue; // don't calculate unnecessary values for dead particles.
+                        if (type == ParticleTypeInactive) {
+                            continue; // don't calculate unnecessary values for inactive particles.
                         }
 
                         auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
@@ -417,8 +417,8 @@ namespace LibFluid {
                 // particle
                 parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                     auto type = data.collection->get<ParticleInfo>(i).type;
-                    if (type == ParticleTypeDead)
-                        return; // we do not want to process dead particles
+                    if (type == ParticleTypeInactive)
+                        return; // we do not want to process inactive particles
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
@@ -431,8 +431,8 @@ namespace LibFluid {
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeDead) {
-                            continue; // don't calculate unnecessary values for dead particles.
+                        if (type == ParticleTypeInactive) {
+                            continue; // don't calculate unnecessary values for inactive particles.
                         }
 
                         auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
@@ -559,8 +559,8 @@ namespace LibFluid {
                 if (type == ParticleTypeBoundary) {
                     return; // don't calculate unnecessary values for the boundary particles.
                 }
-                if (type == ParticleTypeDead) {
-                    return; // don't calculate unnecessary values for dead particles.
+                if (type == ParticleTypeInactive) {
+                    return; // don't calculate unnecessary values for inactive particles.
                 }
 
                 auto& movement_data = data.collection->get<MovementData3D>(i);

@@ -17,7 +17,7 @@ namespace LibFluid {
 
         parallel::loop_for(0, collection->size(), [&](particleIndex_t particleIndex) {
             auto type = collection->get<ParticleInfo>(particleIndex).type;
-            if (type == ParticleType::ParticleTypeBoundary || type == ParticleType::ParticleTypeDead)
+            if (type == ParticleType::ParticleTypeBoundary || type == ParticleType::ParticleTypeInactive)
             {
                 return; // don't calculate unnecessary values for the boundary particles.
             }

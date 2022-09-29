@@ -8,7 +8,7 @@ namespace LibFluid {
     {
         ParticleTypeNormal = 0,
         ParticleTypeBoundary = 1,
-        ParticleTypeDead = 2,
+        ParticleTypeInactive = 2,
     };
 
 

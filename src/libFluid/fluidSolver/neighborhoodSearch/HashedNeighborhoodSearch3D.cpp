@@ -88,7 +88,7 @@ namespace LibFluid {
 
         grid.auto_initialize_protection_enabled = false;
         for (particleIndex_t i = 0; i < collection->size(); i++) {
-            if (collection->get<ParticleInfo>(i).type == ParticleTypeDead) {
+            if (collection->get<ParticleInfo>(i).type == ParticleTypeInactive) {
                 continue;
             }
 
@@ -108,8 +108,8 @@ namespace LibFluid {
 
         grid.auto_initialize_protection_enabled = false;
         for (particleIndex_t i = 0; i < collection->size(); i++) {
-            if (collection->get<ParticleInfo>(i).type == ParticleTypeDead) {
-                // TODO: erase dead particles from the grid
+            if (collection->get<ParticleInfo>(i).type == ParticleTypeInactive) {
+                // TODO: erase inactive particles from the grid
                 continue;
             }
 
@@ -148,7 +148,7 @@ namespace LibFluid {
             auto& data = neighbor_data[i];
             data.size = 0;
 
-            if (collection->get<ParticleInfo>(i).type == ParticleTypeDead)
+            if (collection->get<ParticleInfo>(i).type == ParticleTypeInactive)
                 return;
 
             auto& mv_i = collection->get<MovementData3D>(i);

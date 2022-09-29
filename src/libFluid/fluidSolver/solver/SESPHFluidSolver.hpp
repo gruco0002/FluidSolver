@@ -70,8 +70,8 @@ namespace LibFluid {
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead) {
-                return; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                return; // don*t calculate unnecessary values for inactive particles.
             }
 
             data.collection->get<ParticleData>(i).density = ComputeDensity(i);
@@ -86,8 +86,8 @@ namespace LibFluid {
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead) {
-                return; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                return; // don*t calculate unnecessary values for inactive particles.
             }
 
             glm::vec2 nonPressureAcc = ComputeNonPressureAcceleration(i);
@@ -102,8 +102,8 @@ namespace LibFluid {
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
             }
-            if (type == ParticleTypeDead) {
-                return; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                return; // don*t calculate unnecessary values for inactive particles.
             }
 
             // integrate using euler cromer
@@ -192,8 +192,8 @@ namespace LibFluid {
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead) {
-                continue; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                continue; // don*t calculate unnecessary values for inactive particles.
             }
             const glm::vec2& neighborPosition = data.collection->get<MovementData>(neighbor).position;
             float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
@@ -229,8 +229,8 @@ namespace LibFluid {
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead) {
-                continue; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                continue; // don*t calculate unnecessary values for inactive particles.
             }
 
             const glm::vec2& neighborPosition = data.collection->get<MovementData>(neighbor).position;
@@ -266,8 +266,8 @@ namespace LibFluid {
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-            if (type == ParticleTypeDead) {
-                continue; // don*t calculate unnecessary values for dead particles.
+            if (type == ParticleTypeInactive) {
+                continue; // don*t calculate unnecessary values for inactive particles.
             }
 
             const glm::vec2& neighborPosition = data.collection->get<MovementData>(neighbor).position;

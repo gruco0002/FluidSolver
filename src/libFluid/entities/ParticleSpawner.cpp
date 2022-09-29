@@ -55,14 +55,14 @@ namespace LibFluid {
 
     pIndex_t ParticleSpawner::get_or_add_particle() {
         while (last_index_checked < simulation_data.collection->size()) {
-            if (simulation_data.collection->get<ParticleInfo>(last_index_checked).type == ParticleType::ParticleTypeDead) {
+            if (simulation_data.collection->get<ParticleInfo>(last_index_checked).type == ParticleType::ParticleTypeInactive) {
                 // reuse the current particle
                 return last_index_checked;
             }
             last_index_checked++;
         }
 
-        // could not find a dead particle --> add a new one
+        // could not find an inactive particle --> add a new one
         auto index = simulation_data.collection->add();
         return index;
     }

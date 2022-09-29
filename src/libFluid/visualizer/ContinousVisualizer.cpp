@@ -121,8 +121,8 @@ namespace LibFluid {
 
         for (pIndex_t neighbor : neighbors) {
             const auto& pi = simulation_data.collection->get<ParticleInfo>(neighbor);
-            if (pi.type == ParticleTypeDead) {
-                continue; // don*t calculate unnecessary values for dead particles.
+            if (pi.type == ParticleTypeInactive) {
+                continue; // don*t calculate unnecessary values for inactive particles.
             }
 
             const auto& pm = simulation_data.collection->get<MovementData>(neighbor);
