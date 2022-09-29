@@ -112,6 +112,8 @@ namespace FluidStudio {
 
                         auto& pos = collection->get<LibFluid::MovementData3D>(index);
                         pos.position = scaled_vertex * (float)particle_multiplier + glm::vec3((float)x, (float)y, (float)z);
+                        pos.acceleration = glm::vec3(0.0f);
+                        pos.velocity = glm::vec3(0.0f);
 
                         auto& info = collection->get<LibFluid::ParticleInfo>(index);
 
