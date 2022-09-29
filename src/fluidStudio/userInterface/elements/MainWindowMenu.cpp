@@ -42,19 +42,24 @@ namespace FluidStudio {
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Test")) {
-                if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
-                    ui_data.window().create_3d_test_simulation();
-                }
-
-                ImGui::EndMenu();
-            }
 
             if (ImGui::BeginMenu("Edit")) {
                 if (ImGui::MenuItem("Select Particles by Tag", nullptr, false, can_change)) {
                     tag_selection_modal_open = true;
                 }
 
+                bool is_particle_selection_active = std::dynamic_pointer_cast<ParticleSelectionByTagOverlay>(ui_data.window().visualization_overlay.data.overlay_instance) != nullptr;
+                if (ImGui::MenuItem("Cancel Selection", nullptr, false, is_particle_selection_active)) {
+                    ui_data.window().visualization_overlay.set_new_overlay_instance(nullptr);
+                }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Test")) {
+                if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
+                    ui_data.window().create_3d_test_simulation();
+                }
 
                 ImGui::EndMenu();
             }
