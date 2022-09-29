@@ -2,6 +2,7 @@
 
 #include "ExtendedSimulationSerializer.hpp"
 #include "PlyImportWindow.hpp"
+#include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
 #include "ImguiHelper.hpp"
 #include <nfd.h>
@@ -10,9 +11,9 @@ namespace FluidStudio {
 
     void MainWindowMenu::update() {
         if (ImGui::BeginMainMenuBar()) {
-            if (ImGui::BeginMenu("File")) {
-                bool can_change = ui_data.window().is_safe_to_access_simulation_data();
+            bool can_change = ui_data.window().is_safe_to_access_simulation_data();
 
+            if (ImGui::BeginMenu("File")) {
                 if (ImGui::MenuItem("New", nullptr, false, can_change)) {
                     // create a new scenario
                     ui_data.window().create_empty_simulation();
@@ -42,11 +43,18 @@ namespace FluidStudio {
             }
 
             if (ImGui::BeginMenu("Test")) {
-                bool can_change = ui_data.window().is_safe_to_access_simulation_data();
-
                 if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
                     ui_data.window().create_3d_test_simulation();
                 }
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Edit")) {
+                if (ImGui::MenuItem("Select Particles by Tag", nullptr, false, can_change)) {
+                    tag_selection_modal_open = true;
+                }
+
 
                 ImGui::EndMenu();
             }
@@ -56,6 +64,7 @@ namespace FluidStudio {
         }
 
         update_save_menu();
+        update_tag_selection_modal();
     }
 
     void MainWindowMenu::update_save_menu() {
@@ -129,6 +138,37 @@ namespace FluidStudio {
                 ui_data.window().simulator_visualizer_bundle = simulation;
                 ui_data.window().on_new_simulation();
             }
+        }
+    }
+
+    void MainWindowMenu::update_tag_selection_modal() {
+        static uint32_t particle_tag = -1;
+        if (ImGui::BeginPopupModal("Particle Selection by Tag")) {
+            ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
+
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Select")) {
+                // select particles
+
+                if (particle_tag == (uint32_t)-1) {
+                    ui_data.window().visualization_overlay.set_new_overlay_instance(nullptr);
+                } else {
+                    auto overlay = std::make_shared<ParticleSelectionByTagOverlay>(ui_data.window().simulator_visualizer_bundle.simulator, particle_tag);
+                    ui_data.window().visualization_overlay.set_new_overlay_instance(overlay);
+                }
+
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+        if (tag_selection_modal_open) {
+            particle_tag = -1;
+            tag_selection_modal_open = false;
+            ImGui::OpenPopup("Particle Selection by Tag");
         }
     }
 

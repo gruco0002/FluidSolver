@@ -237,7 +237,24 @@ namespace FluidStudio {
             }
         }
 
-        ui_data.window().visualization_overlay.set_new_overlay_instance(new_overlay_instance);
+        if (new_overlay_instance == nullptr && current_overlay_instance != nullptr) {
+            bool this_ui_is_responsible = false;
+            // check if the current selection is not induced by this part of the ui
+            if (std::dynamic_pointer_cast<ParticleRemoverOverlay>(current_overlay_instance) != nullptr) {
+                this_ui_is_responsible = true;
+            }
+
+
+            if (!this_ui_is_responsible) {
+                // the overlay is managed by another part of the ui
+                new_overlay_instance = current_overlay_instance;
+            }
+        }
+
+        if (new_overlay_instance != current_overlay_instance) {
+            // only update on a change
+            ui_data.window().visualization_overlay.set_new_overlay_instance(new_overlay_instance);
+        }
     }
     const SimulationComponent& ComponentPanelWindow::selection() const {
         return m_selection;
