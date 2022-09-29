@@ -76,7 +76,9 @@ namespace FluidStudio {
 
                 colors.push_back(color);
                 if (mapped_colors.find(color) == mapped_colors.end()) {
-                    mapped_colors[color] = MapInformation();
+                    auto info = MapInformation();
+                    info.particle_tag = mapped_colors.size();
+                    mapped_colors[color] = info;
                 }
             }
         }
