@@ -5,6 +5,7 @@
 #include "entities/ParticleRemover.hpp"
 #include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
+#include "entities/VelocityAlterationByTag.hpp"
 #include "sensors/CompressedNeighborsStatistics.hpp"
 #include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
@@ -119,6 +120,12 @@ namespace FluidStudio {
 
                 if (ImGui::MenuItem("Boundary Preprocessor", nullptr, nullptr, is_safe)) {
                     auto ent = std::make_shared<LibFluid::BoundaryPreprocessor>();
+                    data.entities.push_back(ent);
+                    data.notify_that_data_changed();
+                }
+
+                if (ImGui::MenuItem("Velocity Alteration by Tag", nullptr, nullptr, is_safe)) {
+                    auto ent = std::make_shared<LibFluid::VelocityAlterationByTag>();
                     data.entities.push_back(ent);
                     data.notify_that_data_changed();
                 }

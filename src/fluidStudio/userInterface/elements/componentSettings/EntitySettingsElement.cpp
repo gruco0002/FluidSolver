@@ -1,11 +1,12 @@
 #include "EntitySettingsElement.hpp"
 
 #include "ImguiHelper.hpp"
+#include "entities/BoundaryPreprocessor.hpp"
 #include "entities/ParticleRemover3D.hpp"
+#include "entities/VelocityAlterationByTag.hpp"
 #include "userInterface/SimulationComponent.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
-#include "entities/BoundaryPreprocessor.hpp"
 
 namespace FluidStudio {
 
@@ -29,8 +30,12 @@ namespace FluidStudio {
             update_particle_remover_3d_component(ent);
         }
 
-        if(std::dynamic_pointer_cast<LibFluid::BoundaryPreprocessor>(ent)){
+        if (std::dynamic_pointer_cast<LibFluid::BoundaryPreprocessor>(ent)) {
             update_boundary_preprocessor_component(ent);
+        }
+
+        if (std::dynamic_pointer_cast<LibFluid::VelocityAlterationByTag>(ent)) {
+            update_velocity_alteration_by_tag_component(ent);
         }
     }
 
@@ -57,12 +62,23 @@ namespace FluidStudio {
         FLUID_ASSERT(ent != nullptr);
 
         if (StyledImGuiElements::slim_tree_node("Parameters")) {
-        
+            ImGui::TreePop();
+        }
+    }
+    void EntitySettingsElement::update_velocity_alteration_by_tag_component(std::shared_ptr<LibFluid::SimulationEntity> tmp) {
+        auto ent = std::dynamic_pointer_cast<LibFluid::VelocityAlterationByTag>(tmp);
+        FLUID_ASSERT(ent != nullptr);
+
+        if (StyledImGuiElements::slim_tree_node("Parameters")) {
+            if (ImGui::InputInt("Tag", reinterpret_cast<int*>(&ent->parameters.tag))) {
+                ent->parameters.notify_that_data_changed();
+            }
+            if (ImGui::InputFloat3("Velocity", reinterpret_cast<float*>(&ent->parameters.velocity))) {
+                ent->parameters.notify_that_data_changed();
+            }
 
             ImGui::TreePop();
         }
-
-
     }
 
 } // namespace FluidStudio
