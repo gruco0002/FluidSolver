@@ -57,7 +57,9 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/componentSettings/TimestepSettingsElement.cpp userInterface/elements/componentSettings/TimestepSettingsElement.hpp
         userInterface/elements/componentSettings/VisualizerSettingsElement.cpp userInterface/elements/componentSettings/VisualizerSettingsElement.hpp
         userInterface/elements/componentSettings/EntitySettingsElement.cpp userInterface/elements/componentSettings/EntitySettingsElement.hpp
-        userInterface/TypeInformationProvider.cpp userInterface/TypeInformationProvider.hpp)
+        userInterface/TypeInformationProvider.cpp userInterface/TypeInformationProvider.hpp
+        visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
+        )
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})
