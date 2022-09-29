@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
+
 namespace LibFluid {
 
     struct Camera3D {
@@ -109,4 +110,4 @@ namespace LibFluid {
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -84,6 +84,9 @@ namespace FluidStudio {
             if (simulation_changed_compared_to_visualization) {
                 // simulation data changed, hence try to rerender the data
                 if (!simulation_runner.is_currently_computing()) {
+                    // update some visualizer data before starting a new render
+                    set_gl_renderer_selected_particles_tag();
+
                     // only render if the data is not accessed by the simulation runner
                     if (visualization_runner.start_next_computation()) {
                         // the start was successfull
@@ -672,4 +675,19 @@ namespace FluidStudio {
         // render overlay
         visualization_overlay.render_overlay_into_framebuffer(framebuffer);
     }
+
+    void FluidSolverWindow::set_gl_renderer_selected_particles_tag() {
+        auto gl_renderer = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
+        if (gl_renderer == nullptr)
+            return;
+
+        gl_renderer->settings.selected_tag = -1;
+        if (visualization_overlay.data.overlay_instance != nullptr) {
+            if (visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTag) {
+                gl_renderer->settings.selected_tag = visualization_overlay.data.overlay_instance->get_display_particle_tag();
+            }
+        }
+    }
+
+
 } // namespace FluidStudio

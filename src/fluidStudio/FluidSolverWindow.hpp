@@ -98,6 +98,7 @@ namespace FluidStudio {
 
         void render_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
+        void set_gl_renderer_selected_particles_tag();
 
       private:
         // visualizer stuff
