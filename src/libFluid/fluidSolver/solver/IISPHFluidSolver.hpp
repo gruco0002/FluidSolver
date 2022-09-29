@@ -387,12 +387,11 @@ namespace LibFluid {
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::IntegrateParticle(pIndex_t particleIndex) {
         auto type = data.collection->get<ParticleInfo>(particleIndex).type;
-        if (type == ParticleTypeBoundary) {
-            return; // don't calculate unnecessary values for the boundary particles.
-        }
         if (type == ParticleTypeInactive) {
             return; // don't calculate unnecessary values for inactive particles.
         }
+
+        // FIXME: adapt timestep if required
 
         auto& mData = data.collection->get<MovementData>(particleIndex);
         // integrate using euler cromer

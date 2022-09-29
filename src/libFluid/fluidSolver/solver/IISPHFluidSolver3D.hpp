@@ -556,9 +556,6 @@ namespace LibFluid {
                 // update velocity and position of all particles
 
                 auto type = data.collection->get<ParticleInfo>(i).type;
-                if (type == ParticleTypeBoundary) {
-                    return; // don't calculate unnecessary values for the boundary particles.
-                }
                 if (type == ParticleTypeInactive) {
                     return; // don't calculate unnecessary values for inactive particles.
                 }
