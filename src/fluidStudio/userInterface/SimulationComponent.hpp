@@ -21,8 +21,5 @@ namespace FluidStudio {
         bool operator!=(const SimulationComponent& other) const;
 
         bool can_delete() const;
-
-
-        static const char* get_entity_type_name(const std::shared_ptr<LibFluid::SimulationEntity> entity);
     };
 } // namespace FluidStudio

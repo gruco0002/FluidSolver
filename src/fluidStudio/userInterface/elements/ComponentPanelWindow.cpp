@@ -10,6 +10,7 @@
 #include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
+#include "userInterface/TypeInformationProvider.hpp"
 #include "visualizationOverlay/ParticleRemoverOverlay.hpp"
 
 namespace FluidStudio {
@@ -23,18 +24,28 @@ namespace FluidStudio {
             update_component_node("Timestep", {SimulationComponent::Kind::Timestep, 0});
             update_component_node("Output", {SimulationComponent::Kind::Output, 0});
 
+            menu_sensor_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
             for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
                 auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
-                update_component_node(sen->parameters.name.c_str(), {SimulationComponent::Kind::Sensor, i});
+
+                // set name
+                auto name = sen->parameters.name + ": " + TypeInformationProvider::get_sensor_type_name(sen) + " Sensor";
+                if (menu_sensor_names[i] != name) {
+                    menu_sensor_names[i] = name;
+                }
+                update_component_node(menu_sensor_names[i].c_str(), {SimulationComponent::Kind::Sensor, i});
             }
 
             menu_entity_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
             for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size(); i++) {
                 auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i];
-                auto name = "Entity " + std::to_string(i + 1) + ": " + SimulationComponent::get_entity_type_name(ent);
+
+                // set name
+                auto name = "Entity " + std::to_string(i + 1) + ": " + TypeInformationProvider::get_entity_type_name(ent);
                 if (menu_entity_names[i] != name) {
                     menu_entity_names[i] = name;
                 }
+
                 update_component_node(menu_entity_names[i].c_str(), {SimulationComponent::Kind::Entity, i});
             }
 
@@ -141,7 +152,7 @@ namespace FluidStudio {
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth |
                 ImGuiTreeNodeFlags_FramePadding;
 
-        bool opened = ImGui::TreeNodeEx((void*)((size_t)name + component.index * 1565412), flags, name);
+        bool opened = ImGui::TreeNodeEx((void*)((size_t)name + component.index * 1565412), flags, "%s", name);
 
         if (ImGui::IsItemClicked()) {
             m_selection = component;

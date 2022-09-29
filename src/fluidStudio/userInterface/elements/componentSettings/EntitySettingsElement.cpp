@@ -6,6 +6,7 @@
 #include "entities/VelocityAlterationByTag.hpp"
 #include "userInterface/SimulationComponent.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
+#include "userInterface/TypeInformationProvider.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
 
 namespace FluidStudio {
@@ -21,7 +22,8 @@ namespace FluidStudio {
 
         auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[index];
         if (StyledImGuiElements::slim_tree_node("Entity")) {
-            ImGui::LabelText("Type", SimulationComponent::get_entity_type_name(ent));
+            ImGui::LabelText("Type", "%s", TypeInformationProvider::get_entity_type_name(ent));
+            ImGui::TextWrapped("%s", TypeInformationProvider::get_entity_description(ent));
 
             ImGui::TreePop();
         }

@@ -5,31 +5,11 @@
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
+#include "userInterface/TypeInformationProvider.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
 #include "userInterface/elements/SensorGraphWindows.hpp"
 
 namespace FluidStudio {
-
-    const char* get_sensor_type_name(const std::shared_ptr<LibFluid::Sensor>& sen) {
-        if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalDensitySensor>(sen)) {
-            return "Global Density";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalPressureSensor>(sen)) {
-            return "Global Pressure";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalVelocitySensor>(sen)) {
-            return "Global Velocity";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen)) {
-            return "Global Energy";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen)) {
-            return "Global Particle Count";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
-            return "3D Sensor Plane";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::CompressedNeighborStorageSensor>(sen)) {
-            return "Compressed Neighbor Storage";
-        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::IISPHSensor>(sen)) {
-            return "IISPH";
-        }
-        return "UNKNOWN";
-    }
 
 
     void SensorSettingsElement::update() {
@@ -44,7 +24,7 @@ namespace FluidStudio {
         auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[index];
 
         if (StyledImGuiElements::slim_tree_node("Sensor")) {
-            ImGui::LabelText("Type", get_sensor_type_name(sen));
+            ImGui::LabelText("Type", "%s Sensor", TypeInformationProvider::get_sensor_type_name(sen));
             if (ImGui::Button("Open Graph")) {
                 ui_data.collection().get<SensorGraphWindows>().open_sensor_window(index);
             }

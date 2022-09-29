@@ -16,6 +16,7 @@ namespace FluidStudio {
 
       private:
         std::vector<std::string> menu_entity_names;
+        std::vector<std::string> menu_sensor_names;
 
         SimulationComponent m_selection;
 
