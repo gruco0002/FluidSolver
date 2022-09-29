@@ -132,6 +132,10 @@ namespace FluidStudio {
             }
         }
 
+        // save the data in the timeline
+        ui_data.window().timeline_service.reset();
+        ui_data.window().timeline_service.save_timestep_result();
+
         // hide the window again
         visible = false;
         reset();
