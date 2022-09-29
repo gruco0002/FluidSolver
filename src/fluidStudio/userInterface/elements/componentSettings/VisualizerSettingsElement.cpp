@@ -133,7 +133,6 @@ namespace FluidStudio {
                 ImGui::Separator();
 
                 ImGui::Checkbox("Memory Location", &gl3d->settings.show_particle_memory_location);
-                ImGui::InputInt("Selected Tag", reinterpret_cast<int*>(&gl3d->settings.selected_tag));
             }
 
             ImGui::TreePop();

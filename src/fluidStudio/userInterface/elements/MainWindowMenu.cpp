@@ -147,9 +147,13 @@ namespace FluidStudio {
     }
 
     void MainWindowMenu::update_tag_selection_modal() {
-        static uint32_t particle_tag = -1;
+        static uint32_t particle_tag = 0;
         if (ImGui::BeginPopupModal("Particle Selection by Tag")) {
             ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
+
+            if (particle_tag == (uint32_t)-1) {
+                ImGui::Text("This disables the current selection.");
+            }
 
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
@@ -171,7 +175,7 @@ namespace FluidStudio {
             ImGui::EndPopup();
         }
         if (tag_selection_modal_open) {
-            particle_tag = -1;
+            particle_tag = 0;
             tag_selection_modal_open = false;
             ImGui::OpenPopup("Particle Selection by Tag");
         }
