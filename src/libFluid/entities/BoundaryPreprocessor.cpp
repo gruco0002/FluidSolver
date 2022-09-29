@@ -11,6 +11,13 @@ namespace LibFluid {
 
         auto& collection = simulation_data.collection;
         auto& interface = simulation_data.neighborhood_interface;
+
+        FLUID_ASSERT(collection != nullptr);
+        FLUID_ASSERT(interface != nullptr);
+        FLUID_ASSERT(collection->is_type_present<MovementData3D>());
+        FLUID_ASSERT(collection->is_type_present<ParticleInfo>());
+        FLUID_ASSERT(collection->is_type_present<ParticleData>());
+
         for (size_t i = 0; i < collection->size(); i++) {
             const auto& info = collection->get<ParticleInfo>(i);
             if (info.type != ParticleType::ParticleTypeBoundary) {
