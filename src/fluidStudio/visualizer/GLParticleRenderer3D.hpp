@@ -81,6 +81,8 @@ namespace LibFluid {
 
             bool show_particle_memory_location = false;
 
+            pTag_t selected_tag = -1;
+
         } settings;
 
         const glm::mat4& get_projection_matrix() const;
