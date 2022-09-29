@@ -56,6 +56,29 @@ namespace LibFluid {
     }
 
     void BoundaryPreprocessor::create_compatibility_report(CompatibilityReport& report) {
+        initialize();
+
+        report.begin_scope(FLUID_NAMEOF(BoundaryPreprocessor));
+
+        if (simulation_data.collection == nullptr) {
+            report.add_issue("Particle collection is null!");
+        } else {
+            if (!simulation_data.collection->is_type_present<MovementData3D>()) {
+                report.add_issue("Particles are missing the MovementData3D attribute!");
+            }
+            if (!simulation_data.collection->is_type_present<ParticleData>()) {
+                report.add_issue("Particles are missing the ParticleData attribute!");
+            }
+            if (!simulation_data.collection->is_type_present<ParticleInfo>()) {
+                report.add_issue("Particles are missing the ParticleInfo attribute!");
+            }
+        }
+
+        if (simulation_data.particle_size <= 0.0f) {
+            report.add_issue("Particle size is smaller or equal to zero!");
+        }
+
+        report.end_scope();
     }
 
     BoundaryPreprocessor::BoundaryPreprocessor() {
