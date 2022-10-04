@@ -39,6 +39,10 @@
             "platform": "linux | osx"
         },
         "tinyply",
-        "lz4"
+        "lz4",
+        {
+            "name": "tinyobjloader",
+            "version>=": "2.0.0-rc9"
+        }
     ]
 }
