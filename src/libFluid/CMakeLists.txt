@@ -95,7 +95,12 @@ set(LIB_FLUID_SOURCE_FILES
         serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
         sensors/Sensor.hpp
         serialization/Base64.cpp serialization/Base64.hpp
-        entities/BoundaryPreprocessor.cpp entities/BoundaryPreprocessor.hpp entities/VelocityAlterationByTag.cpp entities/VelocityAlterationByTag.hpp)
+        entities/BoundaryPreprocessor.cpp entities/BoundaryPreprocessor.hpp
+        entities/VelocityAlterationByTag.cpp entities/VelocityAlterationByTag.hpp
+        importer/MeshData.cpp importer/MeshData.hpp
+        importer/ObjLoader.cpp importer/ObjLoader.hpp
+        importer/ParticleSampler.cpp importer/ParticleSampler.hpp
+        )
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

@@ -22,4 +22,7 @@ namespace LibFluid::Math {
     inline float sqrt(const float& a) {
         return std::sqrt(a);
     }
-} // namespace FluidSolver::Math
+    inline float abs(const float& a) {
+        return std::abs(a);
+    }
+} // namespace LibFluid::Math
