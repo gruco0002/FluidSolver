@@ -1,5 +1,6 @@
 #include "MeshData.hpp"
 
+#include "FluidAssert.hpp"
 #include "FluidMath.hpp"
 
 namespace LibFluid::Importer {
@@ -23,6 +24,10 @@ namespace LibFluid::Importer {
                 Math::max(vertices[0].z, Math::max(vertices[1].z, vertices[2].z))};
     }
 
+    std::pair<glm::vec3, float> get_nearest_point_on_line(const glm::vec3& origin, const glm::vec3& line_vector, const glm::vec3& point) {
+        // TODO: implement
+    }
+
     glm::vec3 MeshData::Triangle::get_closest_point_on_triangle(const glm::vec3& point) const {
         // define our triangle vertices as a, b and c
         const auto& a = vertices[0];
@@ -30,9 +35,7 @@ namespace LibFluid::Importer {
         const auto& c = vertices[2];
 
         // get the normal and origin of the plane defined by the triangle
-        glm::vec3 normal = glm::cross((b - a), (c - a));
-        normal = normal / glm::length(normal);
-
+        glm::vec3 normal = get_normal_from_vertices();
         const auto& origin = a;
 
         // project the point onto the plane defined by the triangle
@@ -42,13 +45,113 @@ namespace LibFluid::Importer {
         glm::vec3 point_projected_onto_plane = point - normal * distance_from_point_to_plane;
 
         // check if the point lies within the triangle, if yes we found the solution
+        glm::vec3 barycentric = get_barycentric_coordinates_of(point_projected_onto_plane);
 
-        // TODO: implement
+        if (barycentric.x >= 0.0f && barycentric.x <= 1.0f && barycentric.y >= 0.0f && barycentric.y <= 1.0f && barycentric.z >= 0.0f && barycentric.z <= 1.0f) {
+            // the point lies within the triangle
+            return point_projected_onto_plane;
+        }
 
         // the point was not inside the triangle, hence it lies outside
         // the nearest point is therefore one of the corners or lies on one of the edges
 
-        // TODO: implement
+        // first determine distances to corners
+        float distance_to_a = glm::length(point - a);
+        float distance_to_b = glm::length(point - b);
+        float distance_to_c = glm::length(point - c);
 
+        // determine distances and intersections with edges
+        auto line_ab_intersection = get_nearest_point_on_line(a, b - a, point);
+        auto line_ac_intersection = get_nearest_point_on_line(a, c - a, point);
+        auto line_bc_intersection = get_nearest_point_on_line(b, c - b, point);
+
+        // find the best match
+        float current_distance = distance_to_a;
+        glm::vec3 current_point = a;
+
+        // check if the other corners are closer
+        if (distance_to_b < current_distance) {
+            current_point = b;
+        }
+        if (distance_to_c < current_distance) {
+            current_point = c;
+        }
+
+        // check if the intersections with the edges are close and if those intersections lie on the edge of the triangle
+
+        if (line_ab_intersection.second >= 0.0f && line_ab_intersection.second <= 1.0f) {
+            // the line intersection is within the edge segment of the triangle
+            float distance_to_intersection = glm::length(point - line_ab_intersection.first);
+            if (distance_to_intersection < current_distance) {
+                current_point = line_ab_intersection.first;
+            }
+        }
+
+        if (line_ac_intersection.second >= 0.0f && line_ac_intersection.second <= 1.0f) {
+            // the line intersection is within the edge segment of the triangle
+            float distance_to_intersection = glm::length(point - line_ac_intersection.first);
+            if (distance_to_intersection < current_distance) {
+                current_point = line_ac_intersection.first;
+            }
+        }
+
+        if (line_bc_intersection.second >= 0.0f && line_bc_intersection.second <= 1.0f) {
+            // the line intersection is within the edge segment of the triangle
+            float distance_to_intersection = glm::length(point - line_bc_intersection.first);
+            if (distance_to_intersection < current_distance) {
+                current_point = line_bc_intersection.first;
+            }
+        }
+
+        return current_point;
+    }
+
+    glm::vec3 MeshData::Triangle::get_barycentric_coordinates_of(const glm::vec3& cartesian_point) const {
+        const auto& a = vertices[0];
+        const auto& b = vertices[1];
+        const auto& c = vertices[2];
+
+        const auto& p = cartesian_point;
+        auto normal = get_normal_from_vertices();
+
+        // FIXME: normal should be replaced by correct area calculation formula (sqrt(glm:dot(cross, cross))) / 2
+        float area_abc = glm::dot(normal, glm::cross((b - a), (c - a)));
+        float area_pbc = glm::dot(normal, glm::cross((b - p), (c - p)));
+        float area_pca = glm::dot(normal, glm::cross((c - p), (a - p)));
+
+        FLUID_ASSERT(area_abc > 0.0f, "Triangle with area smaller or equal to zero is not sound!");
+
+        float alpha = area_pbc / area_abc;
+        float beta = area_pca / area_abc;
+        float gamma = 1.0f - alpha - beta;
+
+        return {alpha, beta, gamma};
+    }
+
+    glm::vec3 MeshData::Triangle::get_normal_from_vertices() const {
+        // define our triangle vertices as a, b and c
+        const auto& a = vertices[0];
+        const auto& b = vertices[1];
+        const auto& c = vertices[2];
+
+        // get the normal of the plane defined by the triangle
+        glm::vec3 normal = glm::cross((b - a), (c - a));
+        normal = normal / glm::length(normal);
+
+        return normal;
+    }
+    
+    float MeshData::Triangle::get_area() const {
+        // define our triangle vertices as a, b and c
+        const auto& a = vertices[0];
+        const auto& b = vertices[1];
+        const auto& c = vertices[2];
+
+        // get the normal of the plane defined by the triangle
+        glm::vec3 normal = glm::cross((b - a), (c - a));
+
+        float area = glm::length(normal) / 2.0f;
+
+        return area;
     }
 } // namespace LibFluid::Importer

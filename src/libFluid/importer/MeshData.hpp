@@ -15,6 +15,12 @@ namespace LibFluid::Importer {
             glm::vec3 get_maximum_coordinates() const;
 
             glm::vec3 get_closest_point_on_triangle(const glm::vec3& point) const;
+
+            glm::vec3 get_barycentric_coordinates_of(const glm::vec3& cartesian_point) const;
+
+            glm::vec3 get_normal_from_vertices() const;
+
+            float get_area() const;
         };
 
       public:
