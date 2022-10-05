@@ -25,7 +25,13 @@ namespace LibFluid::Importer {
     }
 
     std::pair<glm::vec3, float> get_nearest_point_on_line(const glm::vec3& origin, const glm::vec3& line_vector, const glm::vec3& point) {
-        // TODO: implement
+        glm::vec3 origin_to_point = point - origin;
+
+        float t = glm::dot(line_vector, origin_to_point);
+
+        glm::vec3 point_on_line = origin + t * line_vector;
+
+        return {point_on_line, t};
     }
 
     glm::vec3 MeshData::Triangle::get_closest_point_on_triangle(const glm::vec3& point) const {
@@ -140,7 +146,7 @@ namespace LibFluid::Importer {
 
         return normal;
     }
-    
+
     float MeshData::Triangle::get_area() const {
         // define our triangle vertices as a, b and c
         const auto& a = vertices[0];
