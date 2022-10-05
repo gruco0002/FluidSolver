@@ -120,10 +120,9 @@ namespace LibFluid::Importer {
         const auto& p = cartesian_point;
         auto normal = get_normal_from_vertices();
 
-        // FIXME: normal should be replaced by correct area calculation formula (sqrt(glm:dot(cross, cross))) / 2
-        float area_abc = glm::dot(normal, glm::cross((b - a), (c - a)));
-        float area_pbc = glm::dot(normal, glm::cross((b - p), (c - p)));
-        float area_pca = glm::dot(normal, glm::cross((c - p), (a - p)));
+        float area_abc = get_area();
+        float area_pbc = glm::length(glm::cross((b - p), (c - p))) / 2.0f;
+        float area_pca = glm::length(glm::cross((c - p), (a - p))) / 2.0f;
 
         FLUID_ASSERT(area_abc > 0.0f, "Triangle with area smaller or equal to zero is not sound!");
 
