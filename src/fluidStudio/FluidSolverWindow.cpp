@@ -27,7 +27,7 @@ namespace FluidStudio {
     void FluidSolverWindow::load() {
         // set the current fluid solver type and create an empty simulation
         current_type = &solver_types.types[0];
-        create_empty_simulation();
+        create_empty_2d_simulation(1.0f, 1000.0f);
 
         // initialize imgui and window
         ImGuiHelper::Init(this->get_window_handler());
@@ -138,7 +138,7 @@ namespace FluidStudio {
         update_camera();
     }
 
-    void FluidSolverWindow::create_empty_simulation() {
+    void FluidSolverWindow::create_empty_2d_simulation(float particle_size, float rest_density) {
         simulator_visualizer_bundle.simulator = std::make_shared<LibFluid::Simulator>();
 
         simulator_visualizer_bundle.simulator->data.collection = std::make_shared<LibFluid::ParticleCollection>();
@@ -146,8 +146,8 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleData>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleInfo>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ExternalForces>();
-        simulator_visualizer_bundle.simulator->parameters.rest_density = 1000.0f;
-        simulator_visualizer_bundle.simulator->parameters.particle_size = 0.1f;
+        simulator_visualizer_bundle.simulator->parameters.rest_density = rest_density;
+        simulator_visualizer_bundle.simulator->parameters.particle_size = particle_size;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
         simulator_visualizer_bundle.simulator->data.fluid_solver = current_type->create_type();
@@ -165,7 +165,7 @@ namespace FluidStudio {
         on_new_simulation();
     }
 
-    void FluidSolverWindow::create_empty_3d_simulation() {
+    void FluidSolverWindow::create_empty_3d_simulation(float particle_size, float rest_density) {
         simulator_visualizer_bundle.simulator = std::make_shared<LibFluid::Simulator>();
 
         simulator_visualizer_bundle.simulator->data.collection = std::make_shared<LibFluid::ParticleCollection>();
@@ -173,8 +173,8 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleData>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ParticleInfo>();
         simulator_visualizer_bundle.simulator->data.collection->add_type<LibFluid::ExternalForces3D>();
-        simulator_visualizer_bundle.simulator->parameters.rest_density = 1000.0f;
-        simulator_visualizer_bundle.simulator->parameters.particle_size = 0.1f;
+        simulator_visualizer_bundle.simulator->parameters.rest_density = rest_density;
+        simulator_visualizer_bundle.simulator->parameters.particle_size = particle_size;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
         simulator_visualizer_bundle.simulator->data.fluid_solver = solver_types.query_type({"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D"})->create_type();

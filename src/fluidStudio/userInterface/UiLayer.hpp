@@ -9,6 +9,7 @@
 #include "userInterface/elements/SensorGraphWindows.hpp"
 #include "userInterface/elements/SimulationControlsWindow.hpp"
 #include "userInterface/elements/TimelineWindow.hpp"
+#include "userInterface/elements/NewSimulationModalWindow.hpp"
 
 
 namespace FluidStudio {
@@ -36,6 +37,7 @@ namespace FluidStudio {
         ComponentPanelWindow component_panel_window;
         ComponentSettingsWindow component_settings_window;
         ObjImportWindow obj_import_window;
+        NewSimulationModalWindow new_simulation_modal_window;
     };
 
 } // namespace FluidStudio

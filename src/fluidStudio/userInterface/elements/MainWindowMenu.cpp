@@ -1,11 +1,13 @@
 #include "MainWindowMenu.hpp"
 
 #include "ExtendedSimulationSerializer.hpp"
+#include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/ObjImportWindow.hpp"
 #include "userInterface/elements/PlyImportWindow.hpp"
 #include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
 #include "ImguiHelper.hpp"
+
 #include <nfd.h>
 
 namespace FluidStudio {
@@ -15,14 +17,12 @@ namespace FluidStudio {
             bool can_change = ui_data.window().is_safe_to_access_simulation_data();
 
             if (ImGui::BeginMenu("File")) {
-                if(ImGui::BeginMenu("New")){
+                if (ImGui::BeginMenu("New")) {
                     if (ImGui::MenuItem("2D Scenario", nullptr, false, can_change)) {
-                        // create a new scenario
-                        ui_data.window().create_empty_simulation();
+                        ui_data.collection().get<NewSimulationModalWindow>().open_window(NewSimulationModalWindow::NewSimulationKind::NewSimulationKind2D);
                     }
                     if (ImGui::MenuItem("3D Scenario", nullptr, false, can_change)) {
-                        // create a new scenario
-                        ui_data.window().create_empty_3d_simulation();
+                        ui_data.collection().get<NewSimulationModalWindow>().open_window(NewSimulationModalWindow::NewSimulationKind::NewSimulationKind3D);
                     }
                     ImGui::EndMenu();
                 }

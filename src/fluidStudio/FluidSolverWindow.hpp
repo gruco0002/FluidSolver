@@ -56,9 +56,9 @@ namespace FluidStudio {
 
         const FluidSolverTypes::FluidSolverType* current_type = nullptr;
 
-        void create_empty_simulation();
+        void create_empty_2d_simulation(float particle_size, float rest_density);
 
-        void create_empty_3d_simulation();
+        void create_empty_3d_simulation(float particle_size, float rest_density);
 
         void create_3d_test_simulation();
 
