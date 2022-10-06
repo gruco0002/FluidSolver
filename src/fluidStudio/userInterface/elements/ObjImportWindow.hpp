@@ -16,6 +16,7 @@ namespace FluidStudio {
 
         std::string current_file;
         float import_scale = 1.0f;
+        uint32_t  particle_tag = 0;
 
         float get_particle_mass() const;
 

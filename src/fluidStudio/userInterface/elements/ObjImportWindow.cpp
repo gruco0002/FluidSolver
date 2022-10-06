@@ -1,7 +1,10 @@
 #include "ObjImportWindow.hpp"
-#include <nfd.h>
 
 #include "ImguiHelper.hpp"
+#include "importer/ObjLoader.hpp"
+#include "importer/ParticleSampler.hpp"
+
+#include <nfd.h>
 
 namespace FluidStudio {
 
@@ -32,6 +35,7 @@ namespace FluidStudio {
             ImGui::Separator();
 
             ImGui::InputFloat("Model Scale", &import_scale);
+            ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
 
             ImGui::Separator();
             ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
@@ -70,10 +74,45 @@ namespace FluidStudio {
     void ObjImportWindow::reset() {
         import_scale = 1.0;
         current_file = "";
+        particle_tag = 0;
     }
 
     void ObjImportWindow::import_data_into_scene() {
-        // TODO: implement
+        float particle_size = ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size;
+        float rest_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density;
+        float particle_mass = get_particle_mass();
+
+        auto collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
+
+        LibFluid::Importer::ObjLoader obj_loader(current_file);
+        obj_loader.scale = import_scale;
+        auto mesh_data = obj_loader.load_as_meshdata();
+
+        LibFluid::Importer::ParticleSampler sampler(mesh_data, particle_size);
+        sampler.generate_samples();
+        const auto& samples = sampler.get_samples();
+
+        for (const auto& sample : samples) {
+            size_t index = collection->add();
+
+            auto& pos = collection->get<LibFluid::MovementData3D>(index);
+            pos.position = sample;
+            pos.acceleration = glm::vec3(0.0f);
+            pos.velocity = glm::vec3(0.0f);
+
+            auto& info = collection->get<LibFluid::ParticleInfo>(index);
+
+            info.type = LibFluid::ParticleType::ParticleTypeBoundary;
+            info.tag = particle_tag;
+
+            auto& data = collection->get<LibFluid::ParticleData>(index);
+            data.density = rest_density;
+            data.mass = particle_mass;
+            data.pressure = 0.0f;
+        }
+
+        ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
+        ui_data.window().simulator_visualizer_bundle.initialize();
     }
     bool ObjImportWindow::can_import() const {
         auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
