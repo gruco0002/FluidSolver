@@ -14,10 +14,18 @@ namespace FluidStudio {
             bool can_change = ui_data.window().is_safe_to_access_simulation_data();
 
             if (ImGui::BeginMenu("File")) {
-                if (ImGui::MenuItem("New", nullptr, false, can_change)) {
-                    // create a new scenario
-                    ui_data.window().create_empty_simulation();
+                if(ImGui::BeginMenu("New")){
+                    if (ImGui::MenuItem("2D Scenario", nullptr, false, can_change)) {
+                        // create a new scenario
+                        ui_data.window().create_empty_simulation();
+                    }
+                    if (ImGui::MenuItem("3D Scenario", nullptr, false, can_change)) {
+                        // create a new scenario
+                        ui_data.window().create_empty_3d_simulation();
+                    }
+                    ImGui::EndMenu();
                 }
+
 
                 if (ImGui::MenuItem("Open", nullptr, false, can_change)) {
                     // open scenario
