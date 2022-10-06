@@ -85,12 +85,11 @@ namespace FluidStudio {
     }
     void PlyImportWindow::import_data_into_simulation() {
         // set the parameters of the simulation to the specified ones
-        auto& parameters = ui_data.window().simulator_visualizer_bundle.simulator->parameters;
-        parameters.rest_density = rest_density;
-        parameters.particle_size = particle_size;
-        parameters.notify_that_data_changed();
+        const auto& parameters = ui_data.window().simulator_visualizer_bundle.simulator->parameters;
+        float particle_size = parameters.particle_size;
+        float rest_density = parameters.rest_density;
+        float particle_mass = get_particle_mass();
 
-        ui_data.window().simulator_visualizer_bundle.initialize();
 
         auto collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
 
@@ -122,12 +121,17 @@ namespace FluidStudio {
 
                         auto& data = collection->get<LibFluid::ParticleData>(index);
                         data.density = rest_density;
-                        data.mass = get_particle_mass();
+                        data.mass = particle_mass;
                         data.pressure = 0.0f;
                     }
                 }
             }
         }
+
+
+        ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
+        ui_data.window().simulator_visualizer_bundle.initialize();
+
 
         // save the data in the timeline
         ui_data.window().timeline_service.reset();
@@ -165,18 +169,9 @@ namespace FluidStudio {
                     particle_multiplier = 1;
             }
 
-            if (ImGui::InputFloat("Particle Size (m)", &particle_size)) {
-                if (particle_size <= 0) {
-                    particle_size = 1.0f;
-                }
-            }
-
-            if (ImGui::InputFloat("Rest Density (kg/m^3)", &rest_density)) {
-                if (rest_density <= 0) {
-                    rest_density = 1000.0f;
-                }
-            }
-
+            ImGui::Separator();
+            ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
+            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
             float particle_mass = get_particle_mass();
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
@@ -253,6 +248,8 @@ namespace FluidStudio {
         mapped_colors.clear();
     }
     float PlyImportWindow::get_particle_mass() const {
+        float particle_size = ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size;
+        float rest_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density;
         float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
         return particle_mass;
     }

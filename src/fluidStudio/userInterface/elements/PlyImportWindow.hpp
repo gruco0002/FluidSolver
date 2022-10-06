@@ -27,8 +27,6 @@ namespace FluidStudio {
         std::string loaded_file;
 
         int particle_multiplier = 1;
-        float particle_size = 0.1f;
-        float rest_density = 1000.0f;
 
         std::vector<glm::vec3> colors;
         std::vector<glm::vec3> vertices;

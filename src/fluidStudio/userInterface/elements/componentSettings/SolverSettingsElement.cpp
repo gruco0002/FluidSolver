@@ -208,11 +208,17 @@ namespace FluidStudio {
         if (ImGui::InputFloat("Gravity", &ui_data.window().simulator_visualizer_bundle.simulator->parameters.gravity)) {
             ui_data.window().simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
         }
-        if (ImGui::InputFloat("Rest Density", &ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density)) {
-            ui_data.window().simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
-        }
-        if (ImGui::InputFloat("Particle Size", &ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size)) {
-            ui_data.window().simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
-        }
+
+        ImGui::Separator();
+
+        float rest_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density;
+        float particle_size = ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size;
+        float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
+
+        ImGui::LabelText("Particle Size (m)", "%.3f", particle_size);
+        ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", rest_density);
+        ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
     }
+
+
 } // namespace FluidStudio
