@@ -4,6 +4,7 @@
 #include "userInterface/elements/ComponentSettingsWindow.hpp"
 #include "userInterface/elements/LogWindow.hpp"
 #include "userInterface/elements/MainWindowMenu.hpp"
+#include "userInterface/elements/ObjImportWindow.hpp"
 #include "userInterface/elements/PlyImportWindow.hpp"
 #include "userInterface/elements/SensorGraphWindows.hpp"
 #include "userInterface/elements/SimulationControlsWindow.hpp"
@@ -34,6 +35,7 @@ namespace FluidStudio {
         SensorGraphWindows sensor_graph_windows;
         ComponentPanelWindow component_panel_window;
         ComponentSettingsWindow component_settings_window;
+        ObjImportWindow obj_import_window;
     };
 
 } // namespace FluidStudio

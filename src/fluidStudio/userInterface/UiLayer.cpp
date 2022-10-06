@@ -16,6 +16,7 @@ namespace FluidStudio {
         sensor_graph_windows.update();
         component_panel_window.update();
         component_settings_window.update();
+        obj_import_window.update();
     }
 
     void UiLayer::initialize() {
@@ -30,6 +31,7 @@ namespace FluidStudio {
         ui_element_collection.add(sensor_graph_windows);
         ui_element_collection.add(component_panel_window);
         ui_element_collection.add(component_settings_window);
+        ui_element_collection.add(obj_import_window);
 
         // initialize all elements
         simulation_controls_window.initialize(data);
@@ -40,6 +42,7 @@ namespace FluidStudio {
         sensor_graph_windows.initialize(data);
         component_panel_window.initialize(data);
         component_settings_window.initialize(data);
+        obj_import_window.initialize(data);
     }
 
     UiLayer::UiLayer() = default;

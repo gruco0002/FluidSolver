@@ -59,6 +59,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/componentSettings/EntitySettingsElement.cpp userInterface/elements/componentSettings/EntitySettingsElement.hpp
         userInterface/TypeInformationProvider.cpp userInterface/TypeInformationProvider.hpp
         visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
+        userInterface/elements/ObjImportWindow.cpp userInterface/elements/ObjImportWindow.hpp
         )
 
 

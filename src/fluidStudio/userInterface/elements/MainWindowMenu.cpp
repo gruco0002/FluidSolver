@@ -1,7 +1,8 @@
 #include "MainWindowMenu.hpp"
 
 #include "ExtendedSimulationSerializer.hpp"
-#include "PlyImportWindow.hpp"
+#include "userInterface/elements/ObjImportWindow.hpp"
+#include "userInterface/elements/PlyImportWindow.hpp"
 #include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
 #include "ImguiHelper.hpp"
@@ -42,6 +43,12 @@ namespace FluidStudio {
                         // open the ply import window
                         ui_data.collection().get<PlyImportWindow>().open_window();
                     }
+
+                    if (ImGui::MenuItem("Obj File", nullptr, false, can_change)) {
+                        // open the ply import window
+                        ui_data.collection().get<ObjImportWindow>().open_window();
+                    }
+
 
                     ImGui::EndMenu();
                 }
