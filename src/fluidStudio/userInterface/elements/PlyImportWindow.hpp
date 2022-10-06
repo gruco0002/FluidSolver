@@ -48,6 +48,8 @@ namespace FluidStudio {
         void reset();
 
         float get_particle_mass() const;
+
+        bool can_import() const;
     };
 
 

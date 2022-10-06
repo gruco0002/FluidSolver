@@ -84,9 +84,6 @@ namespace FluidStudio {
         }
     }
     void PlyImportWindow::import_data_into_simulation() {
-        // create an empty scenario
-        ui_data.window().create_empty_3d_simulation();
-
         // set the parameters of the simulation to the specified ones
         auto& parameters = ui_data.window().simulator_visualizer_bundle.simulator->parameters;
         parameters.rest_density = rest_density;
@@ -146,7 +143,10 @@ namespace FluidStudio {
 
         load_colors_if_required();
 
+
         if (ImGui::Begin("Ply Import", &visible)) {
+            bool import_enabled = can_import();
+
             ImGui::Text("Current file: %s", current_file.c_str());
             ImGui::SameLine();
             if (ImGui::Button("Open")) {
@@ -229,7 +229,12 @@ namespace FluidStudio {
 
             ImGui::Separator();
 
-            if (ImGui::Button("Import")) {
+            if (!import_enabled) {
+                glm::vec4 color(1.0f, 0.0f, 0.0f, 1.0f);
+                ImGui::TextColored(reinterpret_cast<const ImVec4&>(color), "Cannot import 3d data into a scene that is not setup for 3d data!");
+            }
+
+            if (ImGui::Button("Import into Scene") && import_enabled) {
                 import_data_into_simulation();
             }
         }
@@ -250,5 +255,10 @@ namespace FluidStudio {
     float PlyImportWindow::get_particle_mass() const {
         float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
         return particle_mass;
+    }
+
+    bool PlyImportWindow::can_import() const {
+        auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
+        return collection->is_type_present<LibFluid::MovementData3D>() && collection->is_type_present<LibFluid::ParticleInfo>() && collection->is_type_present<LibFluid::ParticleData>();
     }
 } // namespace FluidStudio
