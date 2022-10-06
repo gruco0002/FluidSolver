@@ -24,6 +24,7 @@ namespace LibFluid::Importer {
                 Math::max(vertices[0].z, Math::max(vertices[1].z, vertices[2].z))};
     }
 
+
     std::pair<glm::vec3, float> get_nearest_point_on_line(const glm::vec3& origin, const glm::vec3& line_vector, const glm::vec3& point) {
         glm::vec3 origin_to_point = point - origin;
 
@@ -31,6 +32,8 @@ namespace LibFluid::Importer {
 
         glm::vec3 point_on_line = origin + t * line_vector;
 
+        // returns the point on the line and the factor t of the line equation such that
+        // point_on_line = origin + t * line_vector
         return {point_on_line, t};
     }
 
@@ -54,6 +57,7 @@ namespace LibFluid::Importer {
         glm::vec3 barycentric = get_barycentric_coordinates_of(point_projected_onto_plane);
 
         if (barycentric.x >= 0.0f && barycentric.x <= 1.0f && barycentric.y >= 0.0f && barycentric.y <= 1.0f && barycentric.z >= 0.0f && barycentric.z <= 1.0f) {
+            // see https://math.stackexchange.com/questions/4322/check-whether-a-point-is-within-a-3d-triangle
             // the point lies within the triangle
             return point_projected_onto_plane;
         }
@@ -113,6 +117,7 @@ namespace LibFluid::Importer {
     }
 
     glm::vec3 MeshData::Triangle::get_barycentric_coordinates_of(const glm::vec3& cartesian_point) const {
+        // see https://math.stackexchange.com/questions/4322/check-whether-a-point-is-within-a-3d-triangle
         const auto& a = vertices[0];
         const auto& b = vertices[1];
         const auto& c = vertices[2];

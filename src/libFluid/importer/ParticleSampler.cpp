@@ -20,6 +20,11 @@ namespace LibFluid::Importer {
     }
 
     void ParticleSampler::add_samples_for_triangle(const MeshData::Triangle& triangle) {
+        if (triangle.get_area() <= std::numeric_limits<float>::epsilon()) {
+            // the triangle has no area that we can sample
+            return;
+        }
+
         // add corners of triangle to samples
         samples.push_back(triangle.vertices[0]);
         samples.push_back(triangle.vertices[1]);
@@ -64,7 +69,7 @@ namespace LibFluid::Importer {
         float y_mod = std::fmod(value.y, particle_size);
         float z_mod = std::fmod(value.z, particle_size);
 
-        // correcting for negative result
+        // correcting for negative modulo result
         x_mod = x_mod < 0.0f ? particle_size + x_mod : x_mod;
         y_mod = y_mod < 0.0f ? particle_size + y_mod : y_mod;
         z_mod = z_mod < 0.0f ? particle_size + z_mod : z_mod;
