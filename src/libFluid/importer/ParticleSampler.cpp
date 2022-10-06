@@ -51,7 +51,7 @@ namespace LibFluid::Importer {
                     if (Math::abs(sample_position.y - point_on_triangle.y) > particle_size / 2.0f) {
                         continue; // point was moved outside our virtual grid cell
                     }
-                    if (Math::abs(sample_position.y - point_on_triangle.y) > particle_size / 2.0f) {
+                    if (Math::abs(sample_position.z - point_on_triangle.z) > particle_size / 2.0f) {
                         continue; // point was moved outside our virtual grid cell
                     }
 
