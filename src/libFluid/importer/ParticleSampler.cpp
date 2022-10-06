@@ -78,13 +78,13 @@ namespace LibFluid::Importer {
             return {
                     value.x - x_mod,
                     value.y - y_mod,
-                    value.y - z_mod,
+                    value.z - z_mod,
             };
         } else {
             return {
                     value.x + (particle_size - x_mod),
                     value.y + (particle_size - y_mod),
-                    value.y + (particle_size - z_mod),
+                    value.z + (particle_size - z_mod),
             };
         }
     }
