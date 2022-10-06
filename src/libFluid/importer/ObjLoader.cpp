@@ -24,7 +24,8 @@ namespace LibFluid::Importer {
             std::string warning;
             std::string error;
 
-            bool loaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, filepath.c_str());
+            auto filepath_as_string = filepath.string();
+            bool loaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warning, &error, filepath_as_string.c_str());
 
             if (!warning.empty()) {
                 Log::warning("ObjLoader: " + warning);
