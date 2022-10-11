@@ -22,6 +22,10 @@ namespace LibFluid::Importer {
 
         void reduce_samples();
 
+        void reduce_duplicates();
+
+        void reduce_too_close_ones();
+
         glm::vec3 get_grid_aligned_vector(const glm::vec3& value, bool subtract) const;
     };
 
