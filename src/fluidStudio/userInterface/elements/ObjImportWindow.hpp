@@ -16,7 +16,9 @@ namespace FluidStudio {
 
         std::string current_file;
         float import_scale = 1.0f;
-        uint32_t  particle_tag = 0;
+        uint32_t particle_tag = 0;
+
+        bool report_enabled = true;
 
         float get_particle_mass() const;
 
@@ -25,5 +27,12 @@ namespace FluidStudio {
         void import_data_into_scene();
 
         bool can_import() const;
+
+        struct ReportData {
+            int created_particles = 0;
+        } report_data;
+
+        unsigned int update_report_popup();
+        void show_report_popup(unsigned int id);
     };
 } // namespace FluidStudio

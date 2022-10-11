@@ -9,6 +9,8 @@
 namespace FluidStudio {
 
     void ObjImportWindow::update() {
+        auto popup_id = update_report_popup();
+
         if (!visible)
             return;
 
@@ -44,6 +46,8 @@ namespace FluidStudio {
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
             ImGui::Separator();
+            ImGui::Checkbox("Show Report after Import", &report_enabled);
+            ImGui::Separator();
 
 
             if (!import_enabled) {
@@ -55,6 +59,10 @@ namespace FluidStudio {
                 import_data_into_scene();
                 reset();
                 visible = false;
+
+                if (report_enabled) {
+                    show_report_popup(popup_id);
+                }
             }
         }
         ImGui::End();
@@ -75,6 +83,7 @@ namespace FluidStudio {
         import_scale = 1.0;
         current_file = "";
         particle_tag = 0;
+        report_enabled = true;
     }
 
     void ObjImportWindow::import_data_into_scene() {
@@ -91,6 +100,8 @@ namespace FluidStudio {
         LibFluid::Importer::ParticleSampler sampler(mesh_data, particle_size);
         sampler.generate_samples();
         const auto& samples = sampler.get_samples();
+
+        report_data.created_particles = samples.size();
 
         for (const auto& sample : samples) {
             size_t index = collection->add();
@@ -117,6 +128,33 @@ namespace FluidStudio {
     bool ObjImportWindow::can_import() const {
         auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
         return collection->is_type_present<LibFluid::MovementData3D>() && collection->is_type_present<LibFluid::ParticleInfo>() && collection->is_type_present<LibFluid::ParticleData>();
+    }
+
+    unsigned int ObjImportWindow::update_report_popup() {
+        auto imgui_id = ImGui::GetID("Obj Import - Report");
+        if (ImGui::BeginPopupModal("Obj Import - Report")) {
+            ImGui::LabelText("Created Particles", "%d", report_data.created_particles);
+
+            ImGui::Separator();
+
+            ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
+            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
+            float particle_mass = get_particle_mass();
+            ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
+
+            ImGui::Separator();
+            
+            if(ImGui::Button("Close")){
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+        return imgui_id;
+    }
+
+    void ObjImportWindow::show_report_popup(unsigned int id) {
+        ImGui::OpenPopup(id);
     }
 
 } // namespace FluidStudio
