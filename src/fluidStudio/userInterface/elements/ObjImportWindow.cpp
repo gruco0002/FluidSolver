@@ -128,6 +128,8 @@ namespace FluidStudio {
 
         ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         ui_data.window().simulator_visualizer_bundle.initialize();
+
+        ui_data.window().timeline_service.override_timestep_result();
     }
     bool ObjImportWindow::can_import() const {
         auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;

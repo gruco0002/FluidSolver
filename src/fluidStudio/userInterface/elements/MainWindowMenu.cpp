@@ -7,6 +7,7 @@
 #include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
 #include "ImguiHelper.hpp"
+#include "InsertParticlesWindow.hpp"
 
 #include <nfd.h>
 
@@ -38,22 +39,6 @@ namespace FluidStudio {
                     save_menu_open = true;
                 }
 
-                if (ImGui::BeginMenu("Import", can_change)) {
-                    if (ImGui::MenuItem("Ply File", nullptr, false, can_change)) {
-                        // open the ply import window
-                        ui_data.collection().get<PlyImportWindow>().open_window();
-                    }
-
-                    if (ImGui::MenuItem("Obj File", nullptr, false, can_change)) {
-                        // open the ply import window
-                        ui_data.collection().get<ObjImportWindow>().open_window();
-                    }
-
-
-                    ImGui::EndMenu();
-                }
-
-
                 ImGui::EndMenu();
             }
 
@@ -70,6 +55,27 @@ namespace FluidStudio {
 
                 ImGui::EndMenu();
             }
+
+
+            if (ImGui::BeginMenu("Insert", can_change)) {
+                if (ImGui::MenuItem("Import Ply File", nullptr, false, can_change)) {
+                    // open the ply import window
+                    ui_data.collection().get<PlyImportWindow>().open_window();
+                }
+
+                if (ImGui::MenuItem("Import Obj File", nullptr, false, can_change)) {
+                    // open the ply import window
+                    ui_data.collection().get<ObjImportWindow>().open_window();
+                }
+
+                if (ImGui::MenuItem("Particles", nullptr, false, can_change)) {
+                    ui_data.collection().get<InsertParticlesWindow>().open_window();
+                }
+
+
+                ImGui::EndMenu();
+            }
+
 
             if (ImGui::BeginMenu("Test")) {
                 if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {

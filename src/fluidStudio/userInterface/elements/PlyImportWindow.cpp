@@ -4,6 +4,7 @@
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
+#include "userInterface/helpers/TypeInformationProvider.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -12,19 +13,6 @@
 
 
 namespace FluidStudio {
-
-    const char* particle_type_to_string(LibFluid::ParticleType type) {
-        switch (type) {
-            case LibFluid::ParticleTypeNormal:
-                return "Normal";
-            case LibFluid::ParticleTypeBoundary:
-                return "Boundary";
-            case LibFluid::ParticleTypeInactive:
-                return "Inactive";
-            default:
-                return "Unknown";
-        }
-    }
 
 
     void PlyImportWindow::load_colors_if_required() {
@@ -113,7 +101,7 @@ namespace FluidStudio {
                         size_t index = collection->add();
 
                         auto& pos = collection->get<LibFluid::MovementData3D>(index);
-                        pos.position = scaled_vertex * (float)particle_multiplier + glm::vec3((float)x, (float)y, (float)z);
+                        pos.position = scaled_vertex * (float)particle_multiplier + glm::vec3((float)x, (float)y, (float)z) * particle_size;
                         pos.acceleration = glm::vec3(0.0f);
                         pos.velocity = glm::vec3(0.0f);
 
@@ -138,8 +126,7 @@ namespace FluidStudio {
 
 
         // save the data in the timeline
-        ui_data.window().timeline_service.reset();
-        ui_data.window().timeline_service.save_timestep_result();
+        ui_data.window().timeline_service.override_timestep_result();
 
         // hide the window again
         visible = false;
@@ -198,18 +185,18 @@ namespace FluidStudio {
 
                 ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.3f);
 
-                if (ImGui::BeginCombo("Type", particle_type_to_string(mapped_info.particle_type))) {
-                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeNormal),
+                if (ImGui::BeginCombo("Type", TypeInformationProvider::particle_type_to_string(mapped_info.particle_type))) {
+                    if (ImGui::Selectable(TypeInformationProvider::particle_type_to_string(LibFluid::ParticleType::ParticleTypeNormal),
                                 mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeNormal)) {
                         mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeNormal;
                     }
 
-                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeBoundary),
+                    if (ImGui::Selectable(TypeInformationProvider::particle_type_to_string(LibFluid::ParticleType::ParticleTypeBoundary),
                                 mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeBoundary)) {
                         mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeBoundary;
                     }
 
-                    if (ImGui::Selectable(particle_type_to_string(LibFluid::ParticleType::ParticleTypeInactive),
+                    if (ImGui::Selectable(TypeInformationProvider::particle_type_to_string(LibFluid::ParticleType::ParticleTypeInactive),
                                 mapped_info.particle_type == LibFluid::ParticleType::ParticleTypeInactive)) {
                         mapped_colors[mapped.first].particle_type = LibFluid::ParticleType::ParticleTypeInactive;
                     }

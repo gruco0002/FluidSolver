@@ -13,6 +13,8 @@ namespace FluidStudio {
 
         void save_timestep_result();
 
+        void override_timestep_result();
+
         std::shared_ptr<LibFluid::Simulator> simulator = nullptr;
 
         size_t size() const;
@@ -39,4 +41,4 @@ namespace FluidStudio {
 
         void clear_cache_folder();
     };
-} // namespace FluidUi
+} // namespace FluidStudio

@@ -60,7 +60,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/helpers/TypeInformationProvider.cpp userInterface/helpers/TypeInformationProvider.hpp
         visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
         userInterface/elements/ObjImportWindow.cpp userInterface/elements/ObjImportWindow.hpp
-        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp)
+        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp userInterface/elements/InsertParticlesWindow.cpp userInterface/elements/InsertParticlesWindow.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

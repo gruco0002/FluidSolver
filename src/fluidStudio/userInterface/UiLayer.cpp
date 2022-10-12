@@ -18,6 +18,7 @@ namespace FluidStudio {
         component_settings_window.update();
         obj_import_window.update();
         new_simulation_modal_window.update();
+        insert_particles_window.update();
     }
 
     void UiLayer::initialize() {
@@ -34,6 +35,7 @@ namespace FluidStudio {
         ui_element_collection.add(component_settings_window);
         ui_element_collection.add(obj_import_window);
         ui_element_collection.add(new_simulation_modal_window);
+        ui_element_collection.add(insert_particles_window);
 
         // initialize all elements
         simulation_controls_window.initialize(data);
@@ -46,6 +48,7 @@ namespace FluidStudio {
         component_settings_window.initialize(data);
         obj_import_window.initialize(data);
         new_simulation_modal_window.initialize(data);
+        insert_particles_window.initialize(data);
     }
 
     UiLayer::UiLayer() = default;

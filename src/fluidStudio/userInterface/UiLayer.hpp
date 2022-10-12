@@ -10,6 +10,7 @@
 #include "userInterface/elements/SimulationControlsWindow.hpp"
 #include "userInterface/elements/TimelineWindow.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
+#include "userInterface/elements/InsertParticlesWindow.hpp"
 
 
 namespace FluidStudio {
@@ -38,6 +39,7 @@ namespace FluidStudio {
         ComponentSettingsWindow component_settings_window;
         ObjImportWindow obj_import_window;
         NewSimulationModalWindow new_simulation_modal_window;
+        InsertParticlesWindow insert_particles_window;
     };
 
 } // namespace FluidStudio
