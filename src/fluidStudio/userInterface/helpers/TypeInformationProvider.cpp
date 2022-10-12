@@ -57,4 +57,17 @@ namespace FluidStudio::TypeInformationProvider {
         }
         return "UNKNOWN";
     }
+
+    const char* particle_type_to_string(LibFluid::ParticleType type) {
+        switch (type) {
+            case LibFluid::ParticleTypeNormal:
+                return "Normal";
+            case LibFluid::ParticleTypeBoundary:
+                return "Boundary";
+            case LibFluid::ParticleTypeInactive:
+                return "Inactive";
+            default:
+                return "Unknown";
+        }
+    }
 } // namespace FluidStudio::TypeInformationProvider
