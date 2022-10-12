@@ -33,6 +33,7 @@ namespace FluidStudio {
     }
 
     void TimelineService::save_timestep_result() {
+        // create and save the cached file
         CachedFile c;
         c.timepoint = simulator->get_current_timepoint();
         c.path = get_cache_folder() / (std::to_string(c.timepoint.timestep_number) + ".data");
@@ -94,7 +95,26 @@ namespace FluidStudio {
     }
 
     void TimelineService::override_timestep_result() {
-        // TODO: implement
+        // create and save the cached file
+        CachedFile c;
+        c.timepoint = simulator->get_current_timepoint();
+        c.path = get_cache_folder() / (std::to_string(c.timepoint.timestep_number) + ".data");
+        c.create_file(simulator->data.collection);
+
+        if (cached.size() > 0) {
+            // check if we are stepped back
+            if (current_index != cached.size() - 1) {
+                // we are stepped back, delete everything in the future (after the current timestep)
+                cached.resize(current_index + 1);
+            }
+
+            // update the current timestep
+            cached[current_index] = c;
+        } else {
+            // save the timestep, since there are no other timesteps
+            current_index = 0;
+            cached.push_back(c);
+        }
     }
 
 } // namespace FluidStudio
