@@ -1,7 +1,7 @@
 #pragma once
 
-#include "userInterface/SimulationComponent.hpp"
 #include "userInterface/UiElement.hpp"
+#include "userInterface/helpers/SimulationComponent.hpp"
 #include <string>
 #include <vector>
 

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "userInterface/SimulationComponent.hpp"
 #include "userInterface/UiElement.hpp"
 #include "userInterface/elements/componentSettings/EntitySettingsElement.hpp"
 #include "userInterface/elements/componentSettings/SensorSettingsElement.hpp"
 #include "userInterface/elements/componentSettings/SolverSettingsElement.hpp"
 #include "userInterface/elements/componentSettings/TimestepSettingsElement.hpp"
 #include "userInterface/elements/componentSettings/VisualizerSettingsElement.hpp"
+#include "userInterface/helpers/SimulationComponent.hpp"
 
 
 namespace FluidStudio {

@@ -10,7 +10,7 @@
 #include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
-#include "userInterface/TypeInformationProvider.hpp"
+#include "userInterface/helpers/TypeInformationProvider.hpp"
 #include "visualizationOverlay/ParticleRemoverOverlay.hpp"
 
 namespace FluidStudio {

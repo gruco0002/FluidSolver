@@ -49,7 +49,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/UiElement.cpp userInterface/UiElement.hpp
         userInterface/UiElementCollection.hpp
         userInterface/elements/ComponentPanelWindow.cpp userInterface/elements/ComponentPanelWindow.hpp
-        userInterface/SimulationComponent.cpp userInterface/SimulationComponent.hpp
+        userInterface/helpers/SimulationComponent.cpp userInterface/helpers/SimulationComponent.hpp
         userInterface/elements/ComponentSettingsWindow.cpp userInterface/elements/ComponentSettingsWindow.hpp
         userInterface/StyledImGuiElements.cpp userInterface/StyledImGuiElements.hpp
         userInterface/elements/componentSettings/SensorSettingsElement.cpp userInterface/elements/componentSettings/SensorSettingsElement.hpp
@@ -57,10 +57,10 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/componentSettings/TimestepSettingsElement.cpp userInterface/elements/componentSettings/TimestepSettingsElement.hpp
         userInterface/elements/componentSettings/VisualizerSettingsElement.cpp userInterface/elements/componentSettings/VisualizerSettingsElement.hpp
         userInterface/elements/componentSettings/EntitySettingsElement.cpp userInterface/elements/componentSettings/EntitySettingsElement.hpp
-        userInterface/TypeInformationProvider.cpp userInterface/TypeInformationProvider.hpp
+        userInterface/helpers/TypeInformationProvider.cpp userInterface/helpers/TypeInformationProvider.hpp
         visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
         userInterface/elements/ObjImportWindow.cpp userInterface/elements/ObjImportWindow.hpp
-        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp)
+        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

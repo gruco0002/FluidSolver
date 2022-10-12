@@ -3,6 +3,7 @@
 #include "ImguiHelper.hpp"
 #include "importer/ObjLoader.hpp"
 #include "importer/ParticleSampler.hpp"
+#include "userInterface/helpers/ParticleCollectionHelper.hpp"
 
 #include <nfd.h>
 
@@ -70,6 +71,9 @@ namespace FluidStudio {
 
     void ObjImportWindow::open_window() {
         visible = true;
+
+        uint32_t next_free_tag = ParticleCollectionHelper::get_next_free_tag(ui_data.window().simulator_visualizer_bundle.simulator->data.collection);
+        particle_tag = next_free_tag;
     }
 
     float ObjImportWindow::get_particle_mass() const {
@@ -143,8 +147,8 @@ namespace FluidStudio {
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
             ImGui::Separator();
-            
-            if(ImGui::Button("Close")){
+
+            if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
             }
 

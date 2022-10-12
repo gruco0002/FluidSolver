@@ -4,10 +4,10 @@
 #include "entities/BoundaryPreprocessor.hpp"
 #include "entities/ParticleRemover3D.hpp"
 #include "entities/VelocityAlterationByTag.hpp"
-#include "userInterface/SimulationComponent.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
-#include "userInterface/TypeInformationProvider.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
+#include "userInterface/helpers/SimulationComponent.hpp"
+#include "userInterface/helpers/TypeInformationProvider.hpp"
 
 namespace FluidStudio {
 

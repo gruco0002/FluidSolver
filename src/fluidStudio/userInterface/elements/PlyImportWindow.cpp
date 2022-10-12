@@ -3,11 +3,13 @@
 #include "FluidMath.hpp"
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
+#include "userInterface/helpers/ParticleCollectionHelper.hpp"
 
 #include <filesystem>
 #include <fstream>
 #include <nfd.h>
 #include <tinyply.h>
+
 
 namespace FluidStudio {
 
@@ -65,6 +67,8 @@ namespace FluidStudio {
             }
         }
 
+        uint32_t next_free_tag = ParticleCollectionHelper::get_next_free_tag(ui_data.window().simulator_visualizer_bundle.simulator->data.collection);
+
         if (ply_colors->t == tinyply::Type::UINT8) {
             for (size_t i = 0; i < ply_colors->count; i++) {
                 uint8_t r, g, b;
@@ -77,7 +81,7 @@ namespace FluidStudio {
                 colors.push_back(color);
                 if (mapped_colors.find(color) == mapped_colors.end()) {
                     auto info = MapInformation();
-                    info.particle_tag = mapped_colors.size();
+                    info.particle_tag = next_free_tag + mapped_colors.size();
                     mapped_colors[color] = info;
                 }
             }

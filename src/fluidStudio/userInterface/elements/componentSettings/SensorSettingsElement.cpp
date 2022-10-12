@@ -5,9 +5,9 @@
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
-#include "userInterface/TypeInformationProvider.hpp"
 #include "userInterface/elements/ComponentPanelWindow.hpp"
 #include "userInterface/elements/SensorGraphWindows.hpp"
+#include "userInterface/helpers/TypeInformationProvider.hpp"
 
 namespace FluidStudio {
 
