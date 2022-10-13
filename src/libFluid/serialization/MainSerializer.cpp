@@ -15,6 +15,11 @@ namespace LibFluid::Serialization {
         this->filepath = filepath;
     }
 
+    MainSerializer::MainSerializer(const std::filesystem::path& filepath, SerializerExtensions serializer_extensions) {
+        this->filepath = filepath;
+        this->serializer_extensions = serializer_extensions;
+    }
+
     void MainSerializer::serialize_bundle(SimulatorVisualizerBundle& bundle, const SerializeSettings& settings, SerializationContext* output_context) {
         SerializationContext internal_context;
 
@@ -38,25 +43,25 @@ namespace LibFluid::Serialization {
             config["version"] = 2;
 
             // save values
-            ScenarioSerializer scenario_serializer(internal_context);
+            ScenarioSerializer scenario_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("scenario");
             config["scenario"] = scenario_serializer.serialize(bundle.simulator);
             internal_context.end_section();
 
 
-            SolverSerializer solver_serializer(internal_context);
+            SolverSerializer solver_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("solver");
             config["solver"] = solver_serializer.serialize(bundle.simulator->data.fluid_solver);
             internal_context.end_section();
 
 
-            TimestepGeneratorSerializer timestep_generator_serializer(internal_context);
+            TimestepGeneratorSerializer timestep_generator_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("timestep-generator");
             config["timestep-generator"] = timestep_generator_serializer.serialize(bundle.simulator->data.timestep_generator);
             internal_context.end_section();
 
 
-            VisualizerSerializer visualizer_serializer(internal_context);
+            VisualizerSerializer visualizer_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("visualizer");
             config["visualizer"] = visualizer_serializer.serialize(bundle.visualizer);
             internal_context.end_section();
@@ -99,4 +104,5 @@ namespace LibFluid::Serialization {
         auto combined = p.parent_path() / context.particle_data_relative_filepath;
         return std::move(combined);
     }
+
 } // namespace LibFluid::Serialization

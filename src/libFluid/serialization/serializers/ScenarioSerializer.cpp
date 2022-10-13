@@ -22,7 +22,7 @@ namespace LibFluid::Serialization {
         res["rest-density"] = simulator->parameters.rest_density;
 
         // save entities
-        EntitySerializer entity_serializer(context());
+        EntitySerializer entity_serializer(context(), serializer_extensions());
         for (size_t i = 0; i < simulator->data.entities.size(); i++) {
             context().begin_section("entities[" + std::to_string(i) + "]");
             res["entities"].push_back(entity_serializer.serialize(simulator->data.entities[i]));
@@ -30,7 +30,7 @@ namespace LibFluid::Serialization {
         }
 
         // save sensors
-        SensorSerializer sensor_serializer(context());
+        SensorSerializer sensor_serializer(context(), serializer_extensions());
         for (size_t i = 0; i < simulator->data.sensors.size(); i++) {
             context().begin_section("sensors[" + std::to_string(i) + "]");
             res["sensors"].push_back(sensor_serializer.serialize(simulator->data.sensors[i]));

@@ -1,5 +1,6 @@
 #include "VisualizerSerializer.hpp"
 
+#include "serialization/extensions/VisualizerSerializerExtension.hpp"
 #include "serialization/helpers/DynamicPointerIs.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
@@ -12,15 +13,22 @@ namespace LibFluid::Serialization {
             node["type"] = "no-visualizer";
             return node;
         } else if (dynamic_pointer_is<ContinousVisualizer>(visualizer)) {
-            return serialize_continous_visualizer(visualizer);
+            return serialize_continuous_visualizer(visualizer);
+        }
+
+        // query the extensions
+        for (const auto& ext : serializer_extensions().visualizer_serializer_extensions) {
+            if (ext->can_serialize(visualizer)) {
+                return ext->serialize_visualizer(visualizer, context());
+            }
         }
 
         context().add_issue("Encountered unknown visualizer type!");
 
         return {};
     }
-    nlohmann::json VisualizerSerializer::serialize_continous_visualizer(std::shared_ptr<ISimulationVisualizer> visualizer) {
-        auto r = std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer);
+    nlohmann::json VisualizerSerializer::serialize_continuous_visualizer(std::shared_ptr<ISimulationVisualizer> visualizer) {
+        auto r = std::dynamic_pointer_cast<ContinousVisualizer>(visualizer);
         FLUID_ASSERT(r != nullptr, "Passed invalid visualizer type!");
 
         nlohmann::json node;

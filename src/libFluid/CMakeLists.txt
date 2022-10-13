@@ -6,18 +6,17 @@ find_package(lz4 CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
-        # add tbb library for parallelization
+    # add tbb library for parallelization
 
-        find_package(TBB CONFIG REQUIRED)
-endif()
-
+    find_package(TBB CONFIG REQUIRED)
+endif ()
 
 
 # include directories
 include_directories(./)
 
 
-set(LIB_FLUID_SOURCE_FILES       
+set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/solver/SESPHFluidSolver.hpp"
         "fluidSolver/kernel/CubicSplineKernel.cpp"
         "fluidSolver/kernel/CubicSplineKernel.hpp"
@@ -27,7 +26,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
         "Simulator.cpp" "Simulator.hpp"
         "visualizer/ISimulationVisualizer.hpp"
-        "fluidSolver/IFluidSolver.hpp"        
+        "fluidSolver/IFluidSolver.hpp"
         "fluidSolver/solver/IISPHFluidSolver.hpp"
         "time/TimestepGenerator.cpp"
         "time/TimestepGenerator.hpp"
@@ -62,7 +61,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "parallelization/NoParallelization.hpp" "parallelization/NoParallelization.cpp"
         "parallelization/StdParallelForEach.hpp" "parallelization/StdParallelForEach.cpp"
-        "serialization/SimulationSerializer.hpp" "serialization/SimulationSerializer.cpp"      
+        "serialization/SimulationSerializer.hpp" "serialization/SimulationSerializer.cpp"
         "visualizer/Image.hpp" "visualizer/Image.cpp"
         "sensors/OutputManager.hpp" "sensors/OutputManager.cpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
@@ -112,6 +111,8 @@ set(LIB_FLUID_SOURCE_FILES
         fluidSolver/solver/settings/SESPHSettings.hpp fluidSolver/solver/settings/SESPHSettings3D.hpp
         fluidSolver/solver/settings/IISPHSettings.hpp fluidSolver/solver/settings/IISPHSettings3D.hpp
         serialization/serializers/TimestepGeneratorSerializer.cpp serialization/serializers/TimestepGeneratorSerializer.hpp
+        serialization/extensions/SerializerExtensions.hpp
+        serialization/extensions/VisualizerSerializerExtension.hpp
         )
 
 
@@ -126,9 +127,9 @@ target_link_libraries(libFluid PUBLIC lz4::lz4)
 target_link_libraries(libFluid PUBLIC tinyobjloader::tinyobjloader)
 
 if (UNIX OR APPLE)
-        # add tbb library for parallelization to the link targets
-        target_link_libraries(libFluid PUBLIC TBB::tbb)
-endif()
+    # add tbb library for parallelization to the link targets
+    target_link_libraries(libFluid PUBLIC TBB::tbb)
+endif ()
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.
