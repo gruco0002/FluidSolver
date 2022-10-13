@@ -1,5 +1,6 @@
 #include "MainSerializer.hpp"
 
+#include "serialization/ParticleSerializer.hpp"
 #include "serialization/serializers/ScenarioSerializer.hpp"
 #include "serialization/serializers/SolverSerializer.hpp"
 #include "serialization/serializers/VisualizerSerializer.hpp"
@@ -13,12 +14,20 @@ namespace LibFluid::Serialization {
         this->filepath = filepath;
     }
 
-    void MainSerializer::serialize_bundle(SimulatorVisualizerBundle& bundle, SerializationContext* output_context) {
+    void MainSerializer::serialize_bundle(SimulatorVisualizerBundle& bundle, const SerializeSettings& settings, SerializationContext* output_context) {
         SerializationContext internal_context;
 
         // set context variables
         {
             internal_context.json_filepath = filepath;
+            internal_context.particle_data_relative_filepath = settings.particle_data_relative_filepath;
+        }
+
+        // check if we need to save the particles previously
+        if (settings.save_particle_data) {
+            Serialization::ParticleSerializer ser(get_full_particle_data_path(internal_context));
+            auto collection = bundle.simulator->data.collection;
+            ser.serialize(*collection);
         }
 
         // start serializing
@@ -29,13 +38,21 @@ namespace LibFluid::Serialization {
 
             // save values
             ScenarioSerializer scenario_serializer(internal_context);
+
+            internal_context.begin_section("scenario");
             config["scenario"] = scenario_serializer.serialize(bundle.simulator);
+            internal_context.end_section();
 
             SolverSerializer solver_serializer(internal_context);
+
+            internal_context.begin_section("solver");
             config["solver"] = solver_serializer.serialize(bundle.simulator->data.fluid_solver);
+            internal_context.end_section();
 
             VisualizerSerializer visualizer_serializer(internal_context);
+            internal_context.begin_section("visualizer");
             config["visualizer"] = visualizer_serializer.serialize(bundle.visualizer);
+            internal_context.end_section();
         }
 
         // write to file
@@ -50,12 +67,12 @@ namespace LibFluid::Serialization {
         }
     }
 
-    void MainSerializer::serialize_simulator_only(std::shared_ptr<Simulator> simulator, SerializationContext* output_context) {
+    void MainSerializer::serialize_simulator_only(std::shared_ptr<Simulator> simulator, const SerializeSettings& settings, SerializationContext* output_context) {
         SimulatorVisualizerBundle bundle;
-        bundle.simulator = simulator;
+        bundle.simulator = std::move(simulator);
         bundle.visualizer = nullptr;
 
-        serialize_bundle(bundle, output_context);
+        serialize_bundle(bundle, settings, output_context);
     }
 
     SimulatorVisualizerBundle MainSerializer::deserialize(SerializationContext* output_context) {
@@ -68,5 +85,11 @@ namespace LibFluid::Serialization {
         }
 
         return SimulatorVisualizerBundle();
+    }
+
+    std::filesystem::path MainSerializer::get_full_particle_data_path(const SerializationContext& context) const {
+        auto p = std::filesystem::path(filepath);
+        auto combined = p.parent_path() / context.particle_data_relative_filepath;
+        return std::move(combined);
     }
 } // namespace LibFluid::Serialization

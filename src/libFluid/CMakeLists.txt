@@ -106,6 +106,9 @@ set(LIB_FLUID_SOURCE_FILES
         serialization/serializers/SolverSerializer.cpp serialization/serializers/SolverSerializer.hpp
         serialization/serializers/VisualizerSerializer.cpp serialization/serializers/VisualizerSerializer.hpp
         serialization/serializers/SerializerBase.cpp serialization/serializers/SerializerBase.hpp
+        serialization/serializers/EntitySerializer.cpp serialization/serializers/EntitySerializer.hpp
+        serialization/serializers/SensorSerializer.cpp serialization/serializers/SensorSerializer.hpp
+        serialization/helpers/DynamicPointerIs.hpp
         )
 
 
