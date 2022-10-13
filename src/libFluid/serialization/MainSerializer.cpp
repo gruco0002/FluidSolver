@@ -3,6 +3,7 @@
 #include "serialization/ParticleSerializer.hpp"
 #include "serialization/serializers/ScenarioSerializer.hpp"
 #include "serialization/serializers/SolverSerializer.hpp"
+#include "serialization/serializers/TimestepGeneratorSerializer.hpp"
 #include "serialization/serializers/VisualizerSerializer.hpp"
 
 #include <fstream>
@@ -34,20 +35,26 @@ namespace LibFluid::Serialization {
         nlohmann::json config;
         {
             // set version
-            config["version"] = 1;
+            config["version"] = 2;
 
             // save values
             ScenarioSerializer scenario_serializer(internal_context);
-
             internal_context.begin_section("scenario");
             config["scenario"] = scenario_serializer.serialize(bundle.simulator);
             internal_context.end_section();
 
-            SolverSerializer solver_serializer(internal_context);
 
+            SolverSerializer solver_serializer(internal_context);
             internal_context.begin_section("solver");
             config["solver"] = solver_serializer.serialize(bundle.simulator->data.fluid_solver);
             internal_context.end_section();
+
+
+            TimestepGeneratorSerializer timestep_generator_serializer(internal_context);
+            internal_context.begin_section("timestep-generator");
+            config["timestep-generator"] = timestep_generator_serializer.serialize(bundle.simulator->data.timestep_generator);
+            internal_context.end_section();
+
 
             VisualizerSerializer visualizer_serializer(internal_context);
             internal_context.begin_section("visualizer");

@@ -12,5 +12,8 @@ namespace LibFluid::Serialization {
         using SerializerBase::SerializerBase;
 
         nlohmann::json serialize(std::shared_ptr<ISimulationVisualizer> visualizer);
+
+      private:
+        nlohmann::json serialize_continous_visualizer(std::shared_ptr<ISimulationVisualizer> visualizer);
     };
 } // namespace LibFluid::Serialization

@@ -109,6 +109,9 @@ set(LIB_FLUID_SOURCE_FILES
         serialization/serializers/EntitySerializer.cpp serialization/serializers/EntitySerializer.hpp
         serialization/serializers/SensorSerializer.cpp serialization/serializers/SensorSerializer.hpp
         serialization/helpers/DynamicPointerIs.hpp
+        fluidSolver/solver/settings/SESPHSettings.hpp fluidSolver/solver/settings/SESPHSettings3D.hpp
+        fluidSolver/solver/settings/IISPHSettings.hpp fluidSolver/solver/settings/IISPHSettings3D.hpp
+        serialization/serializers/TimestepGeneratorSerializer.cpp serialization/serializers/TimestepGeneratorSerializer.hpp
         )
 
 
