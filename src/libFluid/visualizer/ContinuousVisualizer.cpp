@@ -1,12 +1,12 @@
-#include "ContinousVisualizer.hpp"
+#include "ContinuousVisualizer.hpp"
 
 #include "parallelization/StdParallelForEach.hpp"
 namespace LibFluid {
-    ContinousVisualizer::ContinousVisualizer()
+    ContinuousVisualizer::ContinuousVisualizer()
         : image(0, 0), kernel() {
     }
 
-    void ContinousVisualizer::initialize() {
+    void ContinuousVisualizer::initialize() {
         if (simulation_data.has_data_changed()) {
             simulation_data.acknowledge_data_change();
 
@@ -22,10 +22,10 @@ namespace LibFluid {
         }
     }
 
-    void ContinousVisualizer::create_compatibility_report(CompatibilityReport& report) {
+    void ContinuousVisualizer::create_compatibility_report(CompatibilityReport& report) {
         initialize();
 
-        report.begin_scope(FLUID_NAMEOF(ContinousVisualizer));
+        report.begin_scope(FLUID_NAMEOF(ContinuousVisualizer));
 
         if (simulation_data.collection == nullptr) {
             report.add_issue("ParticleCollection is null.");
@@ -51,7 +51,7 @@ namespace LibFluid {
         report.end_scope();
     }
 
-    void ContinousVisualizer::render() {
+    void ContinuousVisualizer::render() {
         // calculate color for each pixel
 
         using par = StdParallelForEach;
@@ -64,11 +64,11 @@ namespace LibFluid {
         });
     }
 
-    Image ContinousVisualizer::get_image_data() {
+    Image ContinuousVisualizer::get_image_data() {
         return image;
     }
 
-    void ContinousVisualizer::recalculate_viewport() {
+    void ContinuousVisualizer::recalculate_viewport() {
         auto value = settings.viewport;
 
         Viewport2D res;
@@ -103,7 +103,7 @@ namespace LibFluid {
         internal_viewport = res;
     }
 
-    Image::Color ContinousVisualizer::calculate_color_for_pixel(size_t x, size_t y) {
+    Image::Color ContinuousVisualizer::calculate_color_for_pixel(size_t x, size_t y) {
         FLUID_ASSERT(simulation_data.neighborhood_interface != nullptr);
         FLUID_ASSERT(simulation_data.collection != nullptr);
         FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleInfo>());
@@ -154,7 +154,7 @@ namespace LibFluid {
         }
     }
 
-    glm::vec2 ContinousVisualizer::calculate_particle_space_position_for_pixel(size_t x, size_t y) {
+    glm::vec2 ContinuousVisualizer::calculate_particle_space_position_for_pixel(size_t x, size_t y) {
         float xCoord = internal_viewport.left;
         float yCoord = internal_viewport.top;
         xCoord += x / (float)image.width() * internal_viewport.width();

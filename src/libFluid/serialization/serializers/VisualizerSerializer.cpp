@@ -3,7 +3,7 @@
 #include "serialization/extensions/VisualizerSerializerExtension.hpp"
 #include "serialization/helpers/DynamicPointerIs.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
-#include "visualizer/ContinousVisualizer.hpp"
+#include "visualizer/ContinuousVisualizer.hpp"
 
 namespace LibFluid::Serialization {
 
@@ -12,7 +12,7 @@ namespace LibFluid::Serialization {
             nlohmann::json node;
             node["type"] = "no-visualizer";
             return node;
-        } else if (dynamic_pointer_is<ContinousVisualizer>(visualizer)) {
+        } else if (dynamic_pointer_is<ContinuousVisualizer>(visualizer)) {
             return serialize_continuous_visualizer(visualizer);
         }
 
@@ -28,7 +28,7 @@ namespace LibFluid::Serialization {
         return {};
     }
     nlohmann::json VisualizerSerializer::serialize_continuous_visualizer(std::shared_ptr<ISimulationVisualizer> visualizer) {
-        auto r = std::dynamic_pointer_cast<ContinousVisualizer>(visualizer);
+        auto r = std::dynamic_pointer_cast<ContinuousVisualizer>(visualizer);
         FLUID_ASSERT(r != nullptr, "Passed invalid visualizer type!");
 
         nlohmann::json node;

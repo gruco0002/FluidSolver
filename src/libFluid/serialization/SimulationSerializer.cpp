@@ -23,7 +23,7 @@
 #include "serialization/helpers/JsonHelpers.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
-#include "visualizer/ContinousVisualizer.hpp"
+#include "visualizer/ContinuousVisualizer.hpp"
 
 
 #include <filesystem>
@@ -857,7 +857,7 @@ namespace LibFluid {
         if (node["type"].get<std::string>() == "no-visualizer") {
             return nullptr;
         } else if (node["type"].get<std::string>() == "continous") {
-            auto r = std::make_shared<ContinousVisualizer>();
+            auto r = std::make_shared<ContinuousVisualizer>();
 
             // default parameters
             r->settings.viewport.left = node["viewport"]["left"].get<float>();
@@ -867,7 +867,7 @@ namespace LibFluid {
             r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
             r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
 
-            // custom parameters for the continous visualizer
+            // custom parameters for the continuous visualizer
             r->settings.clear_color = node["settings"]["background"].get<Image::Color>();
             r->settings.minimum_render_density = node["settings"]["minimum-density"].get<float>();
 
@@ -891,8 +891,8 @@ namespace LibFluid {
 
         if (visualizer == nullptr) {
             node["type"] = "no-visualizer";
-        } else if (std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer) != nullptr) {
-            auto r = std::dynamic_pointer_cast<const ContinousVisualizer>(visualizer);
+        } else if (std::dynamic_pointer_cast<const ContinuousVisualizer>(visualizer) != nullptr) {
+            auto r = std::dynamic_pointer_cast<const ContinuousVisualizer>(visualizer);
             node["type"] = "continous";
 
             // default parameters
@@ -903,7 +903,7 @@ namespace LibFluid {
             node["render-target"]["width"] = r->parameters.render_target.width;
             node["render-target"]["height"] = r->parameters.render_target.height;
 
-            // custom parameters for the continous visualizer
+            // custom parameters for the continuous visualizer
             node["settings"]["background"] = r->settings.clear_color;
             node["settings"]["minimum-density"] = r->settings.minimum_render_density;
         } else {

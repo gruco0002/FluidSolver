@@ -35,7 +35,7 @@ namespace LibFluid {
                     }
                     else
                     {
-                        // move the item by continous swapping to the target, then adapt half and other indices
+                        // move the item by continuous swapping to the target, then adapt half and other indices
                         // accordingly
                         size_t movingIndex = rightIndex;
                         while (movingIndex > leftIndex)

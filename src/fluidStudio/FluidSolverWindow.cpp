@@ -5,7 +5,7 @@
 #include "ImguiHelper.hpp"
 #include "Log.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
-#include "visualizer/ContinousVisualizer.hpp"
+#include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 #include "visualizer/GLRenderer.hpp"
@@ -467,7 +467,7 @@ namespace FluidStudio {
             return;
 
         auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(simulator_visualizer_bundle.visualizer);
-        auto cv = std::dynamic_pointer_cast<LibFluid::ContinousVisualizer>(simulator_visualizer_bundle.visualizer);
+        auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(simulator_visualizer_bundle.visualizer);
         auto gl3d = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
 
         if (gl != nullptr) {
@@ -539,7 +539,7 @@ namespace FluidStudio {
             return;
 
         auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(simulator_visualizer_bundle.visualizer);
-        auto cv = std::dynamic_pointer_cast<LibFluid::ContinousVisualizer>(simulator_visualizer_bundle.visualizer);
+        auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(simulator_visualizer_bundle.visualizer);
         auto gl3d = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(simulator_visualizer_bundle.visualizer);
 
 
