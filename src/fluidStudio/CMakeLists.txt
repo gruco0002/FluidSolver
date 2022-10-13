@@ -63,8 +63,9 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp
         userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp
         userInterface/elements/InsertParticlesWindow.cpp userInterface/elements/InsertParticlesWindow.hpp
-        serializationExtensions/VseGlParticleRenderer3D.cpp serializationExtensions/VseGlParticleRenderer3D.hpp
-        serializationExtensions/VseGlParticleRenderer.cpp serializationExtensions/VseGlParticleRenderer.hpp
+        serializerExtensions/VseGlParticleRenderer3D.cpp serializerExtensions/VseGlParticleRenderer3D.hpp
+        serializerExtensions/VseGlParticleRenderer.cpp serializerExtensions/VseGlParticleRenderer.hpp
+        serializerExtensions/FluidStudioSerializerExtensions.cpp serializerExtensions/FluidStudioSerializerExtensions.hpp
         )
 
 
