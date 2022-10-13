@@ -1,5 +1,9 @@
 #include "MainSerializer.hpp"
 
+#include "serialization/serializers/ScenarioSerializer.hpp"
+#include "serialization/serializers/SolverSerializer.hpp"
+#include "serialization/serializers/VisualizerSerializer.hpp"
+
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -24,13 +28,14 @@ namespace LibFluid::Serialization {
             config["version"] = 1;
 
             // save values
+            ScenarioSerializer scenario_serializer(internal_context);
+            config["scenario"] = scenario_serializer.serialize(bundle.simulator);
 
-            // TODO: implement
+            SolverSerializer solver_serializer(internal_context);
+            config["solver"] = solver_serializer.serialize(bundle.simulator->data.fluid_solver);
 
-            //config["scenario"] = save_scenario();
-            //config["solver"] = save_solver();
-
-            //config["visualizer"] = save_visualizer(simulation.visualizer);
+            VisualizerSerializer visualizer_serializer(internal_context);
+            config["visualizer"] = visualizer_serializer.serialize(bundle.visualizer);
         }
 
         // write to file

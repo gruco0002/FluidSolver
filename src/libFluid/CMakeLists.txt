@@ -100,7 +100,13 @@ set(LIB_FLUID_SOURCE_FILES
         importer/MeshData.cpp importer/MeshData.hpp
         importer/ObjLoader.cpp importer/ObjLoader.hpp
         importer/ParticleSampler.cpp importer/ParticleSampler.hpp
-        serialization/MainSerializer.cpp serialization/MainSerializer.hpp serialization/helpers/SerializationContext.cpp serialization/helpers/SerializationContext.hpp)
+        serialization/MainSerializer.cpp serialization/MainSerializer.hpp
+        serialization/helpers/SerializationContext.cpp serialization/helpers/SerializationContext.hpp
+        serialization/serializers/ScenarioSerializer.cpp serialization/serializers/ScenarioSerializer.hpp
+        serialization/serializers/SolverSerializer.cpp serialization/serializers/SolverSerializer.hpp
+        serialization/serializers/VisualizerSerializer.cpp serialization/serializers/VisualizerSerializer.hpp
+        serialization/serializers/SerializerBase.cpp serialization/serializers/SerializerBase.hpp
+        )
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})
