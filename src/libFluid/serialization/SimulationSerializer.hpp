@@ -10,7 +10,8 @@
 
 namespace LibFluid {
 
-    class SimulationSerializer {
+
+    class [[deprecated]] SimulationSerializer {
       private:
         size_t error_count = 0;
         size_t warning_count = 0;

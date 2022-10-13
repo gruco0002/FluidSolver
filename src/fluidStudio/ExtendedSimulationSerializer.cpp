@@ -1,7 +1,7 @@
 #include "ExtendedSimulationSerializer.hpp"
 
 #include "Log.hpp"
-#include "serialization/JsonHelpers.hpp"
+#include "serialization/helpers/JsonHelpers.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 

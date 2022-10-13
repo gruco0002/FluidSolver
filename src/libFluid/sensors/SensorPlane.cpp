@@ -5,8 +5,8 @@
 #include "Simulator.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
-#include "serialization/Base64.hpp"
-#include "serialization/JsonHelpers.hpp"
+#include "serialization/helpers/Base64.hpp"
+#include "serialization/helpers/JsonHelpers.hpp"
 
 namespace LibFluid::Sensors {
 

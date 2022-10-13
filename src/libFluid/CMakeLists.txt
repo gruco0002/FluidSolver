@@ -80,8 +80,8 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         "sensors/CompressedNeighborsStatistics.hpp" "sensors/CompressedNeighborsStatistics.cpp"
         "serialization/ParticleSerializer.cpp" "serialization/ParticleSerializer.hpp"
-        "serialization/EndianSafeBinaryStream.hpp"
-        "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
+        "serialization/helpers/EndianSafeBinaryStream.hpp"
+        "serialization/helpers/Lz4CompressedStream.cpp" "serialization/helpers/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
         time/Timepoint.hpp
@@ -92,15 +92,15 @@ set(LIB_FLUID_SOURCE_FILES
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
-        serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
+        serialization/helpers/JsonHelpers.cpp serialization/helpers/JsonHelpers.hpp
         sensors/Sensor.hpp
-        serialization/Base64.cpp serialization/Base64.hpp
+        serialization/helpers/Base64.cpp serialization/helpers/Base64.hpp
         entities/BoundaryPreprocessor.cpp entities/BoundaryPreprocessor.hpp
         entities/VelocityAlterationByTag.cpp entities/VelocityAlterationByTag.hpp
         importer/MeshData.cpp importer/MeshData.hpp
         importer/ObjLoader.cpp importer/ObjLoader.hpp
         importer/ParticleSampler.cpp importer/ParticleSampler.hpp
-        )
+        serialization/MainSerializer.cpp serialization/MainSerializer.hpp serialization/helpers/SerializationContext.cpp serialization/helpers/SerializationContext.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

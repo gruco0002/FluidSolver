@@ -19,8 +19,8 @@
 #include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
-#include "serialization/JsonHelpers.hpp"
 #include "serialization/ParticleSerializer.hpp"
+#include "serialization/helpers/JsonHelpers.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
 #include "time/DynamicCflTimestepGenerator.hpp"
 #include "visualizer/ContinousVisualizer.hpp"
@@ -1001,12 +1001,12 @@ namespace LibFluid {
     }
 
     void SimulationSerializer::load_particles(ParticleCollection& collection, const std::string& filepath) {
-        ParticleSerializer stream(filepath);
+        Serialization::ParticleSerializer stream(filepath);
         stream.deserialize(collection);
     }
 
     void SimulationSerializer::save_particles(ParticleCollection& collection, const std::string& filepath) {
-        ParticleSerializer ser(filepath);
+        Serialization::ParticleSerializer ser(filepath);
         ser.serialize(collection);
     }
 

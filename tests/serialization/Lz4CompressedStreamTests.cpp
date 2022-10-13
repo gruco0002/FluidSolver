@@ -1,4 +1,4 @@
-#include "serialization/Lz4CompressedStream.hpp"
+#include "serialization/helpers/Lz4CompressedStream.hpp"
 
 #include <filesystem>
 #include <vector>
