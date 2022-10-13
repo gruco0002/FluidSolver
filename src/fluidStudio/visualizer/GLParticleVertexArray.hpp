@@ -10,6 +10,7 @@
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <memory>
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
     /**

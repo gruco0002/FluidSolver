@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-
+// FIXME: wrong namespace
 namespace LibFluid {
 
     struct Camera3D {
