@@ -3,18 +3,11 @@
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
+#include "fluidSolver/solver/settings/SESPHSettings3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
 namespace LibFluid {
 
-    struct SESPHSettings3D : public DataChangeStruct {
-        pFloat StiffnessK = 100000.0f;
-        pFloat Viscosity = 5.0f;
-
-        bool single_layer_boundary = false;
-        float single_layer_boundary_gamma_1 = 1.1f;
-        float single_layer_boundary_gamma_2 = 1.1f;
-    };
 
     template<typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
             typename parallel = StdParallelForEach>
