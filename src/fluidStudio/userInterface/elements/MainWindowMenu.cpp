@@ -1,6 +1,9 @@
 #include "MainWindowMenu.hpp"
 
 #include "ExtendedSimulationSerializer.hpp"
+#include "Log.hpp"
+#include "serialization/MainSerializer.hpp"
+#include "serializerExtensions/FluidStudioSerializerExtensions.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/ObjImportWindow.hpp"
 #include "userInterface/elements/PlyImportWindow.hpp"
@@ -137,8 +140,21 @@ namespace FluidStudio {
             ImGui::SameLine();
             if (ImGui::Button("Save") && path != nullptr) {
                 // Save
-                ExtendedSimulationSerializer s(path, {save_particle_data, particle_filepath});
-                s.save_to_file(ui_data.window().simulator_visualizer_bundle);
+                auto extensions = SerializerExtensions::create_serializer_extenstions();
+
+                LibFluid::Serialization::SerializationContext context_output;
+
+                LibFluid::Serialization::MainSerializer serializer(path, extensions);
+                serializer.serialize_bundle(ui_data.window().simulator_visualizer_bundle, {save_particle_data, particle_filepath}, &context_output);
+
+                // output warnings
+                if (!context_output.issues.empty()) {
+                    LibFluid::Log::warning("The serializer encountered issues during saving!");
+                    for (const auto& issue : context_output.issues) {
+                        LibFluid::Log::warning(issue.to_formatted_string());
+                    }
+                }
+
                 ImGui::CloseCurrentPopup();
             }
 

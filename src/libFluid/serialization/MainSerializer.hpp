@@ -16,10 +16,11 @@ namespace LibFluid::Serialization {
 
             SerializeSettings()
                 : save_particle_data(true), particle_data_relative_filepath("particles.data") {}
+            SerializeSettings(bool save_particle_data, const std::string& particle_data_relative_filepath)
+                : save_particle_data(save_particle_data), particle_data_relative_filepath(particle_data_relative_filepath) {}
         };
 
       public:
-
         explicit MainSerializer(const std::filesystem::path& filepath);
         explicit MainSerializer(const std::filesystem::path& filepath, SerializerExtensions serializer_extensions);
 

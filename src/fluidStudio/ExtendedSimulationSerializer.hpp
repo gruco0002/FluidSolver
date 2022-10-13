@@ -4,7 +4,7 @@
 
 namespace FluidStudio {
 
-    class ExtendedSimulationSerializer : public LibFluid::SimulationSerializer {
+    class [[deprecated]] ExtendedSimulationSerializer : public LibFluid::SimulationSerializer {
       public:
         using LibFluid::SimulationSerializer::SimulationSerializer;
 

@@ -1,7 +1,7 @@
 #include "FluidStudioSerializerExtensions.hpp"
 
-#include "serializationExtensions/VseGlParticleRenderer.hpp"
-#include "serializationExtensions/VseGlParticleRenderer3D.hpp"
+#include "serializerExtensions/VseGlParticleRenderer.hpp"
+#include "serializerExtensions/VseGlParticleRenderer3D.hpp"
 
 namespace FluidStudio::SerializerExtensions {
 
