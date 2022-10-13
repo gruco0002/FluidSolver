@@ -10,7 +10,7 @@ namespace LibFluid::Serialization {
         if (dynamic_pointer_is<ConstantTimestepGenerator>(timestep_generator)) {
             return serialize_constant_timestep_generator(timestep_generator);
         } else if (dynamic_pointer_is<DynamicCflTimestepGenerator>(timestep_generator)) {
-            return serialize_dynamic_cfl_timestep_generator(timestep_generator)
+            return serialize_dynamic_cfl_timestep_generator(timestep_generator);
         }
 
         context().add_issue("Encountered unknown timestep generator type!");
