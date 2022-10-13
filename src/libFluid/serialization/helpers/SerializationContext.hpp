@@ -11,6 +11,8 @@ namespace LibFluid::Serialization {
         struct Issue{
             std::string message;
             std::vector<std::string> section_stack;
+
+            std::string to_formatted_string() const;
         };
 
       public:

@@ -18,4 +18,25 @@ namespace LibFluid::Serialization {
 
         issues.push_back(std::move(issue));
     }
+
+    std::string SerializationContext::Issue::to_formatted_string() const {
+        std::string result;
+
+        bool first = true;
+        for (const auto& section : section_stack) {
+            if (!first) {
+                result.append(".");
+            }
+            first = false;
+            result.append(section);
+        }
+
+        if (!result.empty()) {
+            result.append(": ");
+        }
+
+        result.append(message);
+
+        return result;
+    }
 } // namespace LibFluid::Serialization
