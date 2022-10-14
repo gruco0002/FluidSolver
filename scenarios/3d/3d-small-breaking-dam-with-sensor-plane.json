@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "scenario": {
     "particles": "3d-small-breaking-dam.data",
     "gravity": 9.81000042,
@@ -48,7 +48,7 @@
   },
   "solver": {
     "type": "sesph-3d",
-    "neigborhood-search": {
+    "neighborhood-search": {
       "type": "hashed-3d"
     },
     "kernel": {
@@ -56,10 +56,11 @@
     },
     "stiffness": 100000,
     "viscosity": 5,
-    "timestep": {
-      "type": "constant",
-      "timestep": 0.00100000005
-    }
+    "single-layer-boundary-enabled": false
+  },
+  "timestep-generator": {
+    "type": "constant",
+    "timestep": 0.00100000005
   },
   "visualizer": {
     "type": "gl-particle-renderer-3d",

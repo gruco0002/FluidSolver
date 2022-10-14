@@ -13,7 +13,7 @@
         "max-density-error": 0.0010000000474974513,
         "max-iterations": 100,
         "min-iterations": 2,
-        "neigborhood-search": {
+        "neighborhood-search": {
             "type": "hashed-3d"
         },
         "omega": 0.5,
@@ -21,14 +21,14 @@
         "single-layer-settings": {
             "gamma-1": 1.100000023841858
         },
-        "timestep": {
-            "timestep": 0.0010000000474974513,
-            "type": "constant"
-        },
         "type": "iisph-3d",
         "viscosity": 5.0
     },
-    "version": 1,
+    "timestep-generator": {
+        "timestep": 0.0010000000474974513,
+        "type": "constant"
+    },
+    "version": 2,
     "visualizer": {
         "render-target": {
             "height": 1080,
