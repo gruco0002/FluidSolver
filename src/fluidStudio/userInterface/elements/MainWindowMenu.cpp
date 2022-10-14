@@ -182,9 +182,9 @@ namespace FluidStudio {
 
             // output warnings
             if (!context_output.issues.empty()) {
-                LibFluid::Log::warning("The serializer encountered issues during saving!");
+                LibFluid::Log::error("The serializer encountered issues during loading!");
                 for (const auto& issue : context_output.issues) {
-                    LibFluid::Log::warning(issue.to_formatted_string());
+                    LibFluid::Log::error(issue.to_formatted_string());
                 }
             } else {
                 ui_data.window().simulator_visualizer_bundle = bundle;
