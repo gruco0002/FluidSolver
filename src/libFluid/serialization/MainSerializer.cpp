@@ -93,7 +93,6 @@ namespace LibFluid::Serialization {
 
         // create empty result
         SimulatorVisualizerBundle bundle;
-        bundle.simulator->data.collection = std::make_shared<ParticleCollection>();
 
         // load data from file
         nlohmann::json config;
