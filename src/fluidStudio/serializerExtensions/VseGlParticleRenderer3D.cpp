@@ -33,5 +33,32 @@ namespace FluidStudio {
 
         return node;
     }
+    bool VseGlParticleRenderer3D::can_deserialize(const nlohmann::json& node) const {
+        auto type = node["type"].get<std::string>();
+        return type == "gl-particle-renderer-3d";
+    }
+    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer3D::deserialize_visualizer(const nlohmann::json& node, LibFluid::Serialization::SerializationContext& context) const {
+        if (!LibFluid::GLRenderer::is_opengl_available()) {
+            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer requires OpenGL!");
+            return nullptr;
+        }
+
+        auto r = std::make_shared<LibFluid::GLParticleRenderer3D>();
+
+        // default parameters
+        r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
+        r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
+
+        // custom paramters for the particle renderer
+        r->settings.background_color = node["settings"]["background-color"].get<glm::vec4>();
+        r->settings.boundary_particle_color = node["settings"]["boundary-color"].get<glm::vec4>();
+        r->settings.fluid_particle_color = node["settings"]["fluid-color"].get<glm::vec4>();
+        r->settings.light_direction = node["settings"]["light-direction"].get<glm::vec3>();
+        r->settings.camera.location = node["settings"]["camera"]["location"].get<glm::vec3>();
+        r->settings.camera.up = node["settings"]["camera"]["up"].get<glm::vec3>();
+        r->settings.camera.looking_at = node["settings"]["camera"]["looking-at"].get<glm::vec3>();
+
+        return r;
+    }
 
 } // namespace FluidStudio

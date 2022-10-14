@@ -13,5 +13,8 @@ namespace LibFluid::Serialization {
         using SerializerBase::SerializerBase;
 
         nlohmann::json serialize(std::shared_ptr<Simulator> simulator);
+
+        std::shared_ptr<Simulator> deserialize(const nlohmann::json& node);
+
     };
 } // namespace LibFluid::Serialization

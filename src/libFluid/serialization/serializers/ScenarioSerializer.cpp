@@ -13,7 +13,7 @@ namespace LibFluid::Serialization {
 
         nlohmann::json res;
 
-        // save particle data
+        // save particle data path
         res["particles"] = context().particle_data_relative_filepath;
 
         // save general parameters
@@ -38,5 +38,43 @@ namespace LibFluid::Serialization {
         }
 
         return res;
+    }
+
+    std::shared_ptr<Simulator> ScenarioSerializer::deserialize(const nlohmann::json& node) {
+        auto result = std::make_shared<Simulator>();
+
+        // get particle data path
+        context().particle_data_relative_filepath = node["particles"].get<std::string>();
+
+        // loading general parameters
+        result->parameters.gravity = node["gravity"].get<float>();
+        result->parameters.particle_size = node["particle-size"].get<float>();
+        result->parameters.rest_density = node["rest-density"].get<float>();
+
+        // loading entities
+        EntitySerializer entity_serializer(context(), serializer_extensions());
+        if (node.contains("entities")) {
+            size_t i = 0;
+            for (const auto& entity_node : node["entities"]) {
+                context().begin_section("entities[" + std::to_string(i) + "]");
+                result->data.entities.push_back(entity_serializer.deserialize(entity_node));
+                context().end_section();
+                i++;
+            }
+        }
+
+        // loading sensors
+        SensorSerializer sensor_serializer(context(), serializer_extensions());
+        if (node.contains("sensors")) {
+            size_t i = 0;
+            for (const auto& sensor_node : node["sensors"]) {
+                context().begin_section("sensors[" + std::to_string(i) + "]");
+                result->data.sensors.push_back(sensor_serializer.deserialize(sensor_node));
+                context().end_section();
+                i++;
+            }
+        }
+
+        return result;
     }
 } // namespace LibFluid::Serialization

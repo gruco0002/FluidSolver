@@ -164,4 +164,121 @@ namespace LibFluid::Serialization {
         return node;
     }
 
+    std::shared_ptr<Sensor> SensorSerializer::deserialize(const nlohmann::json& node) {
+        auto type = node["type"].get<std::string>();
+
+        if (type == "global-density-sensor") {
+            return deserialize_global_density_sensor(node);
+        } else if (type == "global-pressure-sensor") {
+            return deserialize_global_pressure_sensor(node);
+        } else if (type == "global-velocity-sensor") {
+            return deserialize_global_velocity_sensor(node);
+        } else if (type == "global-energy-sensor") {
+            return deserialize_global_energy_sensor(node);
+        } else if (type == "global-particle-count-sensor") {
+            return deserialize_global_particle_count_sensor(node);
+        } else if (type == "sensor-plane") {
+            return deserialize_sensor_plane(node);
+        } else if (type == "compressed-neighborhood-storage-sensor") {
+            return deserialize_compressed_neighborhood_storage_sensor(node);
+        } else if (type == "iisph-sensor") {
+            return deserialize_iisph_sensor(node);
+        }
+
+        context().add_issue("Encountered unknown sensor type!");
+        return nullptr;
+    }
+
+    void SensorSerializer::deserialize_sensor_shared_data(const nlohmann::json& node, std::shared_ptr<Sensor> sensor) {
+        sensor->parameters.name = node["name"].get<std::string>();
+        sensor->parameters.save_to_file = node["save-to-file"].get<bool>();
+        sensor->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
+
+        if (!node.contains("filename")) {
+            sensor->parameters.filename = "xyz.sensor";
+        } else {
+            sensor->parameters.filename = node["filename"].get<std::string>();
+        }
+    }
+
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_density_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::GlobalDensitySensor>();
+        deserialize_sensor_shared_data(node, res);
+
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_pressure_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::GlobalPressureSensor>();
+        deserialize_sensor_shared_data(node, res);
+
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_velocity_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::GlobalVelocitySensor>();
+        deserialize_sensor_shared_data(node, res);
+
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_energy_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::GlobalEnergySensor>();
+        deserialize_sensor_shared_data(node, res);
+
+        res->settings.relative_zero_height = node["relative-zero-height"].get<float>();
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_particle_count_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::GlobalParticleCountSensor>();
+        deserialize_sensor_shared_data(node, res);
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_sensor_plane(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::SensorPlane>();
+        deserialize_sensor_shared_data(node, res);
+
+        // sensor plane custom settings
+        res->settings.width = node["size"]["width"].get<float>();
+        res->settings.height = node["size"]["height"].get<float>();
+
+        res->settings.origin = node["location"]["origin"].get<glm::vec3>();
+        res->settings.span_x = node["location"]["span-x"].get<glm::vec3>();
+        res->settings.span_y = node["location"]["span-y"].get<glm::vec3>();
+
+        res->settings.number_of_samples_x = node["samples"]["x"].get<size_t>();
+        res->settings.number_of_samples_y = node["samples"]["y"].get<size_t>();
+        res->settings.sub_sample_grid_size = node["samples"]["sub-sample-grid-size"].get<size_t>();
+
+        res->settings.min_image_value = node["image"]["min-value"].get<float>();
+        res->settings.max_image_value = node["image"]["max-value"].get<float>();
+
+        auto kind = node["data"].get<std::string>();
+        if (kind == "density") {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity;
+        } else if (kind == "pressure") {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure;
+        } else if (kind == "velocity") {
+            res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity;
+        } else {
+            context().add_issue("Encountered invalid sensor plane type!");
+        }
+
+        if (node.contains("calculate-every-nth-step")) {
+            res->settings.calculate_plane_every_nth_step = node["calculate-every-nth-step"].get<size_t>();
+        } else {
+            res->settings.calculate_plane_every_nth_step = 1;
+        }
+
+
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_compressed_neighborhood_storage_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
+        deserialize_sensor_shared_data(node, res);
+        return res;
+    }
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_iisph_sensor(const nlohmann::json& node) {
+        auto res = std::make_shared<Sensors::IISPHSensor>();
+        deserialize_sensor_shared_data(node, res);
+        return res;
+    }
+
 } // namespace LibFluid::Serialization

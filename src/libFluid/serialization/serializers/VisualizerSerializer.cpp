@@ -49,4 +49,42 @@ namespace LibFluid::Serialization {
 
         return node;
     }
+
+    std::shared_ptr<ISimulationVisualizer> VisualizerSerializer::deserialize(const nlohmann::json& node) {
+        auto type = node["type"].get<std::string>();
+
+        if (type == "no-visualizer") {
+            return nullptr;
+        } else if (type == "continuous") {
+            return deserialize_continuous_visualizer(node);
+        }
+
+        // query the extensions
+        for (const auto& ext : serializer_extensions().visualizer_serializer_extensions) {
+            if (ext->can_deserialize(node)) {
+                return ext->deserialize_visualizer(node, context());
+            }
+        }
+
+        context().add_issue("Encountered unknown visualizer type!");
+        return nullptr;
+    }
+
+    std::shared_ptr<ISimulationVisualizer> VisualizerSerializer::deserialize_continuous_visualizer(const nlohmann::json& node) {
+        auto r = std::make_shared<ContinuousVisualizer>();
+
+        // default parameters
+        r->settings.viewport.left = node["viewport"]["left"].get<float>();
+        r->settings.viewport.right = node["viewport"]["right"].get<float>();
+        r->settings.viewport.top = node["viewport"]["top"].get<float>();
+        r->settings.viewport.bottom = node["viewport"]["bottom"].get<float>();
+        r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
+        r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
+
+        // custom parameters for the continuous visualizer
+        r->settings.clear_color = node["settings"]["background"].get<Image::Color>();
+        r->settings.minimum_render_density = node["settings"]["minimum-density"].get<float>();
+
+        return r;
+    }
 } // namespace LibFluid::Serialization

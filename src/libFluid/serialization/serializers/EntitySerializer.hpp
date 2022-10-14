@@ -14,11 +14,19 @@ namespace LibFluid::Serialization {
 
         nlohmann::json serialize(std::shared_ptr<SimulationEntity> entity);
 
+        std::shared_ptr<SimulationEntity> deserialize(const nlohmann::json& node);
+
+
       private:
         nlohmann::json serialize_particle_remover(std::shared_ptr<SimulationEntity> entity);
         nlohmann::json serialize_particle_spawner(std::shared_ptr<SimulationEntity> entity);
         nlohmann::json serialize_particle_remover_3d(std::shared_ptr<SimulationEntity> entity);
         nlohmann::json serialize_particle_boundary_preprocessor(std::shared_ptr<SimulationEntity> entity);
+
+        std::shared_ptr<SimulationEntity> deserialize_particle_remover(const nlohmann::json& node);
+        std::shared_ptr<SimulationEntity> deserialize_particle_spawner(const nlohmann::json& node);
+        std::shared_ptr<SimulationEntity> deserialize_particle_remover_3d(const nlohmann::json& node);
+        std::shared_ptr<SimulationEntity> deserialize_particle_boundary_preprocessor(const nlohmann::json& node);
     };
 
 } // namespace LibFluid::Serialization

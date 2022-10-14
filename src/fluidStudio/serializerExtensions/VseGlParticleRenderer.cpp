@@ -37,4 +37,39 @@ namespace FluidStudio {
 
         return node;
     }
+
+    bool VseGlParticleRenderer::can_deserialize(const nlohmann::json& node) const {
+        auto type = node["type"].get<std::string>();
+        return type == "gl-particle-renderer";
+    }
+    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer::deserialize_visualizer(const nlohmann::json& node, LibFluid::Serialization::SerializationContext& context) const {
+        if (!LibFluid::GLRenderer::is_opengl_available()) {
+            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer requires OpenGL!");
+            return nullptr;
+        }
+
+        auto r = std::make_shared<LibFluid::GLParticleRenderer>();
+
+        // default parameters
+        r->settings.viewport.left = node["viewport"]["left"].get<float>();
+        r->settings.viewport.right = node["viewport"]["right"].get<float>();
+        r->settings.viewport.top = node["viewport"]["top"].get<float>();
+        r->settings.viewport.bottom = node["viewport"]["bottom"].get<float>();
+        r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
+        r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
+
+        // custom paramters for the particle renderer
+        r->settings.topValue = node["settings"]["top"]["value"].get<float>();
+        r->settings.topColor = node["settings"]["top"]["color"].get<glm::vec4>();
+        r->settings.bottomValue = node["settings"]["bottom"]["value"].get<float>();
+        r->settings.bottomColor = node["settings"]["bottom"]["color"].get<glm::vec4>();
+        r->settings.colorSelection =
+                (LibFluid::GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"]
+                        .get<int>();
+        r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].get<glm::vec4>();
+        r->settings.backgroundClearColor = node["settings"]["colors"]["background"].get<glm::vec4>();
+        r->settings.showMemoryLocation = node["settings"]["show-memory-location"].get<bool>();
+
+        return r;
+    }
 } // namespace FluidStudio

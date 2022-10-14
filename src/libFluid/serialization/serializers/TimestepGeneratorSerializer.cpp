@@ -43,4 +43,31 @@ namespace LibFluid::Serialization {
 
         return node;
     }
+
+    std::shared_ptr<TimestepGenerator> TimestepGeneratorSerializer::deserialize(const nlohmann::json& node) {
+        auto type = node["type"].get<std::string>();
+
+        if (type == "constant") {
+            return deserialize_constant_timestep_generator(node);
+        } else if (type == "dynamic-cfl") {
+            return deserialize_dynamic_cfl_timestep_generator(node);
+        }
+
+        context().add_issue("Encountered unknown timestep generator type!");
+        return nullptr;
+    }
+
+    std::shared_ptr<TimestepGenerator> TimestepGeneratorSerializer::deserialize_constant_timestep_generator(const nlohmann::json& node) {
+        auto res = std::make_shared<ConstantTimestepGenerator>();
+        res->settings.timestep = node["timestep"].get<float>();
+        return res;
+    }
+
+    std::shared_ptr<TimestepGenerator> TimestepGeneratorSerializer::deserialize_dynamic_cfl_timestep_generator(const nlohmann::json& node) {
+        auto res = std::make_shared<DynamicCflTimestepGenerator>();
+        res->settings.max_timestep = node["max-timestep"].get<float>();
+        res->settings.min_timestep = node["min-timestep"].get<float>();
+        res->settings.cfl_number = node["cfl"].get<float>();
+        return res;
+    }
 } // namespace LibFluid::Serialization
