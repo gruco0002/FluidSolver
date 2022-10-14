@@ -1,6 +1,5 @@
 #include "MainWindowMenu.hpp"
 
-#include "ExtendedSimulationSerializer.hpp"
 #include "Log.hpp"
 #include "serialization/MainSerializer.hpp"
 #include "serializerExtensions/FluidStudioSerializerExtensions.hpp"
@@ -174,10 +173,21 @@ namespace FluidStudio {
             free(p);
 
             // load simulation
-            ExtendedSimulationSerializer s(path);
-            auto simulation = s.load_from_file();
-            if (!s.has_errors()) {
-                ui_data.window().simulator_visualizer_bundle = simulation;
+            auto extensions = SerializerExtensions::create_serializer_extenstions();
+
+            LibFluid::Serialization::SerializationContext context_output;
+
+            LibFluid::Serialization::MainSerializer serializer(path, extensions);
+            auto bundle = serializer.deserialize(&context_output);
+
+            // output warnings
+            if (!context_output.issues.empty()) {
+                LibFluid::Log::warning("The serializer encountered issues during saving!");
+                for (const auto& issue : context_output.issues) {
+                    LibFluid::Log::warning(issue.to_formatted_string());
+                }
+            } else {
+                ui_data.window().simulator_visualizer_bundle = bundle;
                 ui_data.window().on_new_simulation();
             }
         }

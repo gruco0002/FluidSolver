@@ -29,7 +29,6 @@ set(FLUID_STUDIO_SOURCE_FILES
         "visualizer/GLParticleVertexArray3D.hpp" "visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h"
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
-        "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         "Assets.hpp" "Assets.cpp"
         "userInterface/elements/PlyImportWindow.hpp" "userInterface/elements/PlyImportWindow.cpp"
         "FluidStudioFwd.hpp"
