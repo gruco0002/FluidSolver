@@ -4,6 +4,7 @@
 #include "entities/ParticleRemover.hpp"
 #include "entities/ParticleRemover3D.hpp"
 #include "entities/ParticleSpawner.hpp"
+#include "entities/VelocityAlterationByTag.hpp"
 #include "serialization/helpers/DynamicPointerIs.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
 
@@ -22,6 +23,9 @@ namespace LibFluid::Serialization {
         }
         if (dynamic_pointer_is<BoundaryPreprocessor>(entity)) {
             return serialize_particle_boundary_preprocessor(entity);
+        }
+        if (dynamic_pointer_is<VelocityAlterationByTag>(entity)) {
+            return serialize_velocity_alteration_by_tag(entity);
         }
 
         context().add_issue("Unhandled entity type encountered!");
@@ -96,6 +100,8 @@ namespace LibFluid::Serialization {
             return deserialize_particle_remover_3d(node);
         } else if (type == "boundary-preprocessor") {
             return deserialize_particle_boundary_preprocessor(node);
+        } else if (type == "velocity-alteration-by-tag") {
+            return deserialize_velocity_alteration_by_tag(node);
         }
 
         context().add_issue("Encountered invalid entity type!");
@@ -141,5 +147,27 @@ namespace LibFluid::Serialization {
         auto res = std::make_shared<BoundaryPreprocessor>();
 
         return res;
+    }
+
+    nlohmann::json EntitySerializer::serialize_velocity_alteration_by_tag(std::shared_ptr<SimulationEntity> entity) {
+        auto velocity_alteration_by_tag = std::dynamic_pointer_cast<VelocityAlterationByTag>(entity);
+        FLUID_ASSERT(velocity_alteration_by_tag != nullptr, "Invalid type passed into function!");
+
+        nlohmann::json res;
+        res["type"] = "velocity-alteration-by-tag";
+
+        res["tag"] = velocity_alteration_by_tag->parameters.tag;
+        res["velocity"] = velocity_alteration_by_tag->parameters.velocity;
+
+        return res;
+    }
+
+    std::shared_ptr<SimulationEntity> EntitySerializer::deserialize_velocity_alteration_by_tag(const nlohmann::json& node) {
+        auto velocity_alteration_by_tag = std::make_shared<VelocityAlterationByTag>();
+
+        velocity_alteration_by_tag->parameters.tag = node["tag"].get<uint32_t>();
+        velocity_alteration_by_tag->parameters.velocity = node["velocity"].get<glm::vec3>();
+
+        return velocity_alteration_by_tag;
     }
 } // namespace LibFluid::Serialization
