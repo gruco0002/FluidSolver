@@ -2,6 +2,7 @@
 
 #include "engine/graphics/Texture2D.hpp"
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
     class GLRenderer {

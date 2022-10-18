@@ -3,14 +3,11 @@
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearchDynamicAllocated.hpp"
+#include "fluidSolver/solver/settings/SESPHSettings.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 
 namespace LibFluid {
 
-    struct SESPHSettings : public DataChangeStruct {
-        pFloat StiffnessK = 100000.0f;
-        pFloat Viscosity = 5.0f;
-    };
 
     template<typename Kernel = CubicSplineKernel,
             typename NeighborhoodSearch = QuadraticNeighborhoodSearchDynamicAllocated,

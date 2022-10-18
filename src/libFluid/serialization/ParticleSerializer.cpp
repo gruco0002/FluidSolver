@@ -36,9 +36,9 @@ namespace esbs {
 } // namespace esbs
 
 
-namespace LibFluid {
+namespace LibFluid::Serialization {
 
-    void LibFluid::ParticleSerializer::serialize(ParticleCollection& collection) {
+    void ParticleSerializer::serialize(ParticleCollection& collection) {
         esbs::EndianSafeBinaryStream<Lz4CompressedStream> stream(std::move(Lz4CompressedStream::output(filepath)));
 
         // version code

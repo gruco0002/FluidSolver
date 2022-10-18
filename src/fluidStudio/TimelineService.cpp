@@ -14,13 +14,13 @@ namespace FluidStudio {
     }
 
     void TimelineService::CachedFile::create_file(std::shared_ptr<LibFluid::ParticleCollection> particle_collection) {
-        LibFluid::ParticleSerializer serializer(path);
+        LibFluid::Serialization::ParticleSerializer serializer(path);
         serializer.serialize(*particle_collection);
     }
 
     std::shared_ptr<LibFluid::ParticleCollection> TimelineService::CachedFile::read_file() {
         auto res = std::make_shared<LibFluid::ParticleCollection>();
-        LibFluid::ParticleSerializer deserializer(path);
+        LibFluid::Serialization::ParticleSerializer deserializer(path);
         deserializer.deserialize(*res);
 
         return res;

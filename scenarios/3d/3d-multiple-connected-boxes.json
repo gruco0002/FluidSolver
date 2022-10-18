@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "scenario": {
     "particles": "3d-multiple-connected-boxes.data",
     "gravity": 9.81000042,
@@ -8,7 +8,7 @@
   },
   "solver": {
     "type": "sesph-3d",
-    "neigborhood-search": {
+    "neighborhood-search": {
       "type": "hashed-3d"
     },
     "kernel": {
@@ -16,10 +16,11 @@
     },
     "stiffness": 100000,
     "viscosity": 5,
-    "timestep": {
-      "type": "constant",
-      "timestep": 0.00200000009
-    }
+    "single-layer-boundary-enabled": false
+  },
+  "timestep-generator": {
+    "type": "constant",
+    "timestep": 0.00200000009
   },
   "visualizer": {
     "type": "gl-particle-renderer-3d",

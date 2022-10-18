@@ -6,18 +6,17 @@ find_package(lz4 CONFIG REQUIRED)
 find_package(tinyobjloader CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
-        # add tbb library for parallelization
+    # add tbb library for parallelization
 
-        find_package(TBB CONFIG REQUIRED)
-endif()
-
+    find_package(TBB CONFIG REQUIRED)
+endif ()
 
 
 # include directories
 include_directories(./)
 
 
-set(LIB_FLUID_SOURCE_FILES       
+set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/solver/SESPHFluidSolver.hpp"
         "fluidSolver/kernel/CubicSplineKernel.cpp"
         "fluidSolver/kernel/CubicSplineKernel.hpp"
@@ -27,7 +26,7 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch.hpp"
         "Simulator.cpp" "Simulator.hpp"
         "visualizer/ISimulationVisualizer.hpp"
-        "fluidSolver/IFluidSolver.hpp"        
+        "fluidSolver/IFluidSolver.hpp"
         "fluidSolver/solver/IISPHFluidSolver.hpp"
         "time/TimestepGenerator.cpp"
         "time/TimestepGenerator.hpp"
@@ -35,8 +34,8 @@ set(LIB_FLUID_SOURCE_FILES
         "time/ConstantTimestepGenerator.hpp"
         "time/DynamicCflTimestepGenerator.cpp"
         "time/DynamicCflTimestepGenerator.hpp"
-        "visualizer/ContinousVisualizer.cpp"
-        "visualizer/ContinousVisualizer.hpp"
+        "visualizer/ContinuousVisualizer.cpp"
+        "visualizer/ContinuousVisualizer.hpp"
         "fluidSolver/ParticleCollection.hpp"
         "fluidSolver/Particle.hpp"
         "FluidAssert.hpp"
@@ -62,7 +61,6 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "parallelization/NoParallelization.hpp" "parallelization/NoParallelization.cpp"
         "parallelization/StdParallelForEach.hpp" "parallelization/StdParallelForEach.cpp"
-        "serialization/SimulationSerializer.hpp" "serialization/SimulationSerializer.cpp"      
         "visualizer/Image.hpp" "visualizer/Image.cpp"
         "sensors/OutputManager.hpp" "sensors/OutputManager.cpp"
         "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.cpp"
@@ -80,8 +78,8 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         "sensors/CompressedNeighborsStatistics.hpp" "sensors/CompressedNeighborsStatistics.cpp"
         "serialization/ParticleSerializer.cpp" "serialization/ParticleSerializer.hpp"
-        "serialization/EndianSafeBinaryStream.hpp"
-        "serialization/Lz4CompressedStream.cpp" "serialization/Lz4CompressedStream.hpp"
+        "serialization/helpers/EndianSafeBinaryStream.hpp"
+        "serialization/helpers/Lz4CompressedStream.cpp" "serialization/helpers/Lz4CompressedStream.hpp"
         "parallelization/SpinLock.cpp" "parallelization/SpinLock.hpp"
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
         time/Timepoint.hpp
@@ -92,14 +90,28 @@ set(LIB_FLUID_SOURCE_FILES
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp
-        serialization/JsonHelpers.cpp serialization/JsonHelpers.hpp
+        serialization/helpers/JsonHelpers.cpp serialization/helpers/JsonHelpers.hpp
         sensors/Sensor.hpp
-        serialization/Base64.cpp serialization/Base64.hpp
+        serialization/helpers/Base64.cpp serialization/helpers/Base64.hpp
         entities/BoundaryPreprocessor.cpp entities/BoundaryPreprocessor.hpp
         entities/VelocityAlterationByTag.cpp entities/VelocityAlterationByTag.hpp
         importer/MeshData.cpp importer/MeshData.hpp
         importer/ObjLoader.cpp importer/ObjLoader.hpp
         importer/ParticleSampler.cpp importer/ParticleSampler.hpp
+        serialization/MainSerializer.cpp serialization/MainSerializer.hpp
+        serialization/helpers/SerializationContext.cpp serialization/helpers/SerializationContext.hpp
+        serialization/serializers/ScenarioSerializer.cpp serialization/serializers/ScenarioSerializer.hpp
+        serialization/serializers/SolverSerializer.cpp serialization/serializers/SolverSerializer.hpp
+        serialization/serializers/VisualizerSerializer.cpp serialization/serializers/VisualizerSerializer.hpp
+        serialization/serializers/SerializerBase.cpp serialization/serializers/SerializerBase.hpp
+        serialization/serializers/EntitySerializer.cpp serialization/serializers/EntitySerializer.hpp
+        serialization/serializers/SensorSerializer.cpp serialization/serializers/SensorSerializer.hpp
+        serialization/helpers/DynamicPointerIs.hpp
+        fluidSolver/solver/settings/SESPHSettings.hpp fluidSolver/solver/settings/SESPHSettings3D.hpp
+        fluidSolver/solver/settings/IISPHSettings.hpp fluidSolver/solver/settings/IISPHSettings3D.hpp
+        serialization/serializers/TimestepGeneratorSerializer.cpp serialization/serializers/TimestepGeneratorSerializer.hpp
+        serialization/extensions/SerializerExtensions.hpp
+        serialization/extensions/VisualizerSerializerExtension.hpp
         )
 
 
@@ -114,9 +126,9 @@ target_link_libraries(libFluid PUBLIC lz4::lz4)
 target_link_libraries(libFluid PUBLIC tinyobjloader::tinyobjloader)
 
 if (UNIX OR APPLE)
-        # add tbb library for parallelization to the link targets
-        target_link_libraries(libFluid PUBLIC TBB::tbb)
-endif()
+    # add tbb library for parallelization to the link targets
+    target_link_libraries(libFluid PUBLIC TBB::tbb)
+endif ()
 
 
 # Create the source groups for source tree with root at CMAKE_CURRENT_SOURCE_DIR.

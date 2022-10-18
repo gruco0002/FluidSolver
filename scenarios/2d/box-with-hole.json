@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "scenario": {
     "particles": "box-with-hole.data",
     "gravity": 9.81000042,
@@ -8,18 +8,18 @@
   },
   "solver": {
     "type": "sesph",
-    "neigborhood-search": {
+    "neighborhood-search": {
       "type": "quadratic-dynamic-allocated"
     },
     "kernel": {
       "type": "cubic-spline-kernel"
     },
     "stiffness": 100000,
-    "viscosity": 5,
-    "timestep": {
-      "type": "constant",
-      "timestep": 0.00100000005
-    }
+    "viscosity": 5
+  },
+  "timestep-generator": {
+    "type": "constant",
+    "timestep": 0.00100000005
   },
   "visualizer": {
     "type": "gl-particle-renderer",

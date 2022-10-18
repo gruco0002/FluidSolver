@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "scenario": {
     "particles": "boundary-test-single-layer-3d.data",
     "gravity": 9.81000042,
@@ -8,7 +8,7 @@
   },
   "solver": {
     "type": "sesph-3d",
-    "neigborhood-search": {
+    "neighborhood-search": {
       "type": "hashed-3d"
     },
     "kernel": {
@@ -16,11 +16,11 @@
     },
     "stiffness": 10000,
     "viscosity": 5,
-    "single-layer-boundary-enabled": false,
-    "timestep": {
-      "type": "constant",
-      "timestep": 0.01
-    }
+    "single-layer-boundary-enabled": false
+  },
+  "timestep-generator": {
+    "type": "constant",
+    "timestep": 0.01
   },
   "visualizer": {
     "type": "gl-particle-renderer-3d",

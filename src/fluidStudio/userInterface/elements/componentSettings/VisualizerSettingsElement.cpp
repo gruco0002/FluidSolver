@@ -2,7 +2,7 @@
 
 #include "ImguiHelper.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
-#include "visualizer/ContinousVisualizer.hpp"
+#include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 
@@ -17,12 +17,12 @@ namespace FluidStudio {
 
 
             auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(ui_data.window().simulator_visualizer_bundle.visualizer);
-            auto cv = std::dynamic_pointer_cast<LibFluid::ContinousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
+            auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto gl3d =
                     std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
             if (ImGui::BeginCombo("Type",
-                        gl ? "Particle Renderer" : (cv ? "Continous Visualizer" : "Particle Renderer 3d"))) {
+                        gl ? "Particle Renderer" : (cv ? "Continuous Visualizer" : "Particle Renderer 3d"))) {
                 if (ImGui::Selectable("Particle Renderer", gl != nullptr)) {
                     if (gl == nullptr) {
                         gl = nullptr;
@@ -35,14 +35,14 @@ namespace FluidStudio {
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
                 }
-                if (ImGui::Selectable("Continous Visualizer", cv != nullptr)) {
+                if (ImGui::Selectable("Continuous Visualizer", cv != nullptr)) {
                     if (cv == nullptr) {
                         cv = nullptr;
                         gl = nullptr;
                         gl3d = nullptr;
 
 
-                        cv = std::make_shared<LibFluid::ContinousVisualizer>();
+                        cv = std::make_shared<LibFluid::ContinuousVisualizer>();
                         cv->parameters.render_target.width = 100;
                         cv->parameters.render_target.height = 100;
                         cv->settings.minimum_render_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density * 0.5f;
@@ -97,7 +97,7 @@ namespace FluidStudio {
         }
 
         auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(ui_data.window().simulator_visualizer_bundle.visualizer);
-        auto cv = std::dynamic_pointer_cast<LibFluid::ContinousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
+        auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
         auto gl3d = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
         if (StyledImGuiElements::slim_tree_node("Colors")) {

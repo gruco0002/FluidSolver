@@ -8,6 +8,7 @@
 
 #include <memory>
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
     /**

@@ -29,7 +29,6 @@ set(FLUID_STUDIO_SOURCE_FILES
         "visualizer/GLParticleVertexArray3D.hpp" "visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h"
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
-        "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         "Assets.hpp" "Assets.cpp"
         "userInterface/elements/PlyImportWindow.hpp" "userInterface/elements/PlyImportWindow.cpp"
         "FluidStudioFwd.hpp"
@@ -60,7 +59,13 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/helpers/TypeInformationProvider.cpp userInterface/helpers/TypeInformationProvider.hpp
         visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
         userInterface/elements/ObjImportWindow.cpp userInterface/elements/ObjImportWindow.hpp
-        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp userInterface/elements/InsertParticlesWindow.cpp userInterface/elements/InsertParticlesWindow.hpp)
+        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp
+        userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp
+        userInterface/elements/InsertParticlesWindow.cpp userInterface/elements/InsertParticlesWindow.hpp
+        serializerExtensions/VseGlParticleRenderer3D.cpp serializerExtensions/VseGlParticleRenderer3D.hpp
+        serializerExtensions/VseGlParticleRenderer.cpp serializerExtensions/VseGlParticleRenderer.hpp
+        serializerExtensions/FluidStudioSerializerExtensions.cpp serializerExtensions/FluidStudioSerializerExtensions.hpp
+        )
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

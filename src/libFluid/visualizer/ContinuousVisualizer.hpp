@@ -7,10 +7,10 @@
 #include <vector>
 
 namespace LibFluid {
-    class ContinousVisualizer : public ISimulationVisualizer {
+    class ContinuousVisualizer : public ISimulationVisualizer {
 
       public:
-        ContinousVisualizer();
+        ContinuousVisualizer();
 
         struct Settings
         {
