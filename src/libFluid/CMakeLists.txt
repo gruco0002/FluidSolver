@@ -38,14 +38,13 @@ set(LIB_FLUID_SOURCE_FILES
         "visualizer/ContinuousVisualizer.hpp"
         "fluidSolver/ParticleCollection.hpp"
         "fluidSolver/Particle.hpp"
-        "FluidAssert.hpp"
+        "LibFluidAssert.hpp"
         "fluidSolver/ParticleCollectionAlgorithm.cpp"
         "fluidSolver/ParticleCollectionAlgorithm.hpp"
         "sensors/SensorDataStore.hpp"
         "sensors/ParticleStatistics.cpp"
         "sensors/ParticleStatistics.hpp"
-        "FluidTypes.hpp"
-        "FluidInclude.hpp"
+        "LibFluidTypes.hpp"
         "group/GroupActions.hpp"
         "group/AreaGroup.cpp"
         "group/AreaGroup.hpp"
@@ -57,7 +56,7 @@ set(LIB_FLUID_SOURCE_FILES
         "entities/ParticleRemover.cpp"
         "entities/ParticleRemover.hpp"
         "sensors/SensorBase.hpp"
-        "Log.hpp" "Log.cpp"
+        "helpers/Log.hpp" "helpers/Log.cpp"
         "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp" "fluidSolver/neighborhoodSearch/NeighborhoodInterface.cpp"
         "parallelization/NoParallelization.hpp" "parallelization/NoParallelization.cpp"
         "parallelization/StdParallelForEach.hpp" "parallelization/StdParallelForEach.cpp"
@@ -68,12 +67,12 @@ set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/solver/SESPHFluidSolver3D.hpp"
         "visualizer/Viewport2D.hpp"
         "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp" "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.cpp"
-        "helper/ProtectedUnorderedMap.hpp"
-        "CompatibilityReport.hpp" "CompatibilityReport.cpp"
-        "helper/stb_implementation.cpp"
+        "helpers/ProtectedUnorderedMap.hpp"
+        "helpers/CompatibilityReport.hpp" "helpers/CompatibilityReport.cpp"
+        "helpers/stb_implementation.cpp"
         "sensors/SensorPlane.hpp" "sensors/SensorPlane.cpp"
-        "Forward.hpp"
-        "FluidMath.hpp"
+        "LibFluidForward.hpp"
+        "LibFluidMath.hpp"
         "fluidSolver/solver/IISPHFluidSolver3D.hpp"
         "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp" "fluidSolver/neighborhoodSearch/CompressedNeighbors.cpp"
         "sensors/CompressedNeighborsStatistics.hpp" "sensors/CompressedNeighborsStatistics.cpp"
@@ -84,9 +83,9 @@ set(LIB_FLUID_SOURCE_FILES
         "parallelization/AtomicFloat.cpp" "parallelization/AtomicFloat.hpp"
         time/Timepoint.hpp
         SimulatorVisualizerBundle.cpp SimulatorVisualizerBundle.hpp
-        DataChangeStruct.cpp DataChangeStruct.hpp
-        Initializable.hpp
-        Reportable.hpp
+        helpers/DataChangeStruct.cpp helpers/DataChangeStruct.hpp
+        helpers/Initializable.hpp
+        helpers/Reportable.hpp
         sensors/IisphSensor.cpp sensors/IisphSensor.hpp
         entities/ParticleRemover3D.cpp entities/ParticleRemover3D.hpp
         group/VolumeGroup.cpp group/VolumeGroup.hpp

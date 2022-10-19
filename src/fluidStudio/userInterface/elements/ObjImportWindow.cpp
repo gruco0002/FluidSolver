@@ -8,6 +8,7 @@
 #include "importer/methods/GridSamplingMethod.hpp"
 #include "importer/methods/UvSamplingMethod.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
+#include "LibFluidMath.hpp"
 
 #include <nfd.h>
 

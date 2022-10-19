@@ -1,6 +1,6 @@
 #include "ParticleCollectionHelper.hpp"
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 namespace FluidStudio::ParticleCollectionHelper {

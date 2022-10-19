@@ -1,6 +1,6 @@
 #include "ParticleCollectionAlgorithm.hpp"
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 
 namespace LibFluid {
     namespace ParticleCollectionAlgorithm

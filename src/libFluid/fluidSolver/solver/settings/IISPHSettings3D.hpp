@@ -1,7 +1,7 @@
 #pragma once
 
-#include "DataChangeStruct.hpp"
-#include "FluidTypes.hpp"
+#include "LibFluidTypes.hpp"
+#include "helpers/DataChangeStruct.hpp"
 
 namespace LibFluid {
     struct IISPHSettings3D : public DataChangeStruct {

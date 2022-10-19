@@ -1,7 +1,7 @@
 #include "MeshData.hpp"
 
-#include "FluidAssert.hpp"
-#include "FluidMath.hpp"
+#include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid::Importer {
 

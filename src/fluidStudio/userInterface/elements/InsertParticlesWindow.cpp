@@ -3,6 +3,7 @@
 #include "ImguiHelper.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
 #include "userInterface/helpers/TypeInformationProvider.hpp"
+#include "LibFluidMath.hpp"
 
 namespace FluidStudio {
 

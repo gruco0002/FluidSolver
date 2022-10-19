@@ -1,5 +1,6 @@
 #include "BoundaryPreprocessor.hpp"
 
+#include "LibFluidMath.hpp"
 
 namespace LibFluid {
 

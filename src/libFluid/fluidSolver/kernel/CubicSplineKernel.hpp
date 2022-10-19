@@ -1,11 +1,11 @@
 #pragma once
 
 
-#include "CompatibilityReport.hpp"
-#include "FluidInclude.hpp"
+#include "LibFluidTypes.hpp"
+#include "helpers/CompatibilityReport.hpp"
 
-#include "Initializable.hpp"
-#include "Reportable.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 namespace LibFluid {
     class CubicSplineKernel : public Initializable, public Reportable {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+#include "LibFluidForward.hpp"
 #include "FluidStudioFwd.hpp"
 #include "fluidSolver/Particle.hpp"
 

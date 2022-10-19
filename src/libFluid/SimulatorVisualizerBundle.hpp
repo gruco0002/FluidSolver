@@ -1,9 +1,9 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "FluidInclude.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
+#include "LibFluidForward.hpp"
 
 namespace LibFluid {
     class SimulatorVisualizerBundle : public Initializable,  public Reportable {

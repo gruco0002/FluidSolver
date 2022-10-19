@@ -1,6 +1,7 @@
 #include "Image.hpp"
 
-#include "FluidInclude.hpp"
+#include "LibFluidAssert.hpp"
+
 #include <stb_image_write.h>
 
 namespace LibFluid {

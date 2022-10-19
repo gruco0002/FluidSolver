@@ -1,5 +1,5 @@
 #pragma once
-#include "CompatibilityReport.hpp"
+#include "helpers/CompatibilityReport.hpp"
 
 namespace LibFluid {
 

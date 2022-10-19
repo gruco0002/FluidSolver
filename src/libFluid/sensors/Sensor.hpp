@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DataChangeStruct.hpp"
-#include "Forward.hpp"
-#include "Initializable.hpp"
-#include "Reportable.hpp"
+#include "LibFluidForward.hpp"
+#include "helpers/DataChangeStruct.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 #include "time/Timepoint.hpp"
 
 #include <memory>

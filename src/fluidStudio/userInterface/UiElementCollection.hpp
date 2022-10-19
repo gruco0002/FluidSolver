@@ -3,7 +3,7 @@
 #include <map>
 #include <typeindex>
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 
 namespace FluidStudio {
     class UiElement;

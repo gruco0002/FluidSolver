@@ -1,6 +1,9 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+#include "LibFluidTypes.hpp"
+#include "fluidSolver/ParticleCollection.hpp"
+
+#include <memory>
 
 namespace LibFluid {
 class VolumeGroup {

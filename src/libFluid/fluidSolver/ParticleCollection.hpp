@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Particle.hpp"
+#include "LibFluidAssert.hpp"
 
 #include <functional>
 #include <vector>

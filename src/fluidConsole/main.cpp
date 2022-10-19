@@ -1,8 +1,8 @@
 
 #include "FluidConsoleSerializerExtensions.hpp"
-#include "Log.hpp"
 #include "Simulator.hpp"
 #include "SimulatorVisualizerBundle.hpp"
+#include "helpers/Log.hpp"
 #include "serialization/MainSerializer.hpp"
 #include "serialization/ParticleSerializer.hpp"
 

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../FluidInclude.hpp"
-#include "../fluidSolver/Particle.hpp"
-#include "../fluidSolver/ParticleCollection.hpp"
+#include "fluidSolver/Particle.hpp"
+#include "fluidSolver/ParticleCollection.hpp"
 
 namespace LibFluid::GroupActions
 {

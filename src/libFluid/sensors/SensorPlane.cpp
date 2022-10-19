@@ -1,12 +1,13 @@
 #include "SensorPlane.hpp"
 
-#include "Log.hpp"
 #include "OutputManager.hpp"
 #include "Simulator.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
+#include "helpers/Log.hpp"
 #include "parallelization/StdParallelForEach.hpp"
 #include "serialization/helpers/Base64.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid::Sensors {
 

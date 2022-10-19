@@ -1,12 +1,11 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "DataChangeStruct.hpp"
-#include "FluidInclude.hpp"
-#include "Initializable.hpp"
 #include "ParticleCollection.hpp"
-#include "Reportable.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/DataChangeStruct.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 #include "time/Timepoint.hpp"
 #include "time/TimestepGenerator.hpp"
 

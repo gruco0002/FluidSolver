@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Forward.hpp"
+#include "LibFluidForward.hpp"
 
 #include <memory>
 

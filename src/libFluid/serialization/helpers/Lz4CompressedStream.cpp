@@ -1,5 +1,5 @@
 #include "Lz4CompressedStream.hpp"
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 #include <lz4frame.h>
 
 namespace LibFluid {

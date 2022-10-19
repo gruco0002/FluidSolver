@@ -1,5 +1,6 @@
 #include "NeighborhoodInterface.hpp"
 
+#include "LibFluidAssert.hpp"
 
 LibFluid::NeighborhoodInterface::NeighborsIterator LibFluid::NeighborhoodInterface::Neighbors::begin()
 {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "DataChangeStruct.hpp"
 #include "entities/SimulationEntity.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/DataChangeStruct.hpp"
 #include "sensors/OutputManager.hpp"
 #include "sensors/Sensor.hpp"
 #include "time/TimestepGenerator.hpp"

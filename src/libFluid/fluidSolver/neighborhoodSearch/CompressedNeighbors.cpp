@@ -2,6 +2,7 @@
 
 #include "fluidSolver/ParticleCollectionAlgorithm.hpp"
 #include "parallelization/StdParallelForEach.hpp"
+#include "LibFluidMath.hpp"
 
 #include <array>
 #include <cstring>

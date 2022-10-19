@@ -1,8 +1,8 @@
 #include "GLParticleRenderer3D.hpp"
 
 #include "Assets.hpp"
-#include "Log.hpp"
 #include "engine/Window.hpp"
+#include "helpers/Log.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

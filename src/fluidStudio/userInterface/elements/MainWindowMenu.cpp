@@ -1,6 +1,6 @@
 #include "MainWindowMenu.hpp"
 
-#include "Log.hpp"
+#include "helpers/Log.hpp"
 #include "serialization/MainSerializer.hpp"
 #include "serializerExtensions/FluidStudioSerializerExtensions.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"

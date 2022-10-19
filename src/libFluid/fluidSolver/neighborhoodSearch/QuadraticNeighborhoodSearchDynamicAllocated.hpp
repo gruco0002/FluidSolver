@@ -1,11 +1,11 @@
 #pragma once
 
+#include "LibFluidTypes.hpp"
 #include "NeighborhoodInterface.hpp"
-#include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
-#include "CompatibilityReport.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -68,9 +68,7 @@ namespace LibFluid {
 
         struct Neighbors;
 
-        struct NeighborsIterator
-        {
-
+        struct NeighborsIterator {
             const Neighbors* data;
             particleIndex_t current;
 
@@ -85,9 +83,7 @@ namespace LibFluid {
             const NeighborsIterator operator++(int);
         };
 
-        struct Neighbors
-        {
-
+        struct Neighbors {
             // iterator defines
             using T = particleIndex_t;
             using iterator = NeighborsIterator;
@@ -126,11 +122,11 @@ namespace LibFluid {
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

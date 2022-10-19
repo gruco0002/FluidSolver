@@ -1,6 +1,6 @@
 #include "GridSamplingMethod.hpp"
 
-#include "FluidMath.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid::Importer {
     std::vector<glm::vec3> GridSamplingMethod::generate_samples_for_triangle(const MeshData::Triangle& triangle) const {

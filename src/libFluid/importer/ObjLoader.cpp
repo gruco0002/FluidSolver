@@ -1,7 +1,7 @@
 #include "ObjLoader.hpp"
 
-#include "FluidAssert.hpp"
-#include "Log.hpp"
+#include "LibFluidAssert.hpp"
+#include "helpers/Log.hpp"
 
 #include <tiny_obj_loader.h>
 

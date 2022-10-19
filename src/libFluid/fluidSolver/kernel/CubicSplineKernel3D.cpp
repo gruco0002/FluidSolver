@@ -1,5 +1,8 @@
 #include "CubicSplineKernel3D.hpp"
 
+#include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
+
 namespace LibFluid {
     pFloat CubicSplineKernel3D::GetKernelValue(const vec3& position) const {
         FLUID_ASSERT(h != 0.0f);
@@ -74,4 +77,4 @@ namespace LibFluid {
         }
         report.end_scope();
     }
-} // namespace FluidSolver
+} // namespace LibFluid

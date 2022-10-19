@@ -1,11 +1,11 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "DataChangeStruct.hpp"
-#include "Initializable.hpp"
-#include "Reportable.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/DataChangeStruct.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 #include "visualizer/Image.hpp"
 
 #include <memory>

@@ -1,8 +1,8 @@
 #include "PlyImportWindow.hpp"
 
-#include "FluidMath.hpp"
 #include "FluidSolverWindow.hpp"
 #include "ImguiHelper.hpp"
+#include "LibFluidMath.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
 #include "userInterface/helpers/TypeInformationProvider.hpp"
 

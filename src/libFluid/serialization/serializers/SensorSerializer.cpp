@@ -1,12 +1,12 @@
 #include "SensorSerializer.hpp"
 
+#include "LibFluidAssert.hpp"
 #include "sensors/CompressedNeighborsStatistics.hpp"
 #include "sensors/IisphSensor.hpp"
 #include "sensors/ParticleStatistics.hpp"
 #include "sensors/SensorPlane.hpp"
 #include "serialization/helpers/DynamicPointerIs.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
-
 
 namespace LibFluid::Serialization {
 

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
+#include "helpers/CompatibilityReport.hpp"
 
 #include <memory>
 
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 namespace LibFluid {
 

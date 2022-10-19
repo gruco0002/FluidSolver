@@ -2,7 +2,7 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 #include <engine/graphics/buffer/IndexBuffer.hpp>

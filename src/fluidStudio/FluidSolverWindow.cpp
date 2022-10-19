@@ -3,7 +3,7 @@
 #include "FluidSolverWindow.hpp"
 
 #include "ImguiHelper.hpp"
-#include "Log.hpp"
+#include "helpers/Log.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
 #include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"

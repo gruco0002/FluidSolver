@@ -1,12 +1,11 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "helper/ProtectedUnorderedMap.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "helpers/ProtectedUnorderedMap.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 #include <array>
 #include <limits>

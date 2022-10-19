@@ -1,5 +1,7 @@
 #include "Simulator.hpp"
 
+#include "LibFluidAssert.hpp"
+
 namespace LibFluid {
 
     void Simulator::execute_simulation_step() {

@@ -1,6 +1,7 @@
 #include "NewSimulationModalWindow.hpp"
 
 #include "ImguiHelper.hpp"
+#include "LibFluidMath.hpp"
 
 namespace FluidStudio {
 

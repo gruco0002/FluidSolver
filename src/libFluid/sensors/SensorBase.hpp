@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "Forward.hpp"
+#include "LibFluidForward.hpp"
+#include "helpers/CompatibilityReport.hpp"
 #include "sensors/OutputManager.hpp"
 #include "sensors/Sensor.hpp"
 #include "sensors/SensorDataStore.hpp"

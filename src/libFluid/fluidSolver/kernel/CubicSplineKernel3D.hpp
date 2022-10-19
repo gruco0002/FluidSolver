@@ -1,10 +1,9 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "FluidInclude.hpp"
-
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "LibFluidTypes.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 namespace LibFluid {
 
@@ -24,13 +23,12 @@ namespace LibFluid {
 
         void initialize() override;
 
-        void create_compatibility_report(CompatibilityReport &report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         float h = 0.0f;
-        float alpha = 0.0f; 
-     
+        float alpha = 0.0f;
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -1,6 +1,6 @@
 #include "OutputManager.hpp"
 
-#include "FluidInclude.hpp"
+#include "LibFluidAssert.hpp"
 
 namespace LibFluid {
 

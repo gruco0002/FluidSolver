@@ -1,11 +1,11 @@
 #pragma once
 
-#include "FluidInclude.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "fluidSolver/solver/settings/IISPHSettings3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid {
 
