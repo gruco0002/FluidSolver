@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LibFluidTypes.hpp"
 #include "helpers/CompatibilityReport.hpp"
 #include "helpers/Initializable.hpp"
 #include "helpers/Reportable.hpp"

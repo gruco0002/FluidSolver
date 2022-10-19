@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LibFluidTypes.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "group/Volume.hpp"
 

@@ -44,7 +44,6 @@ set(LIB_FLUID_SOURCE_FILES
         "sensors/SensorDataStore.hpp"
         "sensors/ParticleStatistics.cpp"
         "sensors/ParticleStatistics.hpp"
-        "LibFluidTypes.hpp"
         "group/GroupActions.hpp"
         "group/AreaGroup.cpp"
         "group/AreaGroup.hpp"

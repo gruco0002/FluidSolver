@@ -1,7 +1,7 @@
 #include "ContinuousVisualizer.hpp"
 
 #include "parallelization/StdParallelForEach.hpp"
-#include "LibFluidTypes.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid {
     ContinuousVisualizer::ContinuousVisualizer()
@@ -12,7 +12,7 @@ namespace LibFluid {
         if (simulation_data.has_data_changed()) {
             simulation_data.acknowledge_data_change();
 
-            kernel.kernel_support = simulation_data.particle_size * Constants::kernel_support_factor;
+            kernel.kernel_support = simulation_data.particle_size * Math::kernel_support_factor;
             kernel.initialize();
         }
 

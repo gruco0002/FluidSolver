@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LibFluidTypes.hpp"
 #include "NeighborhoodInterface.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 #include "helpers/CompatibilityReport.hpp"

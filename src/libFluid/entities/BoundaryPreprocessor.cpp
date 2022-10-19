@@ -54,7 +54,7 @@ namespace LibFluid {
         if (simulation_data.has_data_changed()) {
             simulation_data.acknowledge_data_change();
 
-            kernel.kernel_support = simulation_data.particle_size * Constants::kernel_support_factor;
+            kernel.kernel_support = simulation_data.particle_size * Math::kernel_support_factor;
             kernel.initialize();
 
             ideal_volume_reciprocal = calculate_ideal_volume_reciprocal();

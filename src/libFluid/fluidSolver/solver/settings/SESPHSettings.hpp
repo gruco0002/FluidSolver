@@ -1,6 +1,5 @@
 #pragma once
 
-#include "LibFluidTypes.hpp"
 #include "helpers/DataChangeStruct.hpp"
 
 namespace LibFluid {

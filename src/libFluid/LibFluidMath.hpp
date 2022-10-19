@@ -3,6 +3,9 @@
 namespace LibFluid::Math {
     constexpr float PI = 3.14159265358979323846f;
 
+    // defines the kernel radius / support w.r.t. particle size
+    constexpr float kernel_support_factor = 2.0f;
+
     inline float pow2(const float& x) {
         return x * x;
     }
