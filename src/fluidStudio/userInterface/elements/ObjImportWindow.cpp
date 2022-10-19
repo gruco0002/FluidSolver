@@ -6,6 +6,7 @@
 #include "importer/methods/DistanceReductionMethod.hpp"
 #include "importer/methods/DuplicateReductionMethod.hpp"
 #include "importer/methods/GridSamplingMethod.hpp"
+#include "importer/methods/UvSamplingMethod.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
 
 #include <nfd.h>
@@ -106,7 +107,7 @@ namespace FluidStudio {
 
         LibFluid::Importer::ParticleSampler sampler;
 
-        sampler.sampling_method = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
+        sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
         sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
         sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
 
