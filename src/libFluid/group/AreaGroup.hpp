@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fluidSolver/ParticleCollection.hpp"
+#include "group/Area.hpp"
 
 #include <memory>
 

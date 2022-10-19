@@ -118,6 +118,8 @@ set(LIB_FLUID_SOURCE_FILES
         importer/methods/VolumeReductionMethod.cpp importer/methods/VolumeReductionMethod.hpp
         importer/methods/UvSamplingMethod.cpp importer/methods/UvSamplingMethod.hpp
         importer/methods/DistanceReductionMethod.cpp importer/methods/DistanceReductionMethod.hpp
+        group/Area.hpp
+        group/Volume.hpp
         )
 
 

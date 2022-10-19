@@ -1,6 +1,7 @@
 #pragma once
 
-#include "SimulationEntity.hpp"
+#include "entities/SimulationEntity.hpp"
+#include "group/Area.hpp"
 
 namespace LibFluid {
     class ParticleRemover : public SimulationEntity {
