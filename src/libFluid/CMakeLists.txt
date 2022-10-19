@@ -112,6 +112,13 @@ set(LIB_FLUID_SOURCE_FILES
         serialization/serializers/TimestepGeneratorSerializer.cpp serialization/serializers/TimestepGeneratorSerializer.hpp
         serialization/extensions/SerializerExtensions.hpp
         serialization/extensions/VisualizerSerializerExtension.hpp
+        importer/methods/SamplingMethod.hpp
+        importer/methods/ReductionMethod.hpp
+        importer/methods/GridSamplingMethod.cpp importer/methods/GridSamplingMethod.hpp
+        importer/methods/DuplicateReductionMethod.cpp importer/methods/DuplicateReductionMethod.hpp
+        importer/methods/VolumeReductionMethod.cpp importer/methods/VolumeReductionMethod.hpp
+        importer/methods/UvSamplingMethod.cpp importer/methods/UvSamplingMethod.hpp
+        importer/methods/DistanceReductionMethod.cpp importer/methods/DistanceReductionMethod.hpp
         )
 
 

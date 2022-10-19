@@ -2,31 +2,19 @@
 
 #include "fluidSolver/Particle.hpp"
 #include "importer/MeshData.hpp"
+#include "importer/methods/ReductionMethod.hpp"
+#include "importer/methods/SamplingMethod.hpp"
 
 namespace LibFluid::Importer {
     class ParticleSampler {
       public:
-        explicit ParticleSampler(MeshData mesh_data, float particle_size);
+        explicit ParticleSampler();
 
-        void generate_samples();
+        std::vector<glm::vec3> generate_samples(const MeshData& mesh_data, float particle_size) const;
 
-        const std::vector<glm::vec3>& get_samples() const;
+        std::shared_ptr<SamplingMethod> sampling_method;
 
-      private:
-        MeshData mesh_data;
-        float particle_size;
-
-        std::vector<glm::vec3> samples;
-
-        void add_samples_for_triangle(const MeshData::Triangle& triangle);
-
-        void reduce_samples();
-
-        void reduce_duplicates();
-
-        void reduce_too_close_ones();
-
-        glm::vec3 get_grid_aligned_vector(const glm::vec3& value, bool subtract) const;
+        std::vector<std::shared_ptr<ReductionMethod>> reduction_methods;
     };
 
 } // namespace LibFluid::Importer
