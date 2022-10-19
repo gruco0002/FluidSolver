@@ -91,9 +91,9 @@ namespace LibFluid {
             if (parameters.has_data_changed()) {
                 parameters.acknowledge_data_change();
 
-                neighborhood_search.search_radius = parameters.particle_size * 2.0f;
+                neighborhood_search.search_radius = parameters.particle_size * Constants::kernel_support_factor;
                 neighborhood_search.initialize();
-                kernel.kernel_support = parameters.particle_size * 2.0f;
+                kernel.kernel_support = parameters.particle_size * Constants::kernel_support_factor;
                 kernel.initialize();
             }
 

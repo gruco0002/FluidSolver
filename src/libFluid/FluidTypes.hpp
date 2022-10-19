@@ -27,4 +27,8 @@ namespace LibFluid {
         glm::vec3 distance_from_center;
     };
 
+    namespace Constants {
+        constexpr float kernel_support_factor = 2.0f;
+    }
+
 } // namespace FluidSolver
