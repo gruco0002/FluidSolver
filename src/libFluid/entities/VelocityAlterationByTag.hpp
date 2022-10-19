@@ -9,7 +9,7 @@ namespace LibFluid {
 
         struct VelocityAlterationByTagParameters : public DataChangeStruct {
             glm::vec3 velocity = glm::vec3(0.0f);
-            pTag_t tag = -1;
+            uint32_t tag = -1;
         } parameters;
 
 

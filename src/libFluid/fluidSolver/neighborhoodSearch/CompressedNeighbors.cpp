@@ -35,7 +35,7 @@ namespace LibFluid {
     }
 
     CompressedNeighborhoodSearch::GridCellLocation CompressedNeighborhoodSearch::
-            calculate_grid_cell_location_of_position(const vec3& position) {
+            calculate_grid_cell_location_of_position(const glm::vec3& position) {
         return {(int)std::floor(position.x / search_radius), (int)std::floor(position.y / search_radius),
                 (int)std::floor(position.z / search_radius)};
     }
@@ -125,7 +125,7 @@ namespace LibFluid {
             return n;
         };
 
-        res->link.get_by_position_3d = [this](const vec3& position) {
+        res->link.get_by_position_3d = [this](const glm::vec3& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();
@@ -194,7 +194,7 @@ namespace LibFluid {
 
             sorter.quick_sort_stable<false, true>(
                     collection,
-                    [](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
+                    [](const std::shared_ptr<ParticleCollection>& collection, const size_t index) -> uint64_t {
                         auto& information = collection->get<ParticleInformation>(index);
                         return information.cell_index;
                     });
@@ -247,7 +247,7 @@ namespace LibFluid {
         return ret;
     }
 
-    CompressedNeighborhoodSearch::Neighbors CompressedNeighborhoodSearch::get_neighbors(const vec3& position) {
+    CompressedNeighborhoodSearch::Neighbors CompressedNeighborhoodSearch::get_neighbors(const glm::vec3& position) {
         Neighbors ret;
         ret.of.position = position;
         ret.position_based = true;
@@ -533,7 +533,7 @@ namespace LibFluid {
         data->find_neighbors_and_save_in_storage(of.position, internal_storage);
     }
 
-    void CompressedNeighborhoodSearch::find_neighbors_and_save_in_storage(const vec3& position,
+    void CompressedNeighborhoodSearch::find_neighbors_and_save_in_storage(const glm::vec3& position,
             NeighborStorage& storage) {
         FLUID_ASSERT(collection != nullptr);
 

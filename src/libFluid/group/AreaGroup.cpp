@@ -36,17 +36,17 @@ namespace LibFluid {
         return copy;
     }
 
-    bool AreaGroup::is_inside(pIndex_t index) const {
+    bool AreaGroup::is_inside(size_t index) const {
         FLUID_ASSERT(collection->is_type_present<MovementData>())
         FLUID_ASSERT(collection->size() > index)
-        const vec2& position = collection->get<MovementData>(index).position;
+        const glm::vec2& position = collection->get<MovementData>(index).position;
 
         if (position.x < area.left || position.x > area.right || position.y > area.top || position.y < area.bottom)
             return false;
         return true;
     }
 
-    bool AreaGroup::is_member(pIndex_t index) const {
+    bool AreaGroup::is_member(size_t index) const {
         return inside == is_inside(index);
     }
 

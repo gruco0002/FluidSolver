@@ -18,7 +18,7 @@ namespace LibFluid {
 
     class HashedNeighborhoodSearch3D : public Initializable, public Reportable {
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
         using particleAmount_t = uint16_t;
 
 
@@ -63,7 +63,7 @@ namespace LibFluid {
 
             // data
             union {
-                vec3 position;
+                glm::vec3 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -75,13 +75,13 @@ namespace LibFluid {
         };
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
-        pFloat search_radius = 0.0f;
+        float search_radius = 0.0f;
 
         void find_neighbors();
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec3& position);
+        Neighbors get_neighbors(const glm::vec3& position);
 
         void initialize() override;
 
@@ -125,7 +125,7 @@ namespace LibFluid {
         };
 
         GridCellLocation calculate_grid_cell_location_of_particle(particleIndex_t index);
-        GridCellLocation calculate_grid_cell_location_of_position(const vec3& position);
+        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3& position);
 
 
         void rebuild_grid();

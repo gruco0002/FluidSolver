@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LibFluidTypes.hpp"
-
+#include <cstdint>
 #include <functional>
+#include <glm/glm.hpp>
 
 
 namespace LibFluid {
@@ -25,16 +25,13 @@ namespace LibFluid {
      * neighborhood searches.
 	 */
     class NeighborhoodInterface {
-
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
 
         struct Neighbors;
 
 
-        struct NeighborsIterator
-        {
-
+        struct NeighborsIterator {
             Neighbors* data = nullptr;
 
             void* original_iterator = nullptr;
@@ -56,9 +53,7 @@ namespace LibFluid {
             NeighborsIterator() = default;
         };
 
-        struct Neighbors
-        {
-
+        struct Neighbors {
             // iterator defines
             using T = particleIndex_t;
             using iterator = NeighborsIterator;
@@ -76,8 +71,7 @@ namespace LibFluid {
             NeighborsIterator end();
 
 
-            struct IteratorInterface
-            {
+            struct IteratorInterface {
                 std::function<void*(void* it)> iterator_copy;
                 std::function<void(void* it)> iterator_increment;
                 std::function<bool(void* it1, void* it2)> iterator_equals;
@@ -91,20 +85,19 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec2& position);
-        Neighbors get_neighbors(const vec3& position);
+        Neighbors get_neighbors(const glm::vec2& position);
+        Neighbors get_neighbors(const glm::vec3& position);
 
         float get_search_radius();
 
 
-        struct Interface
-        {
+        struct Interface {
             std::function<Neighbors(particleIndex_t particleIndex)> get_by_index;
-            std::function<Neighbors(const vec2& position)> get_by_position;
-            std::function<Neighbors(const vec3& position)> get_by_position_3d;
+            std::function<Neighbors(const glm::vec2& position)> get_by_position;
+            std::function<Neighbors(const glm::vec3& position)> get_by_position_3d;
             std::function<float()> get_search_radius;
         } link;
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

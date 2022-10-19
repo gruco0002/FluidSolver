@@ -17,7 +17,7 @@ namespace LibFluid {
 
     class HashedNeighborhoodSearch : public Initializable, public Reportable {
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
         using particleAmount_t = uint16_t;
 
 
@@ -52,7 +52,7 @@ namespace LibFluid {
 
             // data
             union {
-                vec2 position;
+                glm::vec2 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -64,13 +64,13 @@ namespace LibFluid {
         };
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
-        pFloat search_radius = 0.0f;
+        float search_radius = 0.0f;
 
         void find_neighbors();
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec2& position);
+        Neighbors get_neighbors(const glm::vec2& position);
 
         void initialize() override;
 
@@ -79,7 +79,7 @@ namespace LibFluid {
         void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
-        pFloat grid_cell_size = 0.0f;
+        float grid_cell_size = 0.0f;
 
 
         typedef std::pair<int32_t, int32_t> GridKey;
@@ -109,7 +109,7 @@ namespace LibFluid {
 
         GridKey GetGridCellByParticleID(particleIndex_t particleIndex);
 
-        GridKey GetGridCellByPosition(const vec2& position);
+        GridKey GetGridCellByPosition(const glm::vec2& position);
 
         void CreateGridEntryIfNecessary(const GridKey& key);
 

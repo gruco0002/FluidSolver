@@ -5,7 +5,7 @@
 
 namespace LibFluid {
     struct SESPHSettings : public DataChangeStruct {
-        pFloat StiffnessK = 100000.0f;
-        pFloat Viscosity = 5.0f;
+        float StiffnessK = 100000.0f;
+        float Viscosity = 5.0f;
     };
 }; // namespace LibFluid

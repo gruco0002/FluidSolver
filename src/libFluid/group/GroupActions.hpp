@@ -13,7 +13,7 @@ namespace LibFluid::GroupActions
      *      GroupIterator
      *          An iterator that
      * allows to iterate over the particles in the group.
-     *          Dereferencing the iterator yields a pIndex_t
+     *          Dereferencing the iterator yields a size_t
      * particle index.
      *          The iterator must only support forward iterating and dereferencing to retrieve
      * the
@@ -21,7 +21,7 @@ namespace LibFluid::GroupActions
      *      GroupIterator begin();
      *      GroupIterator end();
      *
-     * bool is_member(pIndex_t index) const;
+     * bool is_member(size_t index) const;
      *      ParticleCollection *collection = nullptr;
      * @param group A
      * group of particles
@@ -31,7 +31,7 @@ namespace LibFluid::GroupActions
     {
         FLUID_ASSERT(group.collection != nullptr)
         size_t result = 0;
-        for (pIndex_t index : group)
+        for (size_t index : group)
         {
             result++;
         }
@@ -51,7 +51,7 @@ namespace LibFluid::GroupActions
         FLUID_ASSERT(group.collection != nullptr)
         FLUID_ASSERT(group.collection->template is_type_present<ParticleInfo>())
 
-        for (pIndex_t index : group)
+        for (size_t index : group)
         {
             group.collection->template get<ParticleInfo>(index).type = type;
         }

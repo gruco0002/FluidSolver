@@ -33,7 +33,7 @@ namespace FluidStudio {
 
         struct MapInformation {
             LibFluid::ParticleType particle_type = LibFluid::ParticleTypeNormal;
-            LibFluid::pTag_t particle_tag = 0;
+            uint32_t particle_tag = 0;
         };
 
         std::unordered_map<glm::vec3, MapInformation> mapped_colors;

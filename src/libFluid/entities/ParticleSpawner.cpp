@@ -12,7 +12,7 @@ namespace LibFluid {
 
         FLUID_ASSERT(simulation_data.particle_size > 0.0f)
 
-        FLUID_ASSERT(parameters.direction != vec2(0.0f))
+        FLUID_ASSERT(parameters.direction != glm::vec2(0.0f))
         FLUID_ASSERT(parameters.width > 0.0f)
         FLUID_ASSERT(parameters.initial_velocity > 0.0f)
 
@@ -28,8 +28,8 @@ namespace LibFluid {
             // there should be enough place to spawn the particles
 
             // calculated required data
-            vec2 normalized_direction = glm::normalize(parameters.direction);
-            vec2 initial_velocity = normalized_direction * parameters.initial_velocity;
+            glm::vec2 normalized_direction = glm::normalize(parameters.direction);
+            glm::vec2 initial_velocity = normalized_direction * parameters.initial_velocity;
             glm::vec2 orth_direction = glm::vec2(normalized_direction.y, -normalized_direction.x);
             float width = parameters.width;
 
@@ -53,7 +53,7 @@ namespace LibFluid {
         }
     }
 
-    pIndex_t ParticleSpawner::get_or_add_particle() {
+    size_t ParticleSpawner::get_or_add_particle() {
         while (last_index_checked < simulation_data.collection->size()) {
             if (simulation_data.collection->get<ParticleInfo>(last_index_checked).type == ParticleType::ParticleTypeInactive) {
                 // reuse the current particle
@@ -67,7 +67,7 @@ namespace LibFluid {
         return index;
     }
 
-    void ParticleSpawner::spawn_particle(pIndex_t index, const glm::vec2& position,
+    void ParticleSpawner::spawn_particle(size_t index, const glm::vec2& position,
             const glm::vec2& initial_velocity) {
         FLUID_ASSERT(index < simulation_data.collection->size());
 
@@ -99,7 +99,7 @@ namespace LibFluid {
         auto neighbors = simulation_data.neighborhood_interface->get_neighbors(position);
         for (auto& neighbor : neighbors) {
             auto& neighbor_pos = simulation_data.collection->get<MovementData>(neighbor).position;
-            vec2 diff = neighbor_pos - position;
+            glm::vec2 diff = neighbor_pos - position;
             float distance_squared = glm::dot(diff, diff);
             if (distance_squared < min_distance_squared) {
                 return false;

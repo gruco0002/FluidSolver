@@ -72,7 +72,7 @@ namespace LibFluid {
         });
     }
 
-    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(pIndex_t particleIndex)
+    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(size_t particleIndex)
     {
         Neighbors n;
         n.position_based = false;
@@ -220,7 +220,7 @@ namespace LibFluid {
             return n;
         };
 
-        res->link.get_by_position = [this](const vec2& position) {
+        res->link.get_by_position = [this](const glm::vec2& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();

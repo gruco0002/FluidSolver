@@ -64,7 +64,7 @@ namespace LibFluid {
      */
     class QuadraticNeighborhoodSearchDynamicAllocated : public Initializable, public Reportable {
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
 
         struct Neighbors;
 
@@ -97,7 +97,7 @@ namespace LibFluid {
 
             // data
             union {
-                vec2 position;
+                glm::vec2 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -115,7 +115,7 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec2& position);
+        Neighbors get_neighbors(const glm::vec2& position);
 
 
         void initialize() override;

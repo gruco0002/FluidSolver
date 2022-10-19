@@ -11,9 +11,9 @@ namespace LibFluid {
 
 
     struct IISPHParticleData {
-        vec2 predicted_velocity;
-        pFloat source_term;
-        pFloat diagonal_element;
+        glm::vec2 predicted_velocity;
+        float source_term;
+        float diagonal_element;
     };
 
 
@@ -37,23 +37,23 @@ namespace LibFluid {
         void initialize() override;
 
       private:
-        void CalculateDensity(pIndex_t particleIndex);
+        void CalculateDensity(size_t particleIndex);
 
-        void CalculateNonPressureAccelerationAndPredictedVelocity(pIndex_t particleIndex);
+        void CalculateNonPressureAccelerationAndPredictedVelocity(size_t particleIndex);
 
-        glm::vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
+        glm::vec2 ComputeViscosityAcceleration(size_t particleIndex);
 
-        void ComputeSourceTerm(pIndex_t particleIndex);
+        void ComputeSourceTerm(size_t particleIndex);
 
-        void ComputeDiagonalElement(pIndex_t particleIndex);
+        void ComputeDiagonalElement(size_t particleIndex);
 
-        void InitializePressure(pIndex_t particleIndex);
+        void InitializePressure(size_t particleIndex);
 
-        void IntegrateParticle(pIndex_t particleIndex);
+        void IntegrateParticle(size_t particleIndex);
 
         void ComputePressure();
 
-        pFloat current_timestep = 0.0f;
+        float current_timestep = 0.0f;
 
 
       public:
@@ -156,7 +156,7 @@ namespace LibFluid {
 
 
         // calculating density and non pressure accelerations
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeInactive)
                 return; // we do not want to process inactive particles
@@ -166,7 +166,7 @@ namespace LibFluid {
         });
 
         // compute source term, diagonal element and initialize pressure
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeInactive)
                 return; // we do not want to process inactive particles
@@ -183,7 +183,7 @@ namespace LibFluid {
 
         // update velocity and position of all particles
         // FIXME: adapt timestep if required
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) { IntegrateParticle(i); });
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) { IntegrateParticle(i); });
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
@@ -192,7 +192,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::CalculateDensity(pIndex_t particleIndex) {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::CalculateDensity(size_t particleIndex) {
         auto particleType = data.collection->get<ParticleInfo>(particleIndex).type;
         if (particleType == ParticleTypeBoundary) {
             return; // don't calculate density for the boundary particles
@@ -216,7 +216,7 @@ namespace LibFluid {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::CalculateNonPressureAccelerationAndPredictedVelocity(
-            pIndex_t particleIndex) {
+            size_t particleIndex) {
         auto type = data.collection->get<ParticleInfo>(particleIndex).type;
         glm::vec2& nonPressureAcc = data.collection->get<ExternalForces>(particleIndex).non_pressure_acceleration;
         const glm::vec2& velocity = data.collection->get<MovementData>(particleIndex).velocity;
@@ -237,7 +237,7 @@ namespace LibFluid {
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
     glm::vec2 IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(
-            pIndex_t particleIndex) {
+            size_t particleIndex) {
         const MovementData& mData = data.collection->get<MovementData>(particleIndex);
         const glm::vec2& position = mData.position;
         const glm::vec2& velocity = mData.velocity;
@@ -276,7 +276,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeSourceTerm(pIndex_t particleIndex) {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeSourceTerm(size_t particleIndex) {
         float particleDensity = data.collection->get<ParticleData>(particleIndex).density;
 
 
@@ -307,7 +307,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeDiagonalElement(pIndex_t particleIndex) {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeDiagonalElement(size_t particleIndex) {
         float sum = 0.0f;
         const glm::vec2& particlePosition = data.collection->get<MovementData>(particleIndex).position;
         float particleMass = data.collection->get<ParticleData>(particleIndex).mass;
@@ -370,12 +370,12 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::InitializePressure(pIndex_t particleIndex) {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::InitializePressure(size_t particleIndex) {
         data.collection->get<ParticleData>(particleIndex).pressure = 0.0f;
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::IntegrateParticle(pIndex_t particleIndex) {
+    void IISPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::IntegrateParticle(size_t particleIndex) {
         auto type = data.collection->get<ParticleInfo>(particleIndex).type;
         if (type == ParticleTypeInactive) {
             return; // don't calculate unnecessary values for inactive particles.
@@ -404,7 +404,7 @@ namespace LibFluid {
             size_t densityErrorCounter = 0;
 
             // first loop: compute pressure acceleration
-            parallel::loop_for(0, data.collection->size(), [&](pIndex_t particleIndex) {
+            parallel::loop_for(0, data.collection->size(), [&](size_t particleIndex) {
                 auto particleType = data.collection->get<ParticleInfo>(particleIndex).type;
                 if (particleType == ParticleTypeInactive)
                     return; // we do not want to process inactive particles
@@ -443,7 +443,7 @@ namespace LibFluid {
             });
 
             // second loop
-            parallel::loop_for(0, data.collection->size(), [&](pIndex_t particleIndex) {
+            parallel::loop_for(0, data.collection->size(), [&](size_t particleIndex) {
                 auto particleType = data.collection->get<ParticleInfo>(particleIndex).type;
                 if (particleType == ParticleTypeInactive)
                     return; // we do not want to process inactive particles

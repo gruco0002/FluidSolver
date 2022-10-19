@@ -20,7 +20,7 @@ namespace LibFluid {
     class CompressedNeighborhoodSearch : public Initializable, public Reportable {
 
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
         using particleAmount_t = uint16_t;
 
         struct NeighborStorage
@@ -94,7 +94,7 @@ namespace LibFluid {
 
             // data
             union {
-                vec3 position;
+                glm::vec3 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -110,13 +110,13 @@ namespace LibFluid {
         };
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
-        pFloat search_radius = 0.0f;
+        float search_radius = 0.0f;
 
         void find_neighbors();
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec3& position);
+        Neighbors get_neighbors(const glm::vec3& position);
 
         void initialize() override;
 
@@ -150,7 +150,7 @@ namespace LibFluid {
             }
         };
 
-        GridCellLocation calculate_grid_cell_location_of_position(const vec3& position);
+        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3& position);
 
         static uint64_t calculate_cell_index_by_cell_location(const GridCellLocation& location);
 
@@ -172,7 +172,7 @@ namespace LibFluid {
 
         size_t get_particle_index_by_cell_index(size_t cell_index) const;
 
-        void find_neighbors_and_save_in_storage(const vec3& position, NeighborStorage& storage);
+        void find_neighbors_and_save_in_storage(const glm::vec3& position, NeighborStorage& storage);
     };
 
 

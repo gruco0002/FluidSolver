@@ -61,7 +61,7 @@ namespace LibFluid {
     }
 
     HashedNeighborhoodSearch3D::GridCellLocation HashedNeighborhoodSearch3D::calculate_grid_cell_location_of_position(
-            const vec3& position) {
+            const glm::vec3& position) {
         return {(int)std::floor(position.x / search_radius), (int)std::floor(position.y / search_radius),
                 (int)std::floor(position.z / search_radius)};
     }
@@ -168,7 +168,7 @@ namespace LibFluid {
                         for (particleIndex_t j : grid[cell_to_check]) {
                             auto& mv_j = collection->get<MovementData3D>(j);
 
-                            vec3 difference = mv_i.position - mv_j.position;
+                            glm::vec3 difference = mv_i.position - mv_j.position;
 
                             if (glm::dot(difference, difference) <= search_radius_squared) {
                                 // the particle is a neighbor
@@ -194,7 +194,7 @@ namespace LibFluid {
 
             sorter.quick_sort(
                     collection,
-                    [&](const std::shared_ptr<ParticleCollection>& collection, const pIndex_t index) -> uint64_t {
+                    [&](const std::shared_ptr<ParticleCollection>& collection, const size_t index) -> uint64_t {
                         auto& grid_data = collection->get<GridCellState>(index);
 
                         auto transform_into_unsigned = [](int32_t v) -> uint32_t {
@@ -225,7 +225,7 @@ namespace LibFluid {
         return n;
     }
 
-    HashedNeighborhoodSearch3D::Neighbors HashedNeighborhoodSearch3D::get_neighbors(const vec3& position) {
+    HashedNeighborhoodSearch3D::Neighbors HashedNeighborhoodSearch3D::get_neighbors(const glm::vec3& position) {
         Neighbors n;
         n.data = this;
         n.position_based = true;
@@ -331,7 +331,7 @@ namespace LibFluid {
                 } else {
                     // check the particle the iterator points to
                     particleIndex_t current_candidate = *(*current_set_iterator);
-                    const vec3& position = collection->get<MovementData3D>(current_candidate).position;
+                    const glm::vec3& position = collection->get<MovementData3D>(current_candidate).position;
                     if (glm::length(data->of.position - position) <= data->data->search_radius) {
                         // we found a neighbor -> set the current particle index to the neighbor
                         current = current_candidate;
@@ -408,7 +408,7 @@ namespace LibFluid {
             return n;
         };
 
-        res->link.get_by_position_3d = [this](const vec3& position) {
+        res->link.get_by_position_3d = [this](const glm::vec3& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();

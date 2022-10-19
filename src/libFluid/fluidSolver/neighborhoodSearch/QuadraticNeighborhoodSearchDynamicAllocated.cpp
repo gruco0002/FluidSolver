@@ -47,7 +47,7 @@ namespace LibFluid {
     }
 
     QuadraticNeighborhoodSearchDynamicAllocated::Neighbors
-    QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(const vec2& position) {
+    QuadraticNeighborhoodSearchDynamicAllocated::get_neighbors(const glm::vec2& position) {
         Neighbors n;
         n.position_based = true;
         n.data = this;
@@ -116,7 +116,7 @@ namespace LibFluid {
             return n;
         };
 
-        res->link.get_by_position = [this](const vec2& position) {
+        res->link.get_by_position = [this](const glm::vec2& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();

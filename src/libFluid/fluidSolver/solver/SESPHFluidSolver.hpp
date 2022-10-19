@@ -28,17 +28,17 @@ namespace LibFluid {
         void execute_neighborhood_search() override;
 
       private:
-        pFloat current_timestep = 0.0f;
+        float current_timestep = 0.0f;
 
-        pFloat ComputePressure(pIndex_t particleIndex);
+        float ComputePressure(size_t particleIndex);
 
-        pFloat ComputeDensity(pIndex_t particleIndex);
+        float ComputeDensity(size_t particleIndex);
 
-        vec2 ComputeNonPressureAcceleration(pIndex_t particleIndex);
+        glm::vec2 ComputeNonPressureAcceleration(size_t particleIndex);
 
-        vec2 ComputePressureAcceleration(pIndex_t particleIndex);
+        glm::vec2 ComputePressureAcceleration(size_t particleIndex);
 
-        vec2 ComputeViscosityAcceleration(pIndex_t particleIndex);
+        glm::vec2 ComputeViscosityAcceleration(size_t particleIndex);
 
 
       public:
@@ -62,7 +62,7 @@ namespace LibFluid {
 
 
         // calculate density and pressure for all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
@@ -78,7 +78,7 @@ namespace LibFluid {
         });
 
         // compute non pressure accelerations and pressure accelerations for all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
@@ -94,7 +94,7 @@ namespace LibFluid {
         });
 
         // update velocity and position of all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeInactive) {
                 return; // don*t calculate unnecessary values for inactive particles.
@@ -172,14 +172,14 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputePressure(pIndex_t particleIndex) {
+    float SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputePressure(size_t particleIndex) {
         float density = data.collection->get<ParticleData>(particleIndex).density;
         float pressure = settings.StiffnessK * (density / parameters.rest_density - 1.0f);
         return std::max(pressure, 0.0f);
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(pIndex_t particleIndex) {
+    float SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(size_t particleIndex) {
         const glm::vec2& position = data.collection->get<MovementData>(particleIndex).position;
 
         float density = 0.0f;
@@ -197,7 +197,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeNonPressureAcceleration(pIndex_t particleIndex) {
+    glm::vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeNonPressureAcceleration(size_t particleIndex) {
         glm::vec2 nonPressureAcceleration = glm::vec2(0.0f);
 
         // Gravity
@@ -210,7 +210,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(pIndex_t particleIndex) {
+    glm::vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(size_t particleIndex) {
         const glm::vec2& position = data.collection->get<MovementData>(particleIndex).position;
         const ParticleData& pData = data.collection->get<ParticleData>(particleIndex);
         const float& density = pData.density;
@@ -251,7 +251,7 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(pIndex_t particleIndex) {
+    glm::vec2 SESPHFluidSolver<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(size_t particleIndex) {
         const glm::vec2& position = data.collection->get<MovementData>(particleIndex).position;
         const glm::vec2& velocity = data.collection->get<MovementData>(particleIndex).velocity;
 

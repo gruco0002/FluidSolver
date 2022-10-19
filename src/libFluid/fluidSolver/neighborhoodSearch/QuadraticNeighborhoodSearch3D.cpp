@@ -55,7 +55,7 @@ namespace LibFluid {
 
                 auto& mv_j = collection->get<MovementData3D>(j);
 
-                vec3 difference = mv_i.position - mv_j.position;
+                glm::vec3 difference = mv_i.position - mv_j.position;
 
                 if (glm::dot(difference, difference) <= search_radius_squared) {
                     // the particle is a neighbor
@@ -76,7 +76,7 @@ namespace LibFluid {
         return n;
     }
 
-    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(const vec3& position) {
+    QuadraticNeighborhoodSearch3D::Neighbors QuadraticNeighborhoodSearch3D::get_neighbors(const glm::vec3& position) {
         Neighbors n;
         n.data = this;
         n.position_based = true;
@@ -120,7 +120,7 @@ namespace LibFluid {
             return n;
         };
 
-        res->link.get_by_position_3d = [this](const vec3& position) {
+        res->link.get_by_position_3d = [this](const glm::vec3& position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();
@@ -208,7 +208,7 @@ namespace LibFluid {
             auto collection = data->data->collection;
             current++;
             while (current < collection->size()) {
-                const vec3& position = collection->get<MovementData3D>(current).position;
+                const glm::vec3& position = collection->get<MovementData3D>(current).position;
                 if (glm::length(data->of.position - position) <= data->data->search_radius) {
                     break;
                 }

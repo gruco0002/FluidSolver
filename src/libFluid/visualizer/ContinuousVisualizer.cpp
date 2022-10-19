@@ -1,6 +1,8 @@
 #include "ContinuousVisualizer.hpp"
 
 #include "parallelization/StdParallelForEach.hpp"
+#include "LibFluidTypes.hpp"
+
 namespace LibFluid {
     ContinuousVisualizer::ContinuousVisualizer()
         : image(0, 0), kernel() {
@@ -119,7 +121,7 @@ namespace LibFluid {
 
         auto neighbors = simulation_data.neighborhood_interface->get_neighbors(position);
 
-        for (pIndex_t neighbor : neighbors) {
+        for (size_t neighbor : neighbors) {
             const auto& pi = simulation_data.collection->get<ParticleInfo>(neighbor);
             if (pi.type == ParticleTypeInactive) {
                 continue; // don*t calculate unnecessary values for inactive particles.

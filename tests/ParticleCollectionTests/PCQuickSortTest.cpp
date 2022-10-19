@@ -20,7 +20,7 @@ TEST(ParticleCollectionAlgorithm, QuickSort1)
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const pIndex_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -48,7 +48,7 @@ TEST(ParticleCollectionAlgorithm, QuickSort2)
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const pIndex_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -86,7 +86,7 @@ TEST(ParticleCollectionAlgorithm, QuickSort3)
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const pIndex_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -125,7 +125,7 @@ TEST(ParticleCollectionAlgorithm, QuickSort4)
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const pIndex_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 

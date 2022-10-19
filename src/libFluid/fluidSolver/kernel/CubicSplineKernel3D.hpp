@@ -5,21 +5,23 @@
 #include "helpers/Initializable.hpp"
 #include "helpers/Reportable.hpp"
 
+#include <glm/glm.hpp>
+
 namespace LibFluid {
 
     class CubicSplineKernel3D : public Initializable, public Reportable {
       public:
-        pFloat kernel_support;
+        float kernel_support;
 
-        pFloat GetKernelValue(const vec3& position) const;
+        float GetKernelValue(const glm::vec3& position) const;
 
-        vec3 GetKernelDerivativeValue(const vec3& position) const;
+        glm::vec3 GetKernelDerivativeValue(const glm::vec3& position) const;
 
-        pFloat GetKernelValue(const vec3& neighborPosition, const vec3& position) const;
+        float GetKernelValue(const glm::vec3& neighborPosition, const glm::vec3& position) const;
 
-        vec3 GetKernelDerivativeValue(const vec3& neighborPosition, const vec3& position) const;
+        glm::vec3 GetKernelDerivativeValue(const glm::vec3& neighborPosition, const glm::vec3& position) const;
 
-        vec3 GetKernelDerivativeReversedValue(const vec3& neighborPosition, const vec3& position) const;
+        glm::vec3 GetKernelDerivativeReversedValue(const glm::vec3& neighborPosition, const glm::vec3& position) const;
 
         void initialize() override;
 

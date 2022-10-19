@@ -82,7 +82,7 @@ namespace LibFluid {
 
             bool show_particle_memory_location = false;
 
-            pTag_t selected_tag = -1;
+            uint32_t selected_tag = -1;
 
         } settings;
 

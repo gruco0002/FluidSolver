@@ -27,17 +27,17 @@ namespace LibFluid {
         void initialize() override;
 
       private:
-        pFloat current_timestep = 0.0f;
+        float current_timestep = 0.0f;
 
-        pFloat ComputePressure(pIndex_t particleIndex);
+        float ComputePressure(size_t particleIndex);
 
-        pFloat ComputeDensity(pIndex_t particleIndex);
+        float ComputeDensity(size_t particleIndex);
 
-        vec3 ComputeNonPressureAcceleration(pIndex_t particleIndex);
+        glm::vec3 ComputeNonPressureAcceleration(size_t particleIndex);
 
-        vec3 ComputePressureAcceleration(pIndex_t particleIndex);
+        glm::vec3 ComputePressureAcceleration(size_t particleIndex);
 
-        vec3 ComputeViscosityAcceleration(pIndex_t particleIndex);
+        glm::vec3 ComputeViscosityAcceleration(size_t particleIndex);
 
 
       public:
@@ -61,7 +61,7 @@ namespace LibFluid {
         current_timestep = timestep.desired_time_step;
 
         // calculate density and pressure for all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
@@ -75,7 +75,7 @@ namespace LibFluid {
         });
 
         // compute non pressure accelerations and pressure accelerations for all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeBoundary) {
                 return; // don't calculate unnecessary values for the boundary particles.
@@ -85,8 +85,8 @@ namespace LibFluid {
             }
             auto& mv = data.collection->get<MovementData3D>(i);
 
-            vec3 nonPressureAcc = ComputeNonPressureAcceleration(i);
-            vec3 pressureAcc = ComputePressureAcceleration(i);
+            glm::vec3 nonPressureAcc = ComputeNonPressureAcceleration(i);
+            glm::vec3 pressureAcc = ComputePressureAcceleration(i);
             mv.acceleration = pressureAcc + nonPressureAcc;
         });
 
@@ -99,7 +99,7 @@ namespace LibFluid {
             for (size_t i = 0; i < data.collection->size(); i++) {
                 const auto& mv = data.collection->get<MovementData3D>(i);
                 max_final_acceleration_squared = Math::max(max_final_acceleration_squared, glm::dot(mv.acceleration, mv.acceleration));
-                vec3 velocity = mv.velocity + current_timestep * mv.acceleration;
+                glm::vec3 velocity = mv.velocity + current_timestep * mv.acceleration;
                 max_final_velocity_squared = Math::max(max_final_velocity_squared, glm::dot(velocity, velocity));
             }
             max_final_velocity = Math::sqrt(max_final_velocity_squared);
@@ -116,7 +116,7 @@ namespace LibFluid {
         }
 
         // update velocity and position of all particles
-        parallel::loop_for(0, data.collection->size(), [&](pIndex_t i) {
+        parallel::loop_for(0, data.collection->size(), [&](size_t i) {
             auto type = data.collection->get<ParticleInfo>(i).type;
             if (type == ParticleTypeInactive) {
                 return; // don*t calculate unnecessary values for inactive particles.
@@ -193,15 +193,15 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressure(pIndex_t particleIndex) {
+    float SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressure(size_t particleIndex) {
         float density = data.collection->get<ParticleData>(particleIndex).density;
         float pressure = settings.StiffnessK * (density / parameters.rest_density - 1.0f);
         return std::max(pressure, 0.0f);
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    pFloat SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(pIndex_t particleIndex) {
-        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
+    float SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeDensity(size_t particleIndex) {
+        const glm::vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
 
         float density = 0.0f;
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
@@ -211,7 +211,7 @@ namespace LibFluid {
                 continue; // don't calculate unnecessary values for inactive particles.
             }
 
-            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            const glm::vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
             float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
             if (type == ParticleTypeBoundary) {
                 if (settings.single_layer_boundary) {
@@ -228,12 +228,12 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeNonPressureAcceleration(
-            pIndex_t particleIndex) {
-        vec3 nonPressureAcceleration = vec3(0.0f);
+    glm::vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeNonPressureAcceleration(
+            size_t particleIndex) {
+        glm::vec3 nonPressureAcceleration = glm::vec3(0.0f);
 
         // Gravity
-        nonPressureAcceleration += vec3(0.0f, -parameters.gravity, 0.0f);
+        nonPressureAcceleration += glm::vec3(0.0f, -parameters.gravity, 0.0f);
 
         // Viscosity
         nonPressureAcceleration += ComputeViscosityAcceleration(particleIndex);
@@ -242,8 +242,8 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(pIndex_t particleIndex) {
-        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
+    glm::vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputePressureAcceleration(size_t particleIndex) {
+        const glm::vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
         const ParticleData& pData = data.collection->get<ParticleData>(particleIndex);
         const float& density = pData.density;
         const float& pressure = pData.pressure;
@@ -251,7 +251,7 @@ namespace LibFluid {
 
         float pressureDivDensitySquared = density == 0.0f ? 0.0f : pressure / Math::pow2(density);
 
-        vec3 pressureAcceleration = vec3(0.0f);
+        glm::vec3 pressureAcceleration = glm::vec3(0.0f);
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
@@ -259,7 +259,7 @@ namespace LibFluid {
                 continue; // don*t calculate unnecessary values for inactive particles.
             }
 
-            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            const glm::vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
             if (type == ParticleTypeBoundary) {
                 // simple mirroring is used to calculate the pressure acceleration with a boundary particle
                 if (settings.single_layer_boundary) {
@@ -290,12 +290,12 @@ namespace LibFluid {
     }
 
     template<typename Kernel, typename NeighborhoodSearch, typename parallel>
-    vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(pIndex_t particleIndex) {
-        const vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
-        const vec3& velocity = data.collection->get<MovementData3D>(particleIndex).velocity;
+    glm::vec3 SESPHFluidSolver3D<Kernel, NeighborhoodSearch, parallel>::ComputeViscosityAcceleration(size_t particleIndex) {
+        const glm::vec3& position = data.collection->get<MovementData3D>(particleIndex).position;
+        const glm::vec3& velocity = data.collection->get<MovementData3D>(particleIndex).velocity;
 
 
-        vec3 tmp = vec3(0.0f);
+        glm::vec3 tmp = glm::vec3(0.0f);
         auto neighbors = neighborhood_search.get_neighbors(particleIndex);
         for (uint32_t neighbor : neighbors) {
             auto type = data.collection->get<ParticleInfo>(neighbor).type;
@@ -303,16 +303,16 @@ namespace LibFluid {
                 continue; // don*t calculate unnecessary values for inactive particles.
             }
 
-            const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
-            const vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
+            const glm::vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+            const glm::vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
             float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
             float neighborDensity = data.collection->get<ParticleData>(neighbor).density;
 
             if (neighborDensity == 0.0f)
                 continue;
 
-            vec3 vij = velocity - neighborVelocity;
-            vec3 xij = position - neighborPosition;
+            glm::vec3 vij = velocity - neighborVelocity;
+            glm::vec3 xij = position - neighborPosition;
 
             tmp += (neighborMass / neighborDensity) *
                     (glm::dot(vij, xij) /

@@ -11,11 +11,11 @@ namespace LibFluid {
 
 
     struct IISPHParticleData3D {
-        vec3 predicted_velocity;
-        vec3 original_non_pressure_acceleration;
-        pFloat source_term;
-        pFloat diagonal_element;
-        pFloat predicted_density_error;
+        glm::vec3 predicted_velocity;
+        glm::vec3 original_non_pressure_acceleration;
+        float source_term;
+        float diagonal_element;
+        float predicted_density_error;
     };
 
 
@@ -40,14 +40,14 @@ namespace LibFluid {
             data.collection->add_type<IISPHParticleData3D>();
         }
 
-        vec3 ComputeViscosityAcceleration(pIndex_t particleIndex) {
+        glm::vec3 ComputeViscosityAcceleration(size_t particleIndex) {
             auto& movement_data = data.collection->get<MovementData3D>(particleIndex);
 
-            const vec3& position = movement_data.position;
-            const vec3& velocity = movement_data.velocity;
+            const glm::vec3& position = movement_data.position;
+            const glm::vec3& velocity = movement_data.velocity;
 
 
-            vec3 tmp = vec3(0.0f);
+            glm::vec3 tmp = glm::vec3(0.0f);
             auto neighbors = neighborhood_search.get_neighbors(particleIndex);
             for (uint32_t neighbor : neighbors) {
                 auto type = data.collection->get<ParticleInfo>(neighbor).type;
@@ -55,16 +55,16 @@ namespace LibFluid {
                     continue; // don*t calculate unnecessary values for inactive particles.
                 }
 
-                const vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
-                const vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
+                const glm::vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+                const glm::vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
                 float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
                 float neighborDensity = data.collection->get<ParticleData>(neighbor).density;
 
                 if (neighborDensity == 0.0f)
                     continue;
 
-                vec3 vij = velocity - neighborVelocity;
-                vec3 xij = position - neighborPosition;
+                glm::vec3 vij = velocity - neighborVelocity;
+                glm::vec3 xij = position - neighborPosition;
 
                 tmp += (neighborMass / neighborDensity) *
                         (glm::dot(vij, xij) /
@@ -260,7 +260,7 @@ namespace LibFluid {
                 // compute diagonal element
                 {
                     // calculate the inner part of the sum
-                    vec3 inner_part_of_sum = vec3(0.0f);
+                    glm::vec3 inner_part_of_sum = glm::vec3(0.0f);
                     {
                         auto neighbors = neighborhood_search.get_neighbors(i);
                         for (auto neighbor : neighbors) {
@@ -356,7 +356,7 @@ namespace LibFluid {
                     auto& movement_data = data.collection->get<MovementData3D>(i);
                     auto& particle_data = data.collection->get<ParticleData>(i);
 
-                    vec3 pressure_acceleration = vec3(0.0f);
+                    glm::vec3 pressure_acceleration = glm::vec3(0.0f);
 
                     auto neighbors = neighborhood_search.get_neighbors(i);
                     for (auto neighbor : neighbors) {
@@ -488,7 +488,7 @@ namespace LibFluid {
 
                             max_final_acceleration_squared = std::fmax(max_final_acceleration_squared, glm::dot(movement_data.acceleration, movement_data.acceleration));
 
-                            vec3 particle_velocity = iisph_data.predicted_velocity + current_timestep * movement_data.acceleration;
+                            glm::vec3 particle_velocity = iisph_data.predicted_velocity + current_timestep * movement_data.acceleration;
                             max_final_velocity_squared = std::fmax(max_final_velocity_squared, glm::dot(particle_velocity, particle_velocity));
                         }
 
@@ -546,7 +546,7 @@ namespace LibFluid {
 
                 auto& movement_data = data.collection->get<MovementData3D>(i);
                 const auto& pi = data.collection->get<IISPHParticleData3D>(i);
-                vec3 predicted_velocity = pi.predicted_velocity;
+                glm::vec3 predicted_velocity = pi.predicted_velocity;
 
                 // correct predicted velocity if required
                 if (old_timestep != current_timestep) {
