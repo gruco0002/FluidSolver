@@ -1,14 +1,15 @@
 #include "ObjImportWindow.hpp"
 
 #include "ImguiHelper.hpp"
+#include "LibFluidMath.hpp"
 #include "importer/ObjLoader.hpp"
 #include "importer/ParticleSampler.hpp"
 #include "importer/methods/DistanceReductionMethod.hpp"
 #include "importer/methods/DuplicateReductionMethod.hpp"
 #include "importer/methods/GridSamplingMethod.hpp"
 #include "importer/methods/UvSamplingMethod.hpp"
+#include "importer/methods/VolumeReductionMethod.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
-#include "LibFluidMath.hpp"
 
 #include <nfd.h>
 
@@ -110,7 +111,8 @@ namespace FluidStudio {
 
         sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
         sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
-        sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
+        // sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
+        sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::VolumeReductionMethod>());
 
 
         const auto& samples = sampler.generate_samples(mesh_data, particle_size);
