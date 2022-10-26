@@ -3,6 +3,7 @@
 #include "entities/SimulationEntity.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "group/TagDescriptors.hpp"
 #include "helpers/CompatibilityReport.hpp"
 #include "helpers/DataChangeStruct.hpp"
 #include "sensors/OutputManager.hpp"
@@ -23,6 +24,8 @@ namespace LibFluid {
 
             std::vector<std::shared_ptr<SimulationEntity>> entities;
             std::vector<std::shared_ptr<Sensor>> sensors;
+
+            std::shared_ptr<TagDescriptors> tag_descriptors = nullptr;
         } data;
 
 
@@ -60,4 +63,4 @@ namespace LibFluid {
         std::shared_ptr<NeighborhoodInterface> get_neighborhood_interface();
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

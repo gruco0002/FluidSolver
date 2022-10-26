@@ -3,6 +3,7 @@
 #include "serialization/ParticleSerializer.hpp"
 #include "serialization/serializers/ScenarioSerializer.hpp"
 #include "serialization/serializers/SolverSerializer.hpp"
+#include "serialization/serializers/TagDescriptorsSerializer.hpp"
 #include "serialization/serializers/TimestepGeneratorSerializer.hpp"
 #include "serialization/serializers/VisualizerSerializer.hpp"
 
@@ -64,6 +65,11 @@ namespace LibFluid::Serialization {
             VisualizerSerializer visualizer_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("visualizer");
             config["visualizer"] = visualizer_serializer.serialize(bundle.visualizer);
+            internal_context.end_section();
+
+            TagDescriptorsSerializer tag_descriptors_serializer(internal_context, serializer_extensions);
+            internal_context.begin_section("tag-descriptors");
+            config["tag-descriptors"] = tag_descriptors_serializer.serialize(bundle.simulator->data.tag_descriptors);
             internal_context.end_section();
         }
 
@@ -135,6 +141,15 @@ namespace LibFluid::Serialization {
             VisualizerSerializer visualizer_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("visualizer");
             bundle.visualizer = visualizer_serializer.deserialize(config["visualizer"]);
+            internal_context.end_section();
+
+            TagDescriptorsSerializer tag_descriptors_serializer(internal_context, serializer_extensions);
+            internal_context.begin_section("tag-descriptors");
+            if (config.contains("tag-descriptors")) {
+                bundle.simulator->data.tag_descriptors = tag_descriptors_serializer.deserialize(config["tag-descriptors"]);
+            } else {
+                bundle.simulator->data.tag_descriptors = std::make_shared<TagDescriptors>();
+            }
             internal_context.end_section();
         }
 

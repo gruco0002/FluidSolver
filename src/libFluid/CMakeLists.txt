@@ -119,7 +119,7 @@ set(LIB_FLUID_SOURCE_FILES
         importer/methods/DistanceReductionMethod.cpp importer/methods/DistanceReductionMethod.hpp
         group/Area.hpp
         group/Volume.hpp
-        )
+        group/TagDescriptors.cpp group/TagDescriptors.hpp serialization/serializers/TagDescriptorsSerializer.cpp serialization/serializers/TagDescriptorsSerializer.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})
