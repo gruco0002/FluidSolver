@@ -87,6 +87,13 @@ namespace FluidStudio {
                 ImGui::EndMenu();
             }
 
+            if (is_3d_simulation()) {
+                ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+                ImGui::TextColored(ImVec4(0.204f, 0.753f, 0.922f, 1.0f), "3D-Simulation");
+            } else {
+                ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+                ImGui::TextColored(ImVec4(0.204f, 0.922f, 0.753f, 1.0f), "2D-Simulation");
+            }
 
             ImGui::EndMainMenuBar();
         }
@@ -226,6 +233,12 @@ namespace FluidStudio {
             tag_selection_modal_open = false;
             ImGui::OpenPopup("Particle Selection by Tag");
         }
+    }
+    bool MainWindowMenu::is_3d_simulation() const {
+        if (ui_data.window().simulator_visualizer_bundle.simulator->data.collection->is_type_present<LibFluid::MovementData3D>()) {
+            return true;
+        }
+        return false;
     }
 
 } // namespace FluidStudio

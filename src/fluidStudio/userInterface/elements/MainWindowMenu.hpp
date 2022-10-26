@@ -15,5 +15,7 @@ namespace FluidStudio {
         void update_save_menu();
         void update_open_menu();
         void update_tag_selection_modal();
+
+        bool is_3d_simulation() const;
     };
 } // namespace FluidStudio

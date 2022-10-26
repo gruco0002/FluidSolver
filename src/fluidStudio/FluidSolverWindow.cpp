@@ -26,8 +26,8 @@ namespace FluidStudio {
 
     void FluidSolverWindow::load() {
         // set the current fluid solver type and create an empty simulation
-        current_type = &solver_types.types[0];
-        create_empty_2d_simulation(1.0f, 1000.0f);
+        current_type = solver_types.query_type({"IISPH", "HashedNeighborhoodSearch", "CubicSplineKernel"});
+        create_empty_3d_simulation(1.0f, 1000.0f);
 
         // initialize imgui and window
         ImGuiHelper::Init(this->get_window_handler());
