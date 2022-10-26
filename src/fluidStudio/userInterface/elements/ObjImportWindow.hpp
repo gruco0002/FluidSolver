@@ -12,11 +12,23 @@ namespace FluidStudio {
         void open_window();
 
       private:
+        enum class Sampler{
+            GridSampler,
+            UvSampler
+        };
+
+      private:
         bool visible = false;
 
         std::string current_file;
         float import_scale = 1.0f;
         uint32_t particle_tag = 0;
+
+        Sampler sampler = Sampler::UvSampler;
+
+        bool duplicate_reduction_enabled = true;
+        bool volume_reduction_enabled = true;
+        bool distance_reduction_enabled = false;
 
         bool report_enabled = true;
 

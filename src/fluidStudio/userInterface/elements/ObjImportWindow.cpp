@@ -47,6 +47,20 @@ namespace FluidStudio {
             ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
 
             ImGui::Separator();
+            if (ImGui::BeginCombo("Sampling Method", sampler == Sampler::UvSampler ? "UV-Sampler" : "Grid-Sampler")) {
+                if (ImGui::Selectable("UV-Sampler", sampler == Sampler::UvSampler)) {
+                    sampler = Sampler::UvSampler;
+                }
+                if (ImGui::Selectable("Grid-Sampler", sampler == Sampler::GridSampler)) {
+                    sampler = Sampler::GridSampler;
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::Checkbox("Duplicate Reduction", &duplicate_reduction_enabled);
+            ImGui::Checkbox("Distance Reduction", &distance_reduction_enabled);
+            ImGui::Checkbox("Volume Reduction", &volume_reduction_enabled);
+
+            ImGui::Separator();
             ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
             ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
             float particle_mass = get_particle_mass();
@@ -94,6 +108,10 @@ namespace FluidStudio {
         current_file = "";
         particle_tag = 0;
         report_enabled = true;
+        sampler = Sampler::UvSampler;
+        duplicate_reduction_enabled = true;
+        volume_reduction_enabled = true;
+        distance_reduction_enabled = false;
     }
 
     void ObjImportWindow::import_data_into_scene() {
@@ -107,15 +125,30 @@ namespace FluidStudio {
         obj_loader.scale = import_scale;
         auto mesh_data = obj_loader.load_as_meshdata();
 
-        LibFluid::Importer::ParticleSampler sampler;
+        LibFluid::Importer::ParticleSampler particle_sampler;
 
-        sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
-        sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
-        // sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
-        sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::VolumeReductionMethod>());
+        switch (sampler) {
+            case Sampler::GridSampler:
+                particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
+                break;
+            case Sampler::UvSampler:
+                particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
+                break;
+        }
 
 
-        const auto& samples = sampler.generate_samples(mesh_data, particle_size);
+        if (duplicate_reduction_enabled) {
+            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
+        }
+        if (distance_reduction_enabled) {
+            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
+        }
+        if (volume_reduction_enabled) {
+            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::VolumeReductionMethod>());
+        }
+
+
+        const auto& samples = particle_sampler.generate_samples(mesh_data, particle_size);
 
         report_data.created_particles = samples.size();
 
