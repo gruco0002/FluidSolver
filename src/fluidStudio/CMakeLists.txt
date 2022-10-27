@@ -65,7 +65,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         serializerExtensions/VseGlParticleRenderer3D.cpp serializerExtensions/VseGlParticleRenderer3D.hpp
         serializerExtensions/VseGlParticleRenderer.cpp serializerExtensions/VseGlParticleRenderer.hpp
         serializerExtensions/FluidStudioSerializerExtensions.cpp serializerExtensions/FluidStudioSerializerExtensions.hpp
-        )
+        userInterface/elements/componentSettings/TagDescriptorSettingsElement.cpp userInterface/elements/componentSettings/TagDescriptorSettingsElement.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

@@ -31,6 +31,8 @@ namespace FluidStudio {
             visualizer_settings_element.update();
         } else if (component.kind == SimulationComponent::Kind::Entity) {
             entity_settings_element.update();
+        } else if (component.kind == SimulationComponent::Kind::TagDescriptor) {
+            tag_descriptor_settings_element.update();
         }
     }
     void ComponentSettingsWindow::update_output_component() {
@@ -53,6 +55,7 @@ namespace FluidStudio {
         ui_data.collection().add(timestep_settings_element);
         ui_data.collection().add(visualizer_settings_element);
         ui_data.collection().add(entity_settings_element);
+        ui_data.collection().add(tag_descriptor_settings_element);
 
         // initialize ui elements
         sensor_settings_element.initialize(ui_data);
@@ -60,6 +63,7 @@ namespace FluidStudio {
         timestep_settings_element.initialize(ui_data);
         visualizer_settings_element.initialize(ui_data);
         entity_settings_element.initialize(ui_data);
+        tag_descriptor_settings_element.initialize(ui_data);
     }
 
 } // namespace FluidStudio
