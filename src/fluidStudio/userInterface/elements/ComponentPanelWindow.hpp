@@ -24,6 +24,8 @@ namespace FluidStudio {
         void update_selection_based_ui();
         void delete_component(const SimulationComponent& component);
         void update_component_node(const char* name, const SimulationComponent& component);
+
+        bool begin_structural_node(const char* name);
     };
 
 } // namespace FluidStudio

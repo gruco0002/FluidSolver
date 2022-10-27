@@ -24,29 +24,35 @@ namespace FluidStudio {
             update_component_node("Timestep", {SimulationComponent::Kind::Timestep, 0});
             update_component_node("Output", {SimulationComponent::Kind::Output, 0});
 
-            menu_sensor_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
-            for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
-                auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
+            if (begin_structural_node("Sensors")) {
+                menu_sensor_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
+                for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size(); i++) {
+                    auto sen = ui_data.window().simulator_visualizer_bundle.simulator->data.sensors[i];
 
-                // set name
-                auto name = sen->parameters.name + ": " + TypeInformationProvider::get_sensor_type_name(sen) + " Sensor";
-                if (menu_sensor_names[i] != name) {
-                    menu_sensor_names[i] = name;
+                    // set name
+                    auto name = sen->parameters.name + ": " + TypeInformationProvider::get_sensor_type_name(sen) + " Sensor";
+                    if (menu_sensor_names[i] != name) {
+                        menu_sensor_names[i] = name;
+                    }
+                    update_component_node(menu_sensor_names[i].c_str(), {SimulationComponent::Kind::Sensor, i});
                 }
-                update_component_node(menu_sensor_names[i].c_str(), {SimulationComponent::Kind::Sensor, i});
+                ImGui::TreePop();
             }
 
-            menu_entity_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
-            for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size(); i++) {
-                auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i];
+            if (begin_structural_node("Entities")) {
+                menu_entity_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size());
+                for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size(); i++) {
+                    auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i];
 
-                // set name
-                auto name = "Entity " + std::to_string(i + 1) + ": " + TypeInformationProvider::get_entity_type_name(ent);
-                if (menu_entity_names[i] != name) {
-                    menu_entity_names[i] = name;
+                    // set name
+                    auto name = "Entity " + std::to_string(i + 1) + ": " + TypeInformationProvider::get_entity_type_name(ent);
+                    if (menu_entity_names[i] != name) {
+                        menu_entity_names[i] = name;
+                    }
+
+                    update_component_node(menu_entity_names[i].c_str(), {SimulationComponent::Kind::Entity, i});
                 }
-
-                update_component_node(menu_entity_names[i].c_str(), {SimulationComponent::Kind::Entity, i});
+                ImGui::TreePop();
             }
 
 
@@ -150,7 +156,7 @@ namespace FluidStudio {
     void ComponentPanelWindow::update_component_node(const char* name, const SimulationComponent& component) {
         ImGuiTreeNodeFlags flags = ((component == m_selection) ? ImGuiTreeNodeFlags_Selected : 0) |
                 ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth |
-                ImGuiTreeNodeFlags_FramePadding;
+                ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_Bullet;
 
         bool opened = ImGui::TreeNodeEx((void*)((size_t)name + component.index * 1565412), flags, "%s", name);
 
@@ -258,6 +264,11 @@ namespace FluidStudio {
     }
     const SimulationComponent& ComponentPanelWindow::selection() const {
         return m_selection;
+    }
+
+    bool ComponentPanelWindow::begin_structural_node(const char* name) {
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
+        return ImGui::TreeNodeEx(name, flags);
     }
 
 } // namespace FluidStudio
