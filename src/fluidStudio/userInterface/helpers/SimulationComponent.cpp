@@ -12,6 +12,7 @@ namespace FluidStudio {
         switch (kind) {
             case Kind::Sensor:
             case Kind::Entity:
+            case Kind::TagDescriptor:
                 return true;
         }
 

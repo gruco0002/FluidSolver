@@ -12,7 +12,8 @@ namespace FluidStudio {
             Timestep,
             Sensor,
             Output,
-            Entity
+            Entity,
+            TagDescriptor
         } kind = Kind::None;
         size_t index = 0;
 

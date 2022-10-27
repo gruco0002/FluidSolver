@@ -55,6 +55,14 @@ namespace FluidStudio {
                 ImGui::TreePop();
             }
 
+            if (begin_structural_node("Tag Descriptors")) {
+                for (size_t i = 0; i < ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.size(); i++) {
+                    const auto& title = ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors[i].title;
+                    update_component_node(title.c_str(), {SimulationComponent::Kind::TagDescriptor, i});
+                }
+
+                ImGui::TreePop();
+            }
 
             // handle mouse click outside
             if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
@@ -149,6 +157,15 @@ namespace FluidStudio {
 
                 ImGui::EndMenu();
             }
+            if (ImGui::MenuItem("Add Tag Descriptor", nullptr, nullptr, is_safe)) {
+                auto& data = ui_data.window().simulator_visualizer_bundle.simulator->data;
+                auto size = data.tag_descriptors->descriptors.size() + 1;
+                auto name = "Tag Descriptor " + std::to_string(size);
+
+                data.tag_descriptors->descriptors.push_back({name, "", 0});
+                data.notify_that_data_changed();
+            }
+
             ImGui::EndPopup();
         }
     }
@@ -181,7 +198,7 @@ namespace FluidStudio {
         }
 
         if (component_deleted) {
-            // reset selction if required
+            // reset selection if required
             if (m_selection == component)
                 m_selection = {};
 
@@ -219,6 +236,22 @@ namespace FluidStudio {
                 ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i] = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[i + 1];
             }
             ui_data.window().simulator_visualizer_bundle.simulator->data.entities.pop_back();
+            ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
+        } else if (component.kind == SimulationComponent::Kind::TagDescriptor) {
+            // delete the tag descriptor if existing
+
+            auto& tag_descriptors = ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors;
+
+            // check for existance
+            if (tag_descriptors->descriptors.size() <= component.index) {
+                return;
+            }
+
+            // delete the descriptor
+            for (size_t i = component.index; i < tag_descriptors->descriptors.size() - 1; i++) {
+                tag_descriptors->descriptors[i] = std::move(tag_descriptors->descriptors[i + 1]);
+            }
+            tag_descriptors->descriptors.pop_back();
             ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         }
     }
