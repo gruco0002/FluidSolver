@@ -86,4 +86,7 @@ namespace FluidStudio {
             simulator->data.notify_that_data_changed();
         }
     }
+    uint32_t ParticleSelectionByTagOverlay::get_particle_tag() const {
+        return particle_tag;
+    }
 } // namespace FluidStudio

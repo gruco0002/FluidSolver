@@ -12,6 +12,7 @@
 #include "sensors/SensorPlane.hpp"
 #include "userInterface/helpers/TypeInformationProvider.hpp"
 #include "visualizationOverlay/ParticleRemoverOverlay.hpp"
+#include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
 namespace FluidStudio {
 
@@ -274,19 +275,15 @@ namespace FluidStudio {
                     new_overlay_instance = std::make_shared<ParticleRemoverOverlay>(remover3d);
                 }
             }
-        }
+        } else if (m_selection.kind == SimulationComponent::Kind::TagDescriptor) {
+            FLUID_ASSERT(m_selection.index < ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.size());
+            auto td = ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors[m_selection.index];
 
-        if (new_overlay_instance == nullptr && current_overlay_instance != nullptr) {
-            bool this_ui_is_responsible = false;
-            // check if the current selection is not induced by this part of the ui
-            if (std::dynamic_pointer_cast<ParticleRemoverOverlay>(current_overlay_instance) != nullptr) {
-                this_ui_is_responsible = true;
-            }
-
-
-            if (!this_ui_is_responsible) {
-                // the overlay is managed by another part of the ui
+            auto overlay_casted = std::dynamic_pointer_cast<ParticleSelectionByTagOverlay>(current_overlay_instance);
+            if (overlay_casted != nullptr && overlay_casted->get_particle_tag() == td.particle_tag) {
                 new_overlay_instance = current_overlay_instance;
+            } else {
+                new_overlay_instance = std::make_shared<ParticleSelectionByTagOverlay>(ui_data.window().simulator_visualizer_bundle.simulator, td.particle_tag);
             }
         }
 

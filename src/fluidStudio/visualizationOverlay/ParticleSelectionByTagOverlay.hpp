@@ -18,6 +18,8 @@ namespace FluidStudio {
         void set_matrix(const glm::mat4& mat_4) override;
         AllowedTransforms get_allowed_transforms() override;
 
+        uint32_t get_particle_tag() const;
+
       private:
         std::shared_ptr<LibFluid::Simulator> simulator;
         uint32_t particle_tag;

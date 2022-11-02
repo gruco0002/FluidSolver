@@ -45,20 +45,6 @@ namespace FluidStudio {
             }
 
 
-            if (ImGui::BeginMenu("Edit")) {
-                if (ImGui::MenuItem("Select Particles by Tag", nullptr, false, can_change)) {
-                    tag_selection_modal_open = true;
-                }
-
-                bool is_particle_selection_active = std::dynamic_pointer_cast<ParticleSelectionByTagOverlay>(ui_data.window().visualization_overlay.data.overlay_instance) != nullptr;
-                if (ImGui::MenuItem("Cancel Selection", nullptr, false, is_particle_selection_active)) {
-                    ui_data.window().visualization_overlay.set_new_overlay_instance(nullptr);
-                }
-
-                ImGui::EndMenu();
-            }
-
-
             if (ImGui::BeginMenu("Insert", can_change)) {
                 if (ImGui::MenuItem("Import Ply File", nullptr, false, can_change)) {
                     // open the ply import window
@@ -99,7 +85,6 @@ namespace FluidStudio {
         }
 
         update_save_menu();
-        update_tag_selection_modal();
     }
 
     void MainWindowMenu::update_save_menu() {
@@ -200,40 +185,7 @@ namespace FluidStudio {
         }
     }
 
-    void MainWindowMenu::update_tag_selection_modal() {
-        static uint32_t particle_tag = 0;
-        if (ImGui::BeginPopupModal("Particle Selection by Tag")) {
-            ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
 
-            if (particle_tag == (uint32_t)-1) {
-                ImGui::Text("This disables the current selection.");
-            }
-
-            if (ImGui::Button("Close")) {
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Select")) {
-                // select particles
-
-                if (particle_tag == (uint32_t)-1) {
-                    ui_data.window().visualization_overlay.set_new_overlay_instance(nullptr);
-                } else {
-                    auto overlay = std::make_shared<ParticleSelectionByTagOverlay>(ui_data.window().simulator_visualizer_bundle.simulator, particle_tag);
-                    ui_data.window().visualization_overlay.set_new_overlay_instance(overlay);
-                }
-
-                ImGui::CloseCurrentPopup();
-            }
-
-            ImGui::EndPopup();
-        }
-        if (tag_selection_modal_open) {
-            particle_tag = 0;
-            tag_selection_modal_open = false;
-            ImGui::OpenPopup("Particle Selection by Tag");
-        }
-    }
     bool MainWindowMenu::is_3d_simulation() const {
         if (ui_data.window().simulator_visualizer_bundle.simulator->data.collection->is_type_present<LibFluid::MovementData3D>()) {
             return true;
