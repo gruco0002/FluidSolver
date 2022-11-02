@@ -5,6 +5,8 @@
 #include "helpers/Reportable.hpp"
 #include "LibFluidForward.hpp"
 
+#include <memory>
+
 namespace LibFluid {
     class SimulatorVisualizerBundle : public Initializable,  public Reportable {
       public:

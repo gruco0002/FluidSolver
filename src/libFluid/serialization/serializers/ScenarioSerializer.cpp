@@ -14,7 +14,7 @@ namespace LibFluid::Serialization {
         nlohmann::json res;
 
         // save particle data path
-        res["particles"] = context().particle_data_relative_filepath;
+        res["particles"] = context().particle_data_relative_filepath.string();
 
         // save general parameters
         res["gravity"] = simulator->parameters.gravity;

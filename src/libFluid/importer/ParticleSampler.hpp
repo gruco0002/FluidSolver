@@ -5,6 +5,8 @@
 #include "importer/methods/ReductionMethod.hpp"
 #include "importer/methods/SamplingMethod.hpp"
 
+#include <memory>
+
 namespace LibFluid::Importer {
     class ParticleSampler {
       public:
