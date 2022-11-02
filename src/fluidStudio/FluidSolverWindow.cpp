@@ -27,7 +27,7 @@ namespace FluidStudio {
     void FluidSolverWindow::load() {
         // set the current fluid solver type and create an empty simulation
         current_type = solver_types.query_type({"IISPH", "HashedNeighborhoodSearch", "CubicSplineKernel"});
-        create_empty_3d_simulation(1.0f, 1000.0f);
+        create_empty_3d_simulation(0.1f, 1000.0f);
 
         // initialize imgui and window
         ImGuiHelper::Init(this->get_window_handler());
@@ -686,7 +686,7 @@ namespace FluidStudio {
 
         gl_renderer->settings.selected_tag = -1;
         if (visualization_overlay.data.overlay_instance != nullptr) {
-            if (visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTag) {
+            if (visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTagTint) {
                 gl_renderer->settings.selected_tag = visualization_overlay.data.overlay_instance->get_display_particle_tag();
             }
         }

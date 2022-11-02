@@ -9,7 +9,7 @@ namespace FluidStudio {
         enum class Display {
             None,
             Cube,
-            ParticleTag
+            ParticleTagTint
         };
 
 
@@ -26,6 +26,10 @@ namespace FluidStudio {
 
         inline virtual uint32_t get_display_particle_tag() {
             return 0;
+        }
+
+        inline virtual const char* get_display_text() {
+            return nullptr;
         }
 
         virtual glm::mat4 get_matrix() = 0;

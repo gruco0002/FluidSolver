@@ -6,7 +6,7 @@ namespace FluidStudio {
 
 
     OverlayInstance::Display ParticleSelectionByTagOverlay::get_display() {
-        return OverlayInstance::Display::ParticleTag;
+        return OverlayInstance::Display::ParticleTagTint;
     }
 
     uint32_t ParticleSelectionByTagOverlay::get_display_particle_tag() {
@@ -86,7 +86,28 @@ namespace FluidStudio {
             simulator->data.notify_that_data_changed();
         }
     }
+
     uint32_t ParticleSelectionByTagOverlay::get_particle_tag() const {
         return particle_tag;
+    }
+
+    const char* ParticleSelectionByTagOverlay::get_display_text() {
+        update_display_text();
+
+        if (display_text.empty()) {
+            return nullptr;
+        }
+        return display_text.c_str();
+    }
+
+    void ParticleSelectionByTagOverlay::update_display_text() {
+        auto descriptor = simulator->data.tag_descriptors->get_descriptor_by_tag(particle_tag);
+        if (descriptor == nullptr) {
+            display_text.clear();
+        } else {
+            if (display_text != descriptor->title) {
+                display_text = descriptor->title;
+            }
+        }
     }
 } // namespace FluidStudio
