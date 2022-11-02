@@ -152,6 +152,7 @@ namespace FluidStudio {
 
         report_data.created_particles = samples.size();
 
+        // convert samples into particles
         for (const auto& sample : samples) {
             size_t index = collection->add();
 
@@ -171,6 +172,17 @@ namespace FluidStudio {
             data.pressure = 0.0f;
         }
 
+        // add particle tag descriptor
+        {
+            LibFluid::TagDescriptors::Descriptor d;
+            d.particle_tag = particle_tag;
+            d.description = "Imported from " + std::filesystem::path(current_file).filename().string();
+            d.title = std::filesystem::path(current_file).filename().string();
+            ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.push_back(d);
+        }
+
+
+        // notify data structures of change
         ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         ui_data.window().simulator_visualizer_bundle.initialize();
 

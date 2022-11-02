@@ -120,7 +120,21 @@ namespace FluidStudio {
             }
         }
 
+        // add particle tag mappings
+        for (const auto& entry : mapped_colors) {
+            const auto& map_info = entry.second;
+            auto tag = map_info.particle_tag;
 
+            LibFluid::TagDescriptors::Descriptor d;
+            d.particle_tag = tag;
+            d.description = "Imported from " + std::filesystem::path(loaded_file).filename().string();
+            d.title = std::filesystem::path(loaded_file).filename().string();
+
+            ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.push_back(d);
+        }
+
+
+        // notify data structures of change
         ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         ui_data.window().simulator_visualizer_bundle.initialize();
 
