@@ -1,0 +1,122 @@
+{
+    "scenario": {
+        "entities": [
+            {
+                "remove-if-outside": true,
+                "type": "particle-remover-3d",
+                "volume": {
+                    "center": [
+                        -0.9983909130096436,
+                        8.264939308166504,
+                        1.1039276123046875
+                    ],
+                    "distance-from-center": [
+                        8.170584678649902,
+                        9.427165031433105,
+                        8.742383003234863
+                    ]
+                }
+            }
+        ],
+        "gravity": 9.8100004196167,
+        "particle-size": 1.0,
+        "particles": "test_gamma.data",
+        "rest-density": 1.0,
+        "sensors": [
+            {
+                "filename": "iisph.sensor",
+                "keep-data-in-memory": false,
+                "name": "IISPH Sensor",
+                "save-to-file": true,
+                "type": "iisph-sensor"
+            },
+            {
+                "filename": "particleCount.sensor",
+                "keep-data-in-memory": false,
+                "name": "Particle Count Sensor",
+                "save-to-file": true,
+                "type": "global-particle-count-sensor"
+            },
+            {
+                "filename": "density.sensor",
+                "keep-data-in-memory": false,
+                "name": "Density Sensor",
+                "save-to-file": true,
+                "type": "global-density-sensor"
+            }
+        ]
+    },
+    "solver": {
+        "gamma": 0.699999988079071,
+        "kernel": {
+            "type": "cubic-spline-kernel-3d"
+        },
+        "max-density-error": 0.0010000000474974513,
+        "max-iterations": 100,
+        "min-iterations": 2,
+        "neigborhood-search": {
+            "type": "hashed-3d"
+        },
+        "omega": 0.5,
+        "single-layer-boundary-enabled": true,
+        "single-layer-settings": {
+            "gamma-1": 1.100000023841858
+        },
+        "timestep": {
+            "timestep": 0.05000000074505806,
+            "type": "constant"
+        },
+        "type": "iisph-3d",
+        "viscosity": 5.0
+    },
+    "version": 1,
+    "visualizer": {
+        "render-target": {
+            "height": 1080,
+            "width": 1920
+        },
+        "settings": {
+            "background-color": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "boundary-color": [
+                0.5,
+                0.5,
+                0.5,
+                1.0
+            ],
+            "camera": {
+                "location": [
+                    9.300490379333496,
+                    22.997032165527344,
+                    16.85400390625
+                ],
+                "looking-at": [
+                    4.765437602996826,
+                    17.82291030883789,
+                    9.736310005187988
+                ],
+                "up": [
+                    0.0,
+                    1.0,
+                    0.0
+                ]
+            },
+            "fluid-color": [
+                0.5,
+                0.5,
+                1.0,
+                1.0
+            ],
+            "light-direction": [
+                8.0,
+                -12.0,
+                1.0
+            ]
+        },
+        "type": "gl-particle-renderer-3d"
+    }
+}

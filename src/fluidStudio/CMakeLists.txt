@@ -18,11 +18,10 @@ set(FLUID_STUDIO_SOURCE_FILES
         "FluidSolverWindow.cpp"
         "FluidSolverWindow.hpp"
         "ImguiHelper.cpp" "ImguiHelper.hpp"
-        "userInterface/ScenariosWindow.cpp" "userInterface/ScenariosWindow.hpp"
         "userInterface/UiLayer.cpp" "userInterface/UiLayer.hpp"
         "FluidSolverTypes.cpp" "FluidSolverTypes.hpp"
-        "userInterface/StatisticsUi.cpp" "userInterface/StatisticsUi.hpp"
-        "userInterface/LogWindow.cpp" "userInterface/LogWindow.hpp"
+        "userInterface/elements/SensorGraphWindows.cpp" "userInterface/elements/SensorGraphWindows.hpp"
+        "userInterface/elements/LogWindow.cpp" "userInterface/elements/LogWindow.hpp"
         "visualizer/GLParticleRenderer.hpp" "visualizer/GLParticleRenderer.cpp"
         "visualizer/GLParticleVertexArray.hpp" "visualizer/GLParticleVertexArray.cpp"
         "visualizer/GLParticleRenderer3D.hpp" "visualizer/GLParticleRenderer3D.cpp"
@@ -30,12 +29,43 @@ set(FLUID_STUDIO_SOURCE_FILES
         "visualizer/GLParticleVertexArray3D.hpp" "visualizer/GLParticleVertexArray3D.cpp"
         "incbin/incbin.h"
         "incbin/incbin_helper.hpp" "incbin/incbin_helper.cpp"
-        "ExtendedSimulationSerializer.hpp" "ExtendedSimulationSerializer.cpp"
         "Assets.hpp" "Assets.cpp"
-        "userInterface/PlyImport.hpp" "userInterface/PlyImport.cpp"
+        "userInterface/elements/PlyImportWindow.hpp" "userInterface/elements/PlyImportWindow.cpp"
         "FluidStudioFwd.hpp"
         DirectoryHelper.cpp DirectoryHelper.hpp
-        runners/ComponentRunner.cpp runners/ComponentRunner.hpp runners/SimulationRunner.cpp runners/SimulationRunner.hpp runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp TimelineService.cpp TimelineService.hpp userInterface/TimelineUi.cpp userInterface/TimelineUi.hpp visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp visualizationOverlay/OverlayInstance.hpp visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp)
+        runners/ComponentRunner.cpp runners/ComponentRunner.hpp
+        runners/SimulationRunner.cpp runners/SimulationRunner.hpp
+        runners/VisualizationRunner.cpp runners/VisualizationRunner.hpp
+        TimelineService.cpp TimelineService.hpp
+        userInterface/elements/TimelineWindow.cpp userInterface/elements/TimelineWindow.hpp
+        visualizationOverlay/VisualizationOverlay.cpp visualizationOverlay/VisualizationOverlay.hpp
+        visualizationOverlay/OverlayCubeRenderer.cpp visualizationOverlay/OverlayCubeRenderer.hpp
+        visualizationOverlay/OverlayInstance.hpp
+        visualizationOverlay/ParticleRemoverOverlay.cpp visualizationOverlay/ParticleRemoverOverlay.hpp
+        userInterface/elements/SimulationControlsWindow.cpp userInterface/elements/SimulationControlsWindow.hpp
+        userInterface/UiData.hpp userInterface/UiData.cpp
+        userInterface/elements/MainWindowMenu.cpp userInterface/elements/MainWindowMenu.hpp
+        userInterface/UiElement.cpp userInterface/UiElement.hpp
+        userInterface/UiElementCollection.hpp
+        userInterface/elements/ComponentPanelWindow.cpp userInterface/elements/ComponentPanelWindow.hpp
+        userInterface/helpers/SimulationComponent.cpp userInterface/helpers/SimulationComponent.hpp
+        userInterface/elements/ComponentSettingsWindow.cpp userInterface/elements/ComponentSettingsWindow.hpp
+        userInterface/StyledImGuiElements.cpp userInterface/StyledImGuiElements.hpp
+        userInterface/elements/componentSettings/SensorSettingsElement.cpp userInterface/elements/componentSettings/SensorSettingsElement.hpp
+        userInterface/elements/componentSettings/SolverSettingsElement.cpp userInterface/elements/componentSettings/SolverSettingsElement.hpp
+        userInterface/elements/componentSettings/TimestepSettingsElement.cpp userInterface/elements/componentSettings/TimestepSettingsElement.hpp
+        userInterface/elements/componentSettings/VisualizerSettingsElement.cpp userInterface/elements/componentSettings/VisualizerSettingsElement.hpp
+        userInterface/elements/componentSettings/EntitySettingsElement.cpp userInterface/elements/componentSettings/EntitySettingsElement.hpp
+        userInterface/helpers/TypeInformationProvider.cpp userInterface/helpers/TypeInformationProvider.hpp
+        visualizationOverlay/ParticleSelectionByTagOverlay.cpp visualizationOverlay/ParticleSelectionByTagOverlay.hpp
+        userInterface/elements/ObjImportWindow.cpp userInterface/elements/ObjImportWindow.hpp
+        userInterface/elements/NewSimulationModalWindow.cpp userInterface/elements/NewSimulationModalWindow.hpp
+        userInterface/helpers/ParticleCollectionHelper.cpp userInterface/helpers/ParticleCollectionHelper.hpp
+        userInterface/elements/InsertParticlesWindow.cpp userInterface/elements/InsertParticlesWindow.hpp
+        serializerExtensions/VseGlParticleRenderer3D.cpp serializerExtensions/VseGlParticleRenderer3D.hpp
+        serializerExtensions/VseGlParticleRenderer.cpp serializerExtensions/VseGlParticleRenderer.hpp
+        serializerExtensions/FluidStudioSerializerExtensions.cpp serializerExtensions/FluidStudioSerializerExtensions.hpp
+        userInterface/elements/componentSettings/TagDescriptorSettingsElement.cpp userInterface/elements/componentSettings/TagDescriptorSettingsElement.hpp)
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

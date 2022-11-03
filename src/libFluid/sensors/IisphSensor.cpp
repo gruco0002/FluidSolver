@@ -1,10 +1,10 @@
 #include "IisphSensor.hpp"
 
-#include "fluidSolver/IISPHFluidSolver3D.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 #include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
+#include "fluidSolver/solver/IISPHFluidSolver3D.hpp"
 
 namespace LibFluid::Sensors {
 

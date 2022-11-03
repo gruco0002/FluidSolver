@@ -1,29 +1,27 @@
 #pragma once
 
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
-#include "CompatibilityReport.hpp"
-#include "FluidInclude.hpp"
-
-#include "Initializable.hpp"
-#include "Reportable.hpp"
+#include <glm/glm.hpp>
 
 namespace LibFluid {
     class CubicSplineKernel : public Initializable, public Reportable {
-
       public:
-        pFloat kernel_support;
+        float kernel_support;
 
-        pFloat GetKernelValue(const vec2& position) const;
+        float GetKernelValue(const glm::vec2& position) const;
 
-        vec2 GetKernelDerivativeValue(const vec2& position) const;
+        glm::vec2 GetKernelDerivativeValue(const glm::vec2& position) const;
 
-        pFloat GetKernelValue(const vec2& neighborPosition, const vec2& position) const;
+        float GetKernelValue(const glm::vec2& neighborPosition, const glm::vec2& position) const;
 
-        vec2 GetKernelDerivativeValue(const vec2& neighborPosition, const vec2& position) const;
+        glm::vec2 GetKernelDerivativeValue(const glm::vec2& neighborPosition, const glm::vec2& position) const;
 
-        vec2 GetKernelDerivativeReversedValue(const vec2& neighborPosition, const vec2& position) const;
+        glm::vec2 GetKernelDerivativeReversedValue(const glm::vec2& neighborPosition, const glm::vec2& position) const;
 
-        void create_compatibility_report(CompatibilityReport &report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
         void initialize() override;
 
@@ -31,4 +29,4 @@ namespace LibFluid {
         float h = 0.0f;
         float alpha = 0.0f;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

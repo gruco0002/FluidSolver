@@ -40,7 +40,7 @@ namespace LibFluid {
         return copy;
     }
 
-    bool VolumeGroup::is_inside(pIndex_t index) const {
+    bool VolumeGroup::is_inside(size_t index) const {
         FLUID_ASSERT(collection->is_type_present<MovementData3D>())
         FLUID_ASSERT(collection->size() > index)
         const auto& position = collection->get<MovementData3D>(index).position;
@@ -53,7 +53,7 @@ namespace LibFluid {
         return true;
     }
 
-    bool VolumeGroup::is_member(pIndex_t index) const {
+    bool VolumeGroup::is_member(size_t index) const {
         return inside == is_inside(index);
     }
 

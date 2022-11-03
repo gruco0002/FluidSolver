@@ -1,12 +1,13 @@
 #include "SensorPlane.hpp"
 
-#include "Log.hpp"
 #include "OutputManager.hpp"
 #include "Simulator.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
+#include "helpers/Log.hpp"
 #include "parallelization/StdParallelForEach.hpp"
-#include "serialization/Base64.hpp"
-#include "serialization/JsonHelpers.hpp"
+#include "serialization/helpers/Base64.hpp"
+#include "serialization/helpers/JsonHelpers.hpp"
+#include "LibFluidMath.hpp"
 
 namespace LibFluid::Sensors {
 
@@ -24,13 +25,13 @@ namespace LibFluid::Sensors {
             size_t y = i / settings.number_of_samples_x;
             size_t x = i % settings.number_of_samples_x;
 
-            vec3 value = vec3(0.0f);
+            glm::vec3 value = glm::vec3(0.0f);
 
             if (data.size() > i) {
                 value = data[i];
             }
-            value -= vec3(settings.min_image_value);
-            value = value / vec3(settings.max_image_value - settings.min_image_value);
+            value -= glm::vec3(settings.min_image_value);
+            value = value / glm::vec3(settings.max_image_value - settings.min_image_value);
 
             if (value.x > 1.0f)
                 value.x = 1.0f;
@@ -107,7 +108,7 @@ namespace LibFluid::Sensors {
                 for (size_t sub_y_count = 0; sub_y_count <= settings.sub_sample_grid_size; sub_y_count++) {
                     float sub_y = sub_y_count / (settings.sub_sample_grid_size + 1.0f) - 0.5f;
 
-                    vec3 sample_position =
+                    glm::vec3 sample_position =
                             settings.origin + span_x * x_step * (x + sub_x) + span_y * y_step * (y + sub_y);
                     auto neighbors = simulator_data.neighborhood_interface->get_neighbors(sample_position);
                     for (auto neighbor : neighbors) {

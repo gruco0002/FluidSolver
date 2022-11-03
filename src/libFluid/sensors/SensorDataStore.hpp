@@ -1,6 +1,7 @@
 #pragma once
 
 #include "time/Timepoint.hpp"
+#include "LibFluidAssert.hpp"
 
 #include <vector>
 

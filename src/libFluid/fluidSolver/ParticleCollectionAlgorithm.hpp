@@ -11,7 +11,7 @@ namespace LibFluid::ParticleCollectionAlgorithm
 {
     class Sort {
       public:
-        using key_function_t = std::function<uint64_t(const std::shared_ptr<ParticleCollection>&, const pIndex_t)>;
+        using key_function_t = std::function<uint64_t(const std::shared_ptr<ParticleCollection>&, const size_t)>;
 
 
         struct SortInfo

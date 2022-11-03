@@ -8,6 +8,7 @@
 #include "visualizer/ISimulationVisualizer.hpp"
 #include "visualizer/Viewport2D.hpp"
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
 

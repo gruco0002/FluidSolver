@@ -16,6 +16,7 @@ namespace FluidStudio {
         glm::mat4 get_matrix() override;
         void set_matrix(const glm::mat4& mat_4) override;
         AllowedTransforms get_allowed_transforms() override;
+        const char* get_display_text() override;
     };
 
 

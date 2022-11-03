@@ -90,7 +90,7 @@ namespace LibFluid {
 
     #pragma omp parallel for
         for
-     * (pIndex_t particleIndex = 0; particleIndex < size; particleIndex++) {
+     * (size_t particleIndex = 0; particleIndex < size; particleIndex++) {
             bool selected =
      * particleSelection->IsParticleSelected(particleIndex, particleCollection);
  selectionData[particleIndex] =

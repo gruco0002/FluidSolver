@@ -1,8 +1,8 @@
 #include "GLParticleRenderer3D.hpp"
 
 #include "Assets.hpp"
-#include "Log.hpp"
 #include "engine/Window.hpp"
+#include "helpers/Log.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -80,6 +80,8 @@ void LibFluid::GLParticleRenderer3D::render() {
     particleShader->SetValue("ambientLightFactor", 0.1f);
     particleShader->SetValue("numberOfParticles", (float)simulation_data.collection->size());
     particleShader->SetValue("showParticleMemoryLocation", settings.show_particle_memory_location ? 1 : 0);
+    particleShader->SetValue("particleSize", simulation_data.particle_size);
+    particleShader->SetValue("selectedTag", (int32_t)settings.selected_tag);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);

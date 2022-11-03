@@ -1,14 +1,13 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "DataChangeStruct.hpp"
-#include "FluidInclude.hpp"
 #include "ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "time/ITimestepGenerator.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/DataChangeStruct.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 #include "time/Timepoint.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "time/TimestepGenerator.hpp"
 
 #include <memory>
 
@@ -17,22 +16,21 @@ namespace LibFluid {
     class IFluidSolverBase : public Initializable, public Reportable {
       public:
         struct SimulationParameters : public DataChangeStruct {
-            pFloat rest_density = 1.0f;
-            pFloat gravity = 9.81f;
-            pFloat particle_size = 1.0f;
+            float rest_density = 1000.0f; // 1000 kg m^-3
+            float gravity = 9.81f;        // 9.81 m s^-2
+            float particle_size = 0.1f;   // 10cm
 
         } parameters;
 
         struct SimulationData : public DataChangeStruct {
-            std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
+            std::shared_ptr<TimestepGenerator> timestep_generator = nullptr;
             std::shared_ptr<ParticleCollection> collection = nullptr;
         } data;
 
         virtual void execute_simulation_step(Timepoint& timestep) = 0;
+        virtual void execute_neighborhood_search() = 0;
 
         virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() = 0;
-
-
     };
 
     /**
@@ -84,4 +82,4 @@ namespace LibFluid {
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ComponentRunner.hpp"
-#include "FluidInclude.hpp"
+#include "LibFluidForward.hpp"
 
 namespace FluidStudio {
     class SimulationRunner : public ComponentRunner {

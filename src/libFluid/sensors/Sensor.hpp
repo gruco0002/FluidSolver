@@ -1,19 +1,23 @@
 #pragma once
 
-#include "DataChangeStruct.hpp"
-#include "Forward.hpp"
-#include "Initializable.hpp"
-#include "Reportable.hpp"
+#include "LibFluidForward.hpp"
+#include "helpers/DataChangeStruct.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 #include "time/Timepoint.hpp"
 
+#include <memory>
 
-namespace LibFluid{
+
+namespace LibFluid {
     class Sensor : public Initializable, public Reportable {
       public:
         struct SensorParameters {
             std::string name = "Sensor";
-            bool save_to_file = false;
             bool keep_data_in_memory = false;
+
+            bool save_to_file = false;
+            std::string filename = "xyz.sensor";
         } parameters;
 
         struct SimulatorData : public DataChangeStruct {
@@ -33,4 +37,4 @@ namespace LibFluid{
 
         virtual ~Sensor() = default;
     };
-}
+} // namespace LibFluid

@@ -14,7 +14,7 @@ namespace LibFluid {
         if (parameters.particle_collection->is_type_present<MovementData3D>()) {
             for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
                 auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
-                if (type == ParticleTypeDead)
+                if (type == ParticleTypeInactive)
                     continue;
 
 
@@ -27,7 +27,7 @@ namespace LibFluid {
         } else {
             for (uint32_t i = 0; i < parameters.particle_collection->size(); i++) {
                 auto type = parameters.particle_collection->get<ParticleInfo>(i).type;
-                if (type == ParticleTypeDead)
+                if (type == ParticleTypeInactive)
                     continue;
 
 
@@ -103,10 +103,11 @@ namespace LibFluid {
             delta_t_v = parameters.particle_size / max_velocity * settings.lambda_v;
         }
 
-        return std::fmin(delta_t_a, delta_t_v);
+        auto new_timestep = std::fmin(delta_t_a, delta_t_v);
+
+        return std::fmax(new_timestep, MIN_ALLOWED_TIMESTEP);
     }
     void DynamicCflTimestepGenerator::initialize() {
-
     }
 
-} // namespace FluidSolver
+} // namespace LibFluid

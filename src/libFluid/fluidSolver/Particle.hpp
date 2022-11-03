@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+#include <glm/glm.hpp>
 
 namespace LibFluid {
 
@@ -8,45 +8,45 @@ namespace LibFluid {
     {
         ParticleTypeNormal = 0,
         ParticleTypeBoundary = 1,
-        ParticleTypeDead = 2,
+        ParticleTypeInactive = 2,
     };
 
 
     struct MovementData
     {
-        vec2 position;
-        vec2 velocity;
-        vec2 acceleration;
+        glm::vec2 position;
+        glm::vec2 velocity;
+        glm::vec2 acceleration;
     };
 
     struct MovementData3D
     {
-        vec3 position;
-        vec3 velocity;
-        vec3 acceleration;
+        glm::vec3 position;
+        glm::vec3 velocity;
+        glm::vec3 acceleration;
     };
 
     struct ParticleData
     {
-        pFloat mass;
-        pFloat pressure;
-        pFloat density;
+        float mass;
+        float pressure;
+        float density;
     };
 
     struct ParticleInfo
     {
-        pTag_t tag;
+        uint32_t tag;
         uint8_t type;
     };
 
     struct ExternalForces
     {
-        vec2 non_pressure_acceleration;
+        glm::vec2 non_pressure_acceleration;
     };
 
     struct ExternalForces3D
     {
-        vec3 non_pressure_acceleration;
+        glm::vec3 non_pressure_acceleration;
     };
 
 } // namespace FluidSolver

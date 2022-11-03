@@ -39,4 +39,7 @@ namespace FluidStudio {
     ParticleRemoverOverlay::ParticleRemoverOverlay(std::shared_ptr<LibFluid::ParticleRemover3D> entity) {
         this->entity = entity;
     }
+    const char* ParticleRemoverOverlay::get_display_text() {
+        return "Particle Remover";
+    }
 } // namespace FluidUi

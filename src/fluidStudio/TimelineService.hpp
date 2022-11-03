@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+#include "LibFluidForward.hpp"
 #include "time/Timepoint.hpp"
 #include <filesystem>
 #include <vector>
@@ -12,6 +12,8 @@ namespace FluidStudio {
         void reset();
 
         void save_timestep_result();
+
+        void override_timestep_result();
 
         std::shared_ptr<LibFluid::Simulator> simulator = nullptr;
 
@@ -39,4 +41,4 @@ namespace FluidStudio {
 
         void clear_cache_folder();
     };
-} // namespace FluidUi
+} // namespace FluidStudio

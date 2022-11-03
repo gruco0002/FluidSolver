@@ -16,7 +16,7 @@ layout (location = 6) in uint aType;
 #define COLOR_SELECTION_DENSITY 4
 
 #define PARTICLE_TYPE_BOUNDARY 1u
-#define PARTICLE_TYPE_DEAD 2u
+#define PARTICLE_TYPE_INACTIVE 2u
 
 
 uniform int colorSelection;
@@ -65,7 +65,7 @@ void main()
     val = clamp(val - bottomValue, 0.0, (topValue - bottomValue)) / (topValue - bottomValue);
     vs_out.color = mix(bottomColor, topColor, val);
 
-    if(aType == PARTICLE_TYPE_DEAD) {
+    if(aType == PARTICLE_TYPE_INACTIVE) {
         vs_out.discarded = 1;
     } else if(aType == PARTICLE_TYPE_BOUNDARY) {
         vs_out.color = boundaryColor;

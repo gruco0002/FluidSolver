@@ -1,5 +1,7 @@
 #include "Simulator.hpp"
 
+#include "LibFluidAssert.hpp"
+
 namespace LibFluid {
 
     void Simulator::execute_simulation_step() {
@@ -22,13 +24,26 @@ namespace LibFluid {
             timepoint.actual_time_step = current_timestep;
         }
 
+        // execute neighborhood search
+        data.fluid_solver->execute_neighborhood_search();
+
+        // simulate entities before simulation step
+        for (auto ent : data.entities) {
+            if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeSolver ||
+                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->execute_simulation_step(timepoint, true);
+            }
+        }
+
         // simulate
         data.fluid_solver->execute_simulation_step(timepoint);
 
-        // simulate entities
+        // simulate entities after simulation step
         for (auto ent : data.entities) {
-            // TODO: improve entity time step is fixed
-            ent->execute_simulation_step(timepoint.actual_time_step);
+            if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::AfterSolver ||
+                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->execute_simulation_step(timepoint, false);
+            }
         }
 
         // update simulation time
@@ -64,9 +79,10 @@ namespace LibFluid {
             for (auto ent : data.entities) {
                 FLUID_ASSERT(ent != nullptr);
 
-                ent->sim.gravity = parameters.gravity;
-                ent->sim.particle_size = parameters.particle_size;
-                ent->sim.notify_that_data_changed();
+                ent->simulation_data.gravity = parameters.gravity;
+                ent->simulation_data.particle_size = parameters.particle_size;
+                ent->simulation_data.rest_density = parameters.rest_density;
+                ent->simulation_data.notify_that_data_changed();
             }
 
             for (auto sen : data.sensors) {
@@ -96,10 +112,15 @@ namespace LibFluid {
 
             for (auto ent : data.entities) {
                 FLUID_ASSERT(ent != nullptr);
-                ent->sim.collection = data.collection;
-                ent->sim.neighborhood_interface = neigborhood_interface;
+                ent->simulation_data.collection = data.collection;
+                ent->simulation_data.neighborhood_interface = neigborhood_interface;
+                ent->simulation_data.notify_that_data_changed();
 
-                ent->sim.notify_that_data_changed();
+                // the entity could have been added
+                ent->simulation_data.gravity = parameters.gravity;
+                ent->simulation_data.particle_size = parameters.particle_size;
+                ent->simulation_data.rest_density = parameters.rest_density;
+                ent->simulation_data.notify_that_data_changed();
             }
 
             for (auto sen : data.sensors) {
@@ -108,8 +129,11 @@ namespace LibFluid {
                 sen->simulator_data.manager = output;
                 sen->simulator_data.collection = data.collection;
                 sen->simulator_data.fluid_solver = data.fluid_solver;
-
                 sen->simulator_data.notify_that_data_changed();
+
+                // the sensor could have been added
+                sen->simulator_parameters.gravity = parameters.gravity;
+                sen->simulator_parameters.notify_that_data_changed();
             }
         }
     }

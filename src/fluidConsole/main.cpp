@@ -1,8 +1,10 @@
 
-#include "Log.hpp"
+#include "FluidConsoleSerializerExtensions.hpp"
 #include "Simulator.hpp"
 #include "SimulatorVisualizerBundle.hpp"
-#include "serialization/SimulationSerializer.hpp"
+#include "helpers/Log.hpp"
+#include "serialization/MainSerializer.hpp"
+#include "serialization/ParticleSerializer.hpp"
 
 #include <cxxopts.hpp>
 #include <filesystem>
@@ -10,7 +12,7 @@
 #include <string>
 
 
-void printHelp(cxxopts::Options& options) {
+void print_help(cxxopts::Options& options) {
     std::cout << std::endl
               << options.help({
                          "",
@@ -25,7 +27,8 @@ void dump_particle_data(const std::shared_ptr<LibFluid::ParticleCollection>& col
         std::filesystem::create_directories(filepath.parent_path());
     }
 
-    LibFluid::SimulationSerializer::save_particles(*collection, filepath.string());
+    LibFluid::Serialization::ParticleSerializer particle_serializer(filepath);
+    particle_serializer.serialize(*collection);
 }
 
 int main(int argc, char* argv[]) {
@@ -56,7 +59,7 @@ int main(int argc, char* argv[]) {
         auto result = options.parse(argc, argv);
 
         if (result["help"].as<bool>()) {
-            printHelp(options);
+            print_help(options);
             return 0;
         }
 
@@ -96,10 +99,17 @@ int main(int argc, char* argv[]) {
             LibFluid::Log::message("[Console] Starting in console mode.");
 
         // Load file
-        LibFluid::SimulationSerializer s(settings.filepath);
-        LibFluid::SimulatorVisualizerBundle bundle = s.load_from_file();
-        if (s.has_errors()) {
+        LibFluid::Serialization::SerializationContext context_output;
+
+        auto serializer_extensions = FluidConsole::FluidConsoleSerializerExtensions::create_extensions();
+        LibFluid::Serialization::MainSerializer serializer(settings.filepath, serializer_extensions);
+        LibFluid::SimulatorVisualizerBundle bundle = serializer.deserialize(&context_output);
+
+        if (!context_output.issues.empty()) {
             LibFluid::Log::error("[Console] Loading of scenario caused errors!");
+            for (const auto& issue : context_output.issues) {
+                LibFluid::Log::error(issue.to_formatted_string());
+            }
             return 3;
         }
 
@@ -164,8 +174,6 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // manual save of the output
-        bundle.simulator->output->manual_save();
 
         LibFluid::Log::message("[Console] Simulation has finished.");
 
@@ -174,7 +182,7 @@ int main(int argc, char* argv[]) {
     } catch (cxxopts::option_not_exists_exception& exc) {
         LibFluid::Log::print_to_console = true;
         LibFluid::Log::error(exc.what());
-        printHelp(options);
+        print_help(options);
         return 2;
     }
 }

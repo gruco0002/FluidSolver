@@ -1,5 +1,6 @@
 #include "NeighborhoodInterface.hpp"
 
+#include "LibFluidAssert.hpp"
 
 LibFluid::NeighborhoodInterface::NeighborsIterator LibFluid::NeighborhoodInterface::Neighbors::begin()
 {
@@ -67,12 +68,12 @@ LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_
     return link.get_by_index(particleIndex);
 }
 
-LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const vec2& position)
+LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec2& position)
 {
     FLUID_ASSERT(link.get_by_position != nullptr);
     return link.get_by_position(position);
 }
-LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const vec3& position)
+LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec3& position)
 {
     FLUID_ASSERT(link.get_by_position_3d != nullptr);
     return link.get_by_position_3d(position);

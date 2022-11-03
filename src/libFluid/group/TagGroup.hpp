@@ -1,6 +1,5 @@
 #pragma once
 
-#include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 #include <unordered_set>
@@ -8,18 +7,18 @@
 namespace LibFluid {
     class TagGroup {
       public:
-        std::unordered_set<pTag_t> tags;
+        std::unordered_set<uint32_t> tags;
 
         ParticleCollection* collection = nullptr;
 
-        bool is_member(pIndex_t index) const;
+        bool is_member(size_t index) const;
 
       public:
         struct TagGroupIterator;
 
 
         // iterator defines
-        using T = pIndex_t;
+        using T = size_t;
         using iterator = TagGroupIterator;
         using const_iterator = TagGroupIterator;
         using difference_type = ptrdiff_t;

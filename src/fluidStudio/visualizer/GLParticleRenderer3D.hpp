@@ -10,6 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
     struct Camera3D {
@@ -81,6 +82,8 @@ namespace LibFluid {
 
             bool show_particle_memory_location = false;
 
+            uint32_t selected_tag = -1;
+
         } settings;
 
         const glm::mat4& get_projection_matrix() const;
@@ -107,4 +110,4 @@ namespace LibFluid {
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

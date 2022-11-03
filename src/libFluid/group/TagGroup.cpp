@@ -2,11 +2,11 @@
 
 namespace LibFluid {
 
-    bool TagGroup::is_member(pIndex_t index) const {
+    bool TagGroup::is_member(size_t index) const {
         FLUID_ASSERT(collection != nullptr)
         FLUID_ASSERT(collection->is_type_present<ParticleInfo>())
         FLUID_ASSERT(collection->size() > index)
-        pTag_t tag = collection->get<ParticleInfo>(index).tag;
+        uint32_t tag = collection->get<ParticleInfo>(index).tag;
         return tags.find(tag) != tags.end();
     }
 

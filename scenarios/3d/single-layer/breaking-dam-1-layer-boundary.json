@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "scenario": {
     "particles": "breaking-dam-1-layer-boundary.data",
     "gravity": 9.81000042,
@@ -8,7 +8,7 @@
   },
   "solver": {
     "type": "sesph-3d",
-    "neigborhood-search": {
+    "neighborhood-search": {
       "type": "hashed-3d"
     },
     "kernel": {
@@ -20,11 +20,11 @@
     "single-layer-settings": {
       "gamma-1": 2,
       "gamma-2": 3
-    },
-    "timestep": {
-      "type": "constant",
-      "timestep": 0.00499999989
     }
+  },
+  "timestep-generator": {
+    "type": "constant",
+    "timestep": 0.00499999989
   },
   "visualizer": {
     "type": "gl-particle-renderer-3d",

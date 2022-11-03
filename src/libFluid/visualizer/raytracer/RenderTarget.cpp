@@ -1,6 +1,6 @@
 #include "RenderTarget.hpp"
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 
 namespace LibFluid::Raytracer {
 

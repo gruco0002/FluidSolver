@@ -1,6 +1,6 @@
 #include "OutputManager.hpp"
 
-#include "FluidInclude.hpp"
+#include "LibFluidAssert.hpp"
 
 namespace LibFluid {
 
@@ -24,8 +24,9 @@ namespace LibFluid {
         return res;
     }
 
-    size_t OutputManager::generate_sensor_output_identifier() {
+    size_t OutputManager::generate_sensor_output_identifier(const Sensor& sensor) {
         sensor_output_identifier_counter += 1;
+        sensor_filenames[sensor_output_identifier_counter] = remove_invalid_chars_from_filename(sensor.parameters.filename);
         return sensor_output_identifier_counter;
     }
 
@@ -36,7 +37,8 @@ namespace LibFluid {
         if (sensor_streams.find(sensor_output_identifier) == sensor_streams.end()) {
             // create the filepath for the sensor
             auto path = get_output_path();
-            path = path / (std::to_string(sensor_output_identifier) + ".sensor");
+            auto filename = sensor_filenames[sensor_output_identifier_counter];
+            path = path / filename;
 
             // create a stream for the sensor
             sensor_streams.emplace(sensor_output_identifier, path);
@@ -45,6 +47,7 @@ namespace LibFluid {
         // return the respective stream
         return sensor_streams[sensor_output_identifier];
     }
+
     std::filesystem::path OutputManager::get_output_path() const {
         auto directory = std::filesystem::path(parameters.output_folder);
         if (!std::filesystem::exists(directory)) {

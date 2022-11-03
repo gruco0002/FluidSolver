@@ -1,12 +1,12 @@
 #pragma once
 
 #include "fluidSolver/ParticleCollection.hpp"
-#include "serialization/EndianSafeBinaryStream.hpp"
-#include "serialization/Lz4CompressedStream.hpp"
+#include "serialization/helpers/EndianSafeBinaryStream.hpp"
+#include "serialization/helpers/Lz4CompressedStream.hpp"
 
 #include <filesystem>
 
-namespace LibFluid {
+namespace LibFluid::Serialization {
 
     class ParticleSerializer {
       public:

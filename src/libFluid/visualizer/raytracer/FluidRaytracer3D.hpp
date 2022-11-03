@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+
 #include "visualizer/ISimulationVisualizer.hpp"
 
 #include "visualizer/raytracer/Camera.hpp"

@@ -6,14 +6,19 @@
 #include "engine/RectangleRenderer.hpp"
 #include "engine/Window.hpp"
 #include "engine/graphics/Framebuffer.hpp"
-#include "userInterface/UiLayer.hpp"
 
 #include "TimelineService.hpp"
-#include "visualizationOverlay/VisualizationOverlay.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
+#include "visualizationOverlay/VisualizationOverlay.hpp"
+#include "visualizer/Image.hpp"
+
+#include <memory>
 
 namespace FluidStudio {
+
+    class UiLayer;
+
     class FluidSolverWindow : public Engine::Window {
       public:
         explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
@@ -51,9 +56,9 @@ namespace FluidStudio {
 
         const FluidSolverTypes::FluidSolverType* current_type = nullptr;
 
-        void create_empty_simulation();
+        void create_empty_2d_simulation(float particle_size, float rest_density);
 
-        void create_empty_3d_simulation();
+        void create_empty_3d_simulation(float particle_size, float rest_density);
 
         void create_3d_test_simulation();
 
@@ -77,7 +82,9 @@ namespace FluidStudio {
         VisualizationOverlay visualization_overlay;
 
       private:
-        UiLayer uiLayer;
+
+        std::shared_ptr<FluidStudio::UiLayer> ui_layer;
+
         void render_visualization_ui_window();
         void setup_ui_layer();
         bool simulation_visualization_ui_window_in_foreground = false;
@@ -91,6 +98,7 @@ namespace FluidStudio {
 
         void render_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
+        void set_gl_renderer_selected_particles_tag();
 
       private:
         // visualizer stuff

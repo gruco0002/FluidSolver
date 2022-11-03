@@ -1,13 +1,14 @@
 #pragma once
 
-#include "CompatibilityReport.hpp"
-#include "DataChangeStruct.hpp"
-#include "entities/IEntity.hpp"
+#include "entities/SimulationEntity.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
+#include "group/TagDescriptors.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/DataChangeStruct.hpp"
 #include "sensors/OutputManager.hpp"
 #include "sensors/Sensor.hpp"
-#include "time/ITimestepGenerator.hpp"
+#include "time/TimestepGenerator.hpp"
 
 #include <memory>
 
@@ -19,10 +20,12 @@ namespace LibFluid {
         struct SimulatorData : public DataChangeStruct {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             std::shared_ptr<IFluidSolverBase> fluid_solver = nullptr;
-            std::shared_ptr<ITimestepGenerator> timestep_generator = nullptr;
+            std::shared_ptr<TimestepGenerator> timestep_generator = nullptr;
 
-            std::vector<std::shared_ptr<IEntity>> entities;
+            std::vector<std::shared_ptr<SimulationEntity>> entities;
             std::vector<std::shared_ptr<Sensor>> sensors;
+
+            std::shared_ptr<TagDescriptors> tag_descriptors = nullptr;
         } data;
 
 
@@ -60,4 +63,4 @@ namespace LibFluid {
         std::shared_ptr<NeighborhoodInterface> get_neighborhood_interface();
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

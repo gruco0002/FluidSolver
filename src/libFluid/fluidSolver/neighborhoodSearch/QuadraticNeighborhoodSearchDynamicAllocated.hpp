@@ -1,11 +1,10 @@
 #pragma once
 
 #include "NeighborhoodInterface.hpp"
-#include "FluidInclude.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
-#include "CompatibilityReport.hpp"
-#include "Reportable.hpp"
-#include "Initializable.hpp"
+#include "helpers/CompatibilityReport.hpp"
+#include "helpers/Initializable.hpp"
+#include "helpers/Reportable.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -64,13 +63,11 @@ namespace LibFluid {
      */
     class QuadraticNeighborhoodSearchDynamicAllocated : public Initializable, public Reportable {
       public:
-        using particleIndex_t = pIndex_t;
+        using particleIndex_t = size_t;
 
         struct Neighbors;
 
-        struct NeighborsIterator
-        {
-
+        struct NeighborsIterator {
             const Neighbors* data;
             particleIndex_t current;
 
@@ -85,9 +82,7 @@ namespace LibFluid {
             const NeighborsIterator operator++(int);
         };
 
-        struct Neighbors
-        {
-
+        struct Neighbors {
             // iterator defines
             using T = particleIndex_t;
             using iterator = NeighborsIterator;
@@ -101,7 +96,7 @@ namespace LibFluid {
 
             // data
             union {
-                vec2 position;
+                glm::vec2 position;
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
@@ -119,18 +114,18 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const vec2& position);
+        Neighbors get_neighbors(const glm::vec2& position);
 
 
         void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport &report) override;
+        void create_compatibility_report(CompatibilityReport& report) override;
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;
     };
 
 
-} // namespace FluidSolver
+} // namespace LibFluid

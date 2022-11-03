@@ -2,7 +2,7 @@
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
 
-#include "FluidAssert.hpp"
+#include "LibFluidAssert.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
 #include <engine/graphics/buffer/IndexBuffer.hpp>
@@ -10,6 +10,7 @@
 #include <engine/graphics/buffer/VertexBuffer.hpp>
 #include <memory>
 
+// FIXME: wrong namespace
 namespace LibFluid {
 
     /**

@@ -1,6 +1,9 @@
 #pragma once
 
-#include "FluidInclude.hpp"
+#include "fluidSolver/ParticleCollection.hpp"
+#include "group/Volume.hpp"
+
+#include <memory>
 
 namespace LibFluid {
 class VolumeGroup {
@@ -13,15 +16,15 @@ class VolumeGroup {
 
         std::shared_ptr<ParticleCollection> collection = nullptr;
 
-        bool is_inside(pIndex_t index) const;
+        bool is_inside(size_t index) const;
 
-        bool is_member(pIndex_t index) const;
+        bool is_member(size_t index) const;
 
       public:
         struct VolumeGroupIterator;
 
         // iterator defines
-        using T = pIndex_t;
+        using T = size_t;
         using iterator = VolumeGroupIterator;
         using const_iterator = VolumeGroupIterator;
         using difference_type = ptrdiff_t;

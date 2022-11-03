@@ -1,5 +1,8 @@
 #include "CubicSplineKernel.hpp"
 
+#include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
+
 #include <limits>
 
 namespace LibFluid {
@@ -76,4 +79,4 @@ namespace LibFluid {
         alpha = 5.0f / (14.0f * Math::PI * Math::pow2(h));
     }
 
-} // namespace FluidSolver
+} // namespace LibFluid
