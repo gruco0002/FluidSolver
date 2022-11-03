@@ -74,10 +74,12 @@ namespace FluidStudio {
             }
 
             if (is_3d_simulation()) {
-                ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+                auto text_size = ImGui::CalcTextSize("3D-Simulation");
+                ImGui::SameLine(ImGui::GetWindowWidth() - text_size.x - 20);
                 ImGui::TextColored(ImVec4(0.204f, 0.753f, 0.922f, 1.0f), "3D-Simulation");
             } else {
-                ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+                auto text_size = ImGui::CalcTextSize("2D-Simulation");
+                ImGui::SameLine(ImGui::GetWindowWidth() - text_size.x - 20);
                 ImGui::TextColored(ImVec4(0.204f, 0.922f, 0.753f, 1.0f), "2D-Simulation");
             }
 
