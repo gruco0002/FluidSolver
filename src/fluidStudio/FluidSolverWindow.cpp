@@ -176,7 +176,7 @@ namespace FluidStudio {
 
         simulator_visualizer_bundle.simulator->data.fluid_solver = current_type->create_type();
         simulator_visualizer_bundle.simulator->data.timestep_generator = std::make_shared<LibFluid::ConstantTimestepGenerator>();
-        simulator_visualizer_bundle.visualizer = std::make_shared<LibFluid::GLParticleRenderer>();
+        simulator_visualizer_bundle.visualizer = nullptr;
         simulator_visualizer_bundle.simulator->data.tag_descriptors = std::make_shared<LibFluid::TagDescriptors>();
 
         // simulation.parameters.sensors.push_back(new FluidSolver::ParticleStatisticsSensor());
@@ -207,7 +207,7 @@ namespace FluidStudio {
         auto timestep_generator = std::make_shared<LibFluid::ConstantTimestepGenerator>();
         timestep_generator->settings.timestep = 0.01f;
         simulator_visualizer_bundle.simulator->data.timestep_generator = timestep_generator;
-        simulator_visualizer_bundle.visualizer = std::make_shared<LibFluid::GLParticleRenderer3D>();
+        simulator_visualizer_bundle.visualizer = nullptr;
         simulator_visualizer_bundle.simulator->data.tag_descriptors = std::make_shared<LibFluid::TagDescriptors>();
 
         simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
