@@ -41,6 +41,8 @@ namespace FluidStudio {
             update_global_energy_sensor_component(std::dynamic_pointer_cast<LibFluid::Sensors::GlobalEnergySensor>(sen));
         } else if (std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen)) {
             update_sensor_plane_component(std::dynamic_pointer_cast<LibFluid::Sensors::SensorPlane>(sen));
+        } else if (std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen)) {
+            update_particle_count_sensor(sen);
         }
     }
 
@@ -125,6 +127,21 @@ namespace FluidStudio {
         if (StyledImGuiElements::slim_tree_node("Image")) {
             ImGui::InputFloat("Min. value", &sen->settings.min_image_value);
             ImGui::InputFloat("Max. value", &sen->settings.max_image_value);
+
+            ImGui::TreePop();
+        }
+    }
+    void SensorSettingsElement::update_particle_count_sensor(std::shared_ptr<LibFluid::Sensor> sen) {
+        auto pc = std::dynamic_pointer_cast<LibFluid::Sensors::GlobalParticleCountSensor>(sen);
+        FLUID_ASSERT(pc != nullptr);
+
+        if (StyledImGuiElements::slim_tree_node("Data")) {
+            ImGui::Text("Last sensor values");
+            const auto& data = pc->get_last_data();
+
+            ImGui::LabelText("Normal Particles", "%d", (int)data.normal_particles);
+            ImGui::LabelText("Boundary Particles", "%d", (int)data.boundary_particles);
+            ImGui::LabelText("Inactive Particles", "%d", (int)data.inactive_particles);
 
             ImGui::TreePop();
         }
