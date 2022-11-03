@@ -3,6 +3,7 @@
 #include "OverlayInstance.hpp"
 #include "Simulator.hpp"
 
+#include <glm/detail/type_quat.hpp>
 #include <memory>
 
 
@@ -31,6 +32,7 @@ namespace FluidStudio {
       private:
         void calculate_center_point();
         void move_all_particles_by_difference(const glm::vec3& difference);
+        void rotate_particles(const glm::quat& rotation);
 
         void update_display_text();
     };

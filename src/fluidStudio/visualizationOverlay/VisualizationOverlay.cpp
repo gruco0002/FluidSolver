@@ -54,6 +54,9 @@ namespace FluidStudio {
             case OverlayInstance::AllowedTransforms::TranslateAndScale:
                 mode = ImGuizmo::OPERATION::TRANSLATE | ImGuizmo::OPERATION::SCALE;
                 break;
+            case OverlayInstance::AllowedTransforms::TranslateAndRotate:
+                mode = ImGuizmo::OPERATION::TRANSLATE | ImGuizmo::OPERATION::ROTATE_X | ImGuizmo::OPERATION::ROTATE_Y | ImGuizmo::OPERATION::ROTATE_Z;
+                break;
         }
 
         // ImGuizmo::DrawCubes(glm::value_ptr(data.visualizer_view_matrix), glm::value_ptr(data.visualizer_projection_matrix), glm::value_ptr(matrix), 1);

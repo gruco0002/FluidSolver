@@ -16,7 +16,8 @@ namespace FluidStudio {
         enum class AllowedTransforms {
             Translate,
             Scale,
-            TranslateAndScale
+            TranslateAndScale,
+            TranslateAndRotate
         };
 
       public:

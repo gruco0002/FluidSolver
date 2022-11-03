@@ -15,7 +15,6 @@ namespace FluidStudio {
 
     glm::mat4 ParticleSelectionByTagOverlay::get_matrix() {
         return glm::translate(glm::mat4(1.0f), center_point);
-        ;
     }
 
     void ParticleSelectionByTagOverlay::set_matrix(const glm::mat4& mat_4) {
@@ -31,10 +30,12 @@ namespace FluidStudio {
         center_point = translation;
 
         move_all_particles_by_difference(difference);
+
+        rotate_particles(rotation);
     }
 
     OverlayInstance::AllowedTransforms ParticleSelectionByTagOverlay::get_allowed_transforms() {
-        return AllowedTransforms::Translate;
+        return AllowedTransforms::TranslateAndRotate;
     }
 
     ParticleSelectionByTagOverlay::ParticleSelectionByTagOverlay(std::shared_ptr<LibFluid::Simulator> simulator, uint32_t particle_tag) {
@@ -108,6 +109,37 @@ namespace FluidStudio {
             if (display_text != descriptor->title) {
                 display_text = descriptor->title;
             }
+        }
+    }
+
+    void ParticleSelectionByTagOverlay::rotate_particles(const glm::quat& rotation) {
+        auto matrix = glm::mat4(rotation);
+
+        bool moved_particles = false;
+        auto& collection = simulator->data.collection;
+        if (collection->is_type_present<LibFluid::MovementData3D>() && collection->is_type_present<LibFluid::ParticleInfo>()) {
+            for (size_t i = 0; i < collection->size(); i++) {
+                const auto& info = collection->get<LibFluid::ParticleInfo>(i);
+                auto& mv = collection->get<LibFluid::MovementData3D>(i);
+
+                if (info.tag == particle_tag) {
+                    auto model_space_position = mv.position - center_point;
+                    auto homogeneous_model_space_position = glm::vec4(model_space_position, 1.0f);
+
+                    glm::vec4 transformed_position = matrix * homogeneous_model_space_position;
+                    transformed_position /= transformed_position.w;
+
+                    auto transformed_model_space_position = glm::vec3(transformed_position.x, transformed_position.y, transformed_position.z);
+
+                    mv.position = transformed_model_space_position + center_point;
+                    moved_particles = true;
+                }
+            }
+        }
+
+        if (moved_particles) {
+            // notify the simulator that we altered the particle collection manually
+            simulator->data.notify_that_data_changed();
         }
     }
 } // namespace FluidStudio
