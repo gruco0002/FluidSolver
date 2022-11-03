@@ -4,13 +4,13 @@
 
 #include "ImguiHelper.hpp"
 #include "helpers/Log.hpp"
+#include "helpers/SimulatorHelpers.hpp"
 #include "time/ConstantTimestepGenerator.hpp"
+#include "userInterface/UiLayer.hpp"
 #include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 #include "visualizer/GLRenderer.hpp"
-
-#include "userInterface/UiLayer.hpp"
 
 #include <GLFW/glfw3.h>
 #include <chrono>
@@ -184,9 +184,7 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
         simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
 
-        editor_visualizer = std::make_shared<LibFluid::GLParticleRenderer>();
-
-        LibFluid::Log::message("Loaded empty scenario");
+        LibFluid::Log::message("Loaded empty 2d scenario");
 
         on_new_simulation();
     }
@@ -212,8 +210,6 @@ namespace FluidStudio {
 
         simulator_visualizer_bundle.simulator->parameters.notify_that_data_changed();
         simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
-
-        editor_visualizer = std::make_shared<LibFluid::GLParticleRenderer3D>();
 
 
         LibFluid::Log::message("Loaded empty 3d scenario");
@@ -590,6 +586,18 @@ namespace FluidStudio {
         ImGui::End();
     }
     void FluidSolverWindow::initialize_editor_visualizer() {
+        // create the correct visualizer if required
+        if (SimulatorHelpers::is_3d_simulation(simulator_visualizer_bundle.simulator)) {
+            if (std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(editor_visualizer) == nullptr) {
+                editor_visualizer = std::make_shared<LibFluid::GLParticleRenderer3D>();
+            }
+        } else {
+            if (std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(editor_visualizer) == nullptr) {
+                editor_visualizer = std::make_shared<LibFluid::GLParticleRenderer>();
+            }
+        }
+
+        // cast to simulation visualizer and initialize data
         auto visualizer = std::dynamic_pointer_cast<LibFluid::ISimulationVisualizer>(editor_visualizer);
         FLUID_ASSERT(visualizer != nullptr);
 

@@ -68,6 +68,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/componentSettings/TagDescriptorSettingsElement.cpp userInterface/elements/componentSettings/TagDescriptorSettingsElement.hpp
         runners/EditorVisualizationRunner.cpp runners/EditorVisualizationRunner.hpp
         userInterface/elements/componentSettings/EditorVisualizerSettingsElement.cpp userInterface/elements/componentSettings/EditorVisualizerSettingsElement.hpp
+        helpers/SimulatorHelpers.cpp helpers/SimulatorHelpers.hpp
         )
 
 

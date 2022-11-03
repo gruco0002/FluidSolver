@@ -1,6 +1,7 @@
 #include "MainWindowMenu.hpp"
 
 #include "helpers/Log.hpp"
+#include "helpers/SimulatorHelpers.hpp"
 #include "serialization/MainSerializer.hpp"
 #include "serializerExtensions/FluidStudioSerializerExtensions.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
@@ -64,7 +65,7 @@ namespace FluidStudio {
                 ImGui::EndMenu();
             }
 
-            if (is_3d_simulation()) {
+            if (SimulatorHelpers::is_3d_simulation(ui_data.window().simulator_visualizer_bundle.simulator)) {
                 auto text_size = ImGui::CalcTextSize("3D-Simulation");
                 ImGui::SameLine(ImGui::GetWindowWidth() - text_size.x - 20);
                 ImGui::TextColored(ImVec4(0.204f, 0.753f, 0.922f, 1.0f), "3D-Simulation");
@@ -176,14 +177,6 @@ namespace FluidStudio {
                 ui_data.window().on_new_simulation();
             }
         }
-    }
-
-
-    bool MainWindowMenu::is_3d_simulation() const {
-        if (ui_data.window().simulator_visualizer_bundle.simulator->data.collection->is_type_present<LibFluid::MovementData3D>()) {
-            return true;
-        }
-        return false;
     }
 
 } // namespace FluidStudio
