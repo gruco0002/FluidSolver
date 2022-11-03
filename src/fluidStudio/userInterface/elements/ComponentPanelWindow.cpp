@@ -18,6 +18,8 @@ namespace FluidStudio {
 
 
     void ComponentPanelWindow::update() {
+        verify_selection_is_okay();
+
         if (ImGui::Begin("Components")) {
             // Draw components
             update_component_node("Solver", {SimulationComponent::Kind::Solver, 0});
@@ -299,6 +301,29 @@ namespace FluidStudio {
     bool ComponentPanelWindow::begin_structural_node(const char* name) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
         return ImGui::TreeNodeEx(name, flags);
+    }
+
+    void ComponentPanelWindow::verify_selection_is_okay() {
+        if (m_selection.kind == SimulationComponent::Kind::Entity) {
+            if (m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        } else if (m_selection.kind == SimulationComponent::Kind::Sensor) {
+            if (m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        } else if (m_selection.kind == SimulationComponent::Kind::TagDescriptor) {
+            if (ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors == nullptr ||
+                    m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        }
     }
 
 } // namespace FluidStudio
