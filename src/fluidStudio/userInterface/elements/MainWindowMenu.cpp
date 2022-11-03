@@ -64,15 +64,6 @@ namespace FluidStudio {
                 ImGui::EndMenu();
             }
 
-
-            if (ImGui::BeginMenu("Test")) {
-                if (ImGui::MenuItem("Test 3D", nullptr, false, can_change)) {
-                    ui_data.window().create_3d_test_simulation();
-                }
-
-                ImGui::EndMenu();
-            }
-
             if (is_3d_simulation()) {
                 auto text_size = ImGui::CalcTextSize("3D-Simulation");
                 ImGui::SameLine(ImGui::GetWindowWidth() - text_size.x - 20);

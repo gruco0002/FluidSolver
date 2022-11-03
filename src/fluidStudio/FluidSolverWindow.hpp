@@ -8,9 +8,11 @@
 #include "engine/graphics/Framebuffer.hpp"
 
 #include "TimelineService.hpp"
+#include "runners/EditorVisualizationRunner.hpp"
 #include "runners/SimulationRunner.hpp"
 #include "runners/VisualizationRunner.hpp"
 #include "visualizationOverlay/VisualizationOverlay.hpp"
+#include "visualizer/GLRenderer.hpp"
 #include "visualizer/Image.hpp"
 
 #include <memory>
@@ -41,6 +43,8 @@ namespace FluidStudio {
       public:
         LibFluid::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
+        std::shared_ptr<LibFluid::GLRenderer> editor_visualizer;
+
 
         bool simulation_should_run = false;
 
@@ -60,8 +64,6 @@ namespace FluidStudio {
 
         void create_empty_3d_simulation(float particle_size, float rest_density);
 
-        void create_3d_test_simulation();
-
 
         // other stuff below
 
@@ -72,28 +74,29 @@ namespace FluidStudio {
 
       private:
         SimulationRunner simulation_runner;
-        VisualizationRunner visualization_runner;
+        VisualizationRunner bundle_visualization_runner;
+        EditorVisualizationRunner editor_visualization_runner;
 
         bool is_simulation_visualizer_instance_of_gl_renderer() const;
         bool simulation_changed_compared_to_visualization = false;
+        bool simulation_changed_compared_to_editor = false;
 
       public:
         TimelineService timeline_service;
         VisualizationOverlay visualization_overlay;
 
       private:
-
         std::shared_ptr<FluidStudio::UiLayer> ui_layer;
 
-        void render_visualization_ui_window();
+        void render_editor_visualization_window();
+        void render_bundle_visualizer_window();
         void setup_ui_layer();
-        bool simulation_visualization_ui_window_in_foreground = false;
+        bool editor_visualization_ui_window_in_foreground = false;
         struct
         {
             float width;
             float height;
         } visualizer_window_size;
-
 
 
         void render_visualization_overlay(float visualization_width, float visualization_height);
@@ -129,5 +132,7 @@ namespace FluidStudio {
         } last_drag_location;
 
         void drag_viewport(double newX, double newY);
+
+        void initialize_editor_visualizer();
     };
-} // namespace FluidUi
+} // namespace FluidStudio
