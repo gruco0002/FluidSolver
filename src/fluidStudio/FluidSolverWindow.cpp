@@ -150,8 +150,8 @@ namespace FluidStudio {
             // creating the dockspace
             auto id = ImGui::DockSpaceOverViewport();
 
-            render_editor_visualization_window();
             render_bundle_visualizer_window();
+            render_editor_visualization_window();
             ui_layer->render();
 
             ImGuiHelper::PostRender();
