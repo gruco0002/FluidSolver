@@ -109,7 +109,7 @@ namespace FluidStudio {
             }
             ImGui::SameLine();
             if (path != nullptr) {
-                ImGui::LabelText("File", path);
+                ImGui::LabelText("File", "%s", path);
             } else {
                 ImGui::LabelText("File", "Not selected");
             }
