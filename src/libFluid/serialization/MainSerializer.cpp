@@ -1,6 +1,7 @@
 #include "MainSerializer.hpp"
 
 #include "serialization/ParticleSerializer.hpp"
+#include "serialization/extensions/RootSerializerExtension.hpp"
 #include "serialization/serializers/ScenarioSerializer.hpp"
 #include "serialization/serializers/SolverSerializer.hpp"
 #include "serialization/serializers/TagDescriptorsSerializer.hpp"
@@ -9,6 +10,7 @@
 
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <optional>
 
 namespace LibFluid::Serialization {
 
@@ -71,6 +73,22 @@ namespace LibFluid::Serialization {
             internal_context.begin_section("tag-descriptors");
             config["tag-descriptors"] = tag_descriptors_serializer.serialize(bundle.simulator->data.tag_descriptors);
             internal_context.end_section();
+
+            // serialize using root extensions
+            {
+                for (const auto& ext : this->serializer_extensions.root_serializer_extensions) {
+                    auto node_name = ext->get_node_name();
+
+                    internal_context.begin_section(node_name);
+
+                    auto node = ext->serialize(internal_context);
+                    if (node.has_value()) {
+                        config[node_name] = std::move(node.value());
+                    }
+
+                    internal_context.end_section();
+                }
+            }
         }
 
         // write to file
@@ -151,6 +169,24 @@ namespace LibFluid::Serialization {
                 bundle.simulator->data.tag_descriptors = std::make_shared<TagDescriptors>();
             }
             internal_context.end_section();
+
+            // deserialize using root extensions
+            {
+                for (const auto& ext : serializer_extensions.root_serializer_extensions) {
+                    auto node_name = ext->get_node_name();
+
+                    internal_context.begin_section(node_name);
+
+                    std::optional<nlohmann::json> node;
+                    if (config.contains(node_name)) {
+                        node = config[node_name];
+                    }
+
+                    ext->deserialize(node, internal_context);
+
+                    internal_context.end_section();
+                }
+            }
         }
 
         // deserialize particle data
