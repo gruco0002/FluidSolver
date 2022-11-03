@@ -23,7 +23,12 @@ namespace FluidStudio {
         if (ImGui::Begin("Components")) {
             // Draw components
             update_component_node("Solver", {SimulationComponent::Kind::Solver, 0});
-            update_component_node("Visualizer", {SimulationComponent::Kind::Visualizer, 0});
+            if (begin_structural_node("Visualizer")) {
+                update_component_node("Editor", {SimulationComponent::Kind::EditorVisualizer, 0});
+                update_component_node("Simulation", {SimulationComponent::Kind::SimulationVisualizer, 0});
+                ImGui::TreePop();
+            }
+
             update_component_node("Timestep", {SimulationComponent::Kind::Timestep, 0});
             update_component_node("Output", {SimulationComponent::Kind::Output, 0});
 

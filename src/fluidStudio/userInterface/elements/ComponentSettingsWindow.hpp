@@ -1,6 +1,7 @@
 #pragma once
 
 #include "userInterface/UiElement.hpp"
+#include "userInterface/elements/componentSettings/EditorVisualizerSettingsElement.hpp"
 #include "userInterface/elements/componentSettings/EntitySettingsElement.hpp"
 #include "userInterface/elements/componentSettings/SensorSettingsElement.hpp"
 #include "userInterface/elements/componentSettings/SolverSettingsElement.hpp"
@@ -23,6 +24,7 @@ namespace FluidStudio {
         VisualizerSettingsElement visualizer_settings_element;
         EntitySettingsElement entity_settings_element;
         TagDescriptorSettingsElement tag_descriptor_settings_element;
+        EditorVisualizerSettingsElement editor_visualizer_settings_element;
 
         void update_component_settings(const SimulationComponent& component);
 

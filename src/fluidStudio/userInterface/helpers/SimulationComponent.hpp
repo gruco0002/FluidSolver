@@ -8,7 +8,8 @@ namespace FluidStudio {
         enum class Kind {
             None,
             Solver,
-            Visualizer,
+            SimulationVisualizer,
+            EditorVisualizer,
             Timestep,
             Sensor,
             Output,
