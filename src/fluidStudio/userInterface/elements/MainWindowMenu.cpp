@@ -3,6 +3,7 @@
 #include "helpers/Log.hpp"
 #include "helpers/SimulatorHelpers.hpp"
 #include "serialization/MainSerializer.hpp"
+#include "serializerExtensions/FluidStudioRootSerializerExt.hpp"
 #include "serializerExtensions/FluidStudioSerializerExtensions.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/ObjImportWindow.hpp"
@@ -126,6 +127,7 @@ namespace FluidStudio {
             if (ImGui::Button("Save") && path != nullptr) {
                 // Save
                 auto extensions = SerializerExtensions::create_serializer_extenstions();
+                extensions.root_serializer_extensions.push_back(std::make_shared<FluidStudioRootSerializerExt>(ui_data.window().editor_visualizer));
 
                 LibFluid::Serialization::SerializationContext context_output;
 
@@ -160,6 +162,8 @@ namespace FluidStudio {
 
             // load simulation
             auto extensions = SerializerExtensions::create_serializer_extenstions();
+            auto root_ext = std::make_shared<FluidStudioRootSerializerExt>();
+            extensions.root_serializer_extensions.push_back(root_ext);
 
             LibFluid::Serialization::SerializationContext context_output;
 
@@ -174,6 +178,7 @@ namespace FluidStudio {
                 }
             } else {
                 ui_data.window().simulator_visualizer_bundle = bundle;
+                ui_data.window().editor_visualizer = root_ext->get_editor_visualizer();
                 ui_data.window().on_new_simulation();
             }
         }
