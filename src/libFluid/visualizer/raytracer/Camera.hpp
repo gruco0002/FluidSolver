@@ -16,7 +16,7 @@ namespace LibFluid::Raytracer {
 
             bool flip_y = false;
 
-            std::shared_ptr<RenderTarget> render_target = nullptr;
+           RenderTarget* render_target = nullptr;
         } settings;
 
         struct SampleSettings {

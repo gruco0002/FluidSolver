@@ -11,9 +11,9 @@ namespace LibFluid::Raytracer {
             parameters.acknowledge_data_change();
 
             render_target.set_size(parameters.render_target.width, parameters.render_target.height);
-
-            // TODO: update cameras render target size
         }
+
+        camera.settings.render_target = &render_target;
     }
 
     void FluidRaytracer3D::create_compatibility_report(CompatibilityReport& report) {
@@ -67,6 +67,8 @@ namespace LibFluid::Raytracer {
             // evaluate one direct ray to a randomly sampled light source
             // TODO: implement
 
+            // evaluate ray to main light source
+
             // evaluate one ray and determine the next one
             IntersectionResult intersection_result;
             if (accelerator.is_intersecting_with_particles(ray, intersection_result)) {
@@ -74,19 +76,15 @@ namespace LibFluid::Raytracer {
 
                 switch (intersection_result.intersection_result_type) {
                     case IntersectionResult::IntersectionResultType::FluidOutside: {
-
                         break;
                     }
                     case IntersectionResult::IntersectionResultType::FluidInside: {
-
                         break;
                     }
                     case IntersectionResult::IntersectionResultType::BoundaryOutside: {
-
                         break;
                     }
                     case IntersectionResult::IntersectionResultType::BoundaryInside: {
-
                         break;
                     }
                 }
@@ -106,4 +104,4 @@ namespace LibFluid::Raytracer {
     }
 
 
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer

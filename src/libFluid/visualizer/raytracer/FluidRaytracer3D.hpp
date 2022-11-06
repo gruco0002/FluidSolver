@@ -22,6 +22,11 @@ namespace LibFluid::Raytracer {
 
         struct Settings {
             size_t maximum_recursion_depth = 10;
+
+            struct {
+                glm::vec3 direction = glm::vec3(1.0f, -2.0f, 1.0f);
+                glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+            } main_light;
         } settings;
 
       private:
@@ -35,4 +40,4 @@ namespace LibFluid::Raytracer {
         void render() override;
         Image get_image_data() override;
     };
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer

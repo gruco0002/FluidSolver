@@ -1,5 +1,9 @@
 #include "Camera.hpp"
+
+#include "LibFluidAssert.hpp"
+
 #include <glm/ext/matrix_transform.hpp>
+
 
 namespace LibFluid::Raytracer {
 
@@ -50,6 +54,8 @@ namespace LibFluid::Raytracer {
     }
 
     void Camera::generate_image(const std::function<LightValue(Ray&)>& evaluate_ray) {
+        FLUID_ASSERT(settings.render_target != nullptr);
+
         update_view_matrix();
 
         // generate sample positions
