@@ -18,12 +18,20 @@ namespace FluidStudio {
 
 
     void ComponentPanelWindow::update() {
+        verify_selection_is_okay();
+
         if (ImGui::Begin("Components")) {
             // Draw components
             update_component_node("Solver", {SimulationComponent::Kind::Solver, 0});
-            update_component_node("Visualizer", {SimulationComponent::Kind::Visualizer, 0});
             update_component_node("Timestep", {SimulationComponent::Kind::Timestep, 0});
             update_component_node("Output", {SimulationComponent::Kind::Output, 0});
+
+            if (begin_structural_node("Visualizer")) {
+                update_component_node("Editor", {SimulationComponent::Kind::EditorVisualizer, 0});
+                update_component_node("Simulation", {SimulationComponent::Kind::SimulationVisualizer, 0});
+                ImGui::TreePop();
+            }
+
 
             if (begin_structural_node("Sensors")) {
                 menu_sensor_names.resize(ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size());
@@ -299,6 +307,29 @@ namespace FluidStudio {
     bool ComponentPanelWindow::begin_structural_node(const char* name) {
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_FramePadding;
         return ImGui::TreeNodeEx(name, flags);
+    }
+
+    void ComponentPanelWindow::verify_selection_is_okay() {
+        if (m_selection.kind == SimulationComponent::Kind::Entity) {
+            if (m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.entities.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        } else if (m_selection.kind == SimulationComponent::Kind::Sensor) {
+            if (m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.sensors.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        } else if (m_selection.kind == SimulationComponent::Kind::TagDescriptor) {
+            if (ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors == nullptr ||
+                    m_selection.index >= ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.size()) {
+                // invalid selection, sanitize
+                m_selection.index = 0;
+                m_selection.kind = SimulationComponent::Kind::None;
+            }
+        }
     }
 
 } // namespace FluidStudio

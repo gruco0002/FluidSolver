@@ -21,8 +21,24 @@ namespace FluidStudio {
             auto gl3d =
                     std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
-            if (ImGui::BeginCombo("Type",
-                        gl ? "Particle Renderer" : (cv ? "Continuous Visualizer" : "Particle Renderer 3d"))) {
+            bool none_selected = true;
+            auto selected_title = "[None]";
+            if (gl) {
+                none_selected = false;
+                selected_title = "Particle Renderer";
+            } else if (cv) {
+                none_selected = false;
+                selected_title = "Continuous Visualizer";
+            } else if (gl3d) {
+                none_selected = false;
+                selected_title = "Particle Renderer 3D";
+            }
+
+            if (ImGui::BeginCombo("Type", selected_title)) {
+                if (ImGui::Selectable("[None]", none_selected)) {
+                    ui_data.window().simulator_visualizer_bundle.visualizer = nullptr;
+                    ui_data.window().simulator_visualizer_bundle.initialize();
+                }
                 if (ImGui::Selectable("Particle Renderer", gl != nullptr)) {
                     if (gl == nullptr) {
                         gl = nullptr;
@@ -50,7 +66,7 @@ namespace FluidStudio {
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
                 }
-                if (ImGui::Selectable("Particle Renderer 3d", gl3d != nullptr)) {
+                if (ImGui::Selectable("Particle Renderer 3D", gl3d != nullptr)) {
                     if (gl3d == nullptr) {
                         cv = nullptr;
                         gl = nullptr;

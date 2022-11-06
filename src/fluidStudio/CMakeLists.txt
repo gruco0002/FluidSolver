@@ -65,7 +65,12 @@ set(FLUID_STUDIO_SOURCE_FILES
         serializerExtensions/VseGlParticleRenderer3D.cpp serializerExtensions/VseGlParticleRenderer3D.hpp
         serializerExtensions/VseGlParticleRenderer.cpp serializerExtensions/VseGlParticleRenderer.hpp
         serializerExtensions/FluidStudioSerializerExtensions.cpp serializerExtensions/FluidStudioSerializerExtensions.hpp
-        userInterface/elements/componentSettings/TagDescriptorSettingsElement.cpp userInterface/elements/componentSettings/TagDescriptorSettingsElement.hpp)
+        userInterface/elements/componentSettings/TagDescriptorSettingsElement.cpp userInterface/elements/componentSettings/TagDescriptorSettingsElement.hpp
+        runners/EditorVisualizationRunner.cpp runners/EditorVisualizationRunner.hpp
+        userInterface/elements/componentSettings/EditorVisualizerSettingsElement.cpp userInterface/elements/componentSettings/EditorVisualizerSettingsElement.hpp
+        helpers/SimulatorHelpers.cpp helpers/SimulatorHelpers.hpp
+        serializerExtensions/FluidStudioRootSerializerExt.cpp serializerExtensions/FluidStudioRootSerializerExt.hpp
+        )
 
 
 add_executable(FluidStudio ${FLUID_STUDIO_SOURCE_FILES})

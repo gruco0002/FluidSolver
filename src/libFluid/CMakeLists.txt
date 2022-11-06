@@ -119,8 +119,10 @@ set(LIB_FLUID_SOURCE_FILES
         importer/methods/DistanceReductionMethod.cpp importer/methods/DistanceReductionMethod.hpp
         group/Area.hpp
         group/Volume.hpp
-        group/TagDescriptors.cpp group/TagDescriptors.hpp serialization/serializers/TagDescriptorsSerializer.cpp serialization/serializers/TagDescriptorsSerializer.hpp
-        visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
+        group/TagDescriptors.cpp group/TagDescriptors.hpp
+        serialization/serializers/TagDescriptorsSerializer.cpp serialization/serializers/TagDescriptorsSerializer.hpp
+        serialization/extensions/RootSerializerExtension.hpp
+		visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
         visualizer/raytracer/Camera.cpp visualizer/raytracer/Camera.hpp
         visualizer/raytracer/RenderTarget.cpp visualizer/raytracer/RenderTarget.hpp
         visualizer/raytracer/ParticleIntersectionAccelerator.cpp visualizer/raytracer/ParticleIntersectionAccelerator.hpp
@@ -129,6 +131,7 @@ set(LIB_FLUID_SOURCE_FILES
         visualizer/raytracer/IntersectionResult.cpp visualizer/raytracer/IntersectionResult.hpp
         visualizer/raytracer/Skybox.cpp visualizer/raytracer/Skybox.hpp
         visualizer/raytracer/Sampler.cpp visualizer/raytracer/Sampler.hpp
+
         )
 
 
