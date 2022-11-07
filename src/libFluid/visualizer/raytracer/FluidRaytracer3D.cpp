@@ -70,21 +70,18 @@ namespace LibFluid::Raytracer {
             // evaluate ray to main light source
 
             // evaluate one ray and determine the next one
-            IntersectionResult intersection_result;
+            IntersectionResult intersection_result {};
             if (accelerator.is_intersecting_with_particles(ray, intersection_result)) {
                 // the ray has hit something
 
                 switch (intersection_result.intersection_result_type) {
-                    case IntersectionResult::IntersectionResultType::FluidOutside: {
+                    case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid: {
                         break;
                     }
-                    case IntersectionResult::IntersectionResultType::FluidInside: {
+                    case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid: {
                         break;
                     }
-                    case IntersectionResult::IntersectionResultType::BoundaryOutside: {
-                        break;
-                    }
-                    case IntersectionResult::IntersectionResultType::BoundaryInside: {
+                    case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
                         break;
                     }
                 }

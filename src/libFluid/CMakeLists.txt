@@ -132,6 +132,7 @@ set(LIB_FLUID_SOURCE_FILES
         visualizer/raytracer/Skybox.cpp visualizer/raytracer/Skybox.hpp
         visualizer/raytracer/Sampler.cpp visualizer/raytracer/Sampler.hpp
         visualizer/raytracer/HdrImage.cpp visualizer/raytracer/HdrImage.hpp
+        visualizer/raytracer/AABB.cpp visualizer/raytracer/AABB.hpp
         )
 
 

@@ -8,10 +8,9 @@ namespace LibFluid::Raytracer {
     class IntersectionResult {
       public:
         enum class IntersectionResultType {
-            FluidOutside,
-            FluidInside,
-            BoundaryOutside,
-            BoundaryInside
+            RayReachedFluidSurfaceFromOutsideTheFluid,
+            RayReachedFluidSurfaceFromInsideTheFluid,
+            RayHitBoundarySurface
         } intersection_result_type;
 
         glm::vec3 normal_at_intersection;
