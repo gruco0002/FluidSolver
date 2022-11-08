@@ -28,4 +28,12 @@ namespace LibFluid::Math {
     inline float abs(const float& a) {
         return std::abs(a);
     }
+
+    inline glm::vec3 safe_normalize(const glm::vec3& v) {
+        auto result = glm::normalize(v);
+        if (glm::any(glm::isnan(result))) {
+            return glm::vec3(0.0f);
+        }
+        return result;
+    }
 } // namespace LibFluid::Math

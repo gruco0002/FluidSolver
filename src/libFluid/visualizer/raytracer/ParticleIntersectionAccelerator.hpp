@@ -56,6 +56,8 @@ namespace LibFluid::Raytracer {
 
         VolumeEvaluationResult::VolumeState get_volume_state(const VolumeEvaluationResult& result) const;
 
+        static glm::vec3 interpolate_between_vectors(const glm::vec3& a, const glm::vec3& b, float factor);
+
     };
 
 

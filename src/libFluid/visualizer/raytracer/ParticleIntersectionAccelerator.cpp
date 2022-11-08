@@ -35,6 +35,7 @@ namespace LibFluid::Raytracer {
 
             // check if something changed compared to the last evaluation
             if (is_surface_intersected(last, current, result)) {
+                ray.length_until_hit = step_size * (float)t;
                 return true;
             }
 
@@ -111,37 +112,44 @@ namespace LibFluid::Raytracer {
             return false;
         }
 
+        float iso_surface_density = surface_density_as_percentage * rest_density;
+
         if (last_volume_state == VolumeEvaluationResult::VolumeState::Outside) {
-            // we were outside of the fluid
+            // we were outside the fluid
+            float interpolation_factor = (iso_surface_density - last.density) / (current.density - last.density);
+            result.point_of_intersection = interpolate_between_vectors(last.position, current.position, interpolation_factor);
+
             if (current_volume_state == VolumeEvaluationResult::VolumeState::Fluid) {
                 // and reached the fluid
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid;
-
-                // TODO: interpolate position and normal
-
+                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
             } else if (current_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
                 // and reached the boundary
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayHitBoundarySurface;
-
-                // TODO: interpolate position and normal
+                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
             }
+
         } else if (last_volume_state == VolumeEvaluationResult::VolumeState::Fluid) {
-            // we were inside of the fluid
+            // we were inside the fluid
             if (current_volume_state == VolumeEvaluationResult::VolumeState::Outside) {
                 // and reached the outside
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid;
 
-                // TODO: interpolate position and normal
+                float interpolation_factor = (last.density - iso_surface_density) / (last.density - current.density);
+                result.point_of_intersection = interpolate_between_vectors(last.position, current.position, interpolation_factor);
+                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
 
             } else if (current_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
                 // and reached a boundary
 
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayHitBoundarySurface;
 
-                // TODO: interpolate position and normal
+                float interpolation_factor = (last.boundary_only_density - last.fluid_only_density) / (current.fluid_only_density - last.fluid_only_density - current.boundary_only_density + last.boundary_only_density);
+                result.point_of_intersection = interpolate_between_vectors(last.position, current.position, interpolation_factor);
+                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
             }
         } else if (last_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
-            // we were inside of the boundary
+            // we were inside the boundary
             return false;
         }
 
@@ -160,6 +168,10 @@ namespace LibFluid::Raytracer {
         }
 
         return ParticleIntersectionAccelerator::VolumeEvaluationResult::VolumeState::Boundary;
+    }
+
+    glm::vec3 ParticleIntersectionAccelerator::interpolate_between_vectors(const glm::vec3& a, const glm::vec3& b, float factor) {
+        return (1.0f - factor) * a + b * factor;
     }
 
 
