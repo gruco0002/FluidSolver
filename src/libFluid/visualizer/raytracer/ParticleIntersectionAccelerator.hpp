@@ -20,6 +20,7 @@ namespace LibFluid::Raytracer {
 
         void prepare();
 
+        bool is_intersecting_with_particles(Ray& ray);
         bool is_intersecting_with_particles(Ray& ray, IntersectionResult& result);
 
       private:

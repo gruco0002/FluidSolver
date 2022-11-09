@@ -1,7 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include <vector>
-
 
 namespace LibFluid::Raytracer {
 
@@ -14,6 +14,11 @@ namespace LibFluid::Raytracer {
         void mul(float factor);
         void mul(const LightValue& other);
         bool is_zero() const;
+
+        LightValue();
+        explicit LightValue(float value);
+        LightValue(float r, float g, float b);
+        explicit LightValue(const glm::vec3& value);
     };
 
     class RenderTarget {
@@ -39,4 +44,4 @@ namespace LibFluid::Raytracer {
     };
 
 
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer

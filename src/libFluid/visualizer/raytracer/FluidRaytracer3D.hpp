@@ -22,22 +22,20 @@ namespace LibFluid::Raytracer {
 
         struct Settings {
             size_t maximum_recursion_depth = 10;
-
-            struct {
-                glm::vec3 direction = glm::vec3(1.0f, -2.0f, 1.0f);
-                glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
-            } main_light;
         } settings;
+
+        void initialize() override;
+        void create_compatibility_report(CompatibilityReport& report) override;
+        void render() override;
+        Image get_image_data() override;
 
       private:
         std::unique_ptr<Image> buffered_image = nullptr;
 
         LightValue evaluate_ray(Ray& ray);
 
-      public:
-        void initialize() override;
-        void create_compatibility_report(CompatibilityReport& report) override;
-        void render() override;
-        Image get_image_data() override;
+        Ray sample_at(const IntersectionResult& intersection);
+
+        LightValue bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray);
     };
 } // namespace LibFluid::Raytracer

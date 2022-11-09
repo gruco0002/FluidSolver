@@ -174,5 +174,10 @@ namespace LibFluid::Raytracer {
         return (1.0f - factor) * a + b * factor;
     }
 
+    bool ParticleIntersectionAccelerator::is_intersecting_with_particles(Ray& ray) {
+        IntersectionResult dump;
+        return is_intersecting_with_particles(ray, dump);
+    }
+
 
 } // namespace LibFluid::Raytracer

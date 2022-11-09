@@ -13,6 +13,6 @@ namespace LibFluid::Raytracer {
 
         float length_until_hit = -1;
 
-
+        glm::vec3 get_hit_location() const;
     };
 } // namespace FluidSolver::Raytracer
