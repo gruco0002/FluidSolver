@@ -43,13 +43,7 @@ namespace LibFluid::Raytracer {
     }
 
     void Camera::update_view_matrix() {
-        auto direction = glm::normalize(glm::vec3(cos(settings.rotation.y) * sin(settings.rotation.x),
-                sin(settings.rotation.y), cos(settings.rotation.y) * cos(settings.rotation.x)));
-        auto right = glm::normalize(glm::vec3(sin(settings.rotation.x - 3.14f / 2.0f),
-                0.0f, cos(settings.rotation.x - 3.14f / 2.0f)));
-        auto up = cross(right, direction);
-
-        view_matrix = glm::lookAt(settings.position, settings.position + direction, up);
+        view_matrix = glm::lookAt(settings.position, settings.position + settings.view_direction, settings.view_up);
         inverse_view_matrix = glm::inverse(view_matrix);
     }
 
@@ -76,4 +70,4 @@ namespace LibFluid::Raytracer {
             }
         }
     }
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer
