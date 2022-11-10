@@ -191,8 +191,12 @@ Engine::Graphics::Framebuffer* LibFluid::GLParticleRenderer3D::get_framebuffer()
 }
 
 void LibFluid::GLParticleRenderer3D::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
-    // TODO: implement
+    settings.camera.location = position;
+    settings.camera.looking_at = position + view_direction;
+    settings.camera.up = view_up;
 }
 void LibFluid::GLParticleRenderer3D::get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const {
-    // TODO: implement
+    position = settings.camera.location;
+    view_direction = settings.camera.looking_at - settings.camera.location;
+    view_up = settings.camera.up;
 }
