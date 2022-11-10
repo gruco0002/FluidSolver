@@ -1,5 +1,7 @@
 #include "FluidRaytracer3D.hpp"
 
+#include "LibFluidMath.hpp"
+
 namespace LibFluid::Raytracer {
 
     void FluidRaytracer3D::initialize() {
@@ -141,12 +143,33 @@ namespace LibFluid::Raytracer {
     }
 
     Ray FluidRaytracer3D::sample_at(const IntersectionResult& intersection) {
-        // TODO: implement
-        return Ray();
+        switch (intersection.intersection_result_type) {
+            case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
+            case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid:
+            case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
+                return sampler.sample_cosine_weighted_hemisphere(intersection.normal_at_intersection);
+            }
+        }
     }
+
     LightValue FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
-        // TODO: implement
-        return LightValue();
+        // we currently define the fluid and boundary as ideal lambertian surfaces (diffuse)
+        const LightValue fluid_color(0.2f, 0.2f, 1.0f);
+        const LightValue boundary_color(0.8f, 0.8f, 0.8f);
+
+        switch (intersection_result.intersection_result_type) {
+            case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
+            case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid: {
+                LightValue result(fluid_color);
+                result.mul(1.0f / Math::PI);
+                return result;
+            }
+            case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
+                LightValue result(boundary_color);
+                result.mul(1.0f / Math::PI);
+                return result;
+            }
+        }
     }
 
 
