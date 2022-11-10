@@ -24,6 +24,7 @@ namespace FluidStudio {
         node["viewport"]["bottom"] = r->settings.viewport.bottom;
         node["render-target"]["width"] = r->parameters.render_target.width;
         node["render-target"]["height"] = r->parameters.render_target.height;
+        node["enabled"] = r->parameters.enabled;
 
         // custom parameters for the particle renderer
         node["settings"]["top"]["value"] = r->settings.topValue;
@@ -57,6 +58,11 @@ namespace FluidStudio {
         r->settings.viewport.bottom = node["viewport"]["bottom"].get<float>();
         r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
         r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
+        if(node.contains("enabled")){
+            r->parameters.enabled = node["enabled"].get<bool>();
+        }else{
+            r->parameters.enabled = true;
+        }
 
         // custom paramters for the particle renderer
         r->settings.topValue = node["settings"]["top"]["value"].get<float>();

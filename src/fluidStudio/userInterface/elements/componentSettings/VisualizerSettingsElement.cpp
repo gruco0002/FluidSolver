@@ -11,11 +11,6 @@ namespace FluidStudio {
 
     void VisualizerSettingsElement::update() {
         if (StyledImGuiElements::slim_tree_node("Visualizer")) {
-            if (ImGui::Button("Update Visualization")) {
-                ui_data.window().visualizer_parameter_changed();
-            }
-
-
             auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto gl3d =
@@ -93,8 +88,17 @@ namespace FluidStudio {
 
         FLUID_ASSERT(ui_data.window().simulator_visualizer_bundle.visualizer != nullptr);
 
-        if (StyledImGuiElements::slim_tree_node("Output")) {
+        if (StyledImGuiElements::slim_tree_node("General")) {
             auto visualizer = ui_data.window().simulator_visualizer_bundle.visualizer;
+
+            if (ImGui::Checkbox("Enabled", &visualizer->parameters.enabled)) {
+                visualizer->parameters.notify_that_data_changed();
+                ui_data.window().visualizer_parameter_changed();
+            }
+
+            if (ImGui::Button("Force Rerender")) {
+                ui_data.window().visualizer_parameter_changed();
+            }
 
             if (ImGui::InputInt2("Render Target", (int*)&visualizer->parameters.render_target)) {
                 if (visualizer->parameters.render_target.width == 0 || visualizer->parameters.render_target.width == -1)

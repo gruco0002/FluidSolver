@@ -31,6 +31,7 @@ namespace LibFluid {
         struct VisualizerParameter : public DataChangeStruct {
             // this size specifies how large the render target should be in pixels
             Size render_target;
+            bool enabled = false;
 
         } parameters;
 

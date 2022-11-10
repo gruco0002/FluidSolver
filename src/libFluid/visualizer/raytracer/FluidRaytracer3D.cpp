@@ -23,6 +23,10 @@ namespace LibFluid::Raytracer {
     }
 
     void FluidRaytracer3D::render() {
+        if (!parameters.enabled) {
+            return;
+        }
+
         initialize();
 
         // prepare for rendering

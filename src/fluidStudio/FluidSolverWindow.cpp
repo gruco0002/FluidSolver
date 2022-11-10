@@ -600,6 +600,10 @@ namespace FluidStudio {
         // cast to simulation visualizer and initialize data
         auto visualizer = std::dynamic_pointer_cast<LibFluid::ISimulationVisualizer>(editor_visualizer);
         FLUID_ASSERT(visualizer != nullptr);
+        if (!visualizer->parameters.enabled) {
+            visualizer->parameters.enabled = true;
+            visualizer->parameters.notify_that_data_changed();
+        }
 
         if (simulator_visualizer_bundle.simulator != nullptr) {
             if (visualizer->simulation_data.collection != simulator_visualizer_bundle.simulator->data.collection) {

@@ -39,6 +39,10 @@ void LibFluid::GLParticleRenderer::create_compatibility_report(CompatibilityRepo
 }
 
 void LibFluid::GLParticleRenderer::render() {
+    if (!parameters.enabled) {
+        return;
+    }
+
     create_shader_if_required();
 
     if (initialize_in_next_render_step) {

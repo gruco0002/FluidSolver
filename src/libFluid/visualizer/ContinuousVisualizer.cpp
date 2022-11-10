@@ -54,6 +54,10 @@ namespace LibFluid {
     }
 
     void ContinuousVisualizer::render() {
+        if(!parameters.enabled){
+            return;
+        }
+
         // calculate color for each pixel
 
         using par = StdParallelForEach;
