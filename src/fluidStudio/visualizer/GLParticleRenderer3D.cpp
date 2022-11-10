@@ -189,3 +189,10 @@ const glm::mat4& LibFluid::GLParticleRenderer3D::get_projection_matrix() const {
 Engine::Graphics::Framebuffer* LibFluid::GLParticleRenderer3D::get_framebuffer() {
     return framebuffer;
 }
+
+void LibFluid::GLParticleRenderer3D::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+    // TODO: implement
+}
+void LibFluid::GLParticleRenderer3D::get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const {
+    // TODO: implement
+}

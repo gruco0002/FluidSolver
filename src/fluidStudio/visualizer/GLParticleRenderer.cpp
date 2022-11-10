@@ -203,3 +203,9 @@ void LibFluid::GLParticleRenderer::create_shader_if_required() {
                     FluidStudio::Assets::get_string_asset(FluidStudio::Assets::Asset::ParticleRendererFragmentShader)),
     });
 }
+void LibFluid::GLParticleRenderer::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+    // TODO: implement
+}
+void LibFluid::GLParticleRenderer::get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const {
+    // TODO: implement
+}

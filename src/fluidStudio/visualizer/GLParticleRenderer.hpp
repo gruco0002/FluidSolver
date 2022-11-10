@@ -25,6 +25,9 @@ namespace LibFluid {
         virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer() override;
+        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
+
+        void get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const override;
 
         struct Settings {
             enum ColorSelection {

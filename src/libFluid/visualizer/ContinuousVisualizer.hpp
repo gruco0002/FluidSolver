@@ -28,6 +28,7 @@ namespace LibFluid {
 
         virtual Image get_image_data() override;
 
+        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
 
       private:
         Image image;

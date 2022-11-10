@@ -28,6 +28,7 @@ namespace LibFluid::Raytracer {
         void create_compatibility_report(CompatibilityReport& report) override;
         void render() override;
         Image get_image_data() override;
+        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
 
       private:
         std::unique_ptr<Image> buffered_image = nullptr;

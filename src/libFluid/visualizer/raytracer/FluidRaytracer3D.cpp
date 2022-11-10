@@ -176,5 +176,9 @@ namespace LibFluid::Raytracer {
         }
     }
 
+    void FluidRaytracer3D::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+        // TODO: implement
+    }
+
 
 } // namespace LibFluid::Raytracer

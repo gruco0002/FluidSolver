@@ -167,4 +167,8 @@ namespace LibFluid {
         yCoord -= y / (float)image.height() * internal_viewport.height();
         return glm::vec2(xCoord, yCoord);
     }
+
+    void ContinuousVisualizer::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+        // TODO: implement
+    }
 } // namespace FluidSolver

@@ -39,5 +39,7 @@ namespace LibFluid {
         virtual void render() = 0;
 
         virtual Image get_image_data() = 0;
+
+        virtual void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) = 0;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

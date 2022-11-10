@@ -90,6 +90,10 @@ namespace LibFluid {
 
         Engine::Graphics::Framebuffer* get_framebuffer();
 
+        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
+
+        void get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const override;
+
       private:
         glm::mat4 projectionMatrix;
         ParticleVertexArray3D* particleVertexArray = nullptr;
