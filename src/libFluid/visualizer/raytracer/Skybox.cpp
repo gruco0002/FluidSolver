@@ -7,7 +7,7 @@ namespace LibFluid::Raytracer {
     LightValue Skybox::get_light_value_by_direction(const glm::vec3& normalized_direction) const {
         if (skybox_image.width() == 0 || skybox_image.height() == 0) {
             // return default color
-            glm::vec3(0.2f);
+            return LightValue(2.0f);
         }
 
         // map direction to pixel coordinate

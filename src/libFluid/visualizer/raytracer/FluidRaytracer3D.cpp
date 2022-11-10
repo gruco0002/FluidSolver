@@ -6,6 +6,9 @@ namespace LibFluid::Raytracer {
 
     void FluidRaytracer3D::initialize() {
         if (simulation_data.has_data_changed()) {
+            accelerator.rest_density = simulation_data.rest_density;
+            accelerator.particle_size = simulation_data.particle_size;
+            accelerator.particle_collection = simulation_data.collection;
             simulation_data.acknowledge_data_change();
         }
 
