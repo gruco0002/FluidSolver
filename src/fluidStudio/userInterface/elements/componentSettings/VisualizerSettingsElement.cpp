@@ -5,6 +5,7 @@
 #include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
+#include "visualizer/raytracer/FluidRaytracer3D.hpp"
 
 
 namespace FluidStudio {
@@ -15,6 +16,7 @@ namespace FluidStudio {
             auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto gl3d =
                     std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
+            auto rt = std::dynamic_pointer_cast<LibFluid::Raytracer::FluidRaytracer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
             bool none_selected = true;
             auto selected_title = "[None]";
@@ -27,10 +29,18 @@ namespace FluidStudio {
             } else if (gl3d) {
                 none_selected = false;
                 selected_title = "Particle Renderer 3D";
+            } else if (rt) {
+                none_selected = false;
+                selected_title = "Raytracer";
             }
 
             if (ImGui::BeginCombo("Type", selected_title)) {
                 if (ImGui::Selectable("[None]", none_selected)) {
+                    gl = nullptr;
+                    cv = nullptr;
+                    gl3d = nullptr;
+                    rt = nullptr;
+
                     ui_data.window().simulator_visualizer_bundle.visualizer = nullptr;
                     ui_data.window().simulator_visualizer_bundle.initialize();
                 }
@@ -39,6 +49,7 @@ namespace FluidStudio {
                         gl = nullptr;
                         cv = nullptr;
                         gl3d = nullptr;
+                        rt = nullptr;
 
 
                         gl = std::make_shared<LibFluid::GLParticleRenderer>();
@@ -51,6 +62,7 @@ namespace FluidStudio {
                         cv = nullptr;
                         gl = nullptr;
                         gl3d = nullptr;
+                        rt = nullptr;
 
 
                         cv = std::make_shared<LibFluid::ContinuousVisualizer>();
@@ -66,6 +78,7 @@ namespace FluidStudio {
                         cv = nullptr;
                         gl = nullptr;
                         gl3d = nullptr;
+                        rt = nullptr;
 
 
                         gl3d = std::make_shared<LibFluid::GLParticleRenderer3D>();
@@ -74,6 +87,19 @@ namespace FluidStudio {
                         ui_data.window().simulator_visualizer_bundle.visualizer = gl3d;
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
+                }
+
+                if (ImGui::Selectable("Raytracer", rt != nullptr)) {
+                    cv = nullptr;
+                    gl = nullptr;
+                    gl3d = nullptr;
+                    rt = nullptr;
+
+                    rt = std::make_shared<LibFluid::Raytracer::FluidRaytracer3D>();
+                    rt->parameters.render_target.width = 100;
+                    rt->parameters.render_target.height = 100;
+                    ui_data.window().simulator_visualizer_bundle.visualizer = rt;
+                    ui_data.window().simulator_visualizer_bundle.initialize();
                 }
                 ImGui::EndCombo();
             }
