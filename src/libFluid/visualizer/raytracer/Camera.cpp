@@ -35,7 +35,7 @@ namespace LibFluid::Raytracer {
 
         // create ray
         Ray ray;
-        ray.normalized_direction = glm::normalize(transformed);
+        ray.normalized_direction = -glm::normalize(transformed);
         ray.solid_angle = settings.field_of_view_x / (float)settings.render_target->get_width();
         ray.starting_point = settings.position;
 
