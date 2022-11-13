@@ -266,6 +266,15 @@ namespace FluidStudio {
         }
 
         if (StyledImGuiElements::slim_tree_node("Tone Mapper")) {
+            if (ImGui::Button("Save as HDR")) {
+                auto filepath = FileDialogHelper::show_safe_file_dialog("hdr");
+                if (filepath.has_value()) {
+                    auto image = rt->render_target.as_hdr_image();
+                    image.save_as_hdr(filepath.value());
+                }
+            }
+            ImGui::Separator();
+
             ImGui::InputFloat("Exposure", &rt->tone_mapper.settings.exposure);
             ImGui::InputFloat("Gamma", &rt->tone_mapper.settings.gamma);
             ImGui::Checkbox("Gamma Correction Enabled", &rt->tone_mapper.settings.gamma_correction_enabled);
