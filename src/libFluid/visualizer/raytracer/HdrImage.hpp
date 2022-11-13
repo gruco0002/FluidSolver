@@ -27,10 +27,15 @@ namespace LibFluid::Raytracer {
         void save_as_hdr(const std::string& filepath) const;
         bool load_from_hdr(const std::string& filepath);
 
+        std::vector<uint8_t> get_as_hdr_file_data() const;
+        bool load_from_hdr_file_data(const std::vector<uint8_t>& data);
+
       private:
         std::vector<LightValue> m_data;
         size_t m_width = 0;
         size_t m_height = 0;
+
+        void process_hdr_file_data(const float* data, int width, int height);
     };
 
 } // namespace LibFluid::Raytracer

@@ -75,6 +75,50 @@ namespace LibFluid::Raytracer {
             return false;
         }
 
+        process_hdr_file_data(data, width, height);
+
+        // free the data
+        free(data);
+
+        return true;
+    }
+
+    void get_as_hdr_helper(void* context, void* data, int size) {
+        // reinterpret the value back as vector
+        auto& result = *reinterpret_cast<std::vector<uint8_t>*>(context);
+
+        // add the new data to the vector
+        size_t current_size = result.size();
+        result.resize(current_size + size);
+        std::memcpy(&result[current_size], data, size);
+    }
+
+
+    std::vector<uint8_t> HdrImage::get_as_hdr_file_data() const {
+        std::vector<uint8_t> result;
+        stbi_write_hdr_to_func(get_as_hdr_helper, &result, m_width, m_height, 3, reinterpret_cast<const float*>(m_data.data()));
+        return result;
+    }
+
+    bool HdrImage::load_from_hdr_file_data(const std::vector<uint8_t>& data) {
+        int width = 0;
+        int height = 0;
+        int channels = 0;
+        auto result = stbi_loadf_from_memory(data.data(), data.size(), &width, &height, &channels, 3);
+
+        if (result == nullptr) {
+            return false;
+        }
+
+        process_hdr_file_data(result, width, height);
+
+        // free the created data
+        free(result);
+
+        return false;
+    }
+
+    void HdrImage::process_hdr_file_data(const float* data, int width, int height) {
         m_width = width;
         m_height = height;
         m_data.resize(width * height);
@@ -90,11 +134,6 @@ namespace LibFluid::Raytracer {
                 m_data[i] = LightValue(r, g, b);
             }
         }
-
-        // free the data
-        free(data);
-
-        return true;
     }
 
 
