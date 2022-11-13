@@ -13,7 +13,7 @@ namespace LibFluid::Raytracer {
             glm::vec3 view_direction = glm::vec3(1.0f, 0.0f, 0.0f);
             glm::vec3 view_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-            float field_of_view_x = 60.0f / 360.0f * 2.0f * 3.1415f;
+            float field_of_view_x = 90.0f / 360.0f * 2.0f * 3.1415f;
 
             bool flip_y = false;
 
