@@ -83,7 +83,7 @@ namespace FluidStudio {
 
       public:
         TimelineService timeline_service;
-        VisualizationOverlay visualization_overlay;
+        VisualizationOverlay editor_visualization_overlay;
 
       private:
         std::shared_ptr<FluidStudio::UiLayer> ui_layer;
@@ -96,18 +96,18 @@ namespace FluidStudio {
         {
             float width;
             float height;
-        } visualizer_window_size;
+        } editor_visualizer_window_size;
 
 
-        void render_visualization_overlay(float visualization_width, float visualization_height);
+        void render_editor_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
         void set_gl_renderer_selected_particles_tag();
 
       private:
         // visualizer stuff
-        LibFluid::Image render_image_copy;
-        bool render_image_copy_updated = false;
-        Engine::Graphics::Texture2D* rendered_image = nullptr;
+        LibFluid::Image bundle_visualizer_render_image_copy;
+        bool bundle_visualizer_render_image_copy_updated = false;
+        Engine::Graphics::Texture2D* bundle_visualizer_rendered_image = nullptr;
 
 
       private:

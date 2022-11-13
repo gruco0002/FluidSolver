@@ -21,7 +21,7 @@ namespace FluidStudio {
 
     FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height)
         : Window(title, width, height),
-          render_image_copy(0, 0) {
+          bundle_visualizer_render_image_copy(0, 0) {
     }
 
     void FluidSolverWindow::load() {
@@ -43,8 +43,8 @@ namespace FluidStudio {
     void FluidSolverWindow::unload() {
         ImGuiHelper::Uninit();
 
-        delete rendered_image;
-        rendered_image = nullptr;
+        delete bundle_visualizer_rendered_image;
+        bundle_visualizer_rendered_image = nullptr;
 
         timeline_service.reset();
     }
@@ -118,10 +118,10 @@ namespace FluidStudio {
                 if (!is_simulation_visualizer_instance_of_gl_renderer() && simulator_visualizer_bundle.visualizer != nullptr) {
                     // if the visualizer is not an opengl renderer, copy the visualized image to be able to
                     // access it in the main thread while the visualizer can start the next computation
-                    render_image_copy = simulator_visualizer_bundle.visualizer->get_image_data();
+                    bundle_visualizer_render_image_copy = simulator_visualizer_bundle.visualizer->get_image_data();
 
                     // state the update of the render image
-                    render_image_copy_updated = true;
+                    bundle_visualizer_render_image_copy_updated = true;
                 }
 
                 // reset the runner to make it available for the next computation
@@ -264,20 +264,15 @@ namespace FluidStudio {
         // get the texture from the opengl renderer
         auto tex = glRenderer->get_render_target();
 
-        // delete any existing image
-        delete rendered_image;
-        rendered_image = nullptr;
-
-
         if (tex == nullptr) {
-            ImGui::Text("No OpenGL compatible visualizer!");
+            ImGui::Text("Error: no image data available!");
         } else {
             // render visualization
             auto maxRegion = ImGui::GetContentRegionMax();
             maxRegion.x -= 20.0f;
             maxRegion.y -= 30.0f;
-            visualizer_window_size.width = maxRegion.x;
-            visualizer_window_size.height = maxRegion.y;
+            editor_visualizer_window_size.width = maxRegion.x;
+            editor_visualizer_window_size.height = maxRegion.y;
             float width = 0.0f;
             float height = 0.0f;
             if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
@@ -292,12 +287,12 @@ namespace FluidStudio {
 
             ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
 
-            render_visualization_overlay(width, height);
+            render_editor_visualization_overlay(width, height);
         }
 
         ImGui::End();
 
-        this->editor_visualization_ui_window_in_foreground = in_foreground && (!visualization_overlay.is_mouse_on_overlay());
+        this->editor_visualization_ui_window_in_foreground = in_foreground && (!editor_visualization_overlay.is_mouse_on_overlay());
     }
 
     void FluidSolverWindow::setup_ui_layer() {
@@ -377,8 +372,8 @@ namespace FluidStudio {
 
 
         if (gl != nullptr) {
-            float camera_speed_x = gl->settings.viewport.width() / visualizer_window_size.width;
-            float camera_speed_y = gl->settings.viewport.height() / visualizer_window_size.height;
+            float camera_speed_x = gl->settings.viewport.width() / editor_visualizer_window_size.width;
+            float camera_speed_y = gl->settings.viewport.height() / editor_visualizer_window_size.height;
 
             gl->settings.viewport.bottom += deltaY * camera_speed_y;
             gl->settings.viewport.top += deltaY * camera_speed_y;
@@ -389,8 +384,8 @@ namespace FluidStudio {
         if (gl3d != nullptr) {
             constexpr float CAM_SPEED = 0.01f;
 
-            float camera_speed_x = gl3d->parameters.render_target.width / visualizer_window_size.width * CAM_SPEED;
-            float camera_speed_y = gl3d->parameters.render_target.height / visualizer_window_size.height * CAM_SPEED;
+            float camera_speed_x = gl3d->parameters.render_target.width / editor_visualizer_window_size.width * CAM_SPEED;
+            float camera_speed_y = gl3d->parameters.render_target.height / editor_visualizer_window_size.height * CAM_SPEED;
 
             gl3d->settings.camera.rotate_horizontal(camera_speed_x * -deltaX);
             gl3d->settings.camera.rotate_vertical(camera_speed_y * -deltaY);
@@ -466,19 +461,19 @@ namespace FluidStudio {
         return !(simulation_runner.is_ready() && bundle_visualization_runner.is_ready() && editor_visualization_runner.is_ready());
     }
 
-    void FluidSolverWindow::render_visualization_overlay(float visualization_width, float visualization_height) {
+    void FluidSolverWindow::render_editor_visualization_overlay(float visualization_width, float visualization_height) {
         auto gl_renderer = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(editor_visualizer);
         if (gl_renderer == nullptr)
             return;
 
         // set data of overlay
-        visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
-        visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
+        editor_visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
+        editor_visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
 
         // render overlay
-        visualization_overlay.render(visualization_width, visualization_height);
+        editor_visualization_overlay.render(visualization_width, visualization_height);
 
-        if (visualization_overlay.has_data_changed()) {
+        if (editor_visualization_overlay.has_data_changed()) {
             simulation_changed_compared_to_visualization = true;
             simulation_changed_compared_to_editor = true;
         }
@@ -493,11 +488,11 @@ namespace FluidStudio {
             return;
 
         // set data of overlay
-        visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
-        visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
+        editor_visualization_overlay.data.visualizer_view_matrix = gl_renderer->settings.camera.view_matrix();
+        editor_visualization_overlay.data.visualizer_projection_matrix = gl_renderer->get_projection_matrix();
 
         // render overlay
-        visualization_overlay.render_overlay_into_framebuffer(framebuffer);
+        editor_visualization_overlay.render_overlay_into_framebuffer(framebuffer);
     }
 
     void FluidSolverWindow::set_gl_renderer_selected_particles_tag() {
@@ -506,9 +501,9 @@ namespace FluidStudio {
             return;
 
         gl_renderer->settings.selected_tag = -1;
-        if (visualization_overlay.data.overlay_instance != nullptr) {
-            if (visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTagTint) {
-                gl_renderer->settings.selected_tag = visualization_overlay.data.overlay_instance->get_display_particle_tag();
+        if (editor_visualization_overlay.data.overlay_instance != nullptr) {
+            if (editor_visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTagTint) {
+                gl_renderer->settings.selected_tag = editor_visualization_overlay.data.overlay_instance->get_display_particle_tag();
             }
         }
     }
@@ -528,41 +523,41 @@ namespace FluidStudio {
                 // Use the slower render mechanism
                 // copy the image data to the gpu and render it as a texture
                 LibFluid::ISimulationVisualizer::Size size;
-                size.width = render_image_copy.width();
-                size.height = render_image_copy.height();
+                size.width = bundle_visualizer_render_image_copy.width();
+                size.height = bundle_visualizer_render_image_copy.height();
 
-                if (render_image_copy_updated) {
+                if (bundle_visualizer_render_image_copy_updated) {
                     // create or recreate the gpu image
-                    if (rendered_image == nullptr || rendered_image->getWidth() != size.width ||
-                            rendered_image->getHeight() != size.height) {
-                        delete rendered_image;
-                        rendered_image = nullptr;
+                    if (bundle_visualizer_rendered_image == nullptr || bundle_visualizer_rendered_image->getWidth() != size.width ||
+                            bundle_visualizer_rendered_image->getHeight() != size.height) {
+                        delete bundle_visualizer_rendered_image;
+                        bundle_visualizer_rendered_image = nullptr;
 
                         // create new image
                         auto color_settings = new Engine::Graphics::Texture2DSettings();
                         color_settings->GenerateMipmaps = false;
-                        rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA,
+                        bundle_visualizer_rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA,
                                 Engine::ComponentType::ComponentTypeUnsignedByte);
                     }
 
                     // update the gpu image
-                    rendered_image->SetData(render_image_copy.data(), render_image_copy.size());
+                    bundle_visualizer_rendered_image->SetData(bundle_visualizer_render_image_copy.data(), bundle_visualizer_render_image_copy.size());
 
-                    render_image_copy_updated = false;
+                    bundle_visualizer_render_image_copy_updated = false;
                 }
 
-                tex = rendered_image;
+                tex = bundle_visualizer_rendered_image;
             } else {
                 // get the texture from the opengl renderer
                 tex = glRenderer->get_render_target();
 
                 // delete any existing image
-                delete rendered_image;
-                rendered_image = nullptr;
+                delete bundle_visualizer_rendered_image;
+                bundle_visualizer_rendered_image = nullptr;
             }
 
             if (tex == nullptr) {
-                ImGui::Text("No OpenGL compatible visualizer!");
+                ImGui::Text("Error: could not obtain image data!");
             } else {
                 // render visualization
                 auto maxRegion = ImGui::GetContentRegionMax();
