@@ -299,5 +299,20 @@ namespace FluidStudio {
 
             ImGui::TreePop();
         }
+
+        if (StyledImGuiElements::slim_tree_node("Skybox")) {
+            if (ImGui::Button("Load Image")) {
+                auto filepath = FileDialogHelper::show_open_file_dialog("hdr");
+                if (filepath.has_value()) {
+                    rt->skybox.skybox_image.load_from_hdr(filepath.value());
+                }
+            }
+
+            if (ImGui::Button("Remove Image")) {
+                rt->skybox.skybox_image = LibFluid::Raytracer::HdrImage();
+            }
+
+            ImGui::TreePop();
+        }
     }
 } // namespace FluidStudio
