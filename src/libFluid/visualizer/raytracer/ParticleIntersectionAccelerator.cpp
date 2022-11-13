@@ -25,12 +25,27 @@ namespace LibFluid::Raytracer {
         }
 
         constexpr size_t max_steps = 1000000;
-
         float step_size = particle_size / 2.0f;
+
+        bool ray_was_within_aabb = false;
 
         auto last = evaluate_volume_at_position(ray.starting_point + step_size / 2.0f * ray.normalized_direction);
         for (size_t t = 1; t < max_steps; t++) {
             auto position = ray.starting_point + step_size * (float)t * ray.normalized_direction;
+
+            if (!particle_surrounding_aabb.is_point_within(position)) {
+                if (ray_was_within_aabb) {
+                    // the ray already entered the aabb before
+                    // this means that is has now left the aabb and will never enter it again
+                    // hence we do not need to do further checks here
+                    break;
+                }
+
+                // for points outside we cannot evaluate a volume
+                continue;
+            }
+            ray_was_within_aabb = true;
+
             auto current = evaluate_volume_at_position(position);
 
             // check if something changed compared to the last evaluation
@@ -68,6 +83,8 @@ namespace LibFluid::Raytracer {
 
             particle_surrounding_aabb.extend_volume_by_point(mv.position);
         }
+
+        particle_surrounding_aabb = particle_surrounding_aabb.extended_in_all_directions_by(particle_size * Math::kernel_support_factor);
     }
 
     ParticleIntersectionAccelerator::VolumeEvaluationResult ParticleIntersectionAccelerator::evaluate_volume_at_position(const glm::vec3& position) {
