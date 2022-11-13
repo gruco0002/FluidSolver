@@ -129,7 +129,7 @@ namespace LibFluid::Raytracer {
             return false;
         }
 
-        float iso_surface_density = surface_density_as_percentage * rest_density;
+        float iso_surface_density = surface_density_as_fraction_of_rest_density * rest_density;
 
         if (last_volume_state == VolumeEvaluationResult::VolumeState::Outside) {
             // we were outside the fluid
@@ -174,7 +174,7 @@ namespace LibFluid::Raytracer {
     }
 
     ParticleIntersectionAccelerator::VolumeEvaluationResult::VolumeState ParticleIntersectionAccelerator::get_volume_state(const ParticleIntersectionAccelerator::VolumeEvaluationResult& result) const {
-        float iso_surface_density = surface_density_as_percentage * rest_density;
+        float iso_surface_density = surface_density_as_fraction_of_rest_density * rest_density;
 
         if (result.density < iso_surface_density) {
             return VolumeEvaluationResult::VolumeState::Outside;

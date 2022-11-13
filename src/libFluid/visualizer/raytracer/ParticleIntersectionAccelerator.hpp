@@ -16,7 +16,7 @@ namespace LibFluid::Raytracer {
         std::shared_ptr<ParticleCollection> particle_collection = nullptr;
         float particle_size = 0.1f;
         float rest_density = 1000.0f;
-        float surface_density_as_percentage = 0.8f;
+        float surface_density_as_fraction_of_rest_density = 0.8f;
 
         void prepare();
 
