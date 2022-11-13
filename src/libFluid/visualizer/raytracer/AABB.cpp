@@ -45,4 +45,22 @@ namespace LibFluid::Raytracer {
         maximum.y = LibFluid::Math::max(maximum.y, point.y);
         maximum.z = LibFluid::Math::max(maximum.z, point.z);
     }
+
+    AABB AABB::extended_in_all_directions_by(float value) const {
+        AABB result;
+        result.maximum = maximum + glm::vec3(value);
+        result.minimum = minimum - glm::vec3(value);
+        return result;
+    }
+
+    bool AABB::is_point_within(const glm::vec3& point) const {
+        if (point.x < minimum.x || point.x > maximum.x)
+            return false;
+        if (point.y < minimum.y || point.y > maximum.y)
+            return false;
+        if (point.z < minimum.z || point.z > maximum.z)
+            return false;
+
+        return true;
+    }
 } // namespace LibFluid::Raytracer
