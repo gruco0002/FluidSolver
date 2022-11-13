@@ -49,7 +49,7 @@ namespace LibFluid::Raytracer {
     }
 
     HdrImage::HdrImage(size_t width, size_t height, std::vector<LightValue> data) {
-        FLUID_ASSERT(data.size() = width * height);
+        FLUID_ASSERT(data.size() == width * height);
         m_width = width;
         m_height = height;
         m_data = std::move(data);
