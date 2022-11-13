@@ -56,6 +56,7 @@ namespace FluidStudio {
 
                         gl = std::make_shared<LibFluid::GLParticleRenderer>();
                         ui_data.window().simulator_visualizer_bundle.visualizer = gl;
+                        transfer_editor_view_to_new_visualizer();
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
                 }
@@ -72,6 +73,7 @@ namespace FluidStudio {
                         cv->parameters.render_target.height = 100;
                         cv->settings.minimum_render_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density * 0.5f;
                         ui_data.window().simulator_visualizer_bundle.visualizer = cv;
+                        transfer_editor_view_to_new_visualizer();
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
                 }
@@ -87,6 +89,7 @@ namespace FluidStudio {
                         gl3d->parameters.render_target.width = 1920;
                         gl3d->parameters.render_target.height = 1080;
                         ui_data.window().simulator_visualizer_bundle.visualizer = gl3d;
+                        transfer_editor_view_to_new_visualizer();
                         ui_data.window().simulator_visualizer_bundle.initialize();
                     }
                 }
@@ -101,6 +104,7 @@ namespace FluidStudio {
                     rt->parameters.render_target.width = 100;
                     rt->parameters.render_target.height = 100;
                     ui_data.window().simulator_visualizer_bundle.visualizer = rt;
+                    transfer_editor_view_to_new_visualizer();
                     ui_data.window().simulator_visualizer_bundle.initialize();
                 }
                 ImGui::EndCombo();
@@ -141,6 +145,12 @@ namespace FluidStudio {
                     auto data = ui_data.window().simulator_visualizer_bundle.visualizer->get_image_data();
                     data.save_as_png(filepath.value());
                 }
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::Button("Apply Editor View")) {
+                transfer_editor_view_to_new_visualizer();
             }
 
             ImGui::TreePop();
@@ -313,6 +323,14 @@ namespace FluidStudio {
             }
 
             ImGui::TreePop();
+        }
+    }
+
+    void VisualizerSettingsElement::transfer_editor_view_to_new_visualizer() {
+        glm::vec3 position(0.0f), view_direction(0.0f), view_up(0.0f);
+        ui_data.window().editor_visualizer->get_view(position, view_direction, view_up);
+        if (ui_data.window().simulator_visualizer_bundle.visualizer != nullptr) {
+            ui_data.window().simulator_visualizer_bundle.visualizer->set_view(position, view_direction, view_up);
         }
     }
 } // namespace FluidStudio

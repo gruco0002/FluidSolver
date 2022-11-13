@@ -13,5 +13,7 @@ namespace FluidStudio {
         void update_gl_renderer_3d();
         void update_continuous_visualizer();
         void update_raytracer();
+
+        void transfer_editor_view_to_new_visualizer();
     };
 } // namespace FluidStudio
