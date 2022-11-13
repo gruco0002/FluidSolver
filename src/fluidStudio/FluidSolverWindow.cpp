@@ -536,6 +536,9 @@ namespace FluidStudio {
                         // create new image
                         auto color_settings = new Engine::Graphics::Texture2DSettings();
                         color_settings->GenerateMipmaps = false;
+                        color_settings->TextureMagnifyingFiltering = GL_NEAREST;
+                        color_settings->TextureMinifyingFiltering = GL_NEAREST;
+                        color_settings->TextureWrapping = GL_CLAMP_TO_EDGE;
                         bundle_visualizer_rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA,
                                 Engine::ComponentType::ComponentTypeUnsignedByte);
                     }
