@@ -7,7 +7,7 @@ namespace LibFluid::Raytracer {
     class ToneMapper {
       public:
         struct ToneMapperSettings {
-            float exposure = 10.0f;
+            float exposure = 0.2f;
 
             float gamma = 2.2f;
             bool gamma_correction_enabled = true;

@@ -21,7 +21,7 @@ namespace LibFluid::Raytracer {
         } settings;
 
         struct SampleSettings {
-            size_t amount_of_samples = 1000;
+            size_t amount_of_samples = 50;
 
         } sample_settings;
 
