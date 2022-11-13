@@ -1,5 +1,7 @@
 #include "MainWindowMenu.hpp"
 
+#include "ImguiHelper.hpp"
+#include "InsertParticlesWindow.hpp"
 #include "helpers/Log.hpp"
 #include "helpers/SimulatorHelpers.hpp"
 #include "serialization/MainSerializer.hpp"
@@ -8,12 +10,9 @@
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/ObjImportWindow.hpp"
 #include "userInterface/elements/PlyImportWindow.hpp"
+#include "userInterface/helpers/FileDialogHelper.hpp"
 #include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
 
-#include "ImguiHelper.hpp"
-#include "InsertParticlesWindow.hpp"
-
-#include <nfd.h>
 
 namespace FluidStudio {
 
@@ -84,7 +83,7 @@ namespace FluidStudio {
 
     void MainWindowMenu::update_save_menu() {
         if (ImGui::BeginPopupModal("Save Simulation")) {
-            static char* path = nullptr;
+            static std::optional<std::string> path;
             static std::string particle_filepath = "particles.data";
             static bool save_particle_data = true;
 
@@ -97,21 +96,15 @@ namespace FluidStudio {
             ImGui::Separator();
 
             if (ImGui::Button("Choose")) {
-                char* p = nullptr;
-
-                auto res = NFD_SaveDialog("json", nullptr, &p);
-                if (res == NFD_OKAY) {
-                    if (path != nullptr)
-                        free(path);
-                    path = p;
-                    particle_filepath = std::filesystem::path(path).filename().replace_extension(".data").string();
-                } else {
-                    free(p);
+                path = FileDialogHelper::show_safe_file_dialog("json");
+                if (path.has_value()) {
+                    particle_filepath = std::filesystem::path(path.value()).filename().replace_extension(".data").string();
                 }
             }
             ImGui::SameLine();
-            if (path != nullptr) {
-                ImGui::LabelText("File", "%s", path);
+
+            if (path.has_value()) {
+                ImGui::LabelText("File", "%s", path.value().c_str());
             } else {
                 ImGui::LabelText("File", "Not selected");
             }
@@ -124,14 +117,14 @@ namespace FluidStudio {
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Save") && path != nullptr) {
+            if (ImGui::Button("Save") && path.has_value()) {
                 // Save
                 auto extensions = SerializerExtensions::create_serializer_extenstions();
                 extensions.root_serializer_extensions.push_back(std::make_shared<FluidStudioRootSerializerExt>(ui_data.window().editor_visualizer));
 
                 LibFluid::Serialization::SerializationContext context_output;
 
-                LibFluid::Serialization::MainSerializer serializer(path, extensions);
+                LibFluid::Serialization::MainSerializer serializer(path.value(), extensions);
                 serializer.serialize_bundle(ui_data.window().simulator_visualizer_bundle, {save_particle_data, particle_filepath}, &context_output);
 
                 // output warnings
@@ -154,12 +147,8 @@ namespace FluidStudio {
     }
 
     void MainWindowMenu::update_open_menu() {
-        char* p = nullptr;
-        auto res = NFD_OpenDialog("json", nullptr, &p);
-        if (res == NFD_OKAY) {
-            std::string path(p);
-            free(p);
-
+        auto res = FileDialogHelper::show_open_file_dialog("json");
+        if (res.has_value()) {
             // load simulation
             auto extensions = SerializerExtensions::create_serializer_extenstions();
             auto root_ext = std::make_shared<FluidStudioRootSerializerExt>();
@@ -167,7 +156,7 @@ namespace FluidStudio {
 
             LibFluid::Serialization::SerializationContext context_output;
 
-            LibFluid::Serialization::MainSerializer serializer(path, extensions);
+            LibFluid::Serialization::MainSerializer serializer(res.value(), extensions);
             auto bundle = serializer.deserialize(&context_output);
 
             // output warnings
