@@ -17,15 +17,17 @@ namespace LibFluid::Raytracer {
     }
 
     glm::vec2 Skybox::direction_to_pixel_coordinate(const glm::vec3& normalized_direction) const {
-        // FIXME: check if this is the correct transformation (Mercator Projection)
-
         // get spherical coordinates
-        float phi = glm::acos(normalized_direction.z);
-        float theta = glm::atan(normalized_direction.y);
+        auto theta = acosf(normalized_direction.y);
+        auto phi = atan2f(normalized_direction.z, normalized_direction.x);
+        phi = phi < 0.0f ? phi + (Math::PI * 2.0f) : phi;
 
-        // convert to image coordinates
-        float x = phi * (float)skybox_image.width() / (2.0f * LibFluid::Math::PI);
-        float y = (glm::log(glm::tan(LibFluid::Math::PI / 4.0f + theta / 2.0f))) * (float)skybox_image.height() / (2.0f * LibFluid::Math::PI);
+        // determine position on image
+        auto uv = glm::vec2(phi * (1.0f / (2.0f * Math::PI)), theta * (1.0f / Math::PI));
+
+        float x = uv.x * (float)skybox_image.width();
+        float y = uv.y * (float)skybox_image.height();
+
 
         return {x, y};
     }
