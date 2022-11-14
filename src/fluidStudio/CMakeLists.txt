@@ -70,6 +70,7 @@ set(FLUID_STUDIO_SOURCE_FILES
         userInterface/elements/componentSettings/EditorVisualizerSettingsElement.cpp userInterface/elements/componentSettings/EditorVisualizerSettingsElement.hpp
         helpers/SimulatorHelpers.cpp helpers/SimulatorHelpers.hpp
         serializerExtensions/FluidStudioRootSerializerExt.cpp serializerExtensions/FluidStudioRootSerializerExt.hpp
+        userInterface/helpers/FileDialogHelper.cpp userInterface/helpers/FileDialogHelper.hpp
         )
 
 

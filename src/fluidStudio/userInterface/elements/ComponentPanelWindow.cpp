@@ -268,7 +268,7 @@ namespace FluidStudio {
 
     void ComponentPanelWindow::update_selection_based_ui() {
         std::shared_ptr<OverlayInstance> new_overlay_instance = nullptr;
-        auto current_overlay_instance = ui_data.window().visualization_overlay.data.overlay_instance;
+        auto current_overlay_instance = ui_data.window().editor_visualization_overlay.data.overlay_instance;
         if (m_selection.kind == SimulationComponent::Kind::Entity) {
             // check if overlay needs to be activated / deactivated
             auto ent = ui_data.window().simulator_visualizer_bundle.simulator->data.entities[m_selection.index];
@@ -297,7 +297,7 @@ namespace FluidStudio {
 
         if (new_overlay_instance != current_overlay_instance) {
             // only update on a change
-            ui_data.window().visualization_overlay.set_new_overlay_instance(new_overlay_instance);
+            ui_data.window().editor_visualization_overlay.set_new_overlay_instance(new_overlay_instance);
         }
     }
     const SimulationComponent& ComponentPanelWindow::selection() const {

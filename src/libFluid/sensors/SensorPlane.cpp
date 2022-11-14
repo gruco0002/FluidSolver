@@ -153,7 +153,7 @@ namespace LibFluid::Sensors {
         // generate an image as png, encoded it as base64 string and add it to the array
         auto image = get_image_representation(data);
         auto binary_image_data = image.get_as_png();
-        auto base64_image_data = Base64::encode_to_base64(binary_image_data);
+        auto base64_image_data = Base64::encode_to_base_64(binary_image_data);
         array.push_back(base64_image_data);
     }
 

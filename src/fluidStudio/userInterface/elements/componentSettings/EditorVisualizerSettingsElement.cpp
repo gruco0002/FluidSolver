@@ -2,6 +2,7 @@
 
 #include "ImguiHelper.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
+#include "userInterface/helpers/FileDialogHelper.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 
@@ -26,8 +27,11 @@ namespace FluidStudio {
             }
 
             if (ImGui::Button("Save Image")) {
-                auto data = ui_data.window().simulator_visualizer_bundle.visualizer->get_image_data();
-                data.save_as_png("visualizer-output.png");
+                auto filepath = FileDialogHelper::show_safe_file_dialog("png");
+                if (filepath.has_value()) {
+                    auto data = visualizer->get_image_data();
+                    data.save_as_png(filepath.value());
+                }
             }
 
             ImGui::TreePop();
@@ -71,6 +75,14 @@ namespace FluidStudio {
         }
 
         if (StyledImGuiElements::slim_tree_node("View")) {
+            if (ImGui::Button("Transfer View to Simulation Visualizer")) {
+                glm::vec3 position(0.0f), view_direction(0.0f), view_up(0.0f);
+                ui_data.window().editor_visualizer->get_view(position, view_direction, view_up);
+                if (ui_data.window().simulator_visualizer_bundle.visualizer != nullptr) {
+                    ui_data.window().simulator_visualizer_bundle.visualizer->set_view(position, view_direction, view_up);
+                }
+            }
+
             if (gl != nullptr) {
                 ImGui::InputFloat4("Viewport", (float*)&gl->settings.viewport);
             }

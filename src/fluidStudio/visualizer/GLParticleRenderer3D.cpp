@@ -35,6 +35,10 @@ void LibFluid::GLParticleRenderer3D::create_compatibility_report(CompatibilityRe
 }
 
 void LibFluid::GLParticleRenderer3D::render() {
+    if (!parameters.enabled) {
+        return;
+    }
+
     create_shader_if_required();
 
     if (initialize_in_next_render_step) {
@@ -184,4 +188,15 @@ const glm::mat4& LibFluid::GLParticleRenderer3D::get_projection_matrix() const {
 }
 Engine::Graphics::Framebuffer* LibFluid::GLParticleRenderer3D::get_framebuffer() {
     return framebuffer;
+}
+
+void LibFluid::GLParticleRenderer3D::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+    settings.camera.location = position;
+    settings.camera.looking_at = position + view_direction;
+    settings.camera.up = view_up;
+}
+void LibFluid::GLParticleRenderer3D::get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const {
+    position = settings.camera.location;
+    view_direction = settings.camera.looking_at - settings.camera.location;
+    view_up = settings.camera.up;
 }

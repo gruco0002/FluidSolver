@@ -122,6 +122,18 @@ set(LIB_FLUID_SOURCE_FILES
         group/TagDescriptors.cpp group/TagDescriptors.hpp
         serialization/serializers/TagDescriptorsSerializer.cpp serialization/serializers/TagDescriptorsSerializer.hpp
         serialization/extensions/RootSerializerExtension.hpp
+		visualizer/raytracer/FluidRaytracer3D.cpp visualizer/raytracer/FluidRaytracer3D.hpp
+        visualizer/raytracer/Camera.cpp visualizer/raytracer/Camera.hpp
+        visualizer/raytracer/RenderTarget.cpp visualizer/raytracer/RenderTarget.hpp
+        visualizer/raytracer/ParticleIntersectionAccelerator.cpp visualizer/raytracer/ParticleIntersectionAccelerator.hpp
+        visualizer/raytracer/ToneMapper.cpp visualizer/raytracer/ToneMapper.hpp
+        visualizer/raytracer/Ray.cpp visualizer/raytracer/Ray.hpp
+        visualizer/raytracer/IntersectionResult.cpp visualizer/raytracer/IntersectionResult.hpp
+        visualizer/raytracer/Skybox.cpp visualizer/raytracer/Skybox.hpp
+        visualizer/raytracer/Sampler.cpp visualizer/raytracer/Sampler.hpp
+        visualizer/raytracer/HdrImage.cpp visualizer/raytracer/HdrImage.hpp
+        visualizer/raytracer/AABB.cpp visualizer/raytracer/AABB.hpp
+        visualizer/raytracer/LightValue.cpp visualizer/raytracer/LightValue.hpp
         )
 
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 namespace LibFluid::Math {
     constexpr float PI = 3.14159265358979323846f;
 
@@ -27,5 +29,17 @@ namespace LibFluid::Math {
     }
     inline float abs(const float& a) {
         return std::abs(a);
+    }
+
+    inline glm::vec3 safe_normalize(const glm::vec3& v) {
+        auto result = glm::normalize(v);
+        if (glm::any(glm::isnan(result))) {
+            return glm::vec3(0.0f);
+        }
+        return result;
+    }
+
+    inline bool is_not_zero(const float& f) {
+        return abs(f) <= std::numeric_limits<float>::epsilon();
     }
 } // namespace LibFluid::Math

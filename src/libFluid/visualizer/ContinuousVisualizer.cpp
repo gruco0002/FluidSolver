@@ -54,6 +54,10 @@ namespace LibFluid {
     }
 
     void ContinuousVisualizer::render() {
+        if(!parameters.enabled){
+            return;
+        }
+
         // calculate color for each pixel
 
         using par = StdParallelForEach;
@@ -162,5 +166,9 @@ namespace LibFluid {
         xCoord += x / (float)image.width() * internal_viewport.width();
         yCoord -= y / (float)image.height() * internal_viewport.height();
         return glm::vec2(xCoord, yCoord);
+    }
+
+    void ContinuousVisualizer::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+        // TODO: implement
     }
 } // namespace FluidSolver
