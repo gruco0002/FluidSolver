@@ -24,14 +24,17 @@ namespace LibFluid::Raytracer {
             return false;
         }
 
+        FLUID_ASSERT(sampler != nullptr);
+
         constexpr size_t max_steps = 1000000;
         float step_size = particle_size / 2.0f;
+        float offset = sampler->get_uniform_sampled_value() * step_size;
 
         bool ray_was_within_aabb = false;
 
         auto last = evaluate_volume_at_position(ray.starting_point + step_size / 2.0f * ray.normalized_direction);
         for (size_t t = 1; t < max_steps; t++) {
-            auto position = ray.starting_point + step_size * (float)t * ray.normalized_direction;
+            auto position = ray.starting_point + (step_size * (float)t + offset) * ray.normalized_direction;
 
             if (!particle_surrounding_aabb.is_point_within(position)) {
                 if (ray_was_within_aabb) {

@@ -11,6 +11,8 @@ namespace LibFluid::Raytracer {
       public:
         Ray sample_cosine_weighted_hemisphere(const glm::vec3& normalized_up);
 
+        float get_uniform_sampled_value();
+
       private:
 
         struct RandomGenerator{
@@ -20,7 +22,7 @@ namespace LibFluid::Raytracer {
             float generate();
         };
 
-        std::array<RandomGenerator, 2> generators {};
+        std::array<RandomGenerator, 3> generators {};
 
 
     };

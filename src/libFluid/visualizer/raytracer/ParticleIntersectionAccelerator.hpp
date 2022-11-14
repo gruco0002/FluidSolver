@@ -6,6 +6,7 @@
 #include "visualizer/raytracer/AABB.hpp"
 #include "visualizer/raytracer/IntersectionResult.hpp"
 #include "visualizer/raytracer/Ray.hpp"
+#include "visualizer/raytracer/Sampler.hpp"
 
 #include <memory>
 
@@ -17,6 +18,8 @@ namespace LibFluid::Raytracer {
         float particle_size = 0.1f;
         float rest_density = 1000.0f;
         float surface_density_as_fraction_of_rest_density = 0.8f;
+
+        Sampler* sampler = nullptr;
 
         void prepare();
 

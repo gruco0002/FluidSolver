@@ -66,6 +66,10 @@ namespace LibFluid::Raytracer {
         return result;
     }
 
+    float Sampler::get_uniform_sampled_value() {
+        return generators[2].generate();
+    }
+
     float Sampler::RandomGenerator::generate() {
         return uniform_distribution(random_engine);
     }

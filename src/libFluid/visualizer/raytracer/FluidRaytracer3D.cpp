@@ -19,6 +19,7 @@ namespace LibFluid::Raytracer {
         }
 
         camera.settings.render_target = &render_target;
+        accelerator.sampler = &sampler;
     }
 
     void FluidRaytracer3D::create_compatibility_report(CompatibilityReport& report) {
