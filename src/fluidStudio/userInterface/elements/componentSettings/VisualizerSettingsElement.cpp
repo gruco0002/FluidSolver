@@ -345,6 +345,15 @@ namespace FluidStudio {
                 rt->skybox.skybox_image = LibFluid::Raytracer::HdrImage();
             }
 
+            if (rt->skybox.skybox_image.width() != 0 && rt->skybox.skybox_image.height() != 0) {
+                if (ImGui::Button("Export Image")) {
+                    auto filepath = FileDialogHelper::show_safe_file_dialog("hdr");
+                    if (filepath.has_value()) {
+                        rt->skybox.skybox_image.save_as_hdr(filepath.value());
+                    }
+                }
+            }
+
             ImGui::TreePop();
         }
     }
