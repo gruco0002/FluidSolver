@@ -2,16 +2,28 @@
 
 #include "LibFluidMath.hpp"
 #include <cmath>
+#include <random>
 
 namespace LibFluid::Raytracer {
+
+    struct RandomGenerator {
+        std::default_random_engine random_engine;
+        std::uniform_real_distribution<float> uniform_distribution = std::uniform_real_distribution<float>(0.0f, 1.0f);
+
+        float generate() {
+            return uniform_distribution(random_engine);
+        }
+    };
 
 
     Ray Sampler::sample_cosine_weighted_hemisphere(const glm::vec3& normalized_up) {
         Ray result;
 
         // acquire random values
-        float zeta_one = generators[0].generate();
-        float zeta_two = generators[1].generate();
+        static thread_local RandomGenerator generator_1;
+        static thread_local RandomGenerator generator_2;
+        float zeta_one = generator_1.generate();
+        float zeta_two = generator_2.generate();
 
         // calculate the sampled direction
         {
@@ -67,10 +79,9 @@ namespace LibFluid::Raytracer {
     }
 
     float Sampler::get_uniform_sampled_value() {
-        return generators[2].generate();
+        static thread_local RandomGenerator generator;
+        return generator.generate();
     }
 
-    float Sampler::RandomGenerator::generate() {
-        return uniform_distribution(random_engine);
-    }
+
 } // namespace LibFluid::Raytracer
