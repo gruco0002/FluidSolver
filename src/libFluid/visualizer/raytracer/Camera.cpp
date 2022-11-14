@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 
 #include "LibFluidAssert.hpp"
+#include "parallelization/StdParallelForEach.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 
@@ -53,21 +54,27 @@ namespace LibFluid::Raytracer {
         update_view_matrix();
 
         // generate sample positions
-        for (size_t pixel_x = 0; pixel_x < settings.render_target->get_width(); pixel_x++) {
-            for (size_t pixel_y = 0; pixel_y < settings.render_target->get_height(); pixel_y++) {
-                LightValue light_value;
+        size_t width = settings.render_target->get_width();
+        size_t height = settings.render_target->get_height();
 
-                for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++) {
-                    // TODO: sample around pixel_x and pixel_y and weight samples accordingly
-                    auto ray = generate_ray_for_sample_position((float)pixel_x, (float)pixel_y);
-                    auto result = evaluate_ray(ray);
-                    light_value.add(result);
-                }
-                light_value.mul(1.0f / (float)sample_settings.amount_of_samples);
+        using Parallel = StdParallelForEach;
+        // generate rays for each pixel
 
+        Parallel::loop_for(0, width * height, [&](size_t i) {
+            size_t pixel_x = i % width;
+            size_t pixel_y = (i - pixel_x) / width;
 
-                settings.render_target->set(pixel_x, pixel_y, light_value);
+            LightValue light_value;
+
+            for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++) {
+                // TODO: sample around pixel_x and pixel_y and weight samples accordingly
+                auto ray = generate_ray_for_sample_position((float)pixel_x, (float)pixel_y);
+                auto result = evaluate_ray(ray);
+                light_value.add(result);
             }
-        }
+            light_value.mul(1.0f / (float)sample_settings.amount_of_samples);
+
+            settings.render_target->set(pixel_x, pixel_y, light_value);
+        });
     }
 } // namespace LibFluid::Raytracer
