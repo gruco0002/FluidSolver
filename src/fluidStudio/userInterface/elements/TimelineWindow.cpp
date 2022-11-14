@@ -14,6 +14,7 @@ namespace FluidStudio {
                 } else {
                     ui_data.window().timeline_service.step_to(current_index);
                     ui_data.window().simulator_visualizer_bundle.initialize();
+                    ui_data.window().initialize_editor_visualizer();
                     ui_data.window().visualizer_parameter_changed();
                 }
             }
@@ -26,6 +27,7 @@ namespace FluidStudio {
                 } else {
                     ui_data.window().timeline_service.step_to(current_index);
                     ui_data.window().simulator_visualizer_bundle.initialize();
+                    ui_data.window().initialize_editor_visualizer();
                     ui_data.window().visualizer_parameter_changed();
                 }
             }

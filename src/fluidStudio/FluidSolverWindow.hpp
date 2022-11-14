@@ -72,6 +72,8 @@ namespace FluidStudio {
 
         void visualizer_parameter_changed();
 
+        void initialize_editor_visualizer();
+
       private:
         SimulationRunner simulation_runner;
         VisualizationRunner bundle_visualization_runner;
@@ -133,6 +135,6 @@ namespace FluidStudio {
 
         void drag_viewport(double newX, double newY);
 
-        void initialize_editor_visualizer();
+
     };
 } // namespace FluidStudio
