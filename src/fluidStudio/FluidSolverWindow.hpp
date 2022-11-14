@@ -74,6 +74,8 @@ namespace FluidStudio {
 
         void initialize_editor_visualizer();
 
+        void notify_bundle_visualizer_render_image_copy_updated();
+
       private:
         SimulationRunner simulation_runner;
         VisualizationRunner bundle_visualization_runner;
@@ -104,6 +106,7 @@ namespace FluidStudio {
         void render_editor_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
         void set_gl_renderer_selected_particles_tag();
+
 
       private:
         // visualizer stuff

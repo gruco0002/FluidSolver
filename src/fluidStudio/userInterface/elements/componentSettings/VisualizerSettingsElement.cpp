@@ -276,12 +276,17 @@ namespace FluidStudio {
         }
 
         if (StyledImGuiElements::slim_tree_node("Tone Mapper")) {
-            if (ImGui::Button("Save as HDR")) {
+            if (ImGui::Button("Save Original as HDR")) {
                 auto filepath = FileDialogHelper::show_safe_file_dialog("hdr");
                 if (filepath.has_value()) {
                     auto image = rt->render_target.as_hdr_image();
                     image.save_as_hdr(filepath.value());
                 }
+            }
+
+            if (ImGui::Button("Apply Tone Mapping again")) {
+                rt->apply_tone_mapping_to_render_target();
+                ui_data.window().notify_bundle_visualizer_render_image_copy_updated();
             }
             ImGui::Separator();
 

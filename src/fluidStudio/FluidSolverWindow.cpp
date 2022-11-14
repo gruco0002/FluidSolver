@@ -635,5 +635,14 @@ namespace FluidStudio {
         }
     }
 
+    void FluidSolverWindow::notify_bundle_visualizer_render_image_copy_updated() {
+        if (!is_simulation_visualizer_instance_of_gl_renderer() && simulator_visualizer_bundle.visualizer != nullptr) {
+            // if the visualizer is not an opengl renderer, copy the visualized image to be able to
+            // access it in the main thread while the visualizer can start the next computation
+            bundle_visualizer_render_image_copy = simulator_visualizer_bundle.visualizer->get_image_data();
+        }
+        bundle_visualizer_render_image_copy_updated = true;
+    }
+
 
 } // namespace FluidStudio

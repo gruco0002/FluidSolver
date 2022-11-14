@@ -30,6 +30,8 @@ namespace LibFluid::Raytracer {
         Image get_image_data() override;
         void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
 
+        void apply_tone_mapping_to_render_target();
+
       private:
         std::unique_ptr<Image> buffered_image = nullptr;
 

@@ -41,6 +41,10 @@ namespace LibFluid::Raytracer {
         camera.generate_image([this](Ray& ray) { return this->evaluate_ray(ray); });
 
         // create an image out of the render target
+        apply_tone_mapping_to_render_target();
+    }
+
+    void FluidRaytracer3D::apply_tone_mapping_to_render_target() {
         buffered_image = std::make_unique<Image>(render_target.get_width(), render_target.get_height());
         tone_mapper.map_render_target_to_image(render_target, *buffered_image);
     }
