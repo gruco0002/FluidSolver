@@ -2,7 +2,7 @@
 
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
-#include "fluidSolver/neighborhoodSearch/HashedNeighborhoodSearch3D.hpp"
+#include "fluidSolver/neighborhoodSearch/CompressedNeighbors.hpp"
 #include "visualizer/raytracer/AABB.hpp"
 #include "visualizer/raytracer/IntersectionResult.hpp"
 #include "visualizer/raytracer/Ray.hpp"
@@ -33,7 +33,7 @@ namespace LibFluid::Raytracer {
 
       private:
         CubicSplineKernel3D kernel;
-        HashedNeighborhoodSearch3D neighborhood_search;
+        CompressedNeighborhoodSearch neighborhood_search;
 
       private:
         struct VolumeEvaluationResult {
