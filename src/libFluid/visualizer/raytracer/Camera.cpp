@@ -17,7 +17,7 @@ namespace LibFluid::Raytracer {
         rel_y *= 2.0f;
         rel_y -= 1.0f;
 
-        if (settings.flip_y) {
+        if (!settings.flip_y) {
             rel_y *= -1.0f;
         }
 
@@ -28,7 +28,7 @@ namespace LibFluid::Raytracer {
         float x_view = rel_x * aspect_ratio * std::tan(settings.field_of_view_x / 2.0f);
         float y_view = rel_y * std::tan(settings.field_of_view_x / 2.0f);
 
-        glm::vec3 pixel_pos = glm::normalize(glm::vec3(x_view, y_view, 1.0f));
+        glm::vec3 pixel_pos = glm::normalize(glm::vec3(x_view, y_view, -1.0f));
 
         // transform direction to world space
         glm::vec4 transformed = glm::vec4(pixel_pos, 0.0f);
@@ -36,7 +36,7 @@ namespace LibFluid::Raytracer {
 
         // create ray
         Ray ray;
-        ray.normalized_direction = -glm::normalize(transformed);
+        ray.normalized_direction = glm::normalize(transformed);
         ray.solid_angle = settings.field_of_view_x / (float)settings.render_target->get_width();
         ray.starting_point = settings.position;
 
