@@ -25,11 +25,15 @@ namespace LibFluid::Raytracer {
 
         } sample_settings;
 
-        void generate_image(const std::function<LightValue(Ray&)>& evaluate_ray);
+        void render_batch_of_samples_to_render_target(const std::function<LightValue(Ray&)>& evaluate_ray);
+
+        void prepare();
 
       private:
         glm::mat4 view_matrix;
         glm::mat4 inverse_view_matrix;
+
+        size_t sample_per_pixel_counter = 0;
 
 
         Ray generate_ray_for_sample_position(float x, float y);

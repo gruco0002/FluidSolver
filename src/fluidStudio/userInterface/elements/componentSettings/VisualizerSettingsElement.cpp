@@ -270,7 +270,15 @@ namespace FluidStudio {
             ImGui::Separator();
 
             ImGui::Checkbox("Flip-Y", &rt->camera.settings.flip_y);
+
+            ImGui::Separator();
             ImGui::InputInt("Samples per Pixel", reinterpret_cast<int*>(&rt->camera.sample_settings.amount_of_samples));
+            if (ImGui::Button("Render additional Samples")) {
+                rt->render_additional_batch_of_samples();
+                rt->apply_tone_mapping_to_render_target();
+                ui_data.window().notify_bundle_visualizer_render_image_copy_updated();
+            }
+
 
             ImGui::TreePop();
         }

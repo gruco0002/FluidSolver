@@ -36,12 +36,17 @@ namespace LibFluid::Raytracer {
         // prepare for rendering
         accelerator.prepare();
         render_target.clear();
+        camera.prepare();
 
         // render into render target
-        camera.generate_image([this](Ray& ray) { return this->evaluate_ray(ray); });
+        render_additional_batch_of_samples();
 
         // create an image out of the render target
         apply_tone_mapping_to_render_target();
+    }
+
+    void FluidRaytracer3D::render_additional_batch_of_samples() {
+        camera.render_batch_of_samples_to_render_target([this](Ray& ray) { return this->evaluate_ray(ray); });
     }
 
     void FluidRaytracer3D::apply_tone_mapping_to_render_target() {

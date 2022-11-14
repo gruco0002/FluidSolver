@@ -48,10 +48,8 @@ namespace LibFluid::Raytracer {
         inverse_view_matrix = glm::inverse(view_matrix);
     }
 
-    void Camera::generate_image(const std::function<LightValue(Ray&)>& evaluate_ray) {
+    void Camera::render_batch_of_samples_to_render_target(const std::function<LightValue(Ray&)>& evaluate_ray) {
         FLUID_ASSERT(settings.render_target != nullptr);
-
-        update_view_matrix();
 
         // generate sample positions
         size_t width = settings.render_target->get_width();
@@ -61,20 +59,41 @@ namespace LibFluid::Raytracer {
         // generate rays for each pixel
 
         Parallel::loop_for(0, width * height, [&](size_t i) {
+            // determine x and y position
             size_t pixel_x = i % width;
             size_t pixel_y = (i - pixel_x) / width;
 
             LightValue light_value;
 
+            // check if we rendered any samples before
+            if (sample_per_pixel_counter > 0) {
+                // scale the old data back up again
+                light_value = settings.render_target->get(pixel_x, pixel_y);
+                light_value.mul(sample_per_pixel_counter);
+            }
+
+            // generate the rays for the current pixel
             for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++) {
                 // TODO: sample around pixel_x and pixel_y and weight samples accordingly
                 auto ray = generate_ray_for_sample_position((float)pixel_x, (float)pixel_y);
                 auto result = evaluate_ray(ray);
                 light_value.add(result);
             }
-            light_value.mul(1.0f / (float)sample_settings.amount_of_samples);
+
+            // take the total amount of samples into account
+            light_value.mul(1.0f / (float)(sample_settings.amount_of_samples + sample_per_pixel_counter));
 
             settings.render_target->set(pixel_x, pixel_y, light_value);
         });
+
+        // update the total amount of samples rendered to each pixel
+        sample_per_pixel_counter += sample_settings.amount_of_samples;
+    }
+
+    void Camera::prepare() {
+        FLUID_ASSERT(settings.render_target != nullptr);
+
+        sample_per_pixel_counter = 0;
+        update_view_matrix();
     }
 } // namespace LibFluid::Raytracer

@@ -32,6 +32,8 @@ namespace LibFluid::Raytracer {
 
         void apply_tone_mapping_to_render_target();
 
+        void render_additional_batch_of_samples();
+
       private:
         std::unique_ptr<Image> buffered_image = nullptr;
 
