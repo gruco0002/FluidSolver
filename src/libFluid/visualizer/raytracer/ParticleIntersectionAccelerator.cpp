@@ -142,11 +142,11 @@ namespace LibFluid::Raytracer {
             if (current_volume_state == VolumeEvaluationResult::VolumeState::Fluid) {
                 // and reached the fluid
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid;
-                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
+                result.normal_at_intersection = Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
             } else if (current_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
                 // and reached the boundary
                 result.intersection_result_type = IntersectionResult::IntersectionResultType::RayHitBoundarySurface;
-                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
+                result.normal_at_intersection = Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
             }
 
         } else if (last_volume_state == VolumeEvaluationResult::VolumeState::Fluid) {
@@ -157,7 +157,7 @@ namespace LibFluid::Raytracer {
 
                 float interpolation_factor = (last.density - iso_surface_density) / (last.density - current.density);
                 result.point_of_intersection = interpolate_between_vectors(last.position, current.position, interpolation_factor);
-                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
+                result.normal_at_intersection = Math::safe_normalize(interpolate_between_vectors(last.fluid_only_normal, current.fluid_only_normal, interpolation_factor));
 
             } else if (current_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
                 // and reached a boundary
@@ -166,7 +166,7 @@ namespace LibFluid::Raytracer {
 
                 float interpolation_factor = (last.boundary_only_density - last.fluid_only_density) / (current.fluid_only_density - last.fluid_only_density - current.boundary_only_density + last.boundary_only_density);
                 result.point_of_intersection = interpolate_between_vectors(last.position, current.position, interpolation_factor);
-                result.normal_at_intersection = -1.0f * Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
+                result.normal_at_intersection = Math::safe_normalize(interpolate_between_vectors(last.boundary_only_normal, current.boundary_only_normal, interpolation_factor));
             }
         } else if (last_volume_state == VolumeEvaluationResult::VolumeState::Boundary) {
             // we were inside the boundary
