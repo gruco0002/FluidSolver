@@ -318,6 +318,16 @@ namespace FluidStudio {
                 }
             }
 
+            ImGui::Separator();
+
+            if (rt->skybox.skybox_image.width() == 0 || rt->skybox.skybox_image.height() == 0) {
+                ImGui::Text("No image available!");
+            } else {
+                ImGui::LabelText("Width", "%zu", rt->skybox.skybox_image.width());
+                ImGui::LabelText("Height", "%zu", rt->skybox.skybox_image.height());
+            }
+
+
             if (ImGui::Button("Remove Image")) {
                 rt->skybox.skybox_image = LibFluid::Raytracer::HdrImage();
             }
