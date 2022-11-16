@@ -1,6 +1,7 @@
 #include "PiecewiseConstantDistribution.hpp"
 
 #include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
 
 #include <cmath>
 #include <limits>
@@ -33,19 +34,21 @@ namespace LibFluid::Raytracer::Distributions {
         discrete_sample = index;
 
         // calculate pdf of sample
+        FLUID_ASSERT(Math::is_not_zero(normalized_sum_of_all_values));
         pdf_of_sample = values[index] / normalized_sum_of_all_values;
 
         // calculate remaining offset
         float remaining_part_of_random_sample = uniform_dist_random_sample - cdf[index];
         float cdf_difference = cdf[index + 1] - cdf[index];
         float remaining_offset;
-        if (cdf_difference > std::numeric_limits<float>::epsilon()) {
+        if (Math::is_not_zero(cdf_difference)) {
             remaining_offset = remaining_part_of_random_sample / cdf_difference;
         } else {
             remaining_offset = remaining_part_of_random_sample;
         }
 
         // calculate sample
+        FLUID_ASSERT(size() != 0);
         float sample = (static_cast<float>(index) + remaining_offset) / static_cast<float>(size());
 
         return sample;
@@ -62,6 +65,8 @@ namespace LibFluid::Raytracer::Distributions {
     }
 
     void PiecewiseConstantDistribution::calculate_values() {
+        FLUID_ASSERT(size() != 0);
+
         // resize the cdf to the amount of values
         cdf.resize(values.size() + 1);
 
@@ -77,16 +82,17 @@ namespace LibFluid::Raytracer::Distributions {
         cdf[values.size()] = normalized_sum_of_all_values;
 
 
-        if (normalized_sum_of_all_values <= std::numeric_limits<float>::epsilon()) {
-            // the total value is zero, handle this case separately
-            for (size_t i = 0; i < cdf.size(); i++) {
-                cdf[i] = static_cast<float>(i) * reciprocal_of_size;
-            }
-        } else {
+        if (Math::is_not_zero(normalized_sum_of_all_values)) {
             // normalize cdf
+            FLUID_ASSERT(Math::is_not_zero(normalized_sum_of_all_values));
             float reciprocal_of_sum_of_all_values = 1.0f / normalized_sum_of_all_values;
             for (float& cdf_value : cdf) {
                 cdf_value *= reciprocal_of_sum_of_all_values;
+            }
+        } else {
+            // the total value is zero, handle this case separately
+            for (size_t i = 0; i < cdf.size(); i++) {
+                cdf[i] = static_cast<float>(i) * reciprocal_of_size;
             }
         }
     }
@@ -126,7 +132,8 @@ namespace LibFluid::Raytracer::Distributions {
 
     float PiecewiseConstantDistribution::get_pdf_for_discrete_sample(size_t sample) const {
         FLUID_ASSERT(sample < values.size());
-        if (normalized_sum_of_all_values <= std::numeric_limits<float>::epsilon()) {
+        FLUID_ASSERT(size() != 0);
+        if (Math::is_zero(normalized_sum_of_all_values)) {
             return 1.0f / static_cast<float>(size());
         }
         return values[sample] / (normalized_sum_of_all_values * static_cast<float>(size()));

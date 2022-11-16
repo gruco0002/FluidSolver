@@ -1,6 +1,7 @@
 #include "PiecewiseConstantDistribution2D.hpp"
 
 #include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -39,7 +40,8 @@ namespace LibFluid::Raytracer::Distributions {
         FLUID_ASSERT(conditional_distributions[0].size() == width);
         FLUID_ASSERT(marginal_distribution.size() == height);
 
-        if (marginal_distribution.get_normalized_sum_of_all_values() <= std::numeric_limits<float>::epsilon()) {
+        if (Math::is_zero(marginal_distribution.get_normalized_sum_of_all_values())) {
+            FLUID_ASSERT(width * height != 0);
             return 1.0f / static_cast<float>(width * height);
         }
 
@@ -50,6 +52,7 @@ namespace LibFluid::Raytracer::Distributions {
         FLUID_ASSERT(conditional_distributions[discrete_sample_y].get_values().size() < discrete_sample_x);
         FLUID_ASSERT(marginal_distribution.get_normalized_sum_of_all_values() > 0.0f);
 
+        FLUID_ASSERT(Math::is_not_zero(marginal_distribution.get_normalized_sum_of_all_values()));
         return conditional_distributions[discrete_sample_y].get_values()[discrete_sample_x] / marginal_distribution.get_normalized_sum_of_all_values();
     }
 

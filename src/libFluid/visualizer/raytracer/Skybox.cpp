@@ -131,6 +131,7 @@ namespace LibFluid::Raytracer {
             auto luminance = glm::dot(glm::vec3(radiance_value.r, radiance_value.g, radiance_value.b), glm::vec3(0.299f, 0.587f, 0.144f));
 
             // TODO: explain with comment
+            FLUID_ASSERT(skybox_image.height() != 0);
             float theta = Math::PI * (static_cast<float>(y) + 0.5f) / static_cast<float>(skybox_image.height());
             float sinus_theta = std::sin(theta);
 
@@ -150,11 +151,12 @@ namespace LibFluid::Raytracer {
 
         float sinus_theta = std::sin(theta);
 
-        if (Math::abs(sinus_theta) <= std::numeric_limits<float>::epsilon()) {
-            pdf = 0.0f;
-        } else {
+        if (Math::is_not_zero(sinus_theta)) {
             // TODO: explain with a comment
+            FLUID_ASSERT(Math::is_not_zero(sinus_theta));
             pdf = uv_sample_pdf / (2.0f * Math::pow2(Math::PI) * sinus_theta);
+        } else {
+            pdf = 0.0f;
         }
 
         auto cartesian = normalized_cartesian_from_polar_direction({theta, phi});
