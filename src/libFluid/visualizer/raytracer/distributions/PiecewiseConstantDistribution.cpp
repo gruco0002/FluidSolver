@@ -110,7 +110,7 @@ namespace LibFluid::Raytracer::Distributions {
             if (cdf[middle] < value) {
                 left = middle;
             } else {
-                right = middle;
+                right = middle - 1;
             }
         }
 

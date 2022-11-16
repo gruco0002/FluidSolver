@@ -1,7 +1,8 @@
 #pragma once
 
-#include "HdrImage.hpp"
-#include "RenderTarget.hpp"
+#include "visualizer/raytracer/HdrImage.hpp"
+#include "visualizer/raytracer/RenderTarget.hpp"
+#include "visualizer/raytracer/distributions/PiecewiseConstantDistribution2D.hpp"
 
 #include <glm/glm.hpp>
 
@@ -9,11 +10,17 @@ namespace LibFluid::Raytracer {
 
     class Skybox {
       public:
-        LightValue get_light_value_by_direction(const glm::vec3& normalized_direction) const;
-
         HdrImage skybox_image;
 
+        LightValue get_light_value_by_direction(const glm::vec3& normalized_direction) const;
+
+        glm::vec3 sample_normalized_direction(const glm::vec2& uniform_dist_random_sample_pair, float& pdf) const;
+
+        void prepare();
+
       private:
+        Distributions::PiecewiseConstantDistribution2D skybox_image_distribution;
+
         glm::vec2 direction_to_pixel_coordinate(const glm::vec3& normalized_direction) const;
 
         LightValue get_interpolated_color(const glm::vec2& position) const;

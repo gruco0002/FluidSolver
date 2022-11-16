@@ -38,6 +38,7 @@ namespace LibFluid::Raytracer {
         accelerator.prepare();
         render_target.clear();
         camera.prepare();
+        skybox.prepare();
 
         // render into render target
         render_additional_batch_of_samples();
@@ -100,8 +101,15 @@ namespace LibFluid::Raytracer {
 
             // importance sampling: sample the light source
             {
-                auto shadow_ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), current.intersection.normal_at_intersection);
-                shadow_ray.starting_point = current.intersection.point_of_intersection;
+                Ray shadow_ray;
+                {
+                    shadow_ray.starting_point = current.intersection.point_of_intersection;
+                    shadow_ray.length_until_hit = 0.0f;
+                    float shadow_ray_pdf;
+                    shadow_ray.normalized_direction = skybox.sample_normalized_direction(sampler.get_uniform_sampled_pair(), shadow_ray_pdf);
+                    shadow_ray.solid_angle = 1.0f / shadow_ray_pdf;
+                }
+
                 if (!accelerator.is_intersecting_with_particles(shadow_ray)) {
                     // nothing was in the way
                     auto light_value = skybox.get_light_value_by_direction(shadow_ray.normalized_direction);

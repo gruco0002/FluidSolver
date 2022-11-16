@@ -4,11 +4,11 @@
 
 namespace LibFluid::Raytracer::Distributions::CosineWeightedHemisphereDistribution {
 
-    Ray sample_ray(const glm::vec2& uniform_dist_samples, const glm::vec3& normalized_up) {
+    Ray sample_ray(const glm::vec2& uniform_dist_random_sample_pair, const glm::vec3& normalized_up) {
         Ray result;
 
-        float zeta_one = uniform_dist_samples.x;
-        float zeta_two = uniform_dist_samples.y;
+        float zeta_one = uniform_dist_random_sample_pair.x;
+        float zeta_two = uniform_dist_random_sample_pair.y;
 
         // calculate the sampled direction
         {
