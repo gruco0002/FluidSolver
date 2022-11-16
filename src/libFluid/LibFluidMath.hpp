@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+#include <glm/glm.hpp>
 #include <limits>
 
 namespace LibFluid::Math {
@@ -40,6 +42,10 @@ namespace LibFluid::Math {
     }
 
     inline bool is_not_zero(const float& f) {
+        return abs(f) > std::numeric_limits<float>::epsilon();
+    }
+
+    inline bool is_zero(const float& f) {
         return abs(f) <= std::numeric_limits<float>::epsilon();
     }
 } // namespace LibFluid::Math
