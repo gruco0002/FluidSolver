@@ -1,6 +1,7 @@
 #include "FluidRaytracer3D.hpp"
 
 #include "LibFluidMath.hpp"
+#include "visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.hpp"
 
 namespace LibFluid::Raytracer {
 
@@ -99,7 +100,7 @@ namespace LibFluid::Raytracer {
 
             // importance sampling: sample the light source
             {
-                auto shadow_ray = sampler.sample_cosine_weighted_hemisphere(current.intersection.normal_at_intersection);
+                auto shadow_ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), current.intersection.normal_at_intersection);
                 shadow_ray.starting_point = current.intersection.point_of_intersection;
                 if (!accelerator.is_intersecting_with_particles(shadow_ray)) {
                     // nothing was in the way
@@ -164,7 +165,7 @@ namespace LibFluid::Raytracer {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
-                return sampler.sample_cosine_weighted_hemisphere(intersection.normal_at_intersection);
+                return Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), intersection.normal_at_intersection);
             }
         }
     }

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "visualizer/raytracer/IntersectionResult.hpp"
-#include "visualizer/raytracer/Ray.hpp"
+#include <glm/glm.hpp>
 
 
 
 namespace LibFluid::Raytracer {
     class Sampler {
       public:
-        Ray sample_cosine_weighted_hemisphere(const glm::vec3& normalized_up);
+        glm::vec2 get_uniform_sampled_pair();
 
         float get_uniform_sampled_value();
 

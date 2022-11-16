@@ -134,6 +134,9 @@ set(LIB_FLUID_SOURCE_FILES
         visualizer/raytracer/HdrImage.cpp visualizer/raytracer/HdrImage.hpp
         visualizer/raytracer/AABB.cpp visualizer/raytracer/AABB.hpp
         visualizer/raytracer/LightValue.cpp visualizer/raytracer/LightValue.hpp
+        visualizer/raytracer/distributions/PiecewiseConstantDistribution.cpp visualizer/raytracer/distributions/PiecewiseConstantDistribution.hpp
+        visualizer/raytracer/distributions/PiecewiseConstantDistribution2D.cpp visualizer/raytracer/distributions/PiecewiseConstantDistribution2D.hpp
+        visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.cpp visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.hpp
         )
 
 
