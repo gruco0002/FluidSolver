@@ -107,7 +107,12 @@ namespace LibFluid::Raytracer {
                     shadow_ray.length_until_hit = 0.0f;
                     float shadow_ray_pdf;
                     shadow_ray.normalized_direction = skybox.sample_normalized_direction(sampler.get_uniform_sampled_pair(), shadow_ray_pdf);
-                    shadow_ray.solid_angle = 1.0f / shadow_ray_pdf;
+                    if (Math::is_not_zero(shadow_ray_pdf)) {
+                        FLUID_ASSERT(Math::is_not_zero(shadow_ray_pdf));
+                        shadow_ray.solid_angle = 1.0f / shadow_ray_pdf;
+                    } else {
+                        shadow_ray.solid_angle = 0.0f;
+                    }
                 }
 
                 if (!accelerator.is_intersecting_with_particles(shadow_ray)) {
