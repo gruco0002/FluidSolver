@@ -1,4 +1,7 @@
 #include "LightValue.hpp"
+
+#include "LibFluidMath.hpp"
+
 namespace LibFluid::Raytracer {
 
     void LightValue::add(const LightValue& other) {
@@ -17,7 +20,7 @@ namespace LibFluid::Raytracer {
         b *= other.b;
     }
     bool LightValue::is_zero() const {
-        return r == 0.0f && g == 0.0f && b == 0.0f;
+        return Math::is_zero(r) && Math::is_zero(g) && Math::is_zero(b);
     }
     LightValue::LightValue() {
         r = 0.0f;
