@@ -3,6 +3,8 @@
 #include "LibFluidMath.hpp"
 #include "visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.hpp"
 
+#include <algorithm>
+
 namespace LibFluid::Raytracer {
 
     void FluidRaytracer3D::initialize() {
