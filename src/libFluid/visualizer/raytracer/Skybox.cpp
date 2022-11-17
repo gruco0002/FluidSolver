@@ -115,30 +115,34 @@ namespace LibFluid::Raytracer {
             return;
         }
 
+        auto filtered_skybox = skybox_image.apply_box_blur(3);
+        FLUID_ASSERT(filtered_skybox.width() == skybox_image.width());
+        FLUID_ASSERT(filtered_skybox.height() == skybox_image.height());
+
         std::vector<float> skybox_luminance_distribution_values;
-        size_t size = skybox_image.width() * skybox_image.height();
+        size_t size = filtered_skybox.width() * filtered_skybox.height();
         skybox_luminance_distribution_values.resize(size);
 
         // TODO: Box filter
 
         for (size_t i = 0; i < size; i++) {
-            auto x = i % skybox_image.width();
-            auto y = i / skybox_image.width();
+            auto x = i % filtered_skybox.width();
+            auto y = i / filtered_skybox.width();
 
-            FLUID_ASSERT(y < skybox_image.height());
+            FLUID_ASSERT(y < filtered_skybox.height());
 
-            auto radiance_value = skybox_image.get(x, y);
+            auto radiance_value = filtered_skybox.get(x, y);
             auto luminance = glm::dot(glm::vec3(radiance_value.r, radiance_value.g, radiance_value.b), glm::vec3(0.299f, 0.587f, 0.144f));
 
             // TODO: explain with comment
-            FLUID_ASSERT(skybox_image.height() != 0);
-            float theta = Math::PI * (static_cast<float>(y) + 0.5f) / static_cast<float>(skybox_image.height());
+            FLUID_ASSERT(filtered_skybox.height() != 0);
+            float theta = Math::PI * (static_cast<float>(y) + 0.5f) / static_cast<float>(filtered_skybox.height());
             float sinus_theta = std::sin(theta);
 
             skybox_luminance_distribution_values[i] = luminance * sinus_theta;
         }
 
-        skybox_image_distribution = Distributions::PiecewiseConstantDistribution2D(skybox_luminance_distribution_values, skybox_image.width(), skybox_image.height());
+        skybox_image_distribution = Distributions::PiecewiseConstantDistribution2D(skybox_luminance_distribution_values, filtered_skybox.width(), filtered_skybox.height());
     }
 
 
@@ -160,6 +164,7 @@ namespace LibFluid::Raytracer {
         }
 
         auto cartesian = normalized_cartesian_from_polar_direction({theta, phi});
+        FLUID_ASSERT(Math::is_zero(Math::abs(1.0f - glm::length(cartesian))), "Vector is not of length 1!");
         return cartesian;
     }
 
