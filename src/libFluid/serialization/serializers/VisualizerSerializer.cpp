@@ -147,6 +147,8 @@ namespace LibFluid::Serialization {
             node["settings"]["skybox"]["image"] = skybox_image_data_as_base_64_string;
         }
 
+        node["settings"]["debug"]["output-normals"] = r->settings.output_normals_of_first_hit;
+
         return node;
     }
 
@@ -191,6 +193,12 @@ namespace LibFluid::Serialization {
             auto skybox_image_data_as_base_64_string = node["settings"]["skybox"]["image"].get<std::string>();
             auto skybox_image_data = Base64::decode_from_base_64(skybox_image_data_as_base_64_string);
             r->skybox.skybox_image.load_from_hdr_file_data(skybox_image_data);
+        }
+
+        if (node.contains("/settings/debug/output-normals"_json_pointer)) {
+            r->settings.output_normals_of_first_hit = node["settings"]["debug"]["output-normals"].get<bool>();
+        } else {
+            r->settings.output_normals_of_first_hit = false;
         }
 
         return r;

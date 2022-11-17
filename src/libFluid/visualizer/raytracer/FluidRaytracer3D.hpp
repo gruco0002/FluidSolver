@@ -22,6 +22,7 @@ namespace LibFluid::Raytracer {
 
         struct Settings {
             size_t maximum_recursion_depth = 10;
+            bool output_normals_of_first_hit = false;
         } settings;
 
         void initialize() override;

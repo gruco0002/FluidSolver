@@ -64,6 +64,11 @@ namespace LibFluid::Raytracer {
         return *buffered_image;
     }
 
+    LightValue normal_to_color(const glm::vec3& normal) {
+        return LightValue(normal / 2.0f + glm::vec3(0.5f));
+    }
+
+
     LightValue FluidRaytracer3D::evaluate_ray(Ray& ray) {
         // Implementation of a basic stochastic path tracer
 
@@ -83,10 +88,19 @@ namespace LibFluid::Raytracer {
                 current.ray = ray;
                 current.intersection = intersection_result;
                 current.accumulated_weights = LightValue(1.0f);
+
+                if (settings.output_normals_of_first_hit) {
+                    return normal_to_color(intersection_result.normal_at_intersection);
+                }
             } else {
                 // no intersection, return the appropriate value from the skybox
-                auto value = skybox.get_light_value_by_direction(ray.normalized_direction);
-                return value;
+                if (!settings.output_normals_of_first_hit) {
+                    auto value = skybox.get_light_value_by_direction(ray.normalized_direction);
+                    return value;
+                } else {
+                    // the normal is the opposite direction of the ray
+                    return normal_to_color(-ray.normalized_direction);
+                }
             }
         }
 

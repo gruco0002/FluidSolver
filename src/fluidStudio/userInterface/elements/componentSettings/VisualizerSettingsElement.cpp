@@ -279,7 +279,6 @@ namespace FluidStudio {
                 ui_data.window().notify_bundle_visualizer_render_image_copy_updated();
             }
 
-
             ImGui::TreePop();
         }
 
@@ -354,6 +353,11 @@ namespace FluidStudio {
                 }
             }
 
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Debug")) {
+            ImGui::Checkbox("Output Normals", &rt->settings.output_normals_of_first_hit);
             ImGui::TreePop();
         }
     }
