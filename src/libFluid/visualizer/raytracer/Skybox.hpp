@@ -18,6 +18,8 @@ namespace LibFluid::Raytracer {
 
         void prepare();
 
+        bool has_data() const;
+
       private:
         Distributions::PiecewiseConstantDistribution2D skybox_image_distribution;
 

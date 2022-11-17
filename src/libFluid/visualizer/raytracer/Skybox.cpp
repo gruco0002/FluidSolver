@@ -167,5 +167,8 @@ namespace LibFluid::Raytracer {
         FLUID_ASSERT(Math::is_zero(Math::abs(1.0f - glm::length(cartesian))), "Vector is not of length 1!");
         return cartesian;
     }
+    bool Skybox::has_data() const {
+        return skybox_image.width() != 0 && skybox_image.height() != 0;
+    }
 
 } // namespace LibFluid::Raytracer
