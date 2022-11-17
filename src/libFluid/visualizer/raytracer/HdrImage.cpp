@@ -1,6 +1,7 @@
 #include "HdrImage.hpp"
 
 #include "LibFluidAssert.hpp"
+#include "LibFluidMath.hpp"
 
 #include <stb_image.h>
 #include <stb_image_write.h>
@@ -46,6 +47,7 @@ namespace LibFluid::Raytracer {
     HdrImage::HdrImage(size_t width, size_t height) {
         m_width = width;
         m_height = height;
+        m_data.resize(width * height);
     }
 
     HdrImage::HdrImage(size_t width, size_t height, std::vector<LightValue> data) {
@@ -134,6 +136,43 @@ namespace LibFluid::Raytracer {
                 m_data[i] = LightValue(r, g, b);
             }
         }
+    }
+
+    HdrImage HdrImage::apply_box_blur(size_t size) const {
+        // TODO: improve performance by separating the filter into two passes
+        HdrImage result(width(), height());
+
+        auto get_value_safe = [](const HdrImage& input, int x, int y) {
+            if (x < 0)
+                x = -x;
+            if (y < 0)
+                y = -y;
+            if (x >= input.width())
+                x = input.width() - (x - input.width() + 1);
+            if (y >= input.height())
+                y = input.height() - (y - input.height() + 1);
+
+            FLUID_ASSERT(x >= 0 && x < input.width());
+            FLUID_ASSERT(y >= 0 && y < input.height());
+            return input.get(x, y);
+        };
+
+        for (size_t y = 0; y < height(); y++) {
+            for (size_t x = 0; x < width(); x++) {
+                LightValue pixel(0.0f);
+
+                for (int v = y - size; v <= y + size; v++) {
+                    for (int u = x - size; u <= x + size; u++) {
+                        pixel.add(get_value_safe(*this, u, v));
+                    }
+                }
+
+                pixel.mul(1.0f / Math::pow2(2.0f * static_cast<float>(size) + 1.0f));
+                result.set(x, y, pixel);
+            }
+        }
+
+        return result;
     }
 
 

@@ -3,8 +3,8 @@
 #include "visualizer/raytracer/LightValue.hpp"
 
 #include <glm/glm.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace LibFluid::Raytracer {
 
@@ -30,6 +30,8 @@ namespace LibFluid::Raytracer {
 
         std::vector<uint8_t> get_as_hdr_file_data() const;
         bool load_from_hdr_file_data(const std::vector<uint8_t>& data);
+
+        HdrImage apply_box_blur(size_t size) const;
 
       private:
         std::vector<LightValue> m_data;
