@@ -123,7 +123,8 @@ namespace LibFluid::Raytracer {
                     light_value.mul(shadow_ray.solid_angle);
 
                     // cos between normal and shadow ray
-                    light_value.mul(glm::dot(current.intersection.normal_at_intersection, shadow_ray.normalized_direction));
+                    float cosine_term = glm::dot(current.intersection.normal_at_intersection, shadow_ray.normalized_direction);
+                    light_value.mul(std::clamp(cosine_term, 0.0f, 1.0f));
 
                     // incorporate brdf/bsdf
                     light_value.mul(bsdf(current.ray, current.intersection, shadow_ray));
@@ -147,8 +148,9 @@ namespace LibFluid::Raytracer {
                     // weight the contribution by the solid angle (monte carlo weight)
                     additional_weights.mul(new_ray.solid_angle);
 
-                    // cos between normal and shadow ray
-                    additional_weights.mul(glm::dot(current.intersection.normal_at_intersection, new_ray.normalized_direction));
+                    // cos between normal and new ray
+                    float cosine_term = glm::dot(current.intersection.normal_at_intersection, new_ray.normalized_direction);
+                    additional_weights.mul(std::clamp(cosine_term, 0.0f, 1.0f));
 
                     // incorporate brdf/bsdf
                     additional_weights.mul(bsdf(current.ray, current.intersection, new_ray));
