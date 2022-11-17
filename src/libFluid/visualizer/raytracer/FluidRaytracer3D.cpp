@@ -117,15 +117,21 @@ namespace LibFluid::Raytracer {
             {
                 Ray shadow_ray;
                 {
-                    shadow_ray.starting_point = current.intersection.point_of_intersection;
-                    shadow_ray.length_until_hit = 0.0f;
-                    float shadow_ray_pdf;
-                    shadow_ray.normalized_direction = skybox.sample_normalized_direction(sampler.get_uniform_sampled_pair(), shadow_ray_pdf);
-                    if (Math::is_not_zero(shadow_ray_pdf)) {
-                        FLUID_ASSERT(Math::is_not_zero(shadow_ray_pdf));
-                        shadow_ray.solid_angle = 1.0f / shadow_ray_pdf;
+                    if (skybox.has_data()) {
+                        // sample using the skybox sample distribution
+                        shadow_ray.starting_point = current.intersection.point_of_intersection;
+                        shadow_ray.length_until_hit = 0.0f;
+                        float shadow_ray_pdf;
+                        shadow_ray.normalized_direction = skybox.sample_normalized_direction(sampler.get_uniform_sampled_pair(), shadow_ray_pdf);
+                        if (Math::is_not_zero(shadow_ray_pdf)) {
+                            FLUID_ASSERT(Math::is_not_zero(shadow_ray_pdf));
+                            shadow_ray.solid_angle = 1.0f / shadow_ray_pdf;
+                        } else {
+                            shadow_ray.solid_angle = 0.0f;
+                        }
                     } else {
-                        shadow_ray.solid_angle = 0.0f;
+                        // the skybox is empty, fall back to cosine weighted hemisphere sampling on the surface
+                        shadow_ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), current.intersection.normal_at_intersection);
                     }
                 }
 
@@ -201,8 +207,8 @@ namespace LibFluid::Raytracer {
 
     LightValue FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
         // we currently define the fluid and boundary as ideal lambertian surfaces (diffuse)
-        const LightValue fluid_color(0.2f, 0.2f, 1.0f);
-        const LightValue boundary_color(0.8f, 0.8f, 0.8f);
+        const LightValue fluid_color(0.0f, 0.6f, 1.0f);      // #0099ff
+        const LightValue boundary_color(1.0f, 0.733f, 0.0f); // #ffbb00
 
         switch (intersection_result.intersection_result_type) {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
