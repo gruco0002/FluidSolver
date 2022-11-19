@@ -26,7 +26,7 @@ namespace LibFluid::Raytracer {
     glm::vec3 Skybox::get_radiance_by_direction(const glm::vec3& normalized_direction) const {
         if (skybox_image.width() == 0 || skybox_image.height() == 0) {
             // return default color
-            return glm::vec3(2.0f);
+            return glm::vec3(1.0f);
         }
 
         // map direction to pixel coordinate
@@ -123,16 +123,14 @@ namespace LibFluid::Raytracer {
         size_t size = filtered_skybox.width() * filtered_skybox.height();
         skybox_luminance_distribution_values.resize(size);
 
-        // TODO: Box filter
-
-        for (size_t i = 0; i < size; i++) {
+       for (size_t i = 0; i < size; i++) {
             auto x = i % filtered_skybox.width();
             auto y = i / filtered_skybox.width();
 
             FLUID_ASSERT(y < filtered_skybox.height());
 
             auto radiance_value = filtered_skybox.get(x, y);
-            auto luminance = glm::dot(glm::vec3(radiance_value.r, radiance_value.g, radiance_value.b), glm::vec3(0.299f, 0.587f, 0.144f));
+            auto luminance = glm::dot(glm::vec3(radiance_value.x, radiance_value.y, radiance_value.z), glm::vec3(0.299f, 0.587f, 0.144f));
 
             // TODO: explain with comment
             FLUID_ASSERT(filtered_skybox.height() != 0);

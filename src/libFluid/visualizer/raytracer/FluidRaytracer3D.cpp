@@ -205,12 +205,15 @@ namespace LibFluid::Raytracer {
                 return Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), intersection.normal_at_intersection);
             }
         }
+        FLUID_ASSERT(false);
+        return {};
     }
 
     glm::vec3 FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
         // we currently define the fluid and boundary as ideal lambertian surfaces (diffuse)
-        const glm::vec3 fluid_color(0.0f, 0.6f, 1.0f);      // #0099ff
-        const glm::vec3 boundary_color(1.0f, 0.733f, 0.0f); // #ffbb00
+        glm::vec3 fluid_color = glm::vec3(0.0f, 0.6f, 1.0f);      // #0099ff
+        glm::vec3 boundary_color = glm::vec3(1.0f, 0.733f, 0.0f); // #ffbb00
+
 
         switch (intersection_result.intersection_result_type) {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
@@ -225,6 +228,9 @@ namespace LibFluid::Raytracer {
                 return result;
             }
         }
+
+        FLUID_ASSERT(false);
+        return glm::vec3(0.0f);
     }
 
     void FluidRaytracer3D::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {

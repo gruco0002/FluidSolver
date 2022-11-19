@@ -45,25 +45,25 @@ namespace LibFluid::Raytracer {
             case ToneMapperSettings::ToneMapperFunction::Exponential: {
                 glm::vec3 new_value(0.0f);
 
-                new_value.r = map_single_channel_with_exponential_tone_mapping(value.r);
-                new_value.g = map_single_channel_with_exponential_tone_mapping(value.g);
-                new_value.b = map_single_channel_with_exponential_tone_mapping(value.b);
+                new_value.x = map_single_channel_with_exponential_tone_mapping(value.x);
+                new_value.y = map_single_channel_with_exponential_tone_mapping(value.y);
+                new_value.z = map_single_channel_with_exponential_tone_mapping(value.z);
 
                 return clamp_radiance(new_value);
             }
             case ToneMapperSettings::ToneMapperFunction::Filmic: {
                 glm::vec3 new_value(0.0f);
 
-                new_value.r = map_single_channel_with_filmic_tone_mapping(value.r);
-                new_value.g = map_single_channel_with_filmic_tone_mapping(value.g);
-                new_value.b = map_single_channel_with_filmic_tone_mapping(value.b);
+                new_value.x = map_single_channel_with_filmic_tone_mapping(value.x);
+                new_value.y = map_single_channel_with_filmic_tone_mapping(value.y);
+                new_value.z = map_single_channel_with_filmic_tone_mapping(value.z);
 
                 return clamp_radiance(new_value);
             }
         }
     }
     glm::vec3 ToneMapper::clamp_radiance(const glm::vec3& value) {
-        return {clamp(value.r), clamp(value.g), clamp(value.b)};
+        return {clamp(value.x), clamp(value.y), clamp(value.z)};
     }
 
     void ToneMapper::map_render_target_to_image(const RenderTarget& render_target, Image& image) {
@@ -93,16 +93,16 @@ namespace LibFluid::Raytracer {
 
         // switch to byte representation
         Image::Color c;
-        c.r = map_float_color_to_byte_color(res.r);
-        c.g = map_float_color_to_byte_color(res.g);
-        c.b = map_float_color_to_byte_color(res.b);
+        c.r = map_float_color_to_byte_color(res.x);
+        c.g = map_float_color_to_byte_color(res.y);
+        c.b = map_float_color_to_byte_color(res.z);
         c.a = 255;
 
         return c;
     }
 
     glm::vec3 ToneMapper::map_radiance_to_gamma_corrected_radiance(const glm::vec3& value) const {
-        return {map_color_to_gamma_corrected_color(value.r), map_color_to_gamma_corrected_color(value.g), map_color_to_gamma_corrected_color(value.b)};
+        return {map_color_to_gamma_corrected_color(value.x), map_color_to_gamma_corrected_color(value.y), map_color_to_gamma_corrected_color(value.z)};
     }
 
 
