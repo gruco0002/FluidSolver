@@ -135,6 +135,8 @@ namespace LibFluid::Raytracer {
                     } else {
                         // the skybox is empty, fall back to cosine weighted hemisphere sampling on the surface
                         shadow_ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), current.intersection.normal_at_intersection);
+                        shadow_ray.starting_point = current.intersection.point_of_intersection;
+                        shadow_ray.length_until_hit = 0.0f;
                     }
                 }
 
@@ -204,7 +206,10 @@ namespace LibFluid::Raytracer {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
-                return Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), intersection.normal_at_intersection);
+                auto ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), intersection.normal_at_intersection);
+                ray.starting_point = intersection.point_of_intersection;
+                ray.length_until_hit = 0.0f;
+                return ray;
             }
         }
         FLUID_ASSERT(false);
