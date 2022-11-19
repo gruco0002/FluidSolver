@@ -19,6 +19,8 @@ namespace LibFluid::Raytracer {
     }
 
     bool ParticleIntersectionAccelerator::is_intersecting_with_particles(Ray& ray, IntersectionResult& result) {
+        FLUID_ASSERT(ray);
+
         if (!particle_surrounding_aabb.is_ray_intersecting(ray)) {
             // the ray does not intersect the aabb around the particles
             return false;

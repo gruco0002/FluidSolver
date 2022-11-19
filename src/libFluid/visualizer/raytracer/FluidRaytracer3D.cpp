@@ -123,7 +123,6 @@ namespace LibFluid::Raytracer {
                     if (skybox.has_data()) {
                         // sample using the skybox sample distribution
                         shadow_ray.starting_point = current.intersection.point_of_intersection;
-                        shadow_ray.length_until_hit = 0.0f;
                         float shadow_ray_pdf;
                         shadow_ray.normalized_direction = skybox.sample_normalized_direction(sampler.get_uniform_sampled_pair(), shadow_ray_pdf);
                         if (Math::is_not_zero(shadow_ray_pdf)) {
@@ -136,9 +135,10 @@ namespace LibFluid::Raytracer {
                         // the skybox is empty, fall back to cosine weighted hemisphere sampling on the surface
                         shadow_ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), current.intersection.normal_at_intersection);
                         shadow_ray.starting_point = current.intersection.point_of_intersection;
-                        shadow_ray.length_until_hit = 0.0f;
                     }
                 }
+
+                FLUID_ASSERT(shadow_ray);
 
                 // check if the light source is occluded by something
                 if (!accelerator.is_intersecting_with_particles(shadow_ray)) {
@@ -166,6 +166,7 @@ namespace LibFluid::Raytracer {
             // sample a new ray and determine its intersection
             {
                 auto new_ray = sample_at(current.intersection);
+                FLUID_ASSERT(new_ray);
 
                 IntersectionResult new_intersection_result {};
                 if (accelerator.is_intersecting_with_particles(new_ray, new_intersection_result)) {
@@ -208,7 +209,6 @@ namespace LibFluid::Raytracer {
             case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
                 auto ray = Distributions::CosineWeightedHemisphereDistribution::sample_ray(sampler.get_uniform_sampled_pair(), intersection.normal_at_intersection);
                 ray.starting_point = intersection.point_of_intersection;
-                ray.length_until_hit = 0.0f;
                 return ray;
             }
         }
