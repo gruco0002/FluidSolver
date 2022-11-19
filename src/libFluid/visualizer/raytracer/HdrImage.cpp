@@ -47,7 +47,7 @@ namespace LibFluid::Raytracer {
     HdrImage::HdrImage(size_t width, size_t height) {
         m_width = width;
         m_height = height;
-        m_data.resize(width * height);
+        m_data.resize(width * height, glm::vec3(0.0f));
     }
 
     HdrImage::HdrImage(size_t width, size_t height, std::vector<glm::vec3> data) {
@@ -123,7 +123,7 @@ namespace LibFluid::Raytracer {
     void HdrImage::process_hdr_file_data(const float* data, int width, int height) {
         m_width = width;
         m_height = height;
-        m_data.resize(width * height);
+        m_data.resize(width * height, glm::vec3(0.0f));
 
         for (size_t y = 0; y < height; y++) {
             for (size_t x = 0; x < width; x++) {

@@ -95,8 +95,7 @@ namespace LibFluid::Raytracer {
             } else {
                 // no intersection, return the appropriate value from the skybox
                 if (!settings.output_normals_of_first_hit) {
-                    auto value = skybox.get_light_value_by_direction(ray.normalized_direction);
-                    return value;
+                    return skybox.get_radiance_by_direction(ray.normalized_direction);
                 } else {
                     // the normal is the opposite direction of the ray
                     return normal_to_color(-ray.normalized_direction);
@@ -104,7 +103,8 @@ namespace LibFluid::Raytracer {
             }
         }
 
-        glm::vec3 result;
+        glm::vec3 result_radiance(0.0f);
+
         // evaluate radiance along the path
         for (size_t current_depth = 0; current_depth < settings.maximum_recursion_depth; current_depth++) {
             // check for early termination of loop
@@ -115,6 +115,7 @@ namespace LibFluid::Raytracer {
 
             // importance sampling: sample the light source
             {
+                // start by sampling a ray towards the light source
                 Ray shadow_ray;
                 {
                     if (skybox.has_data()) {
@@ -135,25 +136,26 @@ namespace LibFluid::Raytracer {
                     }
                 }
 
+                // check if the light source is occluded by something
                 if (!accelerator.is_intersecting_with_particles(shadow_ray)) {
                     // nothing was in the way
-                    auto light_value = skybox.get_light_value_by_direction(shadow_ray.normalized_direction);
+                    auto light_radiance = skybox.get_radiance_by_direction(shadow_ray.normalized_direction);
 
                     // weight the contribution by the solid angle (monte carlo weight)
-                    light_value *= shadow_ray.solid_angle;
+                    light_radiance *= shadow_ray.solid_angle;
 
                     // cos between normal and shadow ray
                     float cosine_term = glm::dot(current.intersection.normal_at_intersection, shadow_ray.normalized_direction);
-                    light_value *= std::clamp(cosine_term, 0.0f, 1.0f);
+                    light_radiance *= std::clamp(cosine_term, 0.0f, 1.0f);
 
                     // incorporate brdf/bsdf
-                    light_value *= bsdf(current.ray, current.intersection, shadow_ray);
+                    light_radiance *= bsdf(current.ray, current.intersection, shadow_ray);
 
                     // multiply with previous weights
-                    light_value *= current.accumulated_weights;
+                    light_radiance *= current.accumulated_weights;
 
                     // add to result
-                    result += light_value;
+                    result_radiance += light_radiance;
                 }
             }
 
@@ -192,7 +194,7 @@ namespace LibFluid::Raytracer {
             }
         }
 
-        return result;
+        return result_radiance;
     }
 
     Ray FluidRaytracer3D::sample_at(const IntersectionResult& intersection) {
@@ -213,12 +215,12 @@ namespace LibFluid::Raytracer {
         switch (intersection_result.intersection_result_type) {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid: {
-                glm::vec3 result(fluid_color);
+                glm::vec3 result = fluid_color;
                 result *= 1.0f / Math::PI;
                 return result;
             }
             case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
-                glm::vec3 result(boundary_color);
+                glm::vec3 result = boundary_color;
                 result *= 1.0f / Math::PI;
                 return result;
             }

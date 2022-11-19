@@ -18,7 +18,7 @@ namespace LibFluid::Raytracer {
         size_t get_height() const;
 
         glm::vec3 get(size_t x, size_t y) const;
-        void set(size_t x, size_t y, const glm::vec3& light_value);
+        void set(size_t x, size_t y, const glm::vec3& radiance);
 
         HdrImage as_hdr_image() const;
 

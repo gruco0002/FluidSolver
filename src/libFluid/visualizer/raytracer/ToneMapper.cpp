@@ -40,29 +40,29 @@ namespace LibFluid::Raytracer {
         return 1.0f - std::exp(-hdr_value);
     }
 
-    glm::vec3 ToneMapper::map_light_value_to_clamped_light_value_using_tone_mapping(glm::vec3 value) const {
+    glm::vec3 ToneMapper::map_radiance_to_clamped_radiance_using_tone_mapping(glm::vec3 value) const {
         switch (settings.tone_mapper_function) {
             case ToneMapperSettings::ToneMapperFunction::Exponential: {
-                glm::vec3 new_value;
+                glm::vec3 new_value(0.0f);
 
                 new_value.r = map_single_channel_with_exponential_tone_mapping(value.r);
                 new_value.g = map_single_channel_with_exponential_tone_mapping(value.g);
                 new_value.b = map_single_channel_with_exponential_tone_mapping(value.b);
 
-                return clamp_light_value(new_value);
+                return clamp_radiance(new_value);
             }
             case ToneMapperSettings::ToneMapperFunction::Filmic: {
-                glm::vec3 new_value;
+                glm::vec3 new_value(0.0f);
 
                 new_value.r = map_single_channel_with_filmic_tone_mapping(value.r);
                 new_value.g = map_single_channel_with_filmic_tone_mapping(value.g);
                 new_value.b = map_single_channel_with_filmic_tone_mapping(value.b);
 
-                return clamp_light_value(new_value);
+                return clamp_radiance(new_value);
             }
         }
     }
-    glm::vec3 ToneMapper::clamp_light_value(const glm::vec3& value) {
+    glm::vec3 ToneMapper::clamp_radiance(const glm::vec3& value) {
         return {clamp(value.r), clamp(value.g), clamp(value.b)};
     }
 
@@ -72,23 +72,23 @@ namespace LibFluid::Raytracer {
 
         for (size_t y = 0; y < render_target.get_height(); y++) {
             for (size_t x = 0; x < render_target.get_width(); x++) {
-                image.set(x, y, map_light_value_to_image_color(render_target.get(x, y)));
+                image.set(x, y, map_radiance_to_image_color(render_target.get(x, y)));
             }
         }
     }
 
-    Image::Color ToneMapper::map_light_value_to_image_color(const glm::vec3& value) const {
+    Image::Color ToneMapper::map_radiance_to_image_color(const glm::vec3& value) const {
         glm::vec3 res = value;
 
         // apply exposure
         res *= settings.exposure;
 
         // apply tone mapping
-        res = map_light_value_to_clamped_light_value_using_tone_mapping(res);
+        res = map_radiance_to_clamped_radiance_using_tone_mapping(res);
 
         // apply gamma correction if activated
         if (settings.gamma_correction_enabled) {
-            res = map_light_value_to_gamma_corrected_light_value(res);
+            res = map_radiance_to_gamma_corrected_radiance(res);
         }
 
         // switch to byte representation
@@ -101,7 +101,7 @@ namespace LibFluid::Raytracer {
         return c;
     }
 
-    glm::vec3 ToneMapper::map_light_value_to_gamma_corrected_light_value(const glm::vec3& value) const {
+    glm::vec3 ToneMapper::map_radiance_to_gamma_corrected_radiance(const glm::vec3& value) const {
         return {map_color_to_gamma_corrected_color(value.r), map_color_to_gamma_corrected_color(value.g), map_color_to_gamma_corrected_color(value.b)};
     }
 

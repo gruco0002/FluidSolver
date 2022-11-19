@@ -63,27 +63,27 @@ namespace LibFluid::Raytracer {
             size_t pixel_x = i % width;
             size_t pixel_y = (i - pixel_x) / width;
 
-            glm::vec3 light_value;
+            glm::vec3 radiance(0.0f);
 
             // check if we rendered any samples before
             if (sample_per_pixel_counter > 0) {
                 // scale the old data back up again
-                light_value = settings.render_target->get(pixel_x, pixel_y);
-                light_value *= sample_per_pixel_counter;
+                radiance = settings.render_target->get(pixel_x, pixel_y);
+                radiance *= sample_per_pixel_counter;
             }
 
             // generate the rays for the current pixel
             for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++) {
                 // TODO: sample around pixel_x and pixel_y and weight samples accordingly
                 auto ray = generate_ray_for_sample_position((float)pixel_x, (float)pixel_y);
-                auto result = evaluate_ray(ray);
-                light_value += result;
+                auto radiance_by_ray = evaluate_ray(ray);
+                radiance += radiance_by_ray;
             }
 
             // take the total amount of samples into account
-            light_value *= 1.0f / (float)(sample_settings.amount_of_samples + sample_per_pixel_counter);
+            radiance *= 1.0f / static_cast<float>(sample_settings.amount_of_samples + sample_per_pixel_counter);
 
-            settings.render_target->set(pixel_x, pixel_y, light_value);
+            settings.render_target->set(pixel_x, pixel_y, radiance);
         });
 
         // update the total amount of samples rendered to each pixel

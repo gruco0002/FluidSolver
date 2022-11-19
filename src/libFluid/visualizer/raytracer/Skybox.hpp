@@ -12,7 +12,7 @@ namespace LibFluid::Raytracer {
       public:
         HdrImage skybox_image;
 
-        glm::vec3 get_light_value_by_direction(const glm::vec3& normalized_direction) const;
+        glm::vec3 get_radiance_by_direction(const glm::vec3& normalized_direction) const;
 
         glm::vec3 sample_normalized_direction(const glm::vec2& uniform_dist_random_sample_pair, float& pdf) const;
 

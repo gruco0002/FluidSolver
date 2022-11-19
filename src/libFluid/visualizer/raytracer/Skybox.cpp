@@ -23,7 +23,7 @@ namespace LibFluid::Raytracer {
         return {theta, phi};
     }
 
-    glm::vec3 Skybox::get_light_value_by_direction(const glm::vec3& normalized_direction) const {
+    glm::vec3 Skybox::get_radiance_by_direction(const glm::vec3& normalized_direction) const {
         if (skybox_image.width() == 0 || skybox_image.height() == 0) {
             // return default color
             return glm::vec3(2.0f);
@@ -84,7 +84,7 @@ namespace LibFluid::Raytracer {
         float y_factor = 1.0f - y_up_factor;
 
         // sample data
-        glm::vec3 result;
+        glm::vec3 result(0.0f);
         {
             auto sample = skybox_image.get(x, y);
             sample *= x_factor * y_factor;

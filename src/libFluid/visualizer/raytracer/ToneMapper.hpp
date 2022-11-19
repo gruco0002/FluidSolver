@@ -23,17 +23,17 @@ namespace LibFluid::Raytracer {
       private:
         static float clamp(float value);
 
-        static glm::vec3 clamp_light_value(const glm::vec3& value);
+        static glm::vec3 clamp_radiance(const glm::vec3& value);
 
         float map_color_to_gamma_corrected_color(float color) const;
 
-        glm::vec3 map_light_value_to_gamma_corrected_light_value(const glm::vec3& value) const;
+        glm::vec3 map_radiance_to_gamma_corrected_radiance(const glm::vec3& value) const;
 
         static uint8_t map_float_color_to_byte_color(float color);
 
-        glm::vec3 map_light_value_to_clamped_light_value_using_tone_mapping(glm::vec3 value) const;
+        glm::vec3 map_radiance_to_clamped_radiance_using_tone_mapping(glm::vec3 value) const;
 
-        Image::Color map_light_value_to_image_color(const glm::vec3& value) const;
+        Image::Color map_radiance_to_image_color(const glm::vec3& value) const;
 
       private:
         static float map_single_channel_with_filmic_tone_mapping(float hdr_value);
