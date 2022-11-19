@@ -218,8 +218,8 @@ namespace LibFluid::Raytracer {
 
     glm::vec3 FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
         // we currently define the fluid and boundary as ideal lambertian surfaces (diffuse)
-        glm::vec3 fluid_color = glm::vec3(0.0f, 0.6f, 1.0f);      // #0099ff
-        glm::vec3 boundary_color = glm::vec3(1.0f, 0.733f, 0.0f); // #ffbb00
+        glm::vec3 fluid_color = glm::pow(glm::vec3(0.1, 0.15, 0.5), glm::vec3(2.2f));         // #??????
+        glm::vec3 boundary_color = glm::pow(glm::vec3(0.0f, 0.42f, 0.063f), glm::vec3(2.2f)); // #006b10
 
 
         switch (intersection_result.intersection_result_type) {
