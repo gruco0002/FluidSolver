@@ -21,13 +21,13 @@ namespace LibFluid::Raytracer {
     size_t RenderTarget::get_height() const {
         return height;
     }
-    LightValue RenderTarget::get(size_t x, size_t y) const {
+    glm::vec3 RenderTarget::get(size_t x, size_t y) const {
         auto array_index = get_array_index_by_position(x, y);
         FLUID_ASSERT(array_index < data.size());
 
         return data[array_index];
     }
-    void RenderTarget::set(size_t x, size_t y, const LightValue& light_value) {
+    void RenderTarget::set(size_t x, size_t y, const glm::vec3& light_value) {
         auto array_index = get_array_index_by_position(x, y);
         FLUID_ASSERT(array_index < data.size());
 

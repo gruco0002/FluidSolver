@@ -25,7 +25,7 @@ namespace LibFluid::Raytracer {
 
         } sample_settings;
 
-        void render_batch_of_samples_to_render_target(const std::function<LightValue(Ray&)>& evaluate_ray);
+        void render_batch_of_samples_to_render_target(const std::function<glm::vec3(Ray&)>& evaluate_ray);
 
         void prepare();
 

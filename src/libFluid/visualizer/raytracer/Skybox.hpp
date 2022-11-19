@@ -12,7 +12,7 @@ namespace LibFluid::Raytracer {
       public:
         HdrImage skybox_image;
 
-        LightValue get_light_value_by_direction(const glm::vec3& normalized_direction) const;
+        glm::vec3 get_light_value_by_direction(const glm::vec3& normalized_direction) const;
 
         glm::vec3 sample_normalized_direction(const glm::vec2& uniform_dist_random_sample_pair, float& pdf) const;
 
@@ -25,7 +25,7 @@ namespace LibFluid::Raytracer {
 
         glm::vec2 direction_to_pixel_coordinate(const glm::vec3& normalized_direction) const;
 
-        LightValue get_interpolated_color(const glm::vec2& position) const;
+        glm::vec3 get_interpolated_color(const glm::vec2& position) const;
     };
 
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "visualizer/raytracer/LightValue.hpp"
 #include "visualizer/raytracer/HdrImage.hpp"
 
 #include <glm/glm.hpp>
@@ -18,8 +17,8 @@ namespace LibFluid::Raytracer {
         size_t get_width() const;
         size_t get_height() const;
 
-        LightValue get(size_t x, size_t y) const;
-        void set(size_t x, size_t y, const LightValue& light_value);
+        glm::vec3 get(size_t x, size_t y) const;
+        void set(size_t x, size_t y, const glm::vec3& light_value);
 
         HdrImage as_hdr_image() const;
 
@@ -29,7 +28,7 @@ namespace LibFluid::Raytracer {
 
         size_t width;
         size_t height;
-        std::vector<LightValue> data;
+        std::vector<glm::vec3> data;
 
         size_t get_array_index_by_position(size_t x, size_t y) const;
     };

@@ -38,10 +38,10 @@ namespace LibFluid::Raytracer {
       private:
         std::unique_ptr<Image> buffered_image = nullptr;
 
-        LightValue evaluate_ray(Ray& ray);
+        glm::vec3 evaluate_ray(Ray& ray);
 
         Ray sample_at(const IntersectionResult& intersection);
 
-        LightValue bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray);
+        glm::vec3 bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray);
     };
 } // namespace LibFluid::Raytracer

@@ -40,10 +40,10 @@ namespace LibFluid::Raytracer {
         return 1.0f - std::exp(-hdr_value);
     }
 
-    LightValue ToneMapper::map_light_value_to_clamped_light_value_using_tone_mapping(LightValue value) const {
+    glm::vec3 ToneMapper::map_light_value_to_clamped_light_value_using_tone_mapping(glm::vec3 value) const {
         switch (settings.tone_mapper_function) {
             case ToneMapperSettings::ToneMapperFunction::Exponential: {
-                LightValue new_value;
+                glm::vec3 new_value;
 
                 new_value.r = map_single_channel_with_exponential_tone_mapping(value.r);
                 new_value.g = map_single_channel_with_exponential_tone_mapping(value.g);
@@ -52,7 +52,7 @@ namespace LibFluid::Raytracer {
                 return clamp_light_value(new_value);
             }
             case ToneMapperSettings::ToneMapperFunction::Filmic: {
-                LightValue new_value;
+                glm::vec3 new_value;
 
                 new_value.r = map_single_channel_with_filmic_tone_mapping(value.r);
                 new_value.g = map_single_channel_with_filmic_tone_mapping(value.g);
@@ -62,7 +62,7 @@ namespace LibFluid::Raytracer {
             }
         }
     }
-    LightValue ToneMapper::clamp_light_value(const LightValue& value) {
+    glm::vec3 ToneMapper::clamp_light_value(const glm::vec3& value) {
         return {clamp(value.r), clamp(value.g), clamp(value.b)};
     }
 
@@ -77,11 +77,11 @@ namespace LibFluid::Raytracer {
         }
     }
 
-    Image::Color ToneMapper::map_light_value_to_image_color(const LightValue& value) const {
-        LightValue res = value;
+    Image::Color ToneMapper::map_light_value_to_image_color(const glm::vec3& value) const {
+        glm::vec3 res = value;
 
         // apply exposure
-        res.mul(settings.exposure);
+        res *= settings.exposure;
 
         // apply tone mapping
         res = map_light_value_to_clamped_light_value_using_tone_mapping(res);
@@ -100,9 +100,10 @@ namespace LibFluid::Raytracer {
 
         return c;
     }
-    LightValue ToneMapper::map_light_value_to_gamma_corrected_light_value(const LightValue& value) const {
+
+    glm::vec3 ToneMapper::map_light_value_to_gamma_corrected_light_value(const glm::vec3& value) const {
         return {map_color_to_gamma_corrected_color(value.r), map_color_to_gamma_corrected_color(value.g), map_color_to_gamma_corrected_color(value.b)};
     }
 
 
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer

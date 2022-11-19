@@ -64,19 +64,19 @@ namespace LibFluid::Raytracer {
         return *buffered_image;
     }
 
-    LightValue normal_to_color(const glm::vec3& normal) {
-        return LightValue(normal / 2.0f + glm::vec3(0.5f));
+    glm::vec3 normal_to_color(const glm::vec3& normal) {
+        return glm::vec3(normal / 2.0f + glm::vec3(0.5f));
     }
 
 
-    LightValue FluidRaytracer3D::evaluate_ray(Ray& ray) {
+    glm::vec3 FluidRaytracer3D::evaluate_ray(Ray& ray) {
         // Implementation of a basic stochastic path tracer
 
 
         struct {
             Ray ray;                         // the ray that hit the location
             IntersectionResult intersection; // the intersection of the ray
-            LightValue accumulated_weights;
+            glm::vec3 accumulated_weights;
         } current;
 
 
@@ -87,7 +87,7 @@ namespace LibFluid::Raytracer {
                 // the ray has hit something, initialize current state
                 current.ray = ray;
                 current.intersection = intersection_result;
-                current.accumulated_weights = LightValue(1.0f);
+                current.accumulated_weights = glm::vec3(1.0f);
 
                 if (settings.output_normals_of_first_hit) {
                     return normal_to_color(intersection_result.normal_at_intersection);
@@ -104,11 +104,11 @@ namespace LibFluid::Raytracer {
             }
         }
 
-        LightValue result;
+        glm::vec3 result;
         // evaluate radiance along the path
         for (size_t current_depth = 0; current_depth < settings.maximum_recursion_depth; current_depth++) {
             // check for early termination of loop
-            if (current.accumulated_weights.is_zero()) {
+            if (Math::is_zero(current.accumulated_weights)) {
                 // all further radiance contributions are weighted by zero
                 break;
             }
@@ -140,20 +140,20 @@ namespace LibFluid::Raytracer {
                     auto light_value = skybox.get_light_value_by_direction(shadow_ray.normalized_direction);
 
                     // weight the contribution by the solid angle (monte carlo weight)
-                    light_value.mul(shadow_ray.solid_angle);
+                    light_value *= shadow_ray.solid_angle;
 
                     // cos between normal and shadow ray
                     float cosine_term = glm::dot(current.intersection.normal_at_intersection, shadow_ray.normalized_direction);
-                    light_value.mul(std::clamp(cosine_term, 0.0f, 1.0f));
+                    light_value *= std::clamp(cosine_term, 0.0f, 1.0f);
 
                     // incorporate brdf/bsdf
-                    light_value.mul(bsdf(current.ray, current.intersection, shadow_ray));
+                    light_value *= bsdf(current.ray, current.intersection, shadow_ray);
 
                     // multiply with previous weights
-                    light_value.mul(current.accumulated_weights);
+                    light_value *= current.accumulated_weights;
 
                     // add to result
-                    result.add(light_value);
+                    result += light_value;
                 }
             }
 
@@ -163,20 +163,20 @@ namespace LibFluid::Raytracer {
 
                 IntersectionResult new_intersection_result {};
                 if (accelerator.is_intersecting_with_particles(new_ray, new_intersection_result)) {
-                    LightValue additional_weights(1.0f);
+                    glm::vec3 additional_weights(1.0f);
 
                     // weight the contribution by the solid angle (monte carlo weight)
-                    additional_weights.mul(new_ray.solid_angle);
+                    additional_weights *= new_ray.solid_angle;
 
                     // cos between normal and new ray
                     float cosine_term = glm::dot(current.intersection.normal_at_intersection, new_ray.normalized_direction);
-                    additional_weights.mul(std::clamp(cosine_term, 0.0f, 1.0f));
+                    additional_weights *= std::clamp(cosine_term, 0.0f, 1.0f);
 
                     // incorporate brdf/bsdf
-                    additional_weights.mul(bsdf(current.ray, current.intersection, new_ray));
+                    additional_weights *= bsdf(current.ray, current.intersection, new_ray);
 
                     // add those additional weights to the current weights
-                    current.accumulated_weights.mul(additional_weights);
+                    current.accumulated_weights *= additional_weights;
 
                     // set the new ray as current ray
                     current.ray = new_ray;
@@ -205,21 +205,21 @@ namespace LibFluid::Raytracer {
         }
     }
 
-    LightValue FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
+    glm::vec3 FluidRaytracer3D::bsdf(const Ray& outgoing_radiance_ray, const IntersectionResult& intersection_result, const Ray& incoming_radiance_ray) {
         // we currently define the fluid and boundary as ideal lambertian surfaces (diffuse)
-        const LightValue fluid_color(0.0f, 0.6f, 1.0f);      // #0099ff
-        const LightValue boundary_color(1.0f, 0.733f, 0.0f); // #ffbb00
+        const glm::vec3 fluid_color(0.0f, 0.6f, 1.0f);      // #0099ff
+        const glm::vec3 boundary_color(1.0f, 0.733f, 0.0f); // #ffbb00
 
         switch (intersection_result.intersection_result_type) {
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromOutsideTheFluid:
             case IntersectionResult::IntersectionResultType::RayReachedFluidSurfaceFromInsideTheFluid: {
-                LightValue result(fluid_color);
-                result.mul(1.0f / Math::PI);
+                glm::vec3 result(fluid_color);
+                result *= 1.0f / Math::PI;
                 return result;
             }
             case IntersectionResult::IntersectionResultType::RayHitBoundarySurface: {
-                LightValue result(boundary_color);
-                result.mul(1.0f / Math::PI);
+                glm::vec3 result(boundary_color);
+                result *= 1.0f / Math::PI;
                 return result;
             }
         }

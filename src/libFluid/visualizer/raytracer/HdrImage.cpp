@@ -19,26 +19,26 @@ namespace LibFluid::Raytracer {
     size_t HdrImage::size() const {
         return m_data.size();
     }
-    LightValue* HdrImage::data() {
+    glm::vec3* HdrImage::data() {
         return &m_data[0];
     }
-    const LightValue* HdrImage::data() const {
+    const glm::vec3* HdrImage::data() const {
         return &m_data[0];
     }
 
-    void HdrImage::set(size_t x, size_t y, const LightValue& color) {
+    void HdrImage::set(size_t x, size_t y, const glm::vec3& color) {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         m_data[y * m_width + x] = color;
     }
 
-    LightValue& HdrImage::get(size_t x, size_t y) {
+    glm::vec3& HdrImage::get(size_t x, size_t y) {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         return m_data[y * m_width + x];
     }
 
-    const LightValue& HdrImage::get(size_t x, size_t y) const {
+    const glm::vec3& HdrImage::get(size_t x, size_t y) const {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         return m_data[y * m_width + x];
@@ -50,7 +50,7 @@ namespace LibFluid::Raytracer {
         m_data.resize(width * height);
     }
 
-    HdrImage::HdrImage(size_t width, size_t height, std::vector<LightValue> data) {
+    HdrImage::HdrImage(size_t width, size_t height, std::vector<glm::vec3> data) {
         FLUID_ASSERT(data.size() == width * height);
         m_width = width;
         m_height = height;
@@ -133,7 +133,7 @@ namespace LibFluid::Raytracer {
                 float g = data[i * 3 + 1];
                 float b = data[i * 3 + 2];
 
-                m_data[i] = LightValue(r, g, b);
+                m_data[i] = glm::vec3(r, g, b);
             }
         }
     }
@@ -159,15 +159,15 @@ namespace LibFluid::Raytracer {
 
         for (size_t y = 0; y < height(); y++) {
             for (size_t x = 0; x < width(); x++) {
-                LightValue pixel(0.0f);
+                glm::vec3 pixel(0.0f);
 
                 for (int v = y - size; v <= y + size; v++) {
                     for (int u = x - size; u <= x + size; u++) {
-                        pixel.add(get_value_safe(*this, u, v));
+                        pixel += get_value_safe(*this, u, v);
                     }
                 }
 
-                pixel.mul(1.0f / Math::pow2(2.0f * static_cast<float>(size) + 1.0f));
+                pixel *= 1.0f / Math::pow2(2.0f * static_cast<float>(size) + 1.0f);
                 result.set(x, y, pixel);
             }
         }

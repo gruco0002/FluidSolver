@@ -23,10 +23,10 @@ namespace LibFluid::Raytracer {
         return {theta, phi};
     }
 
-    LightValue Skybox::get_light_value_by_direction(const glm::vec3& normalized_direction) const {
+    glm::vec3 Skybox::get_light_value_by_direction(const glm::vec3& normalized_direction) const {
         if (skybox_image.width() == 0 || skybox_image.height() == 0) {
             // return default color
-            return LightValue(2.0f);
+            return glm::vec3(2.0f);
         }
 
         // map direction to pixel coordinate
@@ -51,7 +51,7 @@ namespace LibFluid::Raytracer {
         return {x, y};
     }
 
-    LightValue Skybox::get_interpolated_color(const glm::vec2& position) const {
+    glm::vec3 Skybox::get_interpolated_color(const glm::vec2& position) const {
         // FIXME: check if the bilinear interpolation is implemented correctly
 
         // linear interpolation
@@ -84,26 +84,26 @@ namespace LibFluid::Raytracer {
         float y_factor = 1.0f - y_up_factor;
 
         // sample data
-        LightValue result;
+        glm::vec3 result;
         {
             auto sample = skybox_image.get(x, y);
-            sample.mul(x_factor * y_factor);
-            result.add(sample);
+            sample *= x_factor * y_factor;
+            result += sample;
         }
         {
             auto sample = skybox_image.get(x_up, y);
-            sample.mul(x_up_factor * y_factor);
-            result.add(sample);
+            sample *= x_up_factor * y_factor;
+            result += sample;
         }
         {
             auto sample = skybox_image.get(x, y_up);
-            sample.mul(x_factor * y_up_factor);
-            result.add(sample);
+            sample *= x_factor * y_up_factor;
+            result += sample;
         }
         {
             auto sample = skybox_image.get(x_up, y_up);
-            sample.mul(x_up_factor * y_up_factor);
-            result.add(sample);
+            sample *= x_up_factor * y_up_factor;
+            result += sample;
         }
 
         return result;

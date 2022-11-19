@@ -48,4 +48,8 @@ namespace LibFluid::Math {
     inline bool is_zero(const float& f) {
         return abs(f) <= std::numeric_limits<float>::epsilon();
     }
+
+    inline bool is_zero(const glm::vec3& v) {
+        return is_zero(v.x) && is_zero(v.y) && is_zero(v.z);
+    }
 } // namespace LibFluid::Math

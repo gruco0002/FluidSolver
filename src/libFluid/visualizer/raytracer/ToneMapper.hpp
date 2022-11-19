@@ -23,21 +23,21 @@ namespace LibFluid::Raytracer {
       private:
         static float clamp(float value);
 
-        static LightValue clamp_light_value(const LightValue& value);
+        static glm::vec3 clamp_light_value(const glm::vec3& value);
 
         float map_color_to_gamma_corrected_color(float color) const;
 
-        LightValue map_light_value_to_gamma_corrected_light_value(const LightValue& value) const;
+        glm::vec3 map_light_value_to_gamma_corrected_light_value(const glm::vec3& value) const;
 
         static uint8_t map_float_color_to_byte_color(float color);
 
-        LightValue map_light_value_to_clamped_light_value_using_tone_mapping(LightValue value) const;
+        glm::vec3 map_light_value_to_clamped_light_value_using_tone_mapping(glm::vec3 value) const;
 
-        Image::Color map_light_value_to_image_color(const LightValue& value) const;
+        Image::Color map_light_value_to_image_color(const glm::vec3& value) const;
 
       private:
         static float map_single_channel_with_filmic_tone_mapping(float hdr_value);
 
         static float map_single_channel_with_exponential_tone_mapping(float hdr_value);
     };
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer
