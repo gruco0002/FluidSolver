@@ -8,6 +8,7 @@ from matplotlib.colors import LogNorm
 import seaborn as sns
 import pandas as pd
 
+plt.rcParams.update({'font.size': 7})
 
 import framework.test_series as test_series
 
@@ -72,19 +73,21 @@ def analyze_data():
             avg_density_avg[timestep].append(avg_dens)
 
     _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count)
-    _show_plot_density_variance(gamma1, gamma2, avg_density_variance)
-    _show_plot_average_density(gamma1, gamma2, avg_density_avg)
+    # _show_plot_density_variance(gamma1, gamma2, avg_density_variance)
+    # _show_plot_average_density(gamma1, gamma2, avg_density_avg)
 
 
 def _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count):
 
     timesteps = sorted(list(gamma1.keys()))
 
-    fig, axes = plt.subplots(1, len(timesteps))
+    assert(len(timesteps) % 2 == 0)
+
+    fig, axes = plt.subplots(2, len(timesteps) // 2, figsize=[6.4, 5.8])
 
     for i, timestep in enumerate(timesteps):
 
-        ax = axes[i]
+        ax = axes[i // 2][i % 2]
 
         df = pd.DataFrame.from_dict(
             np.array([gamma1[timestep], gamma2[timestep], avg_iteration_count[timestep]]).T)
@@ -93,10 +96,13 @@ def _show_plot_average_iteration_count(gamma1, gamma2, avg_iteration_count):
         pivotted = df.pivot('Gamma 1', 'Gamma 2', 'Average Iteration Count')
 
         mask = pivotted.isnull()
-        sns.heatmap(pivotted, cmap="viridis", ax=ax, mask=mask)
+        sns.heatmap(pivotted, cmap="magma", ax=ax, mask=mask)
         ax.set_title("Timestep " + str(timestep) + "s")
 
-    fig.suptitle("Average Iteration Count")
+    # fig.suptitle("Average Iteration Count")
+    fig.tight_layout()
+
+    plt.savefig("plot-of-average-iteration-count.pdf")  
     plt.show()
 
 def _show_plot_average_density(gamma1, gamma2, avg_density_avg):
