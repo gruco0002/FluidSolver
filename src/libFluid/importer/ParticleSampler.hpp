@@ -17,6 +17,9 @@ namespace LibFluid::Importer {
         std::shared_ptr<SamplingMethod> sampling_method;
 
         std::vector<std::shared_ptr<ReductionMethod>> reduction_methods;
+
+        bool shuffle_before_each_reduction = false;
+        bool use_random_seed_for_shuffling = false;
     };
 
 } // namespace LibFluid::Importer

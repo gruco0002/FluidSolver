@@ -63,6 +63,10 @@ namespace FluidStudio {
             ImGui::Checkbox("Volume Reduction", &volume_reduction_enabled);
 
             ImGui::Separator();
+            ImGui::Checkbox("Randomly shuffle samples before reduction", &shuffle_before_each_reduction);
+            ImGui::Checkbox("Use random seed for shuffling", &use_random_seed_for_shuffling);
+
+            ImGui::Separator();
             ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
             ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
             float particle_mass = get_particle_mass();
@@ -114,6 +118,8 @@ namespace FluidStudio {
         duplicate_reduction_enabled = true;
         volume_reduction_enabled = true;
         distance_reduction_enabled = false;
+        shuffle_before_each_reduction = false;
+        use_random_seed_for_shuffling = false;
     }
 
     void ObjImportWindow::import_data_into_scene() {
@@ -128,6 +134,8 @@ namespace FluidStudio {
         auto mesh_data = obj_loader.load_as_meshdata();
 
         LibFluid::Importer::ParticleSampler particle_sampler;
+        particle_sampler.shuffle_before_each_reduction = shuffle_before_each_reduction;
+        particle_sampler.use_random_seed_for_shuffling = use_random_seed_for_shuffling;
 
         switch (sampler) {
             case Sampler::GridSampler:
@@ -156,6 +164,8 @@ namespace FluidStudio {
         report_data.area = mesh_data.get_area();
         report_data.triangle_count = mesh_data.triangles.size();
         report_data.import_scale = import_scale;
+        report_data.use_random_seed_for_shuffling = use_random_seed_for_shuffling;
+        report_data.shuffle_before_each_reduction = shuffle_before_each_reduction;
 
         // convert samples into particles
         for (const auto& sample : samples) {
@@ -200,6 +210,7 @@ namespace FluidStudio {
         LibFluid::Log::message(fmt::format("Model was scaled up by factor {}.", report_data.import_scale));
         LibFluid::Log::message(fmt::format("Model has {} triangles with a surface area of {}.", report_data.triangle_count, report_data.area));
         LibFluid::Log::message(fmt::format("This resulted in {} particles.", report_data.created_particles));
+        LibFluid::Log::message(fmt::format("Shuffle before each reduction: {}, use a random seed for shuffling {}", report_data.shuffle_before_each_reduction, report_data.use_random_seed_for_shuffling));
     }
     bool ObjImportWindow::can_import() const {
         auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
@@ -213,6 +224,8 @@ namespace FluidStudio {
             ImGui::LabelText("Model Scale", "%f", report_data.import_scale);
             ImGui::LabelText("Amount of Triangles", "%d", report_data.triangle_count);
             ImGui::LabelText("Model Surface Area", "%f", report_data.area);
+            ImGui::LabelText("Shuffle before each reduction", "%s", report_data.shuffle_before_each_reduction ? "Enabled" : "Disabled");
+            ImGui::LabelText("Use random seed for shuffling", "%s", report_data.use_random_seed_for_shuffling ? "Enabled" : "Disabled");
 
             ImGui::Separator();
 

@@ -12,7 +12,7 @@ namespace FluidStudio {
         void open_window();
 
       private:
-        enum class Sampler{
+        enum class Sampler {
             GridSampler,
             UvSampler
         };
@@ -30,6 +30,9 @@ namespace FluidStudio {
         bool volume_reduction_enabled = true;
         bool distance_reduction_enabled = false;
 
+        bool shuffle_before_each_reduction = false;
+        bool use_random_seed_for_shuffling = false;
+
         bool report_enabled = true;
 
         float get_particle_mass() const;
@@ -45,6 +48,8 @@ namespace FluidStudio {
             int triangle_count = 0;
             float area = 0.0f;
             float import_scale = 1.0f;
+            bool shuffle_before_each_reduction = false;
+            bool use_random_seed_for_shuffling = false;
         } report_data;
 
         unsigned int update_report_popup();
