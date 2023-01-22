@@ -20,7 +20,7 @@ def create_data():
     param_gamma1 = test_series.Parameter(["solver", "single-layer-settings", "gamma-1"], [
                                          0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5])
 
-    param_timestep = test_series.Parameter(["solver", "timestep", "timestep"], [
+    param_timestep = test_series.Parameter(["timestep-generator", "timestep"], [
                                            0.075, 0.05, 0.025, 0.01])
 
     runner = test_series.TestSeriesRunner(
@@ -40,7 +40,7 @@ def analyze_data():
 
     for instance_info, sensor_readers in analyzer.get_instances():
 
-        timestep = instance_info["solver.timestep.timestep"]
+        timestep = instance_info["timestep-generator.timestep"]
         if timestep not in gamma1:
             gamma1[timestep] = []
             gamma2[timestep] = []
