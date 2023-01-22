@@ -10,6 +10,14 @@ namespace LibFluid::Importer {
         this->triangles = std::move(triangles);
     }
 
+    float MeshData::get_area() const {
+        float area = 0.0f;
+        for (const auto& triangle : triangles) {
+            area += triangle.get_area();
+        }
+        return area;
+    }
+
     glm::vec3 MeshData::Triangle::get_minimum_coordinates() const {
         return {
                 Math::min(vertices[0].x, Math::min(vertices[1].x, vertices[2].x)),

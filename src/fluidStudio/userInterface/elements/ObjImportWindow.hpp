@@ -42,6 +42,9 @@ namespace FluidStudio {
 
         struct ReportData {
             int created_particles = 0;
+            int triangle_count = 0;
+            float area = 0.0f;
+            float import_scale = 1.0f;
         } report_data;
 
         unsigned int update_report_popup();

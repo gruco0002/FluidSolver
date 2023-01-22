@@ -2,6 +2,7 @@
 
 #include "ImguiHelper.hpp"
 #include "LibFluidMath.hpp"
+#include "helpers/Log.hpp"
 #include "importer/ObjLoader.hpp"
 #include "importer/ParticleSampler.hpp"
 #include "importer/methods/DistanceReductionMethod.hpp"
@@ -11,6 +12,7 @@
 #include "importer/methods/VolumeReductionMethod.hpp"
 #include "userInterface/helpers/ParticleCollectionHelper.hpp"
 
+#include <fmt/core.h>
 #include <nfd.h>
 
 namespace FluidStudio {
@@ -151,6 +153,9 @@ namespace FluidStudio {
         const auto& samples = particle_sampler.generate_samples(mesh_data, particle_size);
 
         report_data.created_particles = samples.size();
+        report_data.area = mesh_data.get_area();
+        report_data.triangle_count = mesh_data.triangles.size();
+        report_data.import_scale = import_scale;
 
         // convert samples into particles
         for (const auto& sample : samples) {
@@ -189,6 +194,12 @@ namespace FluidStudio {
         ui_data.window().timeline_service.override_timestep_result();
 
         ui_data.window().visualizer_parameter_changed();
+
+        // log info about import
+        LibFluid::Log::message(fmt::format("Imported {}:", current_file));
+        LibFluid::Log::message(fmt::format("Model was scaled up by factor {}.", report_data.import_scale));
+        LibFluid::Log::message(fmt::format("Model has {} triangles with a surface area of {}.", report_data.triangle_count, report_data.area));
+        LibFluid::Log::message(fmt::format("This resulted in {} particles.", report_data.created_particles));
     }
     bool ObjImportWindow::can_import() const {
         auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
@@ -199,6 +210,9 @@ namespace FluidStudio {
         auto imgui_id = ImGui::GetID("Obj Import - Report");
         if (ImGui::BeginPopupModal("Obj Import - Report")) {
             ImGui::LabelText("Created Particles", "%d", report_data.created_particles);
+            ImGui::LabelText("Model Scale", "%f", report_data.import_scale);
+            ImGui::LabelText("Amount of Triangles", "%d", report_data.triangle_count);
+            ImGui::LabelText("Model Surface Area", "%f", report_data.area);
 
             ImGui::Separator();
 

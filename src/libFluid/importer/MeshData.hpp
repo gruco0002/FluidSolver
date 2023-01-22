@@ -24,10 +24,10 @@ namespace LibFluid::Importer {
         };
 
       public:
-
         explicit MeshData(std::vector<Triangle> triangles);
 
         std::vector<Triangle> triangles;
 
+        float get_area() const;
     };
 } // namespace LibFluid::Importer
