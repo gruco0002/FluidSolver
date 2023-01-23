@@ -68,7 +68,7 @@ namespace LibFluid::Importer {
 
                 if (index_0.normal_index == -1 || index_1.normal_index == -1 || index_2.normal_index == -1) {
                     // normals are not defined, calculate it from the vertices
-                    auto normal = triangle.calculate_normalized_normal_from_vertices();
+                    auto normal = triangle.get_normal_from_vertices();
                     triangle.normals[0] = normal;
                     triangle.normals[1] = normal;
                     triangle.normals[2] = normal;
