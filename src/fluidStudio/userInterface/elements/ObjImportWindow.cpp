@@ -58,12 +58,20 @@ namespace FluidStudio {
                 }
                 ImGui::EndCombo();
             }
+            if (sampler == Sampler::GridSampler) {
+                ImGui::Indent(16.0f);
+                ImGui::InputFloat("Cell Size Factor", &cell_size_factor);
+                ImGui::Unindent(16.0f);
+            }
+
             ImGui::Checkbox("Duplicate Reduction", &duplicate_reduction_enabled);
             ImGui::Checkbox("Distance Reduction", &distance_reduction_enabled);
             ImGui::Checkbox("Volume Reduction", &volume_reduction_enabled);
             if (volume_reduction_enabled) {
+                ImGui::Indent(16.0f);
                 ImGui::InputFloat("Min Volume Factor", &min_volume_factor);
                 ImGui::InputFloat("Max Volume Factor", &max_volume_factor);
+                ImGui::Unindent(16.0f);
             }
 
             ImGui::Separator();
@@ -126,6 +134,7 @@ namespace FluidStudio {
         use_random_seed_for_shuffling = false;
         min_volume_factor = 0.5f;
         max_volume_factor = 0.9f;
+        cell_size_factor = 1.0f;
     }
 
     void ObjImportWindow::import_data_into_scene() {
@@ -144,9 +153,11 @@ namespace FluidStudio {
         particle_sampler.use_random_seed_for_shuffling = use_random_seed_for_shuffling;
 
         switch (sampler) {
-            case Sampler::GridSampler:
-                particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
-                break;
+            case Sampler::GridSampler: {
+                auto grid_sampler = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
+                grid_sampler->cell_size_factor = cell_size_factor;
+                particle_sampler.sampling_method = grid_sampler;
+            } break;
             case Sampler::UvSampler:
                 particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
                 break;

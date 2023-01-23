@@ -7,7 +7,7 @@ namespace LibFluid::Importer {
       public:
         std::vector<glm::vec3> generate_samples_for_triangle(const MeshData::Triangle& triangle) const override;
 
-        float cell_size_factor = 0.5f;
+        float cell_size_factor = 1.0f;
 
       private:
         glm::vec3 get_grid_aligned_vector(const glm::vec3& value, bool subtract) const;

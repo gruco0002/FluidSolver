@@ -36,6 +36,8 @@ namespace FluidStudio {
         float min_volume_factor = 0.5f;
         float max_volume_factor = 0.9f;
 
+        float cell_size_factor = 1.0f;
+
         bool report_enabled = true;
 
         float get_particle_mass() const;
