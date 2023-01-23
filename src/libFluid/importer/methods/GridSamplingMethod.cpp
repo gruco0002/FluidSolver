@@ -27,9 +27,9 @@ namespace LibFluid::Importer {
         minimum -= glm::vec3(particle_size);
         maximum += glm::vec3(particle_size);
 
-        for (float x = minimum.x; x <= maximum.x; x += particle_size) {
-            for (float y = minimum.y; y <= maximum.y; y += particle_size) {
-                for (float z = minimum.z; z <= maximum.z; z += particle_size) {
+        for (float x = minimum.x; x <= maximum.x; x += particle_size * cell_size_factor) {
+            for (float y = minimum.y; y <= maximum.y; y += particle_size * cell_size_factor) {
+                for (float z = minimum.z; z <= maximum.z; z += particle_size * cell_size_factor) {
                     glm::vec3 sample_position(x, y, z);
 
                     auto point_on_triangle = triangle.get_closest_point_on_triangle(sample_position);
