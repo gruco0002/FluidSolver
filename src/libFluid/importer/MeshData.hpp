@@ -21,6 +21,8 @@ namespace LibFluid::Importer {
             glm::vec3 get_normal_from_vertices() const;
 
             float get_area() const;
+
+            glm::vec3 calculate_normalized_normal_from_vertices() const;
         };
 
       public:

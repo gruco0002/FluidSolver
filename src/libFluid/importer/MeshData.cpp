@@ -172,4 +172,10 @@ namespace LibFluid::Importer {
 
         return area;
     }
+
+    glm::vec3 MeshData::Triangle::calculate_normalized_normal_from_vertices() const {
+        glm::vec3 normal = glm::cross(vertices[1] - vertices[0], vertices[2] - vertices[0]);
+        FLUID_ASSERT(Math::is_not_zero(normal.length()), "Length of normal is zero!");
+        return normal / glm::length(normal);
+    }
 } // namespace LibFluid::Importer
