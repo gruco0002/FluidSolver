@@ -61,6 +61,10 @@ namespace FluidStudio {
             ImGui::Checkbox("Duplicate Reduction", &duplicate_reduction_enabled);
             ImGui::Checkbox("Distance Reduction", &distance_reduction_enabled);
             ImGui::Checkbox("Volume Reduction", &volume_reduction_enabled);
+            if (volume_reduction_enabled) {
+                ImGui::InputFloat("Min Volume Factor", &min_volume_factor);
+                ImGui::InputFloat("Max Volume Factor", &max_volume_factor);
+            }
 
             ImGui::Separator();
             ImGui::Checkbox("Randomly shuffle samples before reduction", &shuffle_before_each_reduction);
@@ -120,6 +124,8 @@ namespace FluidStudio {
         distance_reduction_enabled = false;
         shuffle_before_each_reduction = false;
         use_random_seed_for_shuffling = false;
+        min_volume_factor = 0.5f;
+        max_volume_factor = 0.9f;
     }
 
     void ObjImportWindow::import_data_into_scene() {
@@ -154,7 +160,10 @@ namespace FluidStudio {
             particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
         }
         if (volume_reduction_enabled) {
-            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::VolumeReductionMethod>());
+            auto method = std::make_shared<LibFluid::Importer::VolumeReductionMethod>();
+            method->min_volume_factor = min_volume_factor;
+            method->max_volume_factor = max_volume_factor;
+            particle_sampler.reduction_methods.push_back(method);
         }
 
 

@@ -33,6 +33,9 @@ namespace FluidStudio {
         bool shuffle_before_each_reduction = false;
         bool use_random_seed_for_shuffling = false;
 
+        float min_volume_factor = 0.5f;
+        float max_volume_factor = 0.9f;
+
         bool report_enabled = true;
 
         float get_particle_mass() const;
