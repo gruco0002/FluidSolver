@@ -64,8 +64,9 @@ namespace LibFluid::Importer {
         // check if the point lies within the triangle, if yes we found the solution
         glm::vec3 barycentric = get_barycentric_coordinates_of(point_projected_onto_plane);
 
-        if (barycentric.x >= 0.0f && barycentric.x <= 1.0f && barycentric.y >= 0.0f && barycentric.y <= 1.0f && barycentric.z >= 0.0f && barycentric.z <= 1.0f) {
+        if (barycentric.x >= 0.0f && barycentric.x <= 1.0f && barycentric.y >= 0.0f && barycentric.y <= 1.0f && barycentric.z >= 0.0f && barycentric.z <= 1.0f && Math::is_zero(barycentric.x + barycentric.y + barycentric.z - 1.0f)) {
             // see https://math.stackexchange.com/questions/4322/check-whether-a-point-is-within-a-3d-triangle
+            // and https://stackoverflow.com/questions/37545304/determine-if-point-is-inside-triangle-in-3d
             // the point lies within the triangle
             return point_projected_onto_plane;
         }
@@ -126,6 +127,7 @@ namespace LibFluid::Importer {
 
     glm::vec3 MeshData::Triangle::get_barycentric_coordinates_of(const glm::vec3& cartesian_point) const {
         // see https://math.stackexchange.com/questions/4322/check-whether-a-point-is-within-a-3d-triangle
+        // and https://stackoverflow.com/questions/37545304/determine-if-point-is-inside-triangle-in-3d
         const auto& a = vertices[0];
         const auto& b = vertices[1];
         const auto& c = vertices[2];
@@ -134,14 +136,15 @@ namespace LibFluid::Importer {
         auto normal = get_normal_from_vertices();
 
         float area_abc = get_area();
-        float area_pbc = glm::length(glm::cross((b - p), (c - p))) / 2.0f;
-        float area_pca = glm::length(glm::cross((c - p), (a - p))) / 2.0f;
+        float area_bpc = glm::length(glm::cross((p - b), (c - b))) / 2.0f;
+        float area_pac = glm::length(glm::cross((a - p), (c - p))) / 2.0f;
+        float area_pab = glm::length(glm::cross((a - p), (b - p))) / 2.0f;
 
         FLUID_ASSERT(area_abc > 0.0f, "Triangle with area smaller or equal to zero is not sound!");
 
-        float alpha = area_pbc / area_abc;
-        float beta = area_pca / area_abc;
-        float gamma = 1.0f - alpha - beta;
+        float alpha = area_bpc / area_abc;
+        float beta = area_pac / area_abc;
+        float gamma = area_pab / area_abc;
 
         return {alpha, beta, gamma};
     }
