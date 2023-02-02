@@ -28,6 +28,7 @@ namespace FluidStudio {
         node["settings"]["boundary-color"] = r->settings.boundary_particle_color;
         node["settings"]["fluid-color"] = r->settings.fluid_particle_color;
         node["settings"]["light-direction"] = r->settings.light_direction;
+        node["settings"]["ambient-light-factor"] = r->settings.ambient_light_factor;
         node["settings"]["camera"]["location"] = r->settings.camera.location;
         node["settings"]["camera"]["up"] = r->settings.camera.up;
         node["settings"]["camera"]["looking-at"] = r->settings.camera.looking_at;
@@ -63,6 +64,10 @@ namespace FluidStudio {
         r->settings.camera.location = node["settings"]["camera"]["location"].get<glm::vec3>();
         r->settings.camera.up = node["settings"]["camera"]["up"].get<glm::vec3>();
         r->settings.camera.looking_at = node["settings"]["camera"]["looking-at"].get<glm::vec3>();
+        if (node["settings"].contains("ambient-light-factor")) {
+            r->settings.ambient_light_factor = node["settings"]["ambient-light-factor"].get<float>();
+        }
+
 
         return r;
     }

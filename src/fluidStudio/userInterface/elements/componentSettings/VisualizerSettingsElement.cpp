@@ -241,6 +241,10 @@ namespace FluidStudio {
 
             ImGui::Separator();
 
+            ImGui::SliderFloat("Ambient Factor", &gl3d->settings.ambient_light_factor, 0.0f, 1.0f);
+
+            ImGui::Separator();
+
             ImGui::Checkbox("Memory Location", &gl3d->settings.show_particle_memory_location);
 
             ImGui::TreePop();
