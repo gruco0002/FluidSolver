@@ -6,6 +6,7 @@
 #include "serialization/helpers/JsonHelpers.hpp"
 #include "visualizer/ContinuousVisualizer.hpp"
 #include "visualizer/raytracer/FluidRaytracer3D.hpp"
+#include "visualizer/raytracer/SimpleRaytracer.hpp"
 
 namespace LibFluid::Serialization {
 
@@ -18,6 +19,8 @@ namespace LibFluid::Serialization {
             return serialize_continuous_visualizer(visualizer);
         } else if (dynamic_pointer_is<Raytracer::FluidRaytracer3D>(visualizer)) {
             return serialize_raytracer(visualizer);
+        } else if (dynamic_pointer_is<Raytracer::SimpleRaytracer>(visualizer)) {
+            return serialize_simple_raytracer(visualizer);
         }
 
         // query the extensions
@@ -41,6 +44,8 @@ namespace LibFluid::Serialization {
             return deserialize_continuous_visualizer(node);
         } else if (type == "raytracer") {
             return deserialize_raytracer(node);
+        } else if (type == "simple-raytracer") {
+            return deserialize_simple_raytracer(node);
         }
 
         // query the extensions
@@ -201,6 +206,108 @@ namespace LibFluid::Serialization {
             r->settings.output_normals_of_first_hit = false;
         }
 
+        return r;
+    }
+
+    nlohmann::json VisualizerSerializer::serialize_simple_raytracer(std::shared_ptr<ISimulationVisualizer> visualizer) {
+        auto r = std::dynamic_pointer_cast<LibFluid::Raytracer::SimpleRaytracer>(visualizer);
+        FLUID_ASSERT(r != nullptr, "Called with invalid subtype of visualizer!");
+
+        nlohmann::json node;
+
+        node["type"] = "simple-raytracer";
+
+        // default parameters
+        node["render-target"]["width"] = r->parameters.render_target.width;
+        node["render-target"]["height"] = r->parameters.render_target.height;
+        node["enabled"] = r->parameters.enabled;
+
+        // custom parameters for the raytracer
+        node["settings"]["camera"]["location"] = r->camera.settings.position;
+        node["settings"]["camera"]["up"] = r->camera.settings.view_up;
+        node["settings"]["camera"]["direction"] = r->camera.settings.view_direction;
+        node["settings"]["camera"]["field-of-view-x"] = r->camera.settings.field_of_view_x;
+        node["settings"]["camera"]["flip-y"] = r->camera.settings.flip_y;
+
+        node["settings"]["tone-mapping"]["exposure"] = r->tone_mapper.settings.exposure;
+        node["settings"]["tone-mapping"]["gamma"] = r->tone_mapper.settings.gamma;
+        node["settings"]["tone-mapping"]["gamma-correction-enabled"] = r->tone_mapper.settings.gamma_correction_enabled;
+
+        switch (r->tone_mapper.settings.tone_mapper_function) {
+            case Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Exponential:
+                node["settings"]["tone-mapping"]["function"] = "exponential";
+                break;
+            case Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Filmic:
+                node["settings"]["tone-mapping"]["function"] = "filmic";
+                break;
+        }
+
+        node["settings"]["surface"]["fraction-of-rest-density"] = r->accelerator.surface_density_as_fraction_of_rest_density;
+
+        node["settings"]["fluid-color"] = r->settings.fluid_color;
+        node["settings"]["boundary-color"] = r->settings.boundary_color;
+        node["settings"]["background-color"] = r->settings.background_color;
+        node["settings"]["ambient-strength"] = r->settings.ambient_strength;
+        node["settings"]["light-direction"] = r->settings.light_direction;
+
+        if (r->settings.output == Raytracer::SimpleRaytracer::Settings::Output::Normal) {
+            node["settings"]["output-mode"] = "normal";
+        } else {
+            node["settings"]["output-mode"] = "color";
+        }
+
+        return node;
+    }
+
+    std::shared_ptr<ISimulationVisualizer> VisualizerSerializer::deserialize_simple_raytracer(const nlohmann::json& node) {
+        auto r = std::make_shared<Raytracer::SimpleRaytracer>();
+
+        // default data
+        r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
+        r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
+        if (node.contains("enabled")) {
+            r->parameters.enabled = node["enabled"].get<bool>();
+        } else {
+            r->parameters.enabled = true;
+        }
+
+        // custom parameters for the raytracer
+        r->camera.settings.position = node["settings"]["camera"]["location"].get<glm::vec3>();
+        r->camera.settings.view_up = node["settings"]["camera"]["up"].get<glm::vec3>();
+        r->camera.settings.view_direction = node["settings"]["camera"]["direction"].get<glm::vec3>();
+        r->camera.settings.field_of_view_x = node["settings"]["camera"]["field-of-view-x"].get<float>();
+        r->camera.settings.flip_y = node["settings"]["camera"]["flip-y"].get<bool>();
+        r->camera.sample_settings.amount_of_samples = 1;
+
+        r->tone_mapper.settings.exposure = node["settings"]["tone-mapping"]["exposure"].get<float>();
+        r->tone_mapper.settings.gamma = node["settings"]["tone-mapping"]["gamma"].get<float>();
+        r->tone_mapper.settings.gamma_correction_enabled = node["settings"]["tone-mapping"]["gamma-correction-enabled"].get<bool>();
+
+        auto tone_mapping_function = node["settings"]["tone-mapping"]["function"].get<std::string>();
+        if (tone_mapping_function == "exponential") {
+            r->tone_mapper.settings.tone_mapper_function = Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Exponential;
+        } else if (tone_mapping_function == "filmic") {
+            r->tone_mapper.settings.tone_mapper_function = Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Filmic;
+        } else {
+            // unhandled
+            context().add_issue("Unhandled tone mapping function: " + tone_mapping_function);
+        }
+
+        r->accelerator.surface_density_as_fraction_of_rest_density = node["settings"]["surface"]["fraction-of-rest-density"].get<float>();
+
+        r->settings.fluid_color = node["settings"]["fluid-color"].get<glm::vec3>();
+        r->settings.boundary_color = node["settings"]["boundary-color"].get<glm::vec3>();
+        r->settings.background_color = node["settings"]["background-color"].get<glm::vec3>();
+        r->settings.ambient_strength = node["settings"]["ambient-strength"].get<float>();
+        r->settings.light_direction = node["settings"]["light-direction"].get<glm::vec3>();
+
+        auto mode_str = node["settings"]["output-mode"].get<std::string>();
+        if (mode_str == "normal") {
+            r->settings.output = Raytracer::SimpleRaytracer::Settings::Output::Normal;
+        } else {
+            r->settings.output = Raytracer::SimpleRaytracer::Settings::Output::Color;
+        }
+        
         return r;
     }
 } // namespace LibFluid::Serialization
