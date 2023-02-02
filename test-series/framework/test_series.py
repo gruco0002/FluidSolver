@@ -155,3 +155,93 @@ class TestSeriesSensorAnalyzer:
             readers.append(SensorReader(path))
 
         return readers
+
+
+class RenderSeriesRunner:
+
+    def __init__(self, executable: str, base_file: str, parameters: list, output_directory="./output"):
+        self.executable = executable
+        self.base_file = base_file
+        self.parameters = parameters
+        self.output_directory = output_directory
+
+        self._instance_counter = 0
+        self._documentation = []
+
+        os.makedirs(self.output_directory)
+
+    def _param_recurse(self, index=0):
+        assert(index < len(self.parameters))
+
+        param = self.parameters[index]
+
+        while not param.at_end():
+            if index + 1 < len(self.parameters):
+                # there is a parameter left
+                self._param_recurse(index + 1)
+            else:
+                # no parameters left
+                self._run_instance()
+
+            param.next()
+
+        # reset so that next iteration invoked from one level up can start
+        param.reset()
+
+    def _create_file(self, new_filename: str):
+        # open existing file
+        with open(self.base_file, "r") as stream:
+            data = json.load(stream)
+
+        # set params accordingly
+        for param in self.parameters:
+            # get object
+            obj = data
+            for i in range(len(param.parameter_path) - 1):
+                obj = obj[param.parameter_path[i]]
+
+            # set value
+            obj[param.parameter_path[-1]] = param.current()
+
+        # correct the data path to avoid copying the particle data
+        data["scenario"]["particles"] = os.path.join(os.path.dirname(
+            os.path.abspath(self.base_file)), data["scenario"]["particles"])
+
+        # write to new file
+        with open(new_filename, "w+") as stream:
+            stream.write(json.dumps(data, indent=4))
+
+    def _create_param_documentation(self) -> list:
+        res = {"instanceId": self._instance_counter}
+        for param in self.parameters:
+            res[param.path_as_string()] = param.current()
+        return res
+
+    def _run_instance(self):
+        new_filepath = self.output_directory + "/i" + \
+            str(self._instance_counter) + ".json"
+        self._create_file(new_filepath)
+
+        self._documentation.append(self._create_param_documentation())
+
+        image_file = self.output_directory + "/images/" + \
+            str(self._instance_counter) + ".png"
+
+        self._run_simulation(new_filepath, image_file)
+
+        self._instance_counter += 1
+
+    def _run_simulation(self, final_file,  image_file):
+        subprocess.call((self.executable, "-f", "" + final_file + "", "-i",
+                        str(image_file), "-r"), cwd=os.getcwd())
+
+    def _save_documentation(self):
+        with open(self.output_directory + "/instance_docs.json", "w+") as stream:
+            stream.write(json.dumps(self._documentation, indent=4))
+
+    def evaluate(self):
+        assert(self._instance_counter == 0)
+
+        os.makedirs(self.output_directory + "/images")
+        self._param_recurse()
+        self._save_documentation()
