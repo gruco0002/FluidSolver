@@ -26,11 +26,13 @@ namespace LibFluid::Raytracer {
             return false;
         }
 
-        FLUID_ASSERT(sampler != nullptr);
 
         constexpr size_t max_steps = 1000000;
         float step_size = particle_size / 2.0f;
-        float offset = sampler->get_uniform_sampled_value() * step_size;
+        float offset = 0.0f;
+        if (sampler != nullptr) {
+            offset = sampler->get_uniform_sampled_value() * step_size;
+        }
 
         bool ray_was_within_aabb = false;
 
