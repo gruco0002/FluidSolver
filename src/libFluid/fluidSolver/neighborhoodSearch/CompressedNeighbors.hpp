@@ -25,8 +25,12 @@ namespace LibFluid {
 
         struct NeighborStorage
         {
-            static constexpr size_t MAX_DELTAS = 48;
-            static constexpr size_t DELTAS_SIZE = 48;
+            // maximum amount of deltas that are allowed to be stored per cell, this has to be smaller or equal to DELTAS_SIZE
+            static constexpr size_t MAX_DELTAS = 48 * 2;
+
+            // size of the compressed storage in bytes
+            static constexpr size_t DELTAS_SIZE = 48 * 2;
+
             static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
 
 
