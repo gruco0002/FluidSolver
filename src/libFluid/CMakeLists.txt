@@ -136,7 +136,7 @@ set(LIB_FLUID_SOURCE_FILES
         visualizer/raytracer/distributions/PiecewiseConstantDistribution.cpp visualizer/raytracer/distributions/PiecewiseConstantDistribution.hpp
         visualizer/raytracer/distributions/PiecewiseConstantDistribution2D.cpp visualizer/raytracer/distributions/PiecewiseConstantDistribution2D.hpp
         visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.cpp visualizer/raytracer/distributions/CosineWeightedHemisphereDistribution.hpp
-        )
+        visualizer/raytracer/SimpleRaytracer.cpp visualizer/raytracer/SimpleRaytracer.hpp)
 
 
 add_library(libFluid ${LIB_FLUID_SOURCE_FILES})

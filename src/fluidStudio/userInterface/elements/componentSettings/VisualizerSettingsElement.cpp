@@ -7,18 +7,20 @@
 #include "visualizer/GLParticleRenderer.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 #include "visualizer/raytracer/FluidRaytracer3D.hpp"
+#include "visualizer/raytracer/SimpleRaytracer.hpp"
 
 
 namespace FluidStudio {
 
     void VisualizerSettingsElement::update() {
-        // visualizer type selectionÏ
+        // visualizer type selection
         if (StyledImGuiElements::slim_tree_node("Visualizer")) {
             auto gl = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto cv = std::dynamic_pointer_cast<LibFluid::ContinuousVisualizer>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto gl3d =
                     std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
             auto rt = std::dynamic_pointer_cast<LibFluid::Raytracer::FluidRaytracer3D>(ui_data.window().simulator_visualizer_bundle.visualizer);
+            auto srt = std::dynamic_pointer_cast<LibFluid::Raytracer::SimpleRaytracer>(ui_data.window().simulator_visualizer_bundle.visualizer);
 
             bool none_selected = true;
             auto selected_title = "[None]";
@@ -34,6 +36,9 @@ namespace FluidStudio {
             } else if (rt) {
                 none_selected = false;
                 selected_title = "Raytracer";
+            } else if (srt) {
+                none_selected = false;
+                selected_title = "Simple Raytracer";
             }
 
             if (ImGui::BeginCombo("Type", selected_title)) {
@@ -42,6 +47,7 @@ namespace FluidStudio {
                     cv = nullptr;
                     gl3d = nullptr;
                     rt = nullptr;
+                    srt = nullptr;
 
                     ui_data.window().simulator_visualizer_bundle.visualizer = nullptr;
                     ui_data.window().simulator_visualizer_bundle.initialize();
@@ -52,6 +58,7 @@ namespace FluidStudio {
                         cv = nullptr;
                         gl3d = nullptr;
                         rt = nullptr;
+                        srt = nullptr;
 
 
                         gl = std::make_shared<LibFluid::GLParticleRenderer>();
@@ -66,6 +73,7 @@ namespace FluidStudio {
                         gl = nullptr;
                         gl3d = nullptr;
                         rt = nullptr;
+                        srt = nullptr;
 
 
                         cv = std::make_shared<LibFluid::ContinuousVisualizer>();
@@ -83,6 +91,7 @@ namespace FluidStudio {
                         gl = nullptr;
                         gl3d = nullptr;
                         rt = nullptr;
+                        srt = nullptr;
 
 
                         gl3d = std::make_shared<LibFluid::GLParticleRenderer3D>();
@@ -99,6 +108,7 @@ namespace FluidStudio {
                     gl = nullptr;
                     gl3d = nullptr;
                     rt = nullptr;
+                    srt = nullptr;
 
                     rt = std::make_shared<LibFluid::Raytracer::FluidRaytracer3D>();
                     rt->parameters.render_target.width = 100;
@@ -107,6 +117,22 @@ namespace FluidStudio {
                     transfer_editor_view_to_new_visualizer();
                     ui_data.window().simulator_visualizer_bundle.initialize();
                 }
+
+                if (ImGui::Selectable("Simple Raytracer", srt != nullptr)) {
+                    cv = nullptr;
+                    gl = nullptr;
+                    gl3d = nullptr;
+                    rt = nullptr;
+                    srt = nullptr;
+
+                    srt = std::make_shared<LibFluid::Raytracer::SimpleRaytracer>();
+                    srt->parameters.render_target.width = 100;
+                    srt->parameters.render_target.height = 100;
+                    ui_data.window().simulator_visualizer_bundle.visualizer = srt;
+                    transfer_editor_view_to_new_visualizer();
+                    ui_data.window().simulator_visualizer_bundle.initialize();
+                }
+
                 ImGui::EndCombo();
             }
 
@@ -161,6 +187,7 @@ namespace FluidStudio {
         update_gl_renderer_3d();
         update_continuous_visualizer();
         update_raytracer();
+        update_simple_raytracer();
     }
 
     void VisualizerSettingsElement::update_gl_renderer() {
@@ -367,6 +394,92 @@ namespace FluidStudio {
         ui_data.window().editor_visualizer->get_view(position, view_direction, view_up);
         if (ui_data.window().simulator_visualizer_bundle.visualizer != nullptr) {
             ui_data.window().simulator_visualizer_bundle.visualizer->set_view(position, view_direction, view_up);
+        }
+    }
+
+    void VisualizerSettingsElement::update_simple_raytracer() {
+        auto rt = std::dynamic_pointer_cast<LibFluid::Raytracer::SimpleRaytracer>(ui_data.window().simulator_visualizer_bundle.visualizer);
+        if (rt == nullptr) {
+            return;
+        }
+
+
+        if (StyledImGuiElements::slim_tree_node("Camera")) {
+            ImGui::InputFloat3("Position", reinterpret_cast<float*>(&rt->camera.settings.position));
+            ImGui::InputFloat3("View direction", reinterpret_cast<float*>(&rt->camera.settings.view_direction));
+            ImGui::InputFloat3("Up Vector", reinterpret_cast<float*>(&rt->camera.settings.view_up));
+            ImGui::InputFloat("Field of View (Radians)", &rt->camera.settings.field_of_view_x);
+
+            ImGui::Separator();
+
+            ImGui::Checkbox("Flip-Y", &rt->camera.settings.flip_y);
+
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Tone Mapper")) {
+            if (ImGui::Button("Save Original as HDR")) {
+                auto filepath = FileDialogHelper::show_safe_file_dialog("hdr");
+                if (filepath.has_value()) {
+                    auto image = rt->render_target.as_hdr_image();
+                    image.save_as_hdr(filepath.value());
+                }
+            }
+
+            if (ImGui::Button("Apply Tone Mapping again")) {
+                rt->apply_tone_mapping_to_render_target();
+                ui_data.window().notify_bundle_visualizer_render_image_copy_updated();
+            }
+            ImGui::Separator();
+
+            ImGui::InputFloat("Exposure", &rt->tone_mapper.settings.exposure);
+            ImGui::InputFloat("Gamma", &rt->tone_mapper.settings.gamma);
+            ImGui::Checkbox("Gamma Correction Enabled", &rt->tone_mapper.settings.gamma_correction_enabled);
+
+            if (ImGui::BeginCombo("Mapping", rt->tone_mapper.settings.tone_mapper_function == LibFluid::Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Exponential ? "Exponential" : "Filmic")) {
+                if (ImGui::Selectable("Exponential", rt->tone_mapper.settings.tone_mapper_function == LibFluid::Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Exponential)) {
+                    rt->tone_mapper.settings.tone_mapper_function = LibFluid::Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Exponential;
+                }
+
+                if (ImGui::Selectable("Filmic", rt->tone_mapper.settings.tone_mapper_function == LibFluid::Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Filmic)) {
+                    rt->tone_mapper.settings.tone_mapper_function = LibFluid::Raytracer::ToneMapper::ToneMapperSettings::ToneMapperFunction::Filmic;
+                }
+
+                ImGui::EndCombo();
+            }
+
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Surface Properties")) {
+            ImGui::InputFloat("Fraction of Rest Density", &rt->accelerator.surface_density_as_fraction_of_rest_density);
+
+            ImGui::TreePop();
+        }
+
+        if (StyledImGuiElements::slim_tree_node("Colors and Light")) {
+            ImGui::ColorEdit3("Fluid Color", reinterpret_cast<float*>(&rt->settings.fluid_color));
+            ImGui::ColorEdit4("Boundary Color", reinterpret_cast<float*>(&rt->settings.boundary_color));
+            ImGui::ColorEdit3("Background Color", reinterpret_cast<float*>(&rt->settings.background_color));
+
+            ImGui::Separator();
+
+            if (ImGui::BeginCombo("Output", rt->settings.output == LibFluid::Raytracer::SimpleRaytracer::Settings::Output::Color ? "Color" : "Normals")) {
+                if (ImGui::Selectable("Color", rt->settings.output == LibFluid::Raytracer::SimpleRaytracer::Settings::Output::Color)) {
+                    rt->settings.output = LibFluid::Raytracer::SimpleRaytracer::Settings::Output::Color;
+                }
+                if (ImGui::Selectable("Normals", rt->settings.output == LibFluid::Raytracer::SimpleRaytracer::Settings::Output::Normal)) {
+                    rt->settings.output = LibFluid::Raytracer::SimpleRaytracer::Settings::Output::Normal;
+                }
+                ImGui::EndCombo();
+            }
+
+            ImGui::Separator();
+
+            ImGui::InputFloat3("Light Direction", reinterpret_cast<float*>(&rt->settings.light_direction));
+            ImGui::SliderFloat("Ambient Strength", &rt->settings.ambient_strength, 0.0f, 1.0f);
+
+            ImGui::TreePop();
         }
     }
 } // namespace FluidStudio
