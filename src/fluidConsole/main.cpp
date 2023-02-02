@@ -200,6 +200,8 @@ int main(int argc, char* argv[]) {
                 return 4;
             }
 
+            bundle.visualizer->parameters.enabled = true; // enforce enable
+            
             bundle.visualizer->initialize();
             bundle.visualizer->render();
 
