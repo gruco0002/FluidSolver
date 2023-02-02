@@ -1,0 +1,122 @@
+{
+    "fluid-studio": {
+        "editor-visualizer": {
+            "enabled": true,
+            "render-target": {
+                "height": 1080,
+                "width": 1920
+            },
+            "settings": {
+                "background-color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "boundary-color": [
+                    0.8141592741012573,
+                    0.8141592741012573,
+                    0.8141592741012573,
+                    1.0
+                ],
+                "camera": {
+                    "location": [
+                        55.40739822387695,
+                        40.98698806762695,
+                        69.7185287475586
+                    ],
+                    "looking-at": [
+                        53.78722381591797,
+                        42.03809356689453,
+                        60.00968933105469
+                    ],
+                    "up": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                },
+                "fluid-color": [
+                    0.5,
+                    0.5,
+                    1.0,
+                    1.0
+                ],
+                "light-direction": [
+                    8.0,
+                    -12.0,
+                    1.0
+                ]
+            },
+            "type": "gl-particle-renderer-3d"
+        }
+    },
+    "scenario": {
+        "entities": [
+            {
+                "remove-if-outside": true,
+                "type": "particle-remover-3d",
+                "volume": {
+                    "center": [
+                        0.0,
+                        60.91901779174805,
+                        0.0
+                    ],
+                    "distance-from-center": [
+                        102.83335876464844,
+                        67.4844970703125,
+                        48.48699951171875
+                    ]
+                }
+            }
+        ],
+        "gravity": 9.8100004196167,
+        "particle-size": 1.0,
+        "particles": "bunny-teapot.data",
+        "rest-density": 1.0
+    },
+    "solver": {
+        "gamma": 0.699999988079071,
+        "kernel": {
+            "type": "cubic-spline-kernel-3d"
+        },
+        "max-density-error": 0.0010000000474974513,
+        "max-iterations": 100,
+        "min-iterations": 2,
+        "neighborhood-search": {
+            "type": "hashed-3d"
+        },
+        "omega": 0.5,
+        "single-layer-boundary-enabled": true,
+        "single-layer-settings": {
+            "gamma-1": 1.2000000476837158
+        },
+        "type": "iisph-3d",
+        "viscosity": 0.009999999776482582
+    },
+    "tag-descriptors": [
+        {
+            "description": "Imported from teapot.obj",
+            "particle-tag": 1,
+            "title": "teapot.obj"
+        },
+        {
+            "description": "Imported from stanford-bunny-reconstruction-res2.obj",
+            "particle-tag": 2,
+            "title": "stanford-bunny-reconstruction-res2.obj"
+        },
+        {
+            "description": "Imported from FilledContainer.ply",
+            "particle-tag": 4,
+            "title": "FilledContainer.ply"
+        }
+    ],
+    "timestep-generator": {
+        "timestep": 0.009999999776482582,
+        "type": "constant"
+    },
+    "version": 2,
+    "visualizer": {
+        "type": "no-visualizer"
+    }
+}
