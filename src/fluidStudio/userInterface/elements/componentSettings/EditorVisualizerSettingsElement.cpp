@@ -66,6 +66,7 @@ namespace FluidStudio {
                 ImGui::ColorEdit4("Fluid", (float*)&gl3d->settings.fluid_particle_color, ImGuiColorEditFlags_Uint8);
                 ImGui::ColorEdit4("Boundary", (float*)&gl3d->settings.boundary_particle_color, ImGuiColorEditFlags_Uint8);
 
+                ImGui::SliderFloat("Ambient", &gl3d->settings.ambient_light_factor, 0.0f, 1.0f);
                 ImGui::Separator();
 
                 ImGui::Checkbox("Memory Location", &gl3d->settings.show_particle_memory_location);

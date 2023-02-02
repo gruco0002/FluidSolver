@@ -84,6 +84,8 @@ namespace LibFluid {
 
             uint32_t selected_tag = -1;
 
+            float ambient_light_factor = 0.1f;
+
         } settings;
 
         const glm::mat4& get_projection_matrix() const;
