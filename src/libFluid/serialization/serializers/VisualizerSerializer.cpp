@@ -307,7 +307,7 @@ namespace LibFluid::Serialization {
         } else {
             r->settings.output = Raytracer::SimpleRaytracer::Settings::Output::Color;
         }
-        
+
         return r;
     }
 } // namespace LibFluid::Serialization
