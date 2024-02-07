@@ -3,13 +3,24 @@ A SPH Fluid Solver framework and studio application implemented in C++ with Open
 The fluid solver framework is tested with the help of googletest.
 Furthermore the project contains a command line tool to calculate fluid scenarios.
 
-![Screenshot](https://github.com/gruco0002/FluidSolver/blob/main/resources/Screenshot.png?raw=true)
+![Example Simulation](resources/bunny_teapot.gif)
+<br/>*Example scenario using about 29,000 fluid particles and 59,000 boundary particles*
 
 ## About the project
 This project is a work in progress. There are several things, like the code style, documentation and validation,
 that I like to (and hopefully will) improve. Do not expect high-quality, well documented and thought-out code :)
 The project was created during my time at university. It was used to generate data and comparisons
 for my bachelor's and master's thesis, as well as for some talks and projects.
+
+## Gallery
+![Screenshot of FluidStudio](resources/Screenshot.png)
+<br/>*Screenshot of FluidStudio showing a small 3D breaking dam scenario and a particle remover entity*
+
+<video src="resources/videos/2d_scenario.mp4?raw=true" width="100%" ></video>
+<br/>*Showcase of a basic 2D scenario*
+
+![Velocity Field of 3D Breaking Dam Scenario](resources/videos/velocity_field_3d_breaking_dam.mp4)
+<br/>*Velocity field of a 3D breaking dam scenario containing 1,000,000 fluid particles*
 
 ## Using the code
 The whole project is cmake based and configured to run on established systems like common Linux distros, Windows machines
