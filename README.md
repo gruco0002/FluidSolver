@@ -12,16 +12,6 @@ that I like to (and hopefully will) improve. Do not expect high-quality, well do
 The project was created during my time at university. It was used to generate data and comparisons
 for my bachelor's and master's thesis, as well as for some talks and projects.
 
-## Gallery
-![Screenshot of FluidStudio](resources/Screenshot.png)
-<br/>*Screenshot of FluidStudio showing a small 3D breaking dam scenario and a particle remover entity*
-
-<video src="resources/videos/2d_scenario.mp4?raw=true" width="100%" ></video>
-<br/>*Showcase of a basic 2D scenario*
-
-![Velocity Field of 3D Breaking Dam Scenario](resources/videos/velocity_field_3d_breaking_dam.mp4)
-<br/>*Velocity field of a 3D breaking dam scenario containing 1,000,000 fluid particles*
-
 ## Using the code
 The whole project is cmake based and configured to run on established systems like common Linux distros, Windows machines
 and OSX. The aim of the project is to run out of the box with as little work as possible.
@@ -101,3 +91,19 @@ installed. VS Code requires CMake to be installed on the system.
 An alternative would be to use tools like CLion that automatically create the CMake
 config for you. Clion ships with its own version of CMake but requires compilers and
 libraries to be installed on the system by you.
+
+
+## Gallery
+![Screenshot of FluidStudio](resources/Screenshot.png)
+<br/>*Screenshot of FluidStudio showing a small 3D breaking dam scenario and a particle remover entity* <br/><br/><br/>
+
+
+https://github.com/gruco0002/FluidSolver/assets/5246006/b5bee004-8c1c-4cfb-8dd1-6a39e3a20f1e
+
+*Showcase of a basic 2D scenario* <br/><br/><br/>
+
+
+https://github.com/gruco0002/FluidSolver/assets/5246006/31920409-4575-44c9-acd1-ce4fe102a621
+
+*Velocity field of a 3D breaking dam scenario containing 1,000,000 fluid particles*
+
