@@ -16,14 +16,17 @@
         "libmorton",
         {
             "name": "imgui",
-            "version>=": "1.87",
+            "version>=": "1.89.2",
             "features": [
                 "docking-experimental",
                 "opengl3-binding",
                 "glfw-binding"
             ]
         },
-        "implot",
+        {
+            "name": "implot",
+            "version>=": "0.16"
+        },
         {
             "name": "imguizmo",
             "version>=": "1.83"

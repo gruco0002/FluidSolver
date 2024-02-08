@@ -87,7 +87,7 @@ namespace FluidStudio {
 
     void ComponentPanelWindow::update_menu() {
         bool is_safe = ui_data.window().is_safe_to_access_simulation_data();
-        if (ImGui::BeginPopupContextWindow(0, 1, false)) {
+        if (ImGui::BeginPopupContextWindow()) {
             if (ImGui::BeginMenu("Add Sensor")) {
                 auto& data = ui_data.window().simulator_visualizer_bundle.simulator->data;
                 if (ImGui::MenuItem("Global Density", nullptr, nullptr, is_safe)) {
