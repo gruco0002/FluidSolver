@@ -12,6 +12,10 @@ that I like to (and hopefully will) improve. Do not expect high-quality, well do
 The project was created during my time at university. It was used to generate data and comparisons
 for my bachelor's and master's thesis, as well as for some talks and projects.
 
+## Example Scenarios
+You can find example scenarios in the `scenarios` folder of this repository. You can open them using
+FluidStudio or with the command line tool.
+
 ## Using the code
 The whole project is cmake based and configured to run on established systems like common Linux distros, Windows machines
 and OSX. The aim of the project is to run out of the box with as little work as possible.
