@@ -1,5 +1,8 @@
 #include "SpinLock.hpp"
 
+#ifdef _MSC_VER
+#include <intrin.h>
+#endif
 
 namespace LibFluid::Parallelization {
 
@@ -10,7 +13,11 @@ namespace LibFluid::Parallelization {
             }
             while (lock_bit.load(std::memory_order_relaxed)) {
                 // pause for roughly a cycle
+#ifndef _MSC_VER
                 asm volatile("nop" ::: "memory");
+#else
+                __nop();
+#endif
             }
         }
     }
