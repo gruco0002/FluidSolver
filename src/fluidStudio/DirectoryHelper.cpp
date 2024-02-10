@@ -35,16 +35,8 @@ namespace FluidStudio {
 
         std::filesystem::create_directories(s_studio_directory);
     }
+
     std::string DirectoryHelper::get_home_directory() {
-#ifdef _WINDOWS
-        //const char* path = "%appdata%";
-        const char* path = std::getenv("APPDATA");
-#else
-        const char* path = getenv("HOME");
-#endif
-        if (path == nullptr) {
-            return "~";
-        }
-        return path;
+        return "./";
     }
 } // namespace FluidStudio
