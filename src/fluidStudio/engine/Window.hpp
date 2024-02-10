@@ -16,7 +16,7 @@ namespace Engine {
         };
 
       public:
-        explicit Window(std::string title, int width = 800, int height = 600);
+        explicit Window(const std::string& title);
 
         virtual ~Window();
 

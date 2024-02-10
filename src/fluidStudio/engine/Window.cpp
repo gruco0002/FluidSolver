@@ -16,8 +16,8 @@ namespace Engine {
 
     Window* Window::active_window = nullptr;
 
-    Window::Window(std::string title, int width, int height)
-        : title(title), width(width), height(height) {
+    Window::Window(const std::string& title)
+        : title(title) {
         if (active_window != nullptr) {
             throw std::invalid_argument("A window was already created, there can only be one window!");
         }
@@ -29,11 +29,12 @@ namespace Engine {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-        glfw_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+        glfw_window = glfwCreateWindow(800, 600, title.c_str(), nullptr, nullptr);
         if (glfw_window == nullptr) {
             glfwTerminate();
             throw std::invalid_argument("Failed to create GLFW window");
         }
+        glfwMaximizeWindow(glfw_window);
 
         glfwMakeContextCurrent(glfw_window);
 
@@ -57,9 +58,6 @@ namespace Engine {
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
         v_opengl_context_available = true;
-
-        // Set window position to 0, 0
-        glfwSetWindowPos(glfw_window, 0,0);
     }
 
 

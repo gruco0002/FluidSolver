@@ -19,8 +19,8 @@
 
 namespace FluidStudio {
 
-    FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height)
-            : Window(title, width, height),
+    FluidSolverWindow::FluidSolverWindow()
+            : Window("FluidStudio"),
               bundle_visualizer_render_image_copy(0, 0) {
     }
 
@@ -34,10 +34,6 @@ namespace FluidStudio {
 
         // setup the windows
         setup_ui_layer();
-
-        // set the initial size of the windows
-        set_width((int) ((float) get_screen_width() * 0.9f));
-        set_height((int) ((float) get_screen_height() * 0.9f));
     }
 
     void FluidSolverWindow::unload() {

@@ -23,7 +23,7 @@ namespace FluidStudio {
 
     class FluidSolverWindow : public Engine::Window {
       public:
-        explicit FluidSolverWindow(const std::string& title, int width = 800, int height = 600);
+        explicit FluidSolverWindow();
 
       protected:
         void unload() override;
