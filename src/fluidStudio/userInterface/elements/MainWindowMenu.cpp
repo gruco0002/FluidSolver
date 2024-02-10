@@ -12,6 +12,7 @@
 #include "userInterface/elements/PlyImportWindow.hpp"
 #include "userInterface/helpers/FileDialogHelper.hpp"
 #include "visualizationOverlay/ParticleSelectionByTagOverlay.hpp"
+#include "userInterface/UiLayer.hpp"
 
 
 namespace FluidStudio {
@@ -23,10 +24,12 @@ namespace FluidStudio {
             if (ImGui::BeginMenu("File")) {
                 if (ImGui::BeginMenu("New")) {
                     if (ImGui::MenuItem("2D Scenario", nullptr, false, can_change)) {
-                        ui_data.collection().get<NewSimulationModalWindow>().open_window(NewSimulationModalWindow::NewSimulationKind::NewSimulationKind2D);
+                        ui_data.collection().get<NewSimulationModalWindow>().open_window(
+                                NewSimulationModalWindow::NewSimulationKind::NewSimulationKind2D);
                     }
                     if (ImGui::MenuItem("3D Scenario", nullptr, false, can_change)) {
-                        ui_data.collection().get<NewSimulationModalWindow>().open_window(NewSimulationModalWindow::NewSimulationKind::NewSimulationKind3D);
+                        ui_data.collection().get<NewSimulationModalWindow>().open_window(
+                                NewSimulationModalWindow::NewSimulationKind::NewSimulationKind3D);
                     }
                     ImGui::EndMenu();
                 }
@@ -65,6 +68,15 @@ namespace FluidStudio {
                 ImGui::EndMenu();
             }
 
+
+            if (ImGui::BeginMenu("View", can_change)) {
+                if (ImGui::MenuItem("Reset Window Layout", nullptr, false, can_change)) {
+                    ui_data.uiLayer().resetDockingLayout();
+                }
+
+                ImGui::EndMenu();
+            }
+
             if (SimulatorHelpers::is_3d_simulation(ui_data.window().simulator_visualizer_bundle.simulator)) {
                 auto text_size = ImGui::CalcTextSize("3D-Simulation");
                 ImGui::SameLine(ImGui::GetWindowWidth() - text_size.x - 20);
@@ -98,7 +110,8 @@ namespace FluidStudio {
             if (ImGui::Button("Choose")) {
                 path = FileDialogHelper::show_safe_file_dialog("json");
                 if (path.has_value()) {
-                    particle_filepath = std::filesystem::path(path.value()).filename().replace_extension(".data").string();
+                    particle_filepath = std::filesystem::path(path.value()).filename().replace_extension(
+                            ".data").string();
                 }
             }
             ImGui::SameLine();
@@ -120,17 +133,19 @@ namespace FluidStudio {
             if (ImGui::Button("Save") && path.has_value()) {
                 // Save
                 auto extensions = SerializerExtensions::create_serializer_extenstions();
-                extensions.root_serializer_extensions.push_back(std::make_shared<FluidStudioRootSerializerExt>(ui_data.window().editor_visualizer));
+                extensions.root_serializer_extensions.push_back(
+                        std::make_shared<FluidStudioRootSerializerExt>(ui_data.window().editor_visualizer));
 
                 LibFluid::Serialization::SerializationContext context_output;
 
                 LibFluid::Serialization::MainSerializer serializer(path.value(), extensions);
-                serializer.serialize_bundle(ui_data.window().simulator_visualizer_bundle, {save_particle_data, particle_filepath}, &context_output);
+                serializer.serialize_bundle(ui_data.window().simulator_visualizer_bundle,
+                                            {save_particle_data, particle_filepath}, &context_output);
 
                 // output warnings
                 if (!context_output.issues.empty()) {
                     LibFluid::Log::warning("The serializer encountered issues during saving!");
-                    for (const auto& issue : context_output.issues) {
+                    for (const auto &issue: context_output.issues) {
                         LibFluid::Log::warning(issue.to_formatted_string());
                     }
                 }
@@ -162,7 +177,7 @@ namespace FluidStudio {
             // output warnings
             if (!context_output.issues.empty()) {
                 LibFluid::Log::error("The serializer encountered issues during loading!");
-                for (const auto& issue : context_output.issues) {
+                for (const auto &issue: context_output.issues) {
                     LibFluid::Log::error(issue.to_formatted_string());
                 }
             } else {

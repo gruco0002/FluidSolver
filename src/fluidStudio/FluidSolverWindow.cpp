@@ -19,9 +19,9 @@
 
 namespace FluidStudio {
 
-    FluidSolverWindow::FluidSolverWindow(const std::string& title, int width, int height)
-        : Window(title, width, height),
-          bundle_visualizer_render_image_copy(0, 0) {
+    FluidSolverWindow::FluidSolverWindow(const std::string &title, int width, int height)
+            : Window(title, width, height),
+              bundle_visualizer_render_image_copy(0, 0) {
     }
 
     void FluidSolverWindow::load() {
@@ -36,8 +36,8 @@ namespace FluidStudio {
         setup_ui_layer();
 
         // set the initial size of the windows
-        set_width((int)((float)get_screen_width() * 0.9f));
-        set_height((int)((float)get_screen_height() * 0.9f));
+        set_width((int) ((float) get_screen_width() * 0.9f));
+        set_height((int) ((float) get_screen_height() * 0.9f));
     }
 
     void FluidSolverWindow::unload() {
@@ -65,11 +65,13 @@ namespace FluidStudio {
 
             // set the current running mode for the dynamic runners
             simulation_runner.run_asynchronously = asynchronous_simulation;
-            bundle_visualization_runner.run_asynchronously = asynchronous_simulation && !is_simulation_visualizer_instance_of_gl_renderer();
+            bundle_visualization_runner.run_asynchronously =
+                    asynchronous_simulation && !is_simulation_visualizer_instance_of_gl_renderer();
 
             if (simulation_should_run) {
                 // check if we are currently rendering data
-                if (!bundle_visualization_runner.is_currently_computing() && !editor_visualization_runner.is_currently_computing()) {
+                if (!bundle_visualization_runner.is_currently_computing() &&
+                    !editor_visualization_runner.is_currently_computing()) {
                     // starting a computation if possible (if not, nothing will happen)
                     simulation_runner.start_next_computation();
                 }
@@ -115,7 +117,8 @@ namespace FluidStudio {
 
             // if the visualizer is done, copy the rendered image if required and reset the runner
             if (bundle_visualization_runner.is_done()) {
-                if (!is_simulation_visualizer_instance_of_gl_renderer() && simulator_visualizer_bundle.visualizer != nullptr) {
+                if (!is_simulation_visualizer_instance_of_gl_renderer() &&
+                    simulator_visualizer_bundle.visualizer != nullptr) {
                     // if the visualizer is not an opengl renderer, copy the visualized image to be able to
                     // access it in the main thread while the visualizer can start the next computation
                     bundle_visualizer_render_image_copy = simulator_visualizer_bundle.visualizer->get_image_data();
@@ -149,10 +152,13 @@ namespace FluidStudio {
 
             // creating the dockspace
             auto id = ImGui::DockSpaceOverViewport();
+            ui_layer->setupDockingLayout(id);
 
             render_bundle_visualizer_window();
             render_editor_visualization_window();
+
             ui_layer->render();
+
 
             ImGuiHelper::PostRender();
         }
@@ -201,7 +207,8 @@ namespace FluidStudio {
         simulator_visualizer_bundle.simulator->parameters.particle_size = particle_size;
         simulator_visualizer_bundle.simulator->parameters.gravity = 9.81f;
 
-        simulator_visualizer_bundle.simulator->data.fluid_solver = solver_types.query_type({"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D"})->create_type();
+        simulator_visualizer_bundle.simulator->data.fluid_solver = solver_types.query_type(
+                {"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D"})->create_type();
         auto timestep_generator = std::make_shared<LibFluid::ConstantTimestepGenerator>();
         timestep_generator->settings.timestep = 0.01f;
         simulator_visualizer_bundle.simulator->data.timestep_generator = timestep_generator;
@@ -275,24 +282,25 @@ namespace FluidStudio {
             editor_visualizer_window_size.height = maxRegion.y;
             float width = 0.0f;
             float height = 0.0f;
-            if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
+            if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
                 // height is too small
                 width = maxRegion.x;
-                height = (float)tex->getHeight() / (float)tex->getWidth() * maxRegion.x;
+                height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
             } else {
                 height = maxRegion.y;
-                width = (float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y;
+                width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
             }
 
 
-            ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
+            ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
 
             render_editor_visualization_overlay(width, height);
         }
 
         ImGui::End();
 
-        this->editor_visualization_ui_window_in_foreground = in_foreground && (!editor_visualization_overlay.is_mouse_on_overlay());
+        this->editor_visualization_ui_window_in_foreground =
+                in_foreground && (!editor_visualization_overlay.is_mouse_on_overlay());
     }
 
     void FluidSolverWindow::setup_ui_layer() {
@@ -384,8 +392,10 @@ namespace FluidStudio {
         if (gl3d != nullptr) {
             constexpr float CAM_SPEED = 0.01f;
 
-            float camera_speed_x = gl3d->parameters.render_target.width / editor_visualizer_window_size.width * CAM_SPEED;
-            float camera_speed_y = gl3d->parameters.render_target.height / editor_visualizer_window_size.height * CAM_SPEED;
+            float camera_speed_x =
+                    gl3d->parameters.render_target.width / editor_visualizer_window_size.width * CAM_SPEED;
+            float camera_speed_y =
+                    gl3d->parameters.render_target.height / editor_visualizer_window_size.height * CAM_SPEED;
 
             gl3d->settings.camera.rotate_horizontal(camera_speed_x * -deltaX);
             gl3d->settings.camera.rotate_vertical(camera_speed_y * -deltaY);
@@ -401,6 +411,7 @@ namespace FluidStudio {
             this->drag_viewport(xpos, ypos);
         }
     }
+
     void FluidSolverWindow::on_mouse_down(MouseButton button) {
         if (button == MouseButton::LeftButton) {
             left_mouse_button_down = true;
@@ -410,6 +421,7 @@ namespace FluidStudio {
             }
         }
     }
+
     void FluidSolverWindow::on_mouse_up(MouseButton button) {
         if (button == MouseButton::LeftButton) {
             left_mouse_button_down = false;
@@ -434,6 +446,7 @@ namespace FluidStudio {
             }
         }
     }
+
     void FluidSolverWindow::on_key_released(int key) {
         if (editor_visualization_ui_window_in_foreground) {
             if (key == GLFW_KEY_W && current_camera_movement == MovementDirection::Top) {
@@ -447,6 +460,7 @@ namespace FluidStudio {
             }
         }
     }
+
     bool FluidSolverWindow::is_simulation_visualizer_instance_of_gl_renderer() const {
         return std::dynamic_pointer_cast<LibFluid::GLRenderer>(simulator_visualizer_bundle.visualizer) != nullptr;
     }
@@ -455,10 +469,13 @@ namespace FluidStudio {
         if (!asynchronous_simulation)
             return true;
 
-        return simulation_runner.is_ready() && bundle_visualization_runner.is_ready() && editor_visualization_runner.is_ready();
+        return simulation_runner.is_ready() && bundle_visualization_runner.is_ready() &&
+               editor_visualization_runner.is_ready();
     }
+
     bool FluidSolverWindow::are_calculations_running() const {
-        return !(simulation_runner.is_ready() && bundle_visualization_runner.is_ready() && editor_visualization_runner.is_ready());
+        return !(simulation_runner.is_ready() && bundle_visualization_runner.is_ready() &&
+                 editor_visualization_runner.is_ready());
     }
 
     void FluidSolverWindow::render_editor_visualization_overlay(float visualization_width, float visualization_height) {
@@ -478,6 +495,7 @@ namespace FluidStudio {
             simulation_changed_compared_to_editor = true;
         }
     }
+
     void FluidSolverWindow::render_visualization_overlay_into_framebuffer() {
         auto gl_renderer = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(editor_visualizer);
         if (gl_renderer == nullptr)
@@ -502,7 +520,8 @@ namespace FluidStudio {
 
         gl_renderer->settings.selected_tag = -1;
         if (editor_visualization_overlay.data.overlay_instance != nullptr) {
-            if (editor_visualization_overlay.data.overlay_instance->get_display() == OverlayInstance::Display::ParticleTagTint) {
+            if (editor_visualization_overlay.data.overlay_instance->get_display() ==
+                OverlayInstance::Display::ParticleTagTint) {
                 gl_renderer->settings.selected_tag = editor_visualization_overlay.data.overlay_instance->get_display_particle_tag();
             }
         }
@@ -516,7 +535,7 @@ namespace FluidStudio {
         } else {
             auto glRenderer = std::dynamic_pointer_cast<LibFluid::GLRenderer>(simulator_visualizer_bundle.visualizer);
 
-            Engine::Graphics::Texture2D* tex = nullptr;
+            Engine::Graphics::Texture2D *tex = nullptr;
             if (glRenderer == nullptr) {
                 // ImGui::Text("No OpenGL compatible visualizer!");
 
@@ -528,8 +547,9 @@ namespace FluidStudio {
 
                 if (bundle_visualizer_render_image_copy_updated) {
                     // create or recreate the gpu image
-                    if (bundle_visualizer_rendered_image == nullptr || bundle_visualizer_rendered_image->getWidth() != size.width ||
-                            bundle_visualizer_rendered_image->getHeight() != size.height) {
+                    if (bundle_visualizer_rendered_image == nullptr ||
+                        bundle_visualizer_rendered_image->getWidth() != size.width ||
+                        bundle_visualizer_rendered_image->getHeight() != size.height) {
                         delete bundle_visualizer_rendered_image;
                         bundle_visualizer_rendered_image = nullptr;
 
@@ -539,12 +559,14 @@ namespace FluidStudio {
                         color_settings->TextureMagnifyingFiltering = GL_NEAREST;
                         color_settings->TextureMinifyingFiltering = GL_NEAREST;
                         color_settings->TextureWrapping = GL_CLAMP_TO_EDGE;
-                        bundle_visualizer_rendered_image = new Engine::Graphics::Texture2D(size.width, size.height, color_settings, GL_RGBA,
-                                Engine::ComponentType::ComponentTypeUnsignedByte);
+                        bundle_visualizer_rendered_image = new Engine::Graphics::Texture2D(size.width, size.height,
+                                                                                           color_settings, GL_RGBA,
+                                                                                           Engine::ComponentType::ComponentTypeUnsignedByte);
                     }
 
                     // update the gpu image
-                    bundle_visualizer_rendered_image->SetData(bundle_visualizer_render_image_copy.data(), bundle_visualizer_render_image_copy.size());
+                    bundle_visualizer_rendered_image->SetData(bundle_visualizer_render_image_copy.data(),
+                                                              bundle_visualizer_render_image_copy.size());
 
                     bundle_visualizer_render_image_copy_updated = false;
                 }
@@ -568,21 +590,22 @@ namespace FluidStudio {
                 maxRegion.y -= 30.0f;
                 float width = 0.0f;
                 float height = 0.0f;
-                if ((float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y > maxRegion.x) {
+                if ((float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y > maxRegion.x) {
                     // height is too small
                     width = maxRegion.x;
-                    height = (float)tex->getHeight() / (float)tex->getWidth() * maxRegion.x;
+                    height = (float) tex->getHeight() / (float) tex->getWidth() * maxRegion.x;
                 } else {
                     height = maxRegion.y;
-                    width = (float)tex->getWidth() / (float)tex->getHeight() * maxRegion.y;
+                    width = (float) tex->getWidth() / (float) tex->getHeight() * maxRegion.y;
                 }
 
 
-                ImGui::Image((void*)tex->GetID(), ImVec2(width, height));
+                ImGui::Image((void *) tex->GetID(), ImVec2(width, height));
             }
         }
         ImGui::End();
     }
+
     void FluidSolverWindow::initialize_editor_visualizer() {
         // create the correct visualizer if required
         if (SimulatorHelpers::is_3d_simulation(simulator_visualizer_bundle.simulator)) {
@@ -609,17 +632,20 @@ namespace FluidStudio {
                 visualizer->simulation_data.notify_that_data_changed();
             }
 
-            if (visualizer->simulation_data.neighborhood_interface != simulator_visualizer_bundle.simulator->get_neighborhood_interface()) {
+            if (visualizer->simulation_data.neighborhood_interface !=
+                simulator_visualizer_bundle.simulator->get_neighborhood_interface()) {
                 visualizer->simulation_data.neighborhood_interface = simulator_visualizer_bundle.simulator->get_neighborhood_interface();
                 visualizer->simulation_data.notify_that_data_changed();
             }
 
-            if (visualizer->simulation_data.particle_size != simulator_visualizer_bundle.simulator->parameters.particle_size) {
+            if (visualizer->simulation_data.particle_size !=
+                simulator_visualizer_bundle.simulator->parameters.particle_size) {
                 visualizer->simulation_data.particle_size = simulator_visualizer_bundle.simulator->parameters.particle_size;
                 visualizer->simulation_data.notify_that_data_changed();
             }
 
-            if (visualizer->simulation_data.rest_density != simulator_visualizer_bundle.simulator->parameters.rest_density) {
+            if (visualizer->simulation_data.rest_density !=
+                simulator_visualizer_bundle.simulator->parameters.rest_density) {
                 visualizer->simulation_data.rest_density = simulator_visualizer_bundle.simulator->parameters.rest_density;
                 visualizer->simulation_data.notify_that_data_changed();
             }

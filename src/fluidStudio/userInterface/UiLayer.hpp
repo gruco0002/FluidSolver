@@ -11,22 +11,29 @@
 #include "userInterface/elements/TimelineWindow.hpp"
 #include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/InsertParticlesWindow.hpp"
-
+#include <imgui.h>
 
 namespace FluidStudio {
 
 
     class UiLayer {
-      public:
+    public:
         UiLayer();
+
         ~UiLayer();
 
-        FluidSolverWindow* window = nullptr;
+        FluidSolverWindow *window = nullptr;
+
         void render();
+
         void initialize();
 
+        void setupDockingLayout(ImGuiID mainDockspaceId);
 
-      private:
+        void resetDockingLayout();
+
+
+    private:
         UiElementCollection ui_element_collection;
 
         SimulationControlsWindow simulation_controls_window;
@@ -40,6 +47,8 @@ namespace FluidStudio {
         ObjImportWindow obj_import_window;
         NewSimulationModalWindow new_simulation_modal_window;
         InsertParticlesWindow insert_particles_window;
+
+        bool docking_setup_already_run = false;
     };
 
 } // namespace FluidStudio
