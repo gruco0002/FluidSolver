@@ -30,38 +30,12 @@ Use CMake to compile the project:
 - `runUnitTests` to run the tests
 
 ### Used dependencies and libraries
-
-In the core part `libFluid`:
-- [libmorton](https://github.com/Forceflow/libmorton)
-- [fmt](https://github.com/fmtlib/fmt)
-- [yaml-cpp](https://github.com/jbeder/yaml-cpp)
-- [stb](https://github.com/nothings/stb)
-- [GLM](https://glm.g-truc.net/)
-- [lz4](https://github.com/lz4/lz4)
-- [EndianSafeBinaryStream](https://github.com/gruco0002/EndianSafeBinaryStream)
-
-For the ui version `FluidStudio`:
-- [GLAD](https://github.com/Dav1dde/glad)
-- [GLFW](https://www.glfw.org/)
-- [incbin](https://github.com/graphitemaster/incbin)
-- [Dear ImGui](https://github.com/ocornut/imgui)
-- [ImPlot](https://github.com/epezent/implot)
-- [nativefiledialog](https://github.com/mlabbe/nativefiledialog)
-- [tinyply](https://github.com/ddiakopoulos/tinyply)
-- Libraries used by `libFluid`
-
-For the console version `FluidConsole`:
-- [cxxopts](https://github.com/jarro2783/cxxopts)
-- Libraries used by `libFluid`
-
-For the unit tests:
-- [googletest](https://github.com/google/googletest) 
-- Libraries used by `libFluid`
+The dependencies and libraries that are used in the project (as well as their licenses) can be found in the [THIRDPARTY.md](THIRDPARTY.md) file.
 
   
 #### Disclaimer
-The listed libraries are not my own and i take no responsibilities for their content.
-Most libraries are loaded with vcpkg. It could be possible (with a certain amount of work) to get the dependencies
+The third-party libraries are not my own and i take no responsibilities for their content.
+Most libraries are loaded with vcpkg. It could be possible (with a certain amount of work) to install the dependencies
 manually and adapt the CMake files.
 
 ### Using the Code on Linux (Debian / Ubuntu)
