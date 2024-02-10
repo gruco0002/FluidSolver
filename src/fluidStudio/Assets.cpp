@@ -21,50 +21,55 @@ INCBIN(gl_particle_renderer_3d_geometry_shader, "visualizer/shader/GLParticleRen
 INCBIN(gl_particle_renderer_3d_fragment_shader, "visualizer/shader/GLParticleRenderer3D.frag.glsl");
 #endif
 
-constexpr auto ASSET_BASE_PATH = "./src/fluidStudio/";
+constexpr auto DEV_ASSET_BASE_PATH = "src/fluidStudio/";
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
     std::filesystem::path get_relative_asset_path(Assets::Asset asset)
     {
         switch (asset)
         {
-            case Assets::Asset::ParticleRendererVertexShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer.vert.glsl";
-            case Assets::Asset::ParticleRendererGeometryShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer.geom.glsl";
-            case Assets::Asset::ParticleRendererFragmentShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer.frag.glsl";
+        case Assets::Asset::ParticleRendererVertexShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer.vert.glsl");
+        case Assets::Asset::ParticleRendererGeometryShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer.geom.glsl");
+        case Assets::Asset::ParticleRendererFragmentShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer.frag.glsl");
 
-            case Assets::Asset::ParticleRenderer3DVertexShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer3D.vert.glsl";
-            case Assets::Asset::ParticleRenderer3DGeometryShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer3D.geom.glsl";
-            case Assets::Asset::ParticleRenderer3DFragmentShader:
-                return std::filesystem::path(ASSET_BASE_PATH) / "visualizer/shader/GLParticleRenderer3D.frag.glsl";
+        case Assets::Asset::ParticleRenderer3DVertexShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer3D.vert.glsl");
+        case Assets::Asset::ParticleRenderer3DGeometryShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer3D.geom.glsl");
+        case Assets::Asset::ParticleRenderer3DFragmentShader:
+            return std::filesystem::path("visualizer/shader/GLParticleRenderer3D.frag.glsl");
 
-            default:
-                throw std::invalid_argument("Could not find asset!");
+        default:
+            throw std::invalid_argument("Could not find asset!");
         }
     }
 
     std::filesystem::path get_asset_path(Assets::Asset asset)
     {
-       auto relative_path = get_relative_asset_path(asset);
-       const auto max_depth_check = 10;
+        auto relative_path = get_relative_asset_path(asset);
+        const auto max_depth_check = 10;
 
-       auto current_path = relative_path;
-       for(auto i = 0; i < max_depth_check; i++)
-       {
-           if(std::filesystem::exists(current_path)){
-               return current_path;
-           }
-           current_path = ".." / current_path;
-       }
+        auto current_path = std::filesystem::path("./");
+        for (auto i = 0; i < max_depth_check; i++)
+        {
+            if (std::filesystem::exists(current_path / relative_path))
+            {
+                return current_path / relative_path;
+            }
+            else if (std::filesystem::exists(current_path / DEV_ASSET_BASE_PATH / relative_path))
+            {
+                return current_path / DEV_ASSET_BASE_PATH / relative_path;
+            }
+            current_path = ".." / current_path;
+        }
 
-       throw std::runtime_error("Could not find asset: " + relative_path.string());
+        throw std::runtime_error("Could not find asset: " + relative_path.string());
     }
-
 
     std::string load_string_asset_from_file(Assets::Asset asset)
     {
@@ -107,7 +112,6 @@ namespace FluidStudio {
     }
 #endif
 
-
     std::string Assets::get_string_asset(Assets::Asset asset)
     {
 #ifdef ASSETS_INCBIN_AVAILABLE
@@ -117,5 +121,4 @@ namespace FluidStudio {
 #endif
     }
 
-
-} // namespace FluidUi
+}
