@@ -57,6 +57,9 @@ namespace Engine {
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
         v_opengl_context_available = true;
+
+        // Set window position to 0, 0
+        glfwSetWindowPos(glfw_window, 0,0);
     }
 
 
