@@ -38,7 +38,7 @@ namespace LibFluid
 
         glm::vec3 pre = glm::vec3(0.0f);
         if (length > std::numeric_limits<float>::epsilon())
-            pre = h * position / length;
+            pre = position / length / h;
 
         glm::vec3 ret = glm::vec3(0.0f);
         // this is the reversed implementation
