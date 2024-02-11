@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 
 #ifndef WIN32
 #define ASSETS_INCBIN_AVAILABLE
@@ -65,7 +66,7 @@ namespace FluidStudio
             {
                 return current_path / DEV_ASSET_BASE_PATH / relative_path;
             }
-            current_path = ".." / current_path;
+            current_path = std::string("..") / current_path;
         }
 
         throw std::runtime_error("Could not find asset: " + relative_path.string());
@@ -76,8 +77,9 @@ namespace FluidStudio
         auto path = get_asset_path(asset);
 
         std::ifstream file_stream(path);
-        std::string file_content((std::istreambuf_iterator<char>(file_stream)), std::istreambuf_iterator<char>());
-
+        std::stringstream buffer;
+        buffer << file_stream.rdbuf();
+        std::string file_content = buffer.str();
         return std::move(file_content);
     }
 

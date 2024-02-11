@@ -28,9 +28,9 @@ namespace FluidStudio {
         loaded = true;
 
         auto home_directory = get_home_directory();
-        s_studio_directory = (std::filesystem::path(home_directory) / ".FluidStudio/").string();
-        s_config_file = (std::filesystem::path(home_directory) / ".FluidStudio/config.json").string();
-        s_imgui_config_file = (std::filesystem::path(home_directory) / ".FluidStudio/imgui.ini").string();
+        s_studio_directory = (std::filesystem::path(home_directory) / std::string(".FluidStudio/")).string();
+        s_config_file = (std::filesystem::path(home_directory) / std::string(".FluidStudio/config.json")).string();
+        s_imgui_config_file = (std::filesystem::path(home_directory) / std::string(".FluidStudio/imgui.ini")).string();
 
 
         std::filesystem::create_directories(s_studio_directory);

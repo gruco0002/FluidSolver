@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
                 if (settings.verbose) {
                     LibFluid::Log::message("[Console] Dumping initial particle data to file.");
                 }
-                dump_particle_data(bundle.simulator->data.collection, std::filesystem::path(settings.outputPath) / "particle-data" / (std::to_string(dump_counter) + ".data"));
+                dump_particle_data(bundle.simulator->data.collection, std::filesystem::path(settings.outputPath) / std::string("particle-data") / (std::to_string(dump_counter) + ".data"));
                 dump_counter++;
             }
 
@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
                         }
 
                         last_time_dump = std::fmodf(last_time_dump, settings.dump_every);
-                        dump_particle_data(bundle.simulator->data.collection, std::filesystem::path(settings.outputPath) / "particle-data" / (std::to_string(dump_counter) + ".data"));
+                        dump_particle_data(bundle.simulator->data.collection, std::filesystem::path(settings.outputPath) / std::string("particle-data") / (std::to_string(dump_counter) + ".data"));
                         dump_counter++;
                     }
                 }
