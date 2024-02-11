@@ -14,7 +14,6 @@ using ::testing::AnyOf;
 using ::testing::Each;
 using ::testing::Not;
 
-
 // define a matcher
 MATCHER_P(BeginEndSizeIs, n, "")
 {
@@ -23,7 +22,6 @@ MATCHER_P(BeginEndSizeIs, n, "")
         counter++;
     return counter == n;
 }
-
 
 /**
  * Generates points from start (including) to end(including) with step distance as a grid in both axis
@@ -66,7 +64,7 @@ std::vector<glm::vec2> GetSampleGrid(float start, float step, float stop)
     return pos;
 }
 
-std::vector<glm::vec2> TransformVector(const std::vector<glm::vec2>& positions, const glm::mat3& transformation)
+std::vector<glm::vec2> TransformVector(const std::vector<glm::vec2> &positions, const glm::mat3 &transformation)
 {
     std::vector<glm::vec2> result;
     result.reserve(positions.size());
@@ -78,7 +76,7 @@ std::vector<glm::vec2> TransformVector(const std::vector<glm::vec2>& positions, 
     return result;
 }
 
-void add_positions(LibFluid::ParticleCollection& collection, const std::vector<glm::vec2>& positions)
+void add_positions(LibFluid::ParticleCollection &collection, const std::vector<glm::vec2> &positions)
 {
     for (auto pos : positions)
     {
@@ -89,17 +87,17 @@ void add_positions(LibFluid::ParticleCollection& collection, const std::vector<g
     }
 }
 
-void setup_collection(LibFluid::ParticleCollection& collection)
+void setup_collection(LibFluid::ParticleCollection &collection)
 {
     collection.add_type<LibFluid::MovementData>();
     collection.add_type<LibFluid::ParticleInfo>();
 }
 
-template <typename T> class NeighborhoodSearchTest : public ::testing::Test {
+template <typename T> class NeighborhoodSearchTest : public ::testing::Test
+{
 };
 
 TYPED_TEST_SUITE_P(NeighborhoodSearchTest);
-
 
 TYPED_TEST_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle)
 {
@@ -111,7 +109,6 @@ TYPED_TEST_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle)
     // add a single particle
     add_positions(*particleCollection, {glm::vec2(234.56341f, 6578.45f)});
 
-
     TypeParam search;
     search.search_radius = radius;
     search.collection = particleCollection;
@@ -120,9 +117,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle)
     // start the neighborhood search
     search.find_neighbors();
 
-
     auto neighbors = search.get_neighbors(0);
-
 
     EXPECT_THAT(neighbors, BeginEndSizeIs(1));
     EXPECT_EQ(0, *neighbors.begin());
@@ -176,13 +171,13 @@ TYPED_TEST_P(NeighborhoodSearchTest, ParticlesAtOrigin)
     search.find_neighbors();
 
     /*
-		Situation Looks as follows:
+        Situation Looks as follows:
 
-		0	1	2
-		3	4	5
-		6	7	8
+        0	1	2
+        3	4	5
+        6	7	8
 
-		Where particle 4 is exactly at the
+        Where particle 4 is exactly at the
 
 
 
@@ -190,8 +185,7 @@ TYPED_TEST_P(NeighborhoodSearchTest, ParticlesAtOrigin)
 
      * * * * * * origin (0,0)
 
-	*/
-
+    */
 
     auto neighborsParticle0 = search.get_neighbors(0);
     EXPECT_THAT(neighborsParticle0, BeginEndSizeIs(6));
@@ -307,7 +301,6 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving)
     // point precision problems cause particles exactly on the border of the neighborhood to
     // fall out, hence the radius is selected a little bit larger, to allow some error margin
 
-
     // set up uniform sampled region
     add_positions(*particleCollection, GetSampleGrid(-5, 1, 5));
 
@@ -316,7 +309,6 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving)
     search.search_radius = radius;
     search.collection = particleCollection;
     search.initialize();
-
 
     glm::vec2 totalMovement = glm::vec2(0.0f);
     for (size_t i = 0; i < 1024; i++)
@@ -353,14 +345,11 @@ TYPED_TEST_P(NeighborhoodSearchTest, UniformSampledParticlesMoving)
     }
 }
 
-
 REGISTER_TYPED_TEST_SUITE_P(NeighborhoodSearchTest, ShouldWorkForSingleParticle, UniformSampledParticles,
                             ParticlesAtOrigin, UniformSampledParticlesScaled, UniformSampledParticlesRotated,
                             UniformSampledParticlesMoving);
 
-
 // placeholder for test bodies
-typedef ::testing::Types<LibFluid::QuadraticNeighborhoodSearchDynamicAllocated,
-        LibFluid::HashedNeighborhoodSearch>
+typedef ::testing::Types<LibFluid::QuadraticNeighborhoodSearchDynamicAllocated, LibFluid::HashedNeighborhoodSearch>
     NeighborhoodSearchTypes;
 INSTANTIATE_TYPED_TEST_SUITE_P(NeighborhoodSearchTypesInstantiation, NeighborhoodSearchTest, NeighborhoodSearchTypes);

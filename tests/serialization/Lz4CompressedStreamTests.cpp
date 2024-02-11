@@ -3,15 +3,15 @@
 #include <filesystem>
 #include <vector>
 
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
-
-TEST(Lz4CompressedStreamTests, TestSmallData) {
-    const char* data = "Hello World :)";
+TEST(Lz4CompressedStreamTests, TestSmallData)
+{
+    const char *data = "Hello World :)";
     const size_t data_length = strlen(data) + 1;
 
-    const char* filename = "Lz4CompressedStreamTests.TestSmallData.bin";
+    const char *filename = "Lz4CompressedStreamTests.TestSmallData.bin";
 
     // write data
     {
@@ -27,9 +27,12 @@ TEST(Lz4CompressedStreamTests, TestSmallData) {
     }
 
     // delete temporary file
-    try {
+    try
+    {
         std::filesystem::remove(filename);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         EXPECT_TRUE(false) << "Could not cleanup temporary files: " << e.what();
     }
 
@@ -37,19 +40,19 @@ TEST(Lz4CompressedStreamTests, TestSmallData) {
     ASSERT_STREQ(data, read_in);
 }
 
-TEST(Lz4CompressedStreamTests, TestLargeData) {
+TEST(Lz4CompressedStreamTests, TestLargeData)
+{
     constexpr size_t data_length = 10485760;
 
     // generate the data
     std::vector<char> data;
     data.resize(data_length);
-    for(size_t i = 0; i < data_length; i++)
+    for (size_t i = 0; i < data_length; i++)
     {
         data[i] = (char)(i % 127);
     }
 
-
-    const char* filename = "Lz4CompressedStreamTests.TestLargeData.bin";
+    const char *filename = "Lz4CompressedStreamTests.TestLargeData.bin";
 
     // write data
     {
@@ -66,9 +69,12 @@ TEST(Lz4CompressedStreamTests, TestLargeData) {
     }
 
     // delete temporary file
-    try {
+    try
+    {
         std::filesystem::remove(filename);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         EXPECT_TRUE(false) << "Could not cleanup temporary files: " << e.what();
     }
 
@@ -76,11 +82,12 @@ TEST(Lz4CompressedStreamTests, TestLargeData) {
     ASSERT_THAT(read_in, ::testing::ContainerEq(data));
 }
 
-TEST(Lz4CompressedStreamTests, TestReadOver) {
-    const char* data = "Hello World :)";
+TEST(Lz4CompressedStreamTests, TestReadOver)
+{
+    const char *data = "Hello World :)";
     const size_t data_length = strlen(data) + 1;
 
-    const char* filename = "Lz4CompressedStreamTests.TestReadOver.bin";
+    const char *filename = "Lz4CompressedStreamTests.TestReadOver.bin";
 
     // write data
     {
@@ -97,9 +104,12 @@ TEST(Lz4CompressedStreamTests, TestReadOver) {
     }
 
     // delete temporary file
-    try {
+    try
+    {
         std::filesystem::remove(filename);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         EXPECT_TRUE(false) << "Could not cleanup temporary files: " << e.what();
     }
 
@@ -107,11 +117,12 @@ TEST(Lz4CompressedStreamTests, TestReadOver) {
     ASSERT_STREQ(data, read_in);
 }
 
-TEST(Lz4CompressedStreamTests, TestReadAfterDone) {
-    const char* data = "Hello World :)";
+TEST(Lz4CompressedStreamTests, TestReadAfterDone)
+{
+    const char *data = "Hello World :)";
     const size_t data_length = strlen(data) + 1;
 
-    const char* filename = "Lz4CompressedStreamTests.TestReadAfterDone.bin";
+    const char *filename = "Lz4CompressedStreamTests.TestReadAfterDone.bin";
 
     // write data
     {
@@ -132,9 +143,12 @@ TEST(Lz4CompressedStreamTests, TestReadAfterDone) {
     }
 
     // delete temporary file
-    try {
+    try
+    {
         std::filesystem::remove(filename);
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception &e)
+    {
         EXPECT_TRUE(false) << "Could not cleanup temporary files: " << e.what();
     }
 

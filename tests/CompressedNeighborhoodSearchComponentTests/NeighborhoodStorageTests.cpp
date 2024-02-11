@@ -41,7 +41,6 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageMove)
         storage.set_next_neighbor(i + 1);
     }
 
-
     CompressedNeighborhoodSearch::NeighborStorage moved_by_constructor(std::move(storage));
 
     ASSERT_EQ(123, moved_by_constructor.get_first_neighbor());
@@ -50,7 +49,6 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageMove)
     {
         ASSERT_EQ(i + 1, moved_by_constructor.get_delta(i));
     }
-
 
     CompressedNeighborhoodSearch::NeighborStorage moved_by_assignment;
     moved_by_assignment = std::move(moved_by_constructor);
@@ -62,7 +60,6 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageMove)
         ASSERT_EQ(i + 1, moved_by_assignment.get_delta(i));
     }
 }
-
 
 TEST(CompressedNeighborhoodSearch, NeighborhoodStorageCopy)
 {
@@ -76,7 +73,6 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageCopy)
         storage.set_next_neighbor(i + 1);
     }
 
-
     CompressedNeighborhoodSearch::NeighborStorage copied_by_constructor(storage);
 
     ASSERT_EQ(123, copied_by_constructor.get_first_neighbor());
@@ -89,7 +85,6 @@ TEST(CompressedNeighborhoodSearch, NeighborhoodStorageCopy)
     storage.set_next_neighbor(12);
     ASSERT_EQ(20, copied_by_constructor.size());
     ASSERT_EQ(21, storage.size());
-
 
     CompressedNeighborhoodSearch::NeighborStorage copied_by_assignment;
     copied_by_assignment = std::move(copied_by_constructor);

@@ -20,7 +20,7 @@ TEST(ParticleCollectionAlgorithm, QuickSort1)
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection> &c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -44,11 +44,10 @@ TEST(ParticleCollectionAlgorithm, QuickSort2)
         coll->get<ParticleInfo>(i).tag = coll->size() - 1 - i;
     }
 
-
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection> &c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -82,11 +81,10 @@ TEST(ParticleCollectionAlgorithm, QuickSort3)
         coll->get<ParticleInfo>(i).tag = tmp[i];
     }
 
-
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection> &c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
@@ -96,7 +94,6 @@ TEST(ParticleCollectionAlgorithm, QuickSort3)
         ASSERT_EQ(i, coll->get<ParticleInfo>(i).tag);
     }
 }
-
 
 TEST(ParticleCollectionAlgorithm, QuickSort4)
 {
@@ -121,11 +118,10 @@ TEST(ParticleCollectionAlgorithm, QuickSort4)
         coll->get<ParticleInfo>(i).tag = tmp[i];
     }
 
-
     ParticleCollectionAlgorithm::Sort sorter;
     sorter.adapt_collection(coll);
 
-    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection>& c, const size_t i) -> uint64_t {
+    sorter.quick_sort(coll, [](const std::shared_ptr<ParticleCollection> &c, const size_t i) -> uint64_t {
         return c->get<ParticleInfo>(i).tag;
     });
 
