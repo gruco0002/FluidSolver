@@ -1,12 +1,8 @@
 #include <glad/glad.h>
 
 #include "Window.hpp"
-
-#include "Window.hpp"
-
 #include <GLFW/glfw3.h>
 #include <functional>
-
 #include <stdexcept>
 
 namespace Engine

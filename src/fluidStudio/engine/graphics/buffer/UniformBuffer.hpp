@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Buffer.hpp"
-
+#include "engine/graphics/buffer/Buffer.hpp"
 #include <vector>
 
 namespace Engine

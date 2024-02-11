@@ -1,5 +1,4 @@
 #include "Framebuffer.hpp"
-
 #include <stdexcept>
 
 uint32_t Engine::Graphics::Framebuffer::currentlyBound = 0;

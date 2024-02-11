@@ -1,6 +1,5 @@
 #include "RectangleRenderer.hpp"
-
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 
 void Engine::RectangleRenderer::RenderRectangle(glm::vec2 position, glm::vec2 size, glm::vec4 color, glm::vec4 clipArea)
 {

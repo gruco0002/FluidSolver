@@ -1,10 +1,8 @@
-#ifndef ENGINE_TEXTURE2D_HPP
-#define ENGINE_TEXTURE2D_HPP
+#pragma once
 
 #include <glad/glad.h>
 
-#include "Enums.hpp"
-
+#include "engine/graphics/Enums.hpp"
 #include <string>
 #include <vector>
 
@@ -37,7 +35,7 @@ namespace Engine
 
             /**
              * Creates an empty texture with format GL_RGB and data type GL_UNSIGNED_BYTE.
- * @param
+             * @param
              * width Width of the texture.
              * @param height Height of the texture.
              * @param
@@ -77,7 +75,7 @@ namespace Engine
 
             /**
              * Destroys this texture object and its corresponding data on the graphics card.
- */
+             */
             virtual ~Texture2D();
 
             /**
@@ -138,5 +136,3 @@ namespace Engine
         };
     } // namespace Graphics
 } // namespace Engine
-
-#endif // ENGINE_TEXTURE2D_HPP

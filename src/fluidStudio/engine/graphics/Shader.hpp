@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Texture2D.hpp"
-#include "Texture2DArray.hpp"
-#include "glm/glm.hpp"
-
-#include <graphics/buffer/Buffer.hpp>
+#include "engine/graphics/Texture2D.hpp"
+#include "engine/graphics/Texture2DArray.hpp"
+#include "engine/graphics/buffer/Buffer.hpp"
+#include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>

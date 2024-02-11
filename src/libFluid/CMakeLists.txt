@@ -1,3 +1,4 @@
+# find packages
 find_package(Threads REQUIRED)
 find_path(LIBMORTON_INCLUDE_DIRS "libmorton/morton.h")
 find_package(fmt CONFIG REQUIRED)
@@ -7,14 +8,11 @@ find_package(tinyobjloader CONFIG REQUIRED)
 
 if (UNIX OR APPLE)
     # add tbb library for parallelization
-
     find_package(TBB CONFIG REQUIRED)
 endif ()
 
-
 # include directories
 include_directories(./)
-
 
 set(LIB_FLUID_SOURCE_FILES
         "fluidSolver/solver/SESPHFluidSolver.hpp"

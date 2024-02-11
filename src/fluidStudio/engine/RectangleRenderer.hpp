@@ -1,12 +1,11 @@
-#ifndef ENGINE_RECTANGLERENDERER_HPP
-#define ENGINE_RECTANGLERENDERER_HPP
+#pragma once
 
-#include "glm/glm.hpp"
-#include "graphics/Shader.hpp"
-#include "graphics/Texture2D.hpp"
-#include "graphics/buffer/IndexBuffer.hpp"
-#include "graphics/buffer/VertexArray.hpp"
-#include "graphics/buffer/VertexBuffer.hpp"
+#include "engine/graphics/Shader.hpp"
+#include "engine/graphics/Texture2D.hpp"
+#include "engine/graphics/buffer/IndexBuffer.hpp"
+#include "engine/graphics/buffer/VertexArray.hpp"
+#include "engine/graphics/buffer/VertexBuffer.hpp"
+#include <glm/glm.hpp>
 
 namespace Engine
 {
@@ -47,4 +46,3 @@ namespace Engine
 
 } // namespace Engine
 
-#endif // ENGINE_RECTANGLERENDERER_HPP

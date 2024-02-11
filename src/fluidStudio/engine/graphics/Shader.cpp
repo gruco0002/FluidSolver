@@ -1,9 +1,8 @@
 #include "Shader.hpp"
 
-#include "glm/gtc/type_ptr.hpp"
-
 #include <algorithm>
 #include <fstream>
+#include <glm/gtc/type_ptr.hpp>
 #include <sstream>
 
 uint32_t Engine::Graphics::Shader::currentlyBound = 0;

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "../Enums.hpp"
-#include "Buffer.hpp"
-#include "IndexBuffer.hpp"
-
+#include "engine/graphics/Enums.hpp"
+#include "engine/graphics/buffer/Buffer.hpp"
+#include "engine/graphics/buffer/IndexBuffer.hpp"
 #include <set>
 #include <vector>
 

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Texture2D.hpp"
-
+#include "engine/graphics/Texture2D.hpp"
 #include <cstdint>
 
 namespace Engine

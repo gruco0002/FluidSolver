@@ -2,8 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "Texture2D.hpp"
-
+#include "engine/graphics/Texture2D.hpp"
 #include <map>
 #include <vector>
 

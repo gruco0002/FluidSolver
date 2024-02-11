@@ -1,5 +1,4 @@
 #include "Texture2DArray.hpp"
-
 #include <stdexcept>
 
 namespace Engine
