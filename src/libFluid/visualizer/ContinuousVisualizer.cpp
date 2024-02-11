@@ -1,22 +1,26 @@
 #include "ContinuousVisualizer.hpp"
 
-#include "parallelization/StdParallelForEach.hpp"
 #include "LibFluidMath.hpp"
+#include "parallelization/StdParallelForEach.hpp"
 
-namespace LibFluid {
-    ContinuousVisualizer::ContinuousVisualizer()
-        : image(0, 0), kernel() {
+namespace LibFluid
+{
+    ContinuousVisualizer::ContinuousVisualizer() : image(0, 0), kernel()
+    {
     }
 
-    void ContinuousVisualizer::initialize() {
-        if (simulation_data.has_data_changed()) {
+    void ContinuousVisualizer::initialize()
+    {
+        if (simulation_data.has_data_changed())
+        {
             simulation_data.acknowledge_data_change();
 
             kernel.kernel_support = simulation_data.particle_size * Math::kernel_support_factor;
             kernel.initialize();
         }
 
-        if (parameters.has_data_changed()) {
+        if (parameters.has_data_changed())
+        {
             parameters.acknowledge_data_change();
 
             image = Image(parameters.render_target.width, parameters.render_target.height);
@@ -24,37 +28,48 @@ namespace LibFluid {
         }
     }
 
-    void ContinuousVisualizer::create_compatibility_report(CompatibilityReport& report) {
+    void ContinuousVisualizer::create_compatibility_report(CompatibilityReport &report)
+    {
         initialize();
 
         report.begin_scope(FLUID_NAMEOF(ContinuousVisualizer));
 
-        if (simulation_data.collection == nullptr) {
+        if (simulation_data.collection == nullptr)
+        {
             report.add_issue("ParticleCollection is null.");
-        } else {
-            if (!simulation_data.collection->is_type_present<MovementData>()) {
+        }
+        else
+        {
+            if (!simulation_data.collection->is_type_present<MovementData>())
+            {
                 report.add_issue("Particles are missing the MovementData attribute.");
             }
-            if (!simulation_data.collection->is_type_present<ParticleData>()) {
+            if (!simulation_data.collection->is_type_present<ParticleData>())
+            {
                 report.add_issue("Particles are missing the ParticleData attribute.");
             }
-            if (!simulation_data.collection->is_type_present<ParticleInfo>()) {
+            if (!simulation_data.collection->is_type_present<ParticleInfo>())
+            {
                 report.add_issue("Particles are missing the ParticleInfo attribute.");
             }
         }
 
-        if (simulation_data.particle_size <= 0.0f) {
+        if (simulation_data.particle_size <= 0.0f)
+        {
             report.add_issue("Particle size is smaller or equal to zero.");
         }
-        if (simulation_data.neighborhood_interface == nullptr) {
+        if (simulation_data.neighborhood_interface == nullptr)
+        {
             report.add_issue("Neighborhood search interface is null.");
         }
 
         report.end_scope();
     }
 
-    void ContinuousVisualizer::render() {
-        if(!parameters.enabled){
+    void ContinuousVisualizer::render()
+    {
+        if (!parameters.enabled)
+        {
             return;
         }
 
@@ -70,18 +85,21 @@ namespace LibFluid {
         });
     }
 
-    Image ContinuousVisualizer::get_image_data() {
+    Image ContinuousVisualizer::get_image_data()
+    {
         return image;
     }
 
-    void ContinuousVisualizer::recalculate_viewport() {
+    void ContinuousVisualizer::recalculate_viewport()
+    {
         auto value = settings.viewport;
 
         Viewport2D res;
         res.top = value.top;
         res.left = value.left;
 
-        if (value.width() / value.height() * (float)image.height() < (float)image.width()) {
+        if (value.width() / value.height() * (float)image.height() < (float)image.width())
+        {
             // height is okay, width must be larger
 
             auto height = value.height();
@@ -93,7 +111,9 @@ namespace LibFluid {
             // set width and height
             res.bottom = res.top - height;
             res.right = res.left + width;
-        } else {
+        }
+        else
+        {
             // width is okay, height must be larger
             auto width = value.width();
             auto height = (float)image.height() / (float)image.width() * value.width();
@@ -109,7 +129,8 @@ namespace LibFluid {
         internal_viewport = res;
     }
 
-    Image::Color ContinuousVisualizer::calculate_color_for_pixel(size_t x, size_t y) {
+    Image::Color ContinuousVisualizer::calculate_color_for_pixel(size_t x, size_t y)
+    {
         FLUID_ASSERT(simulation_data.neighborhood_interface != nullptr);
         FLUID_ASSERT(simulation_data.collection != nullptr);
         FLUID_ASSERT(simulation_data.collection->is_type_present<ParticleInfo>());
@@ -118,27 +139,31 @@ namespace LibFluid {
 
         glm::vec2 position = calculate_particle_space_position_for_pixel(x, y);
 
-
         // calculate densities
         float boundaryDensity = 0.0f;
         float normalDensity = 0.0f;
 
         auto neighbors = simulation_data.neighborhood_interface->get_neighbors(position);
 
-        for (size_t neighbor : neighbors) {
-            const auto& pi = simulation_data.collection->get<ParticleInfo>(neighbor);
-            if (pi.type == ParticleTypeInactive) {
+        for (size_t neighbor : neighbors)
+        {
+            const auto &pi = simulation_data.collection->get<ParticleInfo>(neighbor);
+            if (pi.type == ParticleTypeInactive)
+            {
                 continue; // don*t calculate unnecessary values for inactive particles.
             }
 
-            const auto& pm = simulation_data.collection->get<MovementData>(neighbor);
-            const auto& pd = simulation_data.collection->get<ParticleData>(neighbor);
+            const auto &pm = simulation_data.collection->get<MovementData>(neighbor);
+            const auto &pd = simulation_data.collection->get<ParticleData>(neighbor);
 
             float densityContribution = pd.mass * kernel.GetKernelValue(position, pm.position);
 
-            if (pi.type == ParticleTypeNormal) {
+            if (pi.type == ParticleTypeNormal)
+            {
                 normalDensity += densityContribution;
-            } else if (pi.type == ParticleTypeBoundary) {
+            }
+            else if (pi.type == ParticleTypeBoundary)
+            {
                 boundaryDensity += densityContribution;
             }
         }
@@ -151,16 +176,20 @@ namespace LibFluid {
 
         // check which type of density is larger and return the corresponding color
         // first of, boundary density should dominate on a boundary
-        if (boundaryDensity >= settings.minimum_render_density) {
+        if (boundaryDensity >= settings.minimum_render_density)
+        {
             // boundary
             return Image::Color(128, 128, 128);
-        } else {
+        }
+        else
+        {
             // fluid
             return Image::Color(0, 0, 255);
         }
     }
 
-    glm::vec2 ContinuousVisualizer::calculate_particle_space_position_for_pixel(size_t x, size_t y) {
+    glm::vec2 ContinuousVisualizer::calculate_particle_space_position_for_pixel(size_t x, size_t y)
+    {
         float xCoord = internal_viewport.left;
         float yCoord = internal_viewport.top;
         xCoord += x / (float)image.width() * internal_viewport.width();
@@ -168,7 +197,9 @@ namespace LibFluid {
         return glm::vec2(xCoord, yCoord);
     }
 
-    void ContinuousVisualizer::set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) {
+    void ContinuousVisualizer::set_view(const glm::vec3 &position, const glm::vec3 &view_direction,
+                                        const glm::vec3 &view_up)
+    {
         // TODO: implement
     }
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -4,50 +4,71 @@
 #include "ImguiHelper.hpp"
 #include "userInterface/StyledImGuiElements.hpp"
 
+namespace FluidStudio
+{
 
-namespace FluidStudio {
-
-
-    void ComponentSettingsWindow::update() {
-        if (ImGui::Begin("Properties")) {
-            auto& selection = ui_data.collection().get<ComponentPanelWindow>().selection();
-            if (selection.kind != SimulationComponent::Kind::None) {
+    void ComponentSettingsWindow::update()
+    {
+        if (ImGui::Begin("Properties"))
+        {
+            auto &selection = ui_data.collection().get<ComponentPanelWindow>().selection();
+            if (selection.kind != SimulationComponent::Kind::None)
+            {
                 update_component_settings(selection);
             }
         }
         ImGui::End();
     }
 
-    void ComponentSettingsWindow::update_component_settings(const SimulationComponent& component) {
-        if (component.kind == SimulationComponent::Kind::Solver) {
+    void ComponentSettingsWindow::update_component_settings(const SimulationComponent &component)
+    {
+        if (component.kind == SimulationComponent::Kind::Solver)
+        {
             solver_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::Timestep) {
+        }
+        else if (component.kind == SimulationComponent::Kind::Timestep)
+        {
             timestep_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::Sensor) {
+        }
+        else if (component.kind == SimulationComponent::Kind::Sensor)
+        {
             sensor_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::Output) {
+        }
+        else if (component.kind == SimulationComponent::Kind::Output)
+        {
             update_output_component();
-        } else if (component.kind == SimulationComponent::Kind::SimulationVisualizer) {
+        }
+        else if (component.kind == SimulationComponent::Kind::SimulationVisualizer)
+        {
             visualizer_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::Entity) {
+        }
+        else if (component.kind == SimulationComponent::Kind::Entity)
+        {
             entity_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::TagDescriptor) {
+        }
+        else if (component.kind == SimulationComponent::Kind::TagDescriptor)
+        {
             tag_descriptor_settings_element.update();
-        } else if (component.kind == SimulationComponent::Kind::EditorVisualizer) {
+        }
+        else if (component.kind == SimulationComponent::Kind::EditorVisualizer)
+        {
             editor_visualizer_settings_element.update();
         }
     }
-    void ComponentSettingsWindow::update_output_component() {
-        auto& output = ui_data.window().simulator_visualizer_bundle.simulator->output;
+    void ComponentSettingsWindow::update_output_component()
+    {
+        auto &output = ui_data.window().simulator_visualizer_bundle.simulator->output;
 
-        if (StyledImGuiElements::slim_tree_node("Output")) {
+        if (StyledImGuiElements::slim_tree_node("Output"))
+        {
             ImGui::InputText("Directory", &output->parameters.output_folder);
 
             ImGui::TreePop();
         }
     }
 
-    void ComponentSettingsWindow::initialize(const UiData& ui_data) {
+    void ComponentSettingsWindow::initialize(const UiData &ui_data)
+    {
         // initialize this element
         UiElement::initialize(ui_data);
 

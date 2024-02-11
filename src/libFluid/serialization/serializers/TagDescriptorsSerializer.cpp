@@ -1,28 +1,33 @@
 #include "TagDescriptorsSerializer.hpp"
-namespace LibFluid::Serialization {
+namespace LibFluid::Serialization
+{
 
-
-    nlohmann::json TagDescriptorsSerializer::serialize(std::shared_ptr<TagDescriptors> descriptors) {
+    nlohmann::json TagDescriptorsSerializer::serialize(std::shared_ptr<TagDescriptors> descriptors)
+    {
         nlohmann::json result = nlohmann::json::array();
 
-        for (const auto& descriptor : descriptors->descriptors) {
+        for (const auto &descriptor : descriptors->descriptors)
+        {
             result.push_back(serialize_descriptor(descriptor));
         }
 
         return result;
     }
-    
-    std::shared_ptr<TagDescriptors> TagDescriptorsSerializer::deserialize(const nlohmann::json& node) {
+
+    std::shared_ptr<TagDescriptors> TagDescriptorsSerializer::deserialize(const nlohmann::json &node)
+    {
         auto result = std::make_shared<TagDescriptors>();
 
-        for (const auto& value : node) {
+        for (const auto &value : node)
+        {
             result->descriptors.push_back(deserialize_descriptor(value));
         }
 
         return result;
     }
 
-    nlohmann::json TagDescriptorsSerializer::serialize_descriptor(const TagDescriptors::Descriptor& descriptor) {
+    nlohmann::json TagDescriptorsSerializer::serialize_descriptor(const TagDescriptors::Descriptor &descriptor)
+    {
         nlohmann::json result;
 
         result["title"] = descriptor.title;
@@ -32,7 +37,8 @@ namespace LibFluid::Serialization {
         return result;
     }
 
-    TagDescriptors::Descriptor TagDescriptorsSerializer::deserialize_descriptor(const nlohmann::json& node) {
+    TagDescriptors::Descriptor TagDescriptorsSerializer::deserialize_descriptor(const nlohmann::json &node)
+    {
         TagDescriptors::Descriptor descriptor;
 
         descriptor.title = node["title"].get<std::string>();

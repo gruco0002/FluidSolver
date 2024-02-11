@@ -10,11 +10,11 @@
 #include <memory>
 #include <vector>
 
+namespace FluidStudio
+{
 
-namespace FluidStudio {
-
-
-    class SensorGraphWindows final : public UiElement {
+    class SensorGraphWindows final : public UiElement
+    {
       public:
         void update() override;
 
@@ -24,9 +24,9 @@ namespace FluidStudio {
       private:
         std::vector<uint8_t> open_sensor_windows;
 
-        Engine::Graphics::Texture2D* rendered_image = nullptr;
+        Engine::Graphics::Texture2D *rendered_image = nullptr;
 
-        bool* sensor_window_open_ptr(size_t index);
+        bool *sensor_window_open_ptr(size_t index);
 
         void render_density_sensor_graph(std::shared_ptr<LibFluid::Sensors::GlobalDensitySensor> sensor);
         void render_pressure_sensor_graph(std::shared_ptr<LibFluid::Sensors::GlobalPressureSensor> sensor);
@@ -35,7 +35,7 @@ namespace FluidStudio {
         void render_particle_count_sensor(std::shared_ptr<LibFluid::Sensors::GlobalParticleCountSensor> sensor);
         void render_sensor_plane_sensor(std::shared_ptr<LibFluid::Sensors::SensorPlane> sensor);
         void render_compressed_neighborhood_storage_sensor(
-                std::shared_ptr<LibFluid::Sensors::CompressedNeighborStorageSensor> sensor);
+            std::shared_ptr<LibFluid::Sensors::CompressedNeighborStorageSensor> sensor);
         void render_iisph_sensor(std::shared_ptr<LibFluid::Sensors::IISPHSensor> sensor);
     };
 

@@ -7,12 +7,14 @@
 
 #include <memory>
 
-namespace LibFluid::Importer {
-    class ParticleSampler {
+namespace LibFluid::Importer
+{
+    class ParticleSampler
+    {
       public:
         explicit ParticleSampler();
 
-        std::vector<glm::vec3> generate_samples(const MeshData& mesh_data, float particle_size) const;
+        std::vector<glm::vec3> generate_samples(const MeshData &mesh_data, float particle_size) const;
 
         std::shared_ptr<SamplingMethod> sampling_method;
 

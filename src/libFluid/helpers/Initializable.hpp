@@ -1,11 +1,13 @@
 #pragma once
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      * Provides an interface / pattern for a cleaner codebase.
      */
-    class Initializable {
+    class Initializable
+    {
       public:
         /**
          * "initialize" should be called before each timestep calculation and before all other
@@ -21,5 +23,4 @@ namespace LibFluid {
         virtual ~Initializable() = default;
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -27,7 +27,7 @@ namespace LibFluid::GroupActions
      * group of particles
      * @return The amount of particles inside the group
      */
-    template <typename Group> size_t count(const Group& group)
+    template <typename Group> size_t count(const Group &group)
     {
         FLUID_ASSERT(group.collection != nullptr)
         size_t result = 0;
@@ -38,7 +38,6 @@ namespace LibFluid::GroupActions
         return result;
     }
 
-
     /**
      *
      * @tparam Group see description in FluidSolver::GroupActions::count
@@ -46,7 +45,7 @@ namespace LibFluid::GroupActions
      *
      * @param type
      */
-    template <typename Group> void set_type(const Group& group, ParticleType type)
+    template <typename Group> void set_type(const Group &group, ParticleType type)
     {
         FLUID_ASSERT(group.collection != nullptr)
         FLUID_ASSERT(group.collection->template is_type_present<ParticleInfo>())
@@ -57,10 +56,9 @@ namespace LibFluid::GroupActions
         }
     }
 
-    template <typename Group> void remove(const Group& group)
+    template <typename Group> void remove(const Group &group)
     {
         set_type<Group>(group, ParticleType::ParticleTypeInactive);
     }
 
-
-} // namespace FluidSolver::GroupActions
+} // namespace LibFluid::GroupActions

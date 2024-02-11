@@ -2,9 +2,11 @@
 
 #include "LibFluidMath.hpp"
 
-namespace LibFluid::Raytracer::Distributions::CosineWeightedHemisphereDistribution {
+namespace LibFluid::Raytracer::Distributions::CosineWeightedHemisphereDistribution
+{
 
-    Ray sample_ray(const glm::vec2& uniform_dist_random_sample_pair, const glm::vec3& normalized_up) {
+    Ray sample_ray(const glm::vec2 &uniform_dist_random_sample_pair, const glm::vec3 &normalized_up)
+    {
         Ray result;
 
         float zeta_one = uniform_dist_random_sample_pair.x;
@@ -26,15 +28,20 @@ namespace LibFluid::Raytracer::Distributions::CosineWeightedHemisphereDistributi
 
             // start by determining an arbitrary tangent
             glm::vec3 tangent;
-            if (Math::is_not_zero(normalized_up.x)) {
+            if (Math::is_not_zero(normalized_up.x))
+            {
                 tangent.x = (-normalized_up.y - normalized_up.z) / normalized_up.x;
                 tangent.y = 1.0f;
                 tangent.z = 1.0f;
-            } else if (Math::is_not_zero(normalized_up.y)) {
+            }
+            else if (Math::is_not_zero(normalized_up.y))
+            {
                 tangent.x = 1.0f;
                 tangent.y = (-normalized_up.x - normalized_up.z) / normalized_up.y;
                 tangent.z = 1.0f;
-            } else {
+            }
+            else
+            {
                 // z component has to be unequal to zero
                 tangent.x = 1.0f;
                 tangent.y = 1.0f;
@@ -54,7 +61,7 @@ namespace LibFluid::Raytracer::Distributions::CosineWeightedHemisphereDistributi
         // calculate estimated solid angle
         {
             float theta = asinf(sqrtf(zeta_one));
-            //float phi = 2.0f * Math::PI * zeta_two;
+            // float phi = 2.0f * Math::PI * zeta_two;
             float probability = std::cosf(theta) / Math::PI;
             float estimated_solid_angle = 1.0f / probability;
             result.solid_angle = estimated_solid_angle;

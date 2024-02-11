@@ -3,19 +3,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    OverlayInstance::Display ParticleRemoverOverlay::get_display() {
+    OverlayInstance::Display ParticleRemoverOverlay::get_display()
+    {
         return Display::Cube;
     }
 
-    glm::mat4 ParticleRemoverOverlay::get_matrix() {
+    glm::mat4 ParticleRemoverOverlay::get_matrix()
+    {
         auto scale = glm::scale(glm::mat4(1.0f), entity->parameters.volume.distance_from_center);
         auto translation = glm::translate(glm::mat4(1.0f), entity->parameters.volume.center);
         return translation * scale;
     }
 
-    void ParticleRemoverOverlay::set_matrix(const glm::mat4& new_data) {
+    void ParticleRemoverOverlay::set_matrix(const glm::mat4 &new_data)
+    {
         glm::vec3 scale;
         glm::quat rotation;
         glm::vec3 translation;
@@ -33,13 +37,16 @@ namespace FluidStudio {
         entity->parameters.volume.distance_from_center = scale;
     }
 
-    OverlayInstance::AllowedTransforms ParticleRemoverOverlay::get_allowed_transforms() {
+    OverlayInstance::AllowedTransforms ParticleRemoverOverlay::get_allowed_transforms()
+    {
         return AllowedTransforms::TranslateAndScale;
     }
-    ParticleRemoverOverlay::ParticleRemoverOverlay(std::shared_ptr<LibFluid::ParticleRemover3D> entity) {
+    ParticleRemoverOverlay::ParticleRemoverOverlay(std::shared_ptr<LibFluid::ParticleRemover3D> entity)
+    {
         this->entity = entity;
     }
-    const char* ParticleRemoverOverlay::get_display_text() {
+    const char *ParticleRemoverOverlay::get_display_text()
+    {
         return "Particle Remover";
     }
-} // namespace FluidUi
+} // namespace FluidStudio

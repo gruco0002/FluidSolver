@@ -9,28 +9,31 @@
 #include "visualizer/Viewport2D.hpp"
 
 // FIXME: wrong namespace
-namespace LibFluid {
+namespace LibFluid
+{
 
-
-    class GLParticleRenderer : public ISimulationVisualizer, public GLRenderer {
+    class GLParticleRenderer : public ISimulationVisualizer, public GLRenderer
+    {
       public:
-        virtual Engine::Graphics::Texture2D* get_render_target() override;
+        virtual Engine::Graphics::Texture2D *get_render_target() override;
 
         virtual void initialize() override;
 
-        virtual void create_compatibility_report(CompatibilityReport& report) override;
+        virtual void create_compatibility_report(CompatibilityReport &report) override;
 
         virtual void render() override;
 
         virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer() override;
-        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
+        void set_view(const glm::vec3 &position, const glm::vec3 &view_direction, const glm::vec3 &view_up) override;
 
-        void get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const override;
+        void get_view(glm::vec3 &position, glm::vec3 &view_direction, glm::vec3 &view_up) const override;
 
-        struct Settings {
-            enum ColorSelection {
+        struct Settings
+        {
+            enum ColorSelection
+            {
                 Velocity = 0,
                 Acceleration = 1,
                 Mass = 2,
@@ -38,13 +41,11 @@ namespace LibFluid {
                 Density = 4,
             } colorSelection = ColorSelection::Density;
 
-
             glm::vec4 bottomColor = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
             float bottomValue = 0.0f;
 
             glm::vec4 topColor = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
             float topValue = 2.0f;
-
 
             bool showParticleSelection = false;
 
@@ -56,18 +57,17 @@ namespace LibFluid {
 
             Viewport2D viewport;
 
-
         } settings;
 
       private:
         glm::mat4 projectionMatrix;
-        ParticleVertexArray* particleVertexArray = nullptr;
+        ParticleVertexArray *particleVertexArray = nullptr;
 
-        Engine::Graphics::Framebuffer* framebuffer = nullptr;
-        Engine::Graphics::Texture2D* fboDepthTex = nullptr;
-        Engine::Graphics::Texture2D* fboColorTex = nullptr;
+        Engine::Graphics::Framebuffer *framebuffer = nullptr;
+        Engine::Graphics::Texture2D *fboDepthTex = nullptr;
+        Engine::Graphics::Texture2D *fboColorTex = nullptr;
 
-        Engine::Graphics::Shader* particleShader = nullptr;
+        Engine::Graphics::Shader *particleShader = nullptr;
 
         bool initialize_in_next_render_step = true;
 
@@ -78,5 +78,4 @@ namespace LibFluid {
         void create_shader_if_required();
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -1,7 +1,6 @@
 #ifndef FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 #define FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP
 
-
 #include "LibFluidAssert.hpp"
 #include "fluidSolver/ParticleCollection.hpp"
 
@@ -11,7 +10,8 @@
 #include <memory>
 
 // FIXME: wrong namespace
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      * The particle vertex array creates a vertex array object (vao) of point sprites for rendering particles with
@@ -80,7 +80,8 @@ namespace LibFluid {
      *
      *
      */
-    class ParticleVertexArray {
+    class ParticleVertexArray
+    {
 
       public:
         /**
@@ -90,7 +91,7 @@ namespace LibFluid {
          * @return Correct type of particle vertex array based on
          * the type of the particle collection.
          */
-        static ParticleVertexArray* CreateFromParticleCollection(
+        static ParticleVertexArray *CreateFromParticleCollection(
             std::shared_ptr<LibFluid::ParticleCollection> particleCollection);
 
         /**
@@ -100,7 +101,7 @@ namespace LibFluid {
          *
          * @param particleSelection The current particle selection.
          */
-        void Update(void* particleSelection);
+        void Update(void *particleSelection);
 
         /**
          * Draws the vao as point sprites.
@@ -149,15 +150,14 @@ namespace LibFluid {
          *
          * @return Index buffer
          */
-        Engine::Graphics::Buffer::IndexBuffer<uint32_t>* GetIndexBuffer();
+        Engine::Graphics::Buffer::IndexBuffer<uint32_t> *GetIndexBuffer();
 
         /**
          * Returns the buffer object containing the selection information for each particle.
          * @return
          * Selection buffer
          */
-        Engine::Graphics::Buffer::VertexBuffer<int8_t>* GetSelectionBuffer();
-
+        Engine::Graphics::Buffer::VertexBuffer<int8_t> *GetSelectionBuffer();
 
         /**
          * The underlying opengl vao object. This object should be created by the derived class in the
@@ -165,7 +165,7 @@ namespace LibFluid {
          * The object is deleted by the base class and must not be deleted by a derived
          * class.
          */
-        Engine::Graphics::Buffer::VertexArray* vao = nullptr;
+        Engine::Graphics::Buffer::VertexArray *vao = nullptr;
 
       private:
         uint32_t vaoParticleCount = 0;
@@ -175,18 +175,18 @@ namespace LibFluid {
 
         // void UpdateSelectionData(FluidSolver::IParticleSelection *particleSelection);
 
-        Engine::Graphics::Buffer::IndexBuffer<uint32_t>* indexBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<int8_t>* selectionBuffer = nullptr;
+        Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<int8_t> *selectionBuffer = nullptr;
     };
 
     /**
      * A particle vertex array for the striped particle collection.
      */
-    class ParticleVertexArrayForCollection : public ParticleVertexArray {
+    class ParticleVertexArrayForCollection : public ParticleVertexArray
+    {
 
       public:
         explicit ParticleVertexArrayForCollection(std::shared_ptr<LibFluid::ParticleCollection> collection);
-
 
         ~ParticleVertexArrayForCollection() override;
 
@@ -198,10 +198,10 @@ namespace LibFluid {
       private:
         std::shared_ptr<LibFluid::ParticleCollection> stripedParticleCollection = nullptr;
 
-        Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData>* movementBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleData>* dataBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo>* infoBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData> *movementBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleData> *dataBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo> *infoBuffer = nullptr;
     };
-} // namespace FluidSolver
+} // namespace LibFluid
 
 #endif // FLUIDSOLVER_PARTICLEVERTEXARRAY_HPP

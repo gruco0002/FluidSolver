@@ -1,15 +1,17 @@
 #pragma once
 #include "helpers/CompatibilityReport.hpp"
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      * This interface is used to keep the codebase cleaner.
      */
-    class Reportable {
+    class Reportable
+    {
       public:
-        virtual void create_compatibility_report(CompatibilityReport& report) = 0;
+        virtual void create_compatibility_report(CompatibilityReport &report) = 0;
 
         virtual ~Reportable() = default;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

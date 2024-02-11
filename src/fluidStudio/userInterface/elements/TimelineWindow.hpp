@@ -2,13 +2,15 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class TimelineWindow final : public UiElement {
+    class TimelineWindow final : public UiElement
+    {
       public:
         void update() override;
 
       private:
         int current_index = 0;
     };
-} // namespace FluidUi
+} // namespace FluidStudio

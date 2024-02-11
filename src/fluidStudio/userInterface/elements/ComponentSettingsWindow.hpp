@@ -10,12 +10,13 @@
 #include "userInterface/elements/componentSettings/VisualizerSettingsElement.hpp"
 #include "userInterface/helpers/SimulationComponent.hpp"
 
-
-namespace FluidStudio {
-    class ComponentSettingsWindow : public UiElement {
+namespace FluidStudio
+{
+    class ComponentSettingsWindow : public UiElement
+    {
       public:
         void update() override;
-        void initialize(const UiData& ui_data) override;
+        void initialize(const UiData &ui_data) override;
 
       private:
         SensorSettingsElement sensor_settings_element;
@@ -26,7 +27,7 @@ namespace FluidStudio {
         TagDescriptorSettingsElement tag_descriptor_settings_element;
         EditorVisualizerSettingsElement editor_visualizer_settings_element;
 
-        void update_component_settings(const SimulationComponent& component);
+        void update_component_settings(const SimulationComponent &component);
 
         void update_output_component();
     };

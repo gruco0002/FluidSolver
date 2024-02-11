@@ -2,8 +2,10 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class TagDescriptorSettingsElement final : public UiElement {
+namespace FluidStudio
+{
+    class TagDescriptorSettingsElement final : public UiElement
+    {
       public:
         void update() override;
 

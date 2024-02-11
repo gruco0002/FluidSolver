@@ -2,22 +2,31 @@
 
 #include "ImguiHelper.hpp"
 
-namespace FluidStudio {
-    void SimulationControlsWindow::update() {
+namespace FluidStudio
+{
+    void SimulationControlsWindow::update()
+    {
         ImGui::Begin("Simulation Controls");
-        if (ui_data.window().simulation_should_run) {
+        if (ui_data.window().simulation_should_run)
+        {
             ImGui::TextColored(ImColor(0.1f, 0.8f, 0.1f), "Running");
-        } else if (ui_data.window().are_calculations_running()) {
+        }
+        else if (ui_data.window().are_calculations_running())
+        {
             ImGui::TextColored(ImColor(0.8f, 0.8f, 0.1f), "Paused, pending calculations");
-        } else {
+        }
+        else
+        {
             ImGui::TextColored(ImColor(0.8f, 0.1f, 0.1f), "Paused");
         }
 
-        if (ImGui::Button("Run")) {
+        if (ImGui::Button("Run"))
+        {
             ui_data.window().simulation_should_run = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Pause")) {
+        if (ImGui::Button("Pause"))
+        {
             ui_data.window().simulation_should_run = false;
         }
 

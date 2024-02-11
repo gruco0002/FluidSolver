@@ -1,9 +1,11 @@
 #include "OverlayCubeRenderer.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    void OverlayCubeRenderer::render(const glm::mat4& model_matrix, float opacity) {
+    void OverlayCubeRenderer::render(const glm::mat4 &model_matrix, float opacity)
+    {
         initialize();
 
         data.framebuffer->Bind(true);
@@ -26,206 +28,203 @@ namespace FluidStudio {
         glFlush();
     }
 
-    void OverlayCubeRenderer::initialize() {
-        if (cube_va.cube_va == nullptr) {
+    void OverlayCubeRenderer::initialize()
+    {
+        if (cube_va.cube_va == nullptr)
+        {
             create_cube_va();
         }
     }
-    void OverlayCubeRenderer::create_cube_va() {
-        std::vector<uint32_t> face_id {
-                0, 0, 0, 0, 0, 0,
-                1, 1, 1, 1, 1, 1,
-                2, 2, 2, 2, 2, 2,
-                3, 3, 3, 3, 3, 3,
-                4, 4, 4, 4, 4, 4,
-                5, 5, 5, 5, 5, 5
+    void OverlayCubeRenderer::create_cube_va()
+    {
+        std::vector<uint32_t> face_id{0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3,
+                                      3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5
 
         };
 
-        std::vector<glm::vec3>
-                cube_vertices {
-                        {
-                                -1.0f, //-x
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f, // -x
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f, // -z
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
+        std::vector<glm::vec3> cube_vertices{{
+                                                 -1.0f, //-x
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f, // -x
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f, // -z
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
 
-                        {
-                                1.0f, // -z
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
+                                             {
+                                                 1.0f, // -z
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
 
-                        {
-                                1.0f, // -y
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f, // -y
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
+                                             {
+                                                 1.0f, // -y
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f, // -y
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
 
-                        {
-                                1.0f, // +x
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f,
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f, //+x
-                                -1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f,
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f,
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f, // +y
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                1.0f, // +y
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                -1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f, // +z
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                1.0f,
-                                1.0f,
-                        },
-                        {1.0f, -1.0f, 1.0f},
-                        {
-                                -1.0f, // +z
-                                1.0f,
-                                1.0f,
-                        },
-                        {
-                                -1.0f,
-                                -1.0f,
-                                1.0f,
-                        },
-                        {
-                                1.0f,
-                                -1.0f,
-                                1.0f,
-                        }};
+                                             {
+                                                 1.0f, // +x
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f, //+x
+                                                 -1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f, // +y
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 1.0f, // +y
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 -1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f, // +z
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {1.0f, -1.0f, 1.0f},
+                                             {
+                                                 -1.0f, // +z
+                                                 1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 -1.0f,
+                                                 -1.0f,
+                                                 1.0f,
+                                             },
+                                             {
+                                                 1.0f,
+                                                 -1.0f,
+                                                 1.0f,
+                                             }};
 
         std::vector<uint32_t> cube_indices;
-        for (size_t i = 0; i < cube_vertices.size(); i++) {
+        for (size_t i = 0; i < cube_vertices.size(); i++)
+        {
             cube_indices.push_back(i);
         }
 
@@ -241,11 +240,10 @@ namespace FluidStudio {
 
         cube_va.cube_va = std::make_unique<Engine::Graphics::Buffer::VertexArray>(bindings);
 
-
         // create shader
-        std::vector<Engine::Graphics::Shader::ProgramPart> shader_parts {
-                {Engine::Graphics::Shader::ProgramPartType::ProgramPartTypeVertex,
-                        R"SHADER(#version 330 core
+        std::vector<Engine::Graphics::Shader::ProgramPart> shader_parts{
+            {Engine::Graphics::Shader::ProgramPartType::ProgramPartTypeVertex,
+             R"SHADER(#version 330 core
 
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in uint aFaceId;
@@ -267,8 +265,8 @@ void main()
 
 )SHADER"},
 
-                {Engine::Graphics::Shader::ProgramPartType::ProgramPartTypeFragment,
-                        R"SHADER(#version 330 core
+            {Engine::Graphics::Shader::ProgramPartType::ProgramPartTypeFragment,
+             R"SHADER(#version 330 core
 
 in vec4 color;
 out vec4 FragColor;
@@ -282,11 +280,10 @@ void main()
         cube_va.shader = std::make_unique<Engine::Graphics::Shader>(shader_parts);
     }
 
-
-    void OverlayCubeRenderer::render(const glm::vec3& center, const glm::vec3 distance_from_center, float opacity) {
+    void OverlayCubeRenderer::render(const glm::vec3 &center, const glm::vec3 distance_from_center, float opacity)
+    {
         glm::mat4 model_matrix = glm::translate(glm::scale(glm::mat4(1.0f), distance_from_center), center);
         render(model_matrix, opacity);
     }
 
-
-} // namespace FluidUi
+} // namespace FluidStudio

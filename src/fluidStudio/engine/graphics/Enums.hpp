@@ -4,10 +4,11 @@
 
 #include <cstdint>
 
-namespace Engine {
+namespace Engine
+{
 
-
-    enum ComponentType {
+    enum ComponentType
+    {
         ComponentTypeFloat = GL_FLOAT,
         ComponentTypeUInt = GL_UNSIGNED_INT,
         ComponentTypeHalfFloat = GL_HALF_FLOAT,

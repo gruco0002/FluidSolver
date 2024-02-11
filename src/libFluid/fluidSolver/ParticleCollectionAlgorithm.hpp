@@ -9,10 +9,10 @@
 
 namespace LibFluid::ParticleCollectionAlgorithm
 {
-    class Sort {
+    class Sort
+    {
       public:
-        using key_function_t = std::function<uint64_t(const std::shared_ptr<ParticleCollection>&, const size_t)>;
-
+        using key_function_t = std::function<uint64_t(const std::shared_ptr<ParticleCollection> &, const size_t)>;
 
         struct SortInfo
         {
@@ -21,12 +21,12 @@ namespace LibFluid::ParticleCollectionAlgorithm
 
         void adapt_collection(std::shared_ptr<ParticleCollection> collection);
 
-        void merge_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
+        void merge_sort(std::shared_ptr<ParticleCollection>, const key_function_t &key);
 
-        void insertion_sort(std::shared_ptr<ParticleCollection>, const key_function_t& key);
+        void insertion_sort(std::shared_ptr<ParticleCollection>, const key_function_t &key);
 
         template <bool should_precalculate_keys = true, bool calculate_parallellized = true>
-        void quick_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
+        void quick_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t &key)
         {
             if constexpr (should_precalculate_keys)
             {
@@ -79,7 +79,6 @@ namespace LibFluid::ParticleCollectionAlgorithm
                         }
                     } while (current_element > pivot);
 
-
                     if (i >= j)
                     {
                         return j;
@@ -88,7 +87,6 @@ namespace LibFluid::ParticleCollectionAlgorithm
                     collection->swap(i, j);
                 }
             };
-
 
             std::function<void(int64_t, int64_t)> quick_sort = [&](int64_t low, int64_t high) {
                 FLUID_ASSERT(low >= 0);
@@ -133,7 +131,7 @@ namespace LibFluid::ParticleCollectionAlgorithm
         }
 
         template <bool should_precalculate_keys = true, bool calculate_parallellized = true>
-        void quick_sort_stable(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
+        void quick_sort_stable(std::shared_ptr<ParticleCollection> collection, const key_function_t &key)
         {
             using parallel = StdParallelForEach;
 
@@ -142,7 +140,6 @@ namespace LibFluid::ParticleCollectionAlgorithm
                 FLUID_ASSERT(collection->is_type_present<SortInfo>());
                 precalculate_keys(collection, key);
             }
-
 
             std::vector<uint32_t> original_index;
             original_index.resize(collection->size());
@@ -231,7 +228,6 @@ namespace LibFluid::ParticleCollectionAlgorithm
                 }
             };
 
-
             std::function<void(int64_t, int64_t)> quick_sort = [&](int64_t low, int64_t high) {
                 if (low >= high)
                     return;
@@ -278,8 +274,7 @@ namespace LibFluid::ParticleCollectionAlgorithm
         }
 
       private:
-        void precalculate_keys(std::shared_ptr<ParticleCollection>, const key_function_t& key);
+        void precalculate_keys(std::shared_ptr<ParticleCollection>, const key_function_t &key);
     };
 
-
-} // namespace FluidSolver::ParticleCollectionAlgorithm
+} // namespace LibFluid::ParticleCollectionAlgorithm

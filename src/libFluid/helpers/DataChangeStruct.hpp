@@ -1,9 +1,11 @@
 #pragma once
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     // TODO: find a better name
-    struct DataChangeStruct {
+    struct DataChangeStruct
+    {
       private:
         bool data_has_changed = true;
 
@@ -35,4 +37,4 @@ namespace LibFluid {
          */
         void acknowledge_data_change();
     };
-} // namespace FluidSolver
+} // namespace LibFluid

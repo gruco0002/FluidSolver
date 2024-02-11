@@ -1,16 +1,17 @@
 #pragma once
 
+#include "LibFluidMath.hpp"
 #include "fluidSolver/IFluidSolver.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 #include "fluidSolver/neighborhoodSearch/QuadraticNeighborhoodSearch3D.hpp"
 #include "fluidSolver/solver/settings/IISPHSettings3D.hpp"
 #include "parallelization/StdParallelForEach.hpp"
-#include "LibFluidMath.hpp"
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-
-    struct IISPHParticleData3D {
+    struct IISPHParticleData3D
+    {
         glm::vec3 predicted_velocity;
         glm::vec3 original_non_pressure_acceleration;
         float source_term;
@@ -18,10 +19,10 @@ namespace LibFluid {
         float predicted_density_error;
     };
 
-
-    template<typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
-            typename parallel = StdParallelForEach>
-    class IISPHFluidSolver3D : public IFluidSolverBase {
+    template <typename Kernel = CubicSplineKernel3D, typename NeighborhoodSearch = QuadraticNeighborhoodSearch3D,
+              typename parallel = StdParallelForEach>
+    class IISPHFluidSolver3D : public IFluidSolverBase
+    {
       public:
         Kernel kernel;
 
@@ -35,28 +36,31 @@ namespace LibFluid {
       private:
         float current_timestep = 0.0f;
 
-        void adapt_collection() {
+        void adapt_collection()
+        {
             FLUID_ASSERT(!data.collection->is_type_present<IISPHParticleData3D>());
             data.collection->add_type<IISPHParticleData3D>();
         }
 
-        glm::vec3 ComputeViscosityAcceleration(size_t particleIndex) {
-            auto& movement_data = data.collection->get<MovementData3D>(particleIndex);
+        glm::vec3 ComputeViscosityAcceleration(size_t particleIndex)
+        {
+            auto &movement_data = data.collection->get<MovementData3D>(particleIndex);
 
-            const glm::vec3& position = movement_data.position;
-            const glm::vec3& velocity = movement_data.velocity;
-
+            const glm::vec3 &position = movement_data.position;
+            const glm::vec3 &velocity = movement_data.velocity;
 
             glm::vec3 tmp = glm::vec3(0.0f);
             auto neighbors = neighborhood_search.get_neighbors(particleIndex);
-            for (uint32_t neighbor : neighbors) {
+            for (uint32_t neighbor : neighbors)
+            {
                 auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                if (type == ParticleTypeInactive) {
+                if (type == ParticleTypeInactive)
+                {
                     continue; // don*t calculate unnecessary values for inactive particles.
                 }
 
-                const glm::vec3& neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
-                const glm::vec3& neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
+                const glm::vec3 &neighborPosition = data.collection->get<MovementData3D>(neighbor).position;
+                const glm::vec3 &neighborVelocity = data.collection->get<MovementData3D>(neighbor).velocity;
                 float neighborMass = data.collection->get<ParticleData>(neighbor).mass;
                 float neighborDensity = data.collection->get<ParticleData>(neighbor).density;
 
@@ -67,18 +71,20 @@ namespace LibFluid {
                 glm::vec3 xij = position - neighborPosition;
 
                 tmp += (neighborMass / neighborDensity) *
-                        (glm::dot(vij, xij) /
-                                (glm::dot(xij, xij) + 0.01f * parameters.particle_size * parameters.particle_size)) *
-                        kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
+                       (glm::dot(vij, xij) /
+                        (glm::dot(xij, xij) + 0.01f * parameters.particle_size * parameters.particle_size)) *
+                       kernel.GetKernelDerivativeReversedValue(neighborPosition, position);
             }
 
             return 2.0f * settings.viscosity * tmp;
         }
 
       public:
-        void initialize() override {
+        void initialize() override
+        {
             FLUID_ASSERT(data.collection != nullptr);
-            if (data.has_data_changed()) {
+            if (data.has_data_changed())
+            {
                 data.acknowledge_data_change();
 
                 if (!data.collection->is_type_present<IISPHParticleData3D>())
@@ -88,7 +94,8 @@ namespace LibFluid {
                 neighborhood_search.initialize();
             }
 
-            if (parameters.has_data_changed()) {
+            if (parameters.has_data_changed())
+            {
                 parameters.acknowledge_data_change();
 
                 neighborhood_search.search_radius = parameters.particle_size * Math::kernel_support_factor;
@@ -97,12 +104,14 @@ namespace LibFluid {
                 kernel.initialize();
             }
 
-            if (settings.has_data_changed()) {
+            if (settings.has_data_changed())
+            {
                 settings.acknowledge_data_change();
             }
         }
 
-        void execute_neighborhood_search() override {
+        void execute_neighborhood_search() override
+        {
             initialize();
 
             FLUID_ASSERT(data.collection != nullptr)
@@ -117,7 +126,8 @@ namespace LibFluid {
             neighborhood_search.find_neighbors();
         }
 
-        void execute_simulation_step(Timepoint& timestep) override {
+        void execute_simulation_step(Timepoint &timestep) override
+        {
             initialize();
 
             FLUID_ASSERT(data.collection != nullptr)
@@ -141,24 +151,26 @@ namespace LibFluid {
             parallel::loop_for(0, data.collection->size(), [&](size_t particle_index) {
                 auto particle_type = data.collection->get<ParticleInfo>(particle_index).type;
 
-                if (particle_type == ParticleTypeInactive) {
+                if (particle_type == ParticleTypeInactive)
+                {
                     return; // don't calculate unnecessary data
                 }
 
-                auto& particle_data = data.collection->get<ParticleData>(particle_index);
-                auto& movement_data = data.collection->get<MovementData3D>(particle_index);
+                auto &particle_data = data.collection->get<ParticleData>(particle_index);
+                auto &movement_data = data.collection->get<MovementData3D>(particle_index);
 
                 // set pressure to zero
                 particle_data.pressure = 0.0f;
 
                 // compute non pressure accelerations and predicted velocity
                 {
-                    glm::vec3& nonPressureAcc =
-                            data.collection->get<ExternalForces3D>(particle_index).non_pressure_acceleration;
-                    const glm::vec3& velocity = movement_data.velocity;
+                    glm::vec3 &nonPressureAcc =
+                        data.collection->get<ExternalForces3D>(particle_index).non_pressure_acceleration;
+                    const glm::vec3 &velocity = movement_data.velocity;
 
                     // adding gravity to non pressure acceleration
-                    if (particle_type != ParticleTypeBoundary) {
+                    if (particle_type != ParticleTypeBoundary)
+                    {
                         nonPressureAcc += glm::vec3(0.0f, -parameters.gravity, 0.0f);
                         nonPressureAcc += ComputeViscosityAcceleration(particle_index);
                     }
@@ -167,7 +179,7 @@ namespace LibFluid {
                     glm::vec3 predictedVelocity = velocity + current_timestep * nonPressureAcc;
 
                     // set predicted velocity and original non pressure acceleration
-                    auto& ip = data.collection->get<IISPHParticleData3D>(particle_index);
+                    auto &ip = data.collection->get<IISPHParticleData3D>(particle_index);
                     ip.predicted_velocity = predictedVelocity;
                     ip.original_non_pressure_acceleration = nonPressureAcc;
 
@@ -177,31 +189,41 @@ namespace LibFluid {
 
                 // compute density
                 {
-                    if (particle_type == ParticleTypeBoundary) {
+                    if (particle_type == ParticleTypeBoundary)
+                    {
                         return; // don't calculate density for the boundary particles
                     }
 
                     float density = 0.0f;
 
-                    const glm::vec3& position = movement_data.position;
+                    const glm::vec3 &position = movement_data.position;
                     auto neighbors = neighborhood_search.get_neighbors(particle_index);
-                    for (uint32_t neighbor : neighbors) {
+                    for (uint32_t neighbor : neighbors)
+                    {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeInactive) {
+                        if (type == ParticleTypeInactive)
+                        {
                             continue; // don't calculate unnecessary values for inactive particles.
                         }
 
-                        if (!settings.single_layer_boundary) {
+                        if (!settings.single_layer_boundary)
+                        {
                             // multi layer boundaries are expected
-                            const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
+                            const glm::vec3 &neighbor_position =
+                                data.collection->get<MovementData3D>(neighbor).position;
                             float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
                             density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
-                        } else {
+                        }
+                        else
+                        {
                             // single layer boundaries are activated
-                            const glm::vec3& neighbor_position = data.collection->get<MovementData3D>(neighbor).position;
+                            const glm::vec3 &neighbor_position =
+                                data.collection->get<MovementData3D>(neighbor).position;
                             float neighbor_mass = data.collection->get<ParticleData>(neighbor).mass;
-                            if (type == ParticleTypeBoundary) {
-                                neighbor_mass *= settings.single_layer_boundary_gamma_1; // scale the boundary particles contribution
+                            if (type == ParticleTypeBoundary)
+                            {
+                                neighbor_mass *=
+                                    settings.single_layer_boundary_gamma_1; // scale the boundary particles contribution
                             }
                             density += neighbor_mass * kernel.GetKernelValue(neighbor_position, position);
                         }
@@ -211,7 +233,6 @@ namespace LibFluid {
                 }
             });
 
-
             // compute source term and diagonal element
             parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                 auto type = data.collection->get<ParticleInfo>(i).type;
@@ -220,41 +241,46 @@ namespace LibFluid {
                 if (type == ParticleTypeBoundary)
                     return; // we do not want to process boundary particles
 
-                auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
-                auto& movement_data = data.collection->get<MovementData3D>(i);
-                auto& particle_data = data.collection->get<ParticleData>(i);
+                auto &iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                auto &movement_data = data.collection->get<MovementData3D>(i);
+                auto &particle_data = data.collection->get<ParticleData>(i);
 
                 // compute source term
                 {
                     float neighbor_contribution = 0.0f;
                     auto neighbors = neighborhood_search.get_neighbors(i);
-                    for (auto neighbor : neighbors) {
+                    for (auto neighbor : neighbors)
+                    {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeInactive) {
+                        if (type == ParticleTypeInactive)
+                        {
                             continue; // don*t calculate unnecessary values for inactive particles.
                         }
 
-                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
+                        auto &neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto &neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto &neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
-                        if (type == ParticleTypeNormal) {
+                        if (type == ParticleTypeNormal)
+                        {
                             neighbor_contribution +=
-                                    neighbor_particle_data.mass *
-                                    glm::dot(iisph_data.predicted_velocity - neighbor_iisph_data.predicted_velocity,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
-                        } else if (type == ParticleTypeBoundary) {
+                                neighbor_particle_data.mass *
+                                glm::dot(iisph_data.predicted_velocity - neighbor_iisph_data.predicted_velocity,
+                                         kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                 movement_data.position));
+                        }
+                        else if (type == ParticleTypeBoundary)
+                        {
                             neighbor_contribution +=
-                                    neighbor_particle_data.mass *
-                                    glm::dot(iisph_data.predicted_velocity,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
+                                neighbor_particle_data.mass *
+                                glm::dot(iisph_data.predicted_velocity,
+                                         kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                 movement_data.position));
                         }
                     }
 
                     iisph_data.source_term =
-                            parameters.rest_density - particle_data.density - current_timestep * neighbor_contribution;
+                        parameters.rest_density - particle_data.density - current_timestep * neighbor_contribution;
                 }
 
                 // compute diagonal element
@@ -263,33 +289,41 @@ namespace LibFluid {
                     glm::vec3 inner_part_of_sum = glm::vec3(0.0f);
                     {
                         auto neighbors = neighborhood_search.get_neighbors(i);
-                        for (auto neighbor : neighbors) {
+                        for (auto neighbor : neighbors)
+                        {
                             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                            if (type == ParticleTypeInactive) {
+                            if (type == ParticleTypeInactive)
+                            {
                                 continue; // don't calculate unnecessary values for inactive particles.
                             }
 
-                            auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
-                            auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
-                            auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
+                            auto &neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                            auto &neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                            auto &neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
-                            if (type == ParticleTypeNormal) {
+                            if (type == ParticleTypeNormal)
+                            {
                                 inner_part_of_sum -= neighbor_particle_data.mass / Math::pow2(parameters.rest_density) *
-                                        kernel.GetKernelDerivativeReversedValue(
-                                                neighbor_movement_data.position, movement_data.position);
-                            } else if (type == ParticleTypeBoundary) {
+                                                     kernel.GetKernelDerivativeReversedValue(
+                                                         neighbor_movement_data.position, movement_data.position);
+                            }
+                            else if (type == ParticleTypeBoundary)
+                            {
                                 // TODO: gamma is used here even if single layer boundaries are deactivated?
-                                if (settings.single_layer_boundary) {
+                                if (settings.single_layer_boundary)
+                                {
                                     inner_part_of_sum -= 2.0f * settings.gamma * neighbor_particle_data.mass /
-                                            Math::pow2(parameters.rest_density) *
-                                            kernel.GetKernelDerivativeReversedValue(
-                                                    neighbor_movement_data.position, movement_data.position);
-                                } else {
+                                                         Math::pow2(parameters.rest_density) *
+                                                         kernel.GetKernelDerivativeReversedValue(
+                                                             neighbor_movement_data.position, movement_data.position);
+                                }
+                                else
+                                {
                                     // TODO: check if we can leave out gamma here
-                                    inner_part_of_sum -= 2.0f * neighbor_particle_data.mass /
-                                            Math::pow2(parameters.rest_density) *
-                                            kernel.GetKernelDerivativeReversedValue(
-                                                    neighbor_movement_data.position, movement_data.position);
+                                    inner_part_of_sum -=
+                                        2.0f * neighbor_particle_data.mass / Math::pow2(parameters.rest_density) *
+                                        kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                movement_data.position);
                                 }
                             }
                         }
@@ -299,36 +333,41 @@ namespace LibFluid {
                     float diagonal_element = 0.0f;
                     {
                         auto neighbors = neighborhood_search.get_neighbors(i);
-                        for (auto neighbor : neighbors) {
+                        for (auto neighbor : neighbors)
+                        {
                             auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                            if (type == ParticleTypeInactive) {
+                            if (type == ParticleTypeInactive)
+                            {
                                 continue; // don't calculate unnecessary values for inactive particles.
                             }
 
-                            auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
-                            auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
-                            auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
+                            auto &neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                            auto &neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                            auto &neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
-                            if (type == ParticleTypeNormal) {
+                            if (type == ParticleTypeNormal)
+                            {
                                 diagonal_element +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(inner_part_of_sum,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
+                                    neighbor_particle_data.mass *
+                                    glm::dot(inner_part_of_sum,
+                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                     movement_data.position));
 
                                 diagonal_element +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(particle_data.mass / Math::pow2(parameters.rest_density) *
-                                                        kernel.GetKernelDerivativeReversedValue(
-                                                                movement_data.position, neighbor_movement_data.position),
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
-                            } else if (type == ParticleTypeBoundary) {
+                                    neighbor_particle_data.mass *
+                                    glm::dot(particle_data.mass / Math::pow2(parameters.rest_density) *
+                                                 kernel.GetKernelDerivativeReversedValue(
+                                                     movement_data.position, neighbor_movement_data.position),
+                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                     movement_data.position));
+                            }
+                            else if (type == ParticleTypeBoundary)
+                            {
                                 diagonal_element +=
-                                        neighbor_particle_data.mass *
-                                        glm::dot(inner_part_of_sum,
-                                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                        movement_data.position));
+                                    neighbor_particle_data.mass *
+                                    glm::dot(inner_part_of_sum,
+                                             kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                     movement_data.position));
                             }
                         }
 
@@ -343,7 +382,8 @@ namespace LibFluid {
             float max_final_acceleration_squared = 0.0f;
 
             // start iterations
-            for (size_t iteration = 0; iteration < settings.max_number_of_iterations; iteration++) {
+            for (size_t iteration = 0; iteration < settings.max_number_of_iterations; iteration++)
+            {
                 // compute pressure acceleration
                 parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                     auto type = data.collection->get<ParticleInfo>(i).type;
@@ -352,50 +392,57 @@ namespace LibFluid {
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
-                    auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
-                    auto& movement_data = data.collection->get<MovementData3D>(i);
-                    auto& particle_data = data.collection->get<ParticleData>(i);
+                    auto &iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                    auto &movement_data = data.collection->get<MovementData3D>(i);
+                    auto &particle_data = data.collection->get<ParticleData>(i);
 
                     glm::vec3 pressure_acceleration = glm::vec3(0.0f);
 
                     auto neighbors = neighborhood_search.get_neighbors(i);
-                    for (auto neighbor : neighbors) {
+                    for (auto neighbor : neighbors)
+                    {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeInactive) {
+                        if (type == ParticleTypeInactive)
+                        {
                             continue; // don't calculate unnecessary values for inactive particles.
                         }
 
-                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
+                        auto &neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto &neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto &neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
-                        if (type == ParticleTypeNormal) {
+                        if (type == ParticleTypeNormal)
+                        {
                             pressure_acceleration -=
-                                    neighbor_particle_data.mass *
-                                    (particle_data.pressure / Math::pow2(parameters.rest_density) +
-                                            neighbor_particle_data.pressure / Math::pow2(parameters.rest_density)) *
-                                    kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                            movement_data.position);
-                        } else if (type == ParticleTypeBoundary) {
+                                neighbor_particle_data.mass *
+                                (particle_data.pressure / Math::pow2(parameters.rest_density) +
+                                 neighbor_particle_data.pressure / Math::pow2(parameters.rest_density)) *
+                                kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                        movement_data.position);
+                        }
+                        else if (type == ParticleTypeBoundary)
+                        {
                             // TODO: gamma was used here even for multi layer boundaries
-                            if (settings.single_layer_boundary) {
+                            if (settings.single_layer_boundary)
+                            {
                                 pressure_acceleration -= settings.gamma * neighbor_particle_data.mass * 2.0f *
-                                        particle_data.pressure / Math::pow2(parameters.rest_density) *
-                                        kernel.GetKernelDerivativeReversedValue(
-                                                neighbor_movement_data.position, movement_data.position);
-                            } else {
+                                                         particle_data.pressure / Math::pow2(parameters.rest_density) *
+                                                         kernel.GetKernelDerivativeReversedValue(
+                                                             neighbor_movement_data.position, movement_data.position);
+                            }
+                            else
+                            {
                                 // TODO: check if we can ignore gamma in scenarios with multi layer boundaries
-                                pressure_acceleration -= neighbor_particle_data.mass * 2.0f *
-                                        particle_data.pressure / Math::pow2(parameters.rest_density) *
-                                        kernel.GetKernelDerivativeReversedValue(
-                                                neighbor_movement_data.position, movement_data.position);
+                                pressure_acceleration -= neighbor_particle_data.mass * 2.0f * particle_data.pressure /
+                                                         Math::pow2(parameters.rest_density) *
+                                                         kernel.GetKernelDerivativeReversedValue(
+                                                             neighbor_movement_data.position, movement_data.position);
                             }
                         }
                     }
 
                     movement_data.acceleration = pressure_acceleration;
                 });
-
 
                 // compute divergence of the velocity change, update pressure, compute predicted density error per
                 // particle
@@ -406,52 +453,62 @@ namespace LibFluid {
                     if (type == ParticleTypeBoundary)
                         return; // we do not want to process boundary particles
 
-                    auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
-                    auto& movement_data = data.collection->get<MovementData3D>(i);
-                    auto& particle_data = data.collection->get<ParticleData>(i);
+                    auto &iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                    auto &movement_data = data.collection->get<MovementData3D>(i);
+                    auto &particle_data = data.collection->get<ParticleData>(i);
 
                     float ap = 0.0f;
 
                     auto neighbors = neighborhood_search.get_neighbors(i);
-                    for (auto neighbor : neighbors) {
+                    for (auto neighbor : neighbors)
+                    {
                         auto type = data.collection->get<ParticleInfo>(neighbor).type;
-                        if (type == ParticleTypeInactive) {
+                        if (type == ParticleTypeInactive)
+                        {
                             continue; // don't calculate unnecessary values for inactive particles.
                         }
 
-                        auto& neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
-                        auto& neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
-                        auto& neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
+                        auto &neighbor_particle_data = data.collection->get<ParticleData>(neighbor);
+                        auto &neighbor_iisph_data = data.collection->get<IISPHParticleData3D>(neighbor);
+                        auto &neighbor_movement_data = data.collection->get<MovementData3D>(neighbor);
 
-                        if (type == ParticleTypeNormal) {
+                        if (type == ParticleTypeNormal)
+                        {
                             ap += neighbor_particle_data.mass *
-                                    glm::dot(movement_data.acceleration - neighbor_movement_data.acceleration,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
-                        } else if (type == ParticleTypeBoundary) {
+                                  glm::dot(movement_data.acceleration - neighbor_movement_data.acceleration,
+                                           kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                   movement_data.position));
+                        }
+                        else if (type == ParticleTypeBoundary)
+                        {
                             ap += neighbor_particle_data.mass *
-                                    glm::dot(movement_data.acceleration,
-                                            kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
-                                                    movement_data.position));
+                                  glm::dot(movement_data.acceleration,
+                                           kernel.GetKernelDerivativeReversedValue(neighbor_movement_data.position,
+                                                                                   movement_data.position));
                         }
                     }
 
                     ap *= Math::pow2(current_timestep);
 
-                    if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon()) {
+                    if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon())
+                    {
                         particle_data.pressure =
-                                std::fmax(0.0f, particle_data.pressure + settings.omega * ((iisph_data.source_term - ap) / iisph_data.diagonal_element));
-                    } else {
+                            std::fmax(0.0f, particle_data.pressure + settings.omega * ((iisph_data.source_term - ap) /
+                                                                                       iisph_data.diagonal_element));
+                    }
+                    else
+                    {
                         // particle has no neighbors, hence set pressure to zero
                         particle_data.pressure = 0.0f;
                     }
 
-
                     // Info: The calculation of the particle density error is based on the implementation of IISPH by
                     // Stefan Band
                     float particle_density_error = std::abs(iisph_data.source_term - ap);
-                    if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon()) {
-                        if (std::abs(particle_data.pressure) <= std::numeric_limits<float>::epsilon()) {
+                    if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon())
+                    {
+                        if (std::abs(particle_data.pressure) <= std::numeric_limits<float>::epsilon())
+                        {
                             // if the new pressure is zero, we do not have a density error
                             particle_density_error = 0.0f;
                         }
@@ -469,42 +526,51 @@ namespace LibFluid {
                     float average_predicted_density_error = 0.0f;
                     size_t average_counter = 0;
 
-                    // reset the max final velocity and acceleration since values from previous iterations are not required anymore
+                    // reset the max final velocity and acceleration since values from previous iterations are not
+                    // required anymore
                     max_final_velocity_squared = 0.0f;
                     max_final_acceleration_squared = 0.0f;
 
-                    for (size_t i = 0; i < data.collection->size(); i++) {
+                    for (size_t i = 0; i < data.collection->size(); i++)
+                    {
                         // skip particles that are not normal fluid particles
                         auto type = data.collection->get<ParticleInfo>(i).type;
-                        if (type != ParticleTypeNormal) {
+                        if (type != ParticleTypeNormal)
+                        {
                             continue;
                         }
 
-                        auto& iisph_data = data.collection->get<IISPHParticleData3D>(i);
+                        auto &iisph_data = data.collection->get<IISPHParticleData3D>(i);
 
                         {
                             // calculate the current maximal velocity and acceleration of all fluid particles
-                            const auto& movement_data = data.collection->get<MovementData3D>(i);
+                            const auto &movement_data = data.collection->get<MovementData3D>(i);
 
-                            max_final_acceleration_squared = std::fmax(max_final_acceleration_squared, glm::dot(movement_data.acceleration, movement_data.acceleration));
+                            max_final_acceleration_squared =
+                                std::fmax(max_final_acceleration_squared,
+                                          glm::dot(movement_data.acceleration, movement_data.acceleration));
 
-                            glm::vec3 particle_velocity = iisph_data.predicted_velocity + current_timestep * movement_data.acceleration;
-                            max_final_velocity_squared = std::fmax(max_final_velocity_squared, glm::dot(particle_velocity, particle_velocity));
+                            glm::vec3 particle_velocity =
+                                iisph_data.predicted_velocity + current_timestep * movement_data.acceleration;
+                            max_final_velocity_squared =
+                                std::fmax(max_final_velocity_squared, glm::dot(particle_velocity, particle_velocity));
                         }
 
                         {
                             // calculate the max predicted density error for the iteration termination criteria
-                            if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon()) {
+                            if (std::abs(iisph_data.diagonal_element) > std::numeric_limits<float>::epsilon())
+                            {
                                 // this particle contributes to the density error
                                 max_predicted_density_error =
-                                        std::fmax(max_predicted_density_error, iisph_data.predicted_density_error);
+                                    std::fmax(max_predicted_density_error, iisph_data.predicted_density_error);
                                 average_predicted_density_error += iisph_data.predicted_density_error;
                                 average_counter++;
                             }
                         }
                     }
 
-                    if (average_counter > 0) {
+                    if (average_counter > 0)
+                    {
                         average_predicted_density_error = average_predicted_density_error / (float)average_counter;
                     }
 
@@ -512,9 +578,11 @@ namespace LibFluid {
                     this->stat_last_average_predicted_density_error = average_predicted_density_error;
 
                     // check termination criteria
-                    if (iteration >= settings.min_number_of_iterations - 1) {
+                    if (iteration >= settings.min_number_of_iterations - 1)
+                    {
                         // we have at least reached the minimum number of iterations
-                        if (average_predicted_density_error <= settings.max_density_error_allowed) {
+                        if (average_predicted_density_error <= settings.max_density_error_allowed)
+                        {
                             // exit the solver, since the average predicted density error has become small enough
                             break;
                         }
@@ -527,78 +595,91 @@ namespace LibFluid {
             {
                 float max_final_velocity = sqrt(max_final_velocity_squared);
                 float max_final_acceleration = sqrt(max_final_acceleration_squared);
-                float corrected_timestep = data.timestep_generator->get_non_cfl_validating_timestep(max_final_acceleration, max_final_velocity);
+                float corrected_timestep = data.timestep_generator->get_non_cfl_validating_timestep(
+                    max_final_acceleration, max_final_velocity);
                 corrected_timestep = std::fmin(corrected_timestep, timestep.desired_time_step);
                 FLUID_ASSERT(corrected_timestep > 0.0f);
                 timestep.actual_time_step = corrected_timestep;
                 current_timestep = timestep.actual_time_step;
             }
 
-
             // integrate particle movement
             parallel::loop_for(0, data.collection->size(), [&](size_t i) {
                 // update velocity and position of all particles
 
                 auto type = data.collection->get<ParticleInfo>(i).type;
-                if (type == ParticleTypeInactive) {
+                if (type == ParticleTypeInactive)
+                {
                     return; // don't calculate unnecessary values for inactive particles.
                 }
 
-                auto& movement_data = data.collection->get<MovementData3D>(i);
-                const auto& pi = data.collection->get<IISPHParticleData3D>(i);
+                auto &movement_data = data.collection->get<MovementData3D>(i);
+                const auto &pi = data.collection->get<IISPHParticleData3D>(i);
                 glm::vec3 predicted_velocity = pi.predicted_velocity;
 
                 // correct predicted velocity if required
-                if (old_timestep != current_timestep) {
-                    predicted_velocity = predicted_velocity - old_timestep * pi.original_non_pressure_acceleration + current_timestep * pi.original_non_pressure_acceleration;
+                if (old_timestep != current_timestep)
+                {
+                    predicted_velocity = predicted_velocity - old_timestep * pi.original_non_pressure_acceleration +
+                                         current_timestep * pi.original_non_pressure_acceleration;
                 }
 
-
                 // integrate using euler cromer
-                movement_data.velocity = predicted_velocity +
-                        current_timestep * movement_data.acceleration;
+                movement_data.velocity = predicted_velocity + current_timestep * movement_data.acceleration;
                 movement_data.position = movement_data.position + current_timestep * movement_data.velocity;
             });
         }
 
-
-        virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override {
+        virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() override
+        {
             return neighborhood_search.create_interface();
         }
 
-        void create_compatibility_report(CompatibilityReport& report) override {
+        void create_compatibility_report(CompatibilityReport &report) override
+        {
             initialize();
 
             report.begin_scope(FLUID_NAMEOF(IISPHFluidSolver3D));
-            if (data.collection == nullptr) {
+            if (data.collection == nullptr)
+            {
                 report.add_issue("Particle collection is null.");
-            } else {
-                if (!data.collection->is_type_present<MovementData3D>()) {
+            }
+            else
+            {
+                if (!data.collection->is_type_present<MovementData3D>())
+                {
                     report.add_issue("Particles are missing the MovementData3D attribute.");
                 }
-                if (!data.collection->is_type_present<ParticleData>()) {
+                if (!data.collection->is_type_present<ParticleData>())
+                {
                     report.add_issue("Particles are missing the ParticleData attribute.");
                 }
-                if (!data.collection->is_type_present<ParticleInfo>()) {
+                if (!data.collection->is_type_present<ParticleInfo>())
+                {
                     report.add_issue("Particles are missing the ParticleInfo attribute.");
                 }
-                if (!data.collection->is_type_present<ExternalForces3D>()) {
+                if (!data.collection->is_type_present<ExternalForces3D>())
+                {
                     report.add_issue("Particles are missing the ExternalForces3D attribute.");
                 }
-                if (!data.collection->is_type_present<IISPHParticleData3D>()) {
+                if (!data.collection->is_type_present<IISPHParticleData3D>())
+                {
                     report.add_issue("Particles are missing the IISPHParticleData3D attribute.");
                 }
             }
 
-            if (settings.max_number_of_iterations < settings.min_number_of_iterations) {
+            if (settings.max_number_of_iterations < settings.min_number_of_iterations)
+            {
                 report.add_issue("Max iterations are less than min number of iterations.");
             }
 
-            if (settings.max_density_error_allowed <= 0.0f) {
+            if (settings.max_density_error_allowed <= 0.0f)
+            {
                 report.add_issue("MaxDensityErrorAllowed is smaller or equal to zero.");
             }
 
-            if (data.timestep_generator == nullptr) {
+            if (data.timestep_generator == nullptr)
+            {
                 report.add_issue("Timestep generator is null");
             }
             neighborhood_search.create_compatibility_report(report);

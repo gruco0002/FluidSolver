@@ -8,22 +8,21 @@
 // std::string and std::vector
 #define ENDIAN_SAFE_BINARY_STREAM_DEFAULT_EXTENSIONS
 #ifdef ENDIAN_SAFE_BINARY_STREAM_DEFAULT_EXTENSIONS
-    #include <string>
-    #include <vector>
+#include <string>
+#include <vector>
 #endif
 
 // Undefine this if you do not want to use the helper functions for std::fstream
 #define ENDIAN_SAFE_BINARY_STREAM_FSTREAM_HELPER
 #ifdef ENDIAN_SAFE_BINARY_STREAM_FSTREAM_HELPER
-    #include <filesystem>
-    #include <fstream>
+#include <filesystem>
+#include <fstream>
 #endif
 
 namespace esbs
 {
 
-    template <typename T>
-    struct EndianSafeBinaryStreamExtension;
+    template <typename T> struct EndianSafeBinaryStreamExtension;
 
     /**
      * An endian safe binary stream that reads/writes primitive types always
@@ -38,8 +37,7 @@ namespace esbs
      * If EndianSafeBinaryStream is only used for reading, the Stream template parameter
      * should have an implementation of the read function and the !operator.
      */
-    template <typename Stream>
-    class EndianSafeBinaryStream
+    template <typename Stream> class EndianSafeBinaryStream
     {
 
       public:
@@ -84,14 +82,12 @@ namespace esbs
 
       public:
         // this is for custom extensions
-        template <typename T>
-        EndianSafeBinaryStream &operator<<(const T &v)
+        template <typename T> EndianSafeBinaryStream &operator<<(const T &v)
         {
             return EndianSafeBinaryStreamExtension<T>::template serialize<Stream>(*this, v);
         }
 
-        template <typename T>
-        EndianSafeBinaryStream &operator>>(T &v)
+        template <typename T> EndianSafeBinaryStream &operator>>(T &v)
         {
             return EndianSafeBinaryStreamExtension<T>::template deserialize<Stream>(*this, v);
         }
@@ -118,8 +114,7 @@ namespace esbs
 // just remove the define macro from the top of this file
 #ifdef ENDIAN_SAFE_BINARY_STREAM_DEFAULT_EXTENSIONS
 
-    template <>
-    struct EndianSafeBinaryStreamExtension<std::string>
+    template <> struct EndianSafeBinaryStreamExtension<std::string>
     {
         template <typename Stream>
         static EndianSafeBinaryStream<Stream> &serialize(EndianSafeBinaryStream<Stream> &stream, const std::string &v)
@@ -141,11 +136,11 @@ namespace esbs
         }
     };
 
-    template <typename S>
-    struct EndianSafeBinaryStreamExtension<std::vector<S>>
+    template <typename S> struct EndianSafeBinaryStreamExtension<std::vector<S>>
     {
         template <typename Stream>
-        static EndianSafeBinaryStream<Stream> &serialize(EndianSafeBinaryStream<Stream> &stream, const std::vector<S> &v)
+        static EndianSafeBinaryStream<Stream> &serialize(EndianSafeBinaryStream<Stream> &stream,
+                                                         const std::vector<S> &v)
         {
             uint64_t vector_length = v.size();
             stream << vector_length;
@@ -201,8 +196,7 @@ namespace esbs
             }
         };
 
-        template <class T, int S>
-        class SwapByte : public SwapByteBase
+        template <class T, int S> class SwapByte : public SwapByteBase
         {
           public:
             static T swap(T v)
@@ -211,8 +205,7 @@ namespace esbs
             }
         };
 
-        template <class T>
-        class SwapByte<T, 1> : public SwapByteBase
+        template <class T> class SwapByte<T, 1> : public SwapByteBase
         {
           public:
             static T swap(T v)
@@ -221,8 +214,7 @@ namespace esbs
             }
         };
 
-        template <class T>
-        class SwapByte<T, 2> : public SwapByteBase
+        template <class T> class SwapByte<T, 2> : public SwapByteBase
         {
           public:
             static T swap(T v)
@@ -233,44 +225,42 @@ namespace esbs
             }
         };
 
-        template <class T>
-        class SwapByte<T, 4> : public SwapByteBase
+        template <class T> class SwapByte<T, 4> : public SwapByteBase
         {
           public:
             static T swap(T v)
             {
                 if (should_swap())
                 {
-                    return (SwapByte<uint16_t, 2>::swap((uint32_t)v & 0xffff) << 16) | (SwapByte<uint16_t, 2>::swap(((uint32_t)v & 0xffff0000) >> 16));
+                    return (SwapByte<uint16_t, 2>::swap((uint32_t)v & 0xffff) << 16) |
+                           (SwapByte<uint16_t, 2>::swap(((uint32_t)v & 0xffff0000) >> 16));
                 }
                 return v;
             }
         };
 
-        template <class T>
-        class SwapByte<T, 8> : public SwapByteBase
+        template <class T> class SwapByte<T, 8> : public SwapByteBase
         {
           public:
             static T swap(T v)
             {
                 if (should_swap())
-                    return (((uint64_t)SwapByte<uint32_t, 4>::swap((uint32_t)(v & 0xffffffffull))) << 32) | (SwapByte<uint32_t, 4>::swap((uint32_t)(v >> 32)));
+                    return (((uint64_t)SwapByte<uint32_t, 4>::swap((uint32_t)(v & 0xffffffffull))) << 32) |
+                           (SwapByte<uint32_t, 4>::swap((uint32_t)(v >> 32)));
                 return v;
             }
         };
 
-    }
+    } // namespace EndianSwapper
 
     namespace Helper
     {
-        template <class T>
-        T swap(const T &v)
+        template <class T> T swap(const T &v)
         {
             return EndianSwapper::SwapByte<T, sizeof(T)>::swap(v);
         }
 
-        template <typename type, typename Stream>
-        void deserialize_for_integers(Stream &stream, type &v)
+        template <typename type, typename Stream> void deserialize_for_integers(Stream &stream, type &v)
         {
             stream.read((char *)&v, sizeof(type));
             if (!stream)
@@ -280,21 +270,18 @@ namespace esbs
             v = swap(v);
         }
 
-        template <typename type, typename Stream>
-        void serialize_for_integers(Stream &stream, const type &v)
+        template <typename type, typename Stream> void serialize_for_integers(Stream &stream, const type &v)
         {
             type swapped_v = swap(v);
             stream.write((const char *)&swapped_v, sizeof(type));
         }
 
-        template <typename type, typename Stream>
-        void deserialize_for_floating_point(Stream &stream, type &v)
+        template <typename type, typename Stream> void deserialize_for_floating_point(Stream &stream, type &v)
         {
             // Custom deserializer for floating point values since converting a "swapped"
             // value back to a floating point type could cause NaN's and other problems.
 
-            union
-            {
+            union {
                 type f;
                 uint8_t c[sizeof(type)] = {};
             };
@@ -311,14 +298,12 @@ namespace esbs
             v = f;
         }
 
-        template <typename type, typename Stream>
-        void serialize_for_floating_point(Stream &stream, const type &v)
+        template <typename type, typename Stream> void serialize_for_floating_point(Stream &stream, const type &v)
         {
             // Custom serializer for floating point values since converting a "swapped"
             // value back to a floating point type could cause NaN's and other problems.
 
-            union
-            {
+            union {
                 type f;
                 uint8_t c[sizeof(type)] = {};
             };
@@ -330,7 +315,7 @@ namespace esbs
             }
             stream.write((const char *)&c[0], sizeof(type));
         }
-    }
+    } // namespace Helper
 
     template <typename Stream>
     EndianSafeBinaryStream<Stream>::EndianSafeBinaryStream(const Stream &stream) : stream(stream)
@@ -342,15 +327,13 @@ namespace esbs
     {
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator<<(const bool &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator<<(const bool &v)
     {
         Helper::serialize_for_integers(stream, v ? (uint8_t)1 : (uint8_t)0);
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(bool &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(bool &v)
     {
         uint8_t f;
         Helper::deserialize_for_integers(stream, f);
@@ -372,8 +355,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int8_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int8_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -386,8 +368,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint8_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint8_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -400,8 +381,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int16_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int16_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -414,8 +394,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint16_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint16_t &v)
     {
         deserialize_for_integers(stream, v);
         return *this;
@@ -428,8 +407,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int32_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int32_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -442,8 +420,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint32_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint32_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -456,8 +433,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int64_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(int64_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -470,8 +446,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint64_t &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(uint64_t &v)
     {
         Helper::deserialize_for_integers(stream, v);
         return *this;
@@ -484,8 +459,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(float &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(float &v)
     {
         Helper::deserialize_for_floating_point(stream, v);
         return *this;
@@ -498,8 +472,7 @@ namespace esbs
         return *this;
     }
 
-    template <typename Stream>
-    EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(double &v)
+    template <typename Stream> EndianSafeBinaryStream<Stream> &EndianSafeBinaryStream<Stream>::operator>>(double &v)
     {
         Helper::deserialize_for_floating_point(stream, v);
         return *this;
@@ -527,4 +500,4 @@ namespace esbs
         return *this;
     }
 
-} // esbs
+} // namespace esbs

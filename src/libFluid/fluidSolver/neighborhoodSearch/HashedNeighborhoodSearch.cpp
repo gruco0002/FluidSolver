@@ -2,7 +2,8 @@
 
 #include <parallelization/StdParallelForEach.hpp>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     using parallel = StdParallelForEach;
 
@@ -23,7 +24,7 @@ namespace LibFluid {
             }
 
             // get position and grid cell
-            const glm::vec2& position = collection->get<MovementData>(particleIndex).position;
+            const glm::vec2 &position = collection->get<MovementData>(particleIndex).position;
             GridKey gridCell = GetGridCellByParticleID(particleIndex);
 
             // determine the grid cells needed to check
@@ -40,12 +41,11 @@ namespace LibFluid {
                 }
             }
 
-
             // reset data
             neighbors[particleIndex].first = 0;
 
             // iterate over the grid cells and their particles to check for neighbors
-            for (GridKey& key : toCheck)
+            for (GridKey &key : toCheck)
             {
                 if (gridToParticles.find(key) == gridToParticles.end())
                     continue;
@@ -81,7 +81,7 @@ namespace LibFluid {
         return n;
     }
 
-    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(const glm::vec2& position)
+    HashedNeighborhoodSearch::Neighbors HashedNeighborhoodSearch::get_neighbors(const glm::vec2 &position)
     {
         Neighbors n;
         n.position_based = true;
@@ -92,11 +92,11 @@ namespace LibFluid {
 
     HashedNeighborhoodSearch::GridKey HashedNeighborhoodSearch::GetGridCellByParticleID(particleIndex_t particleIndex)
     {
-        const glm::vec2& pos = collection->get<MovementData>(particleIndex).position;
+        const glm::vec2 &pos = collection->get<MovementData>(particleIndex).position;
         return GetGridCellByPosition(pos);
     }
 
-    void HashedNeighborhoodSearch::CreateGridEntryIfNecessary(const HashedNeighborhoodSearch::GridKey& key)
+    void HashedNeighborhoodSearch::CreateGridEntryIfNecessary(const HashedNeighborhoodSearch::GridKey &key)
     {
         if (gridToParticles.find(key) == gridToParticles.end())
         {
@@ -105,7 +105,7 @@ namespace LibFluid {
         }
     }
 
-    HashedNeighborhoodSearch::GridKey HashedNeighborhoodSearch::GetGridCellByPosition(const glm::vec2& pos)
+    HashedNeighborhoodSearch::GridKey HashedNeighborhoodSearch::GetGridCellByPosition(const glm::vec2 &pos)
     {
         float tmpx = pos.x / grid_cell_size;
         float tmpy = pos.y / grid_cell_size;
@@ -124,7 +124,6 @@ namespace LibFluid {
             currentStatus[bucketsCreatedUntilIndex] = {INT32_MAX, INT32_MAX};
             bucketsCreatedUntilIndex++;
         }
-
 
         particleAmount_t particleCount = collection->size();
         // set every particle to the correct grid cell
@@ -184,7 +183,7 @@ namespace LibFluid {
             report.add_issue({"HashedNeighborhoodSearch", "Search radius is smaller or equal to zero."});
         }
 
-       report.end_scope();
+        report.end_scope();
     }
 
     std::shared_ptr<NeighborhoodInterface> HashedNeighborhoodSearch::create_interface()
@@ -203,24 +202,24 @@ namespace LibFluid {
                 auto real_it = neighbors.end();
                 return new NeighborsIterator(real_it);
             };
-            n.iterator_link.iterator_copy = [](void* it) {
-                auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
+            n.iterator_link.iterator_copy = [](void *it) {
+                auto copy = new NeighborsIterator(*((NeighborsIterator *)it));
                 return copy;
             };
-            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
-            n.iterator_link.iterator_dereference = [](void* it) {
-                auto& index = *(*(NeighborsIterator*)it);
+            n.iterator_link.iterator_delete = [](void *it) { delete ((NeighborsIterator *)it); };
+            n.iterator_link.iterator_dereference = [](void *it) {
+                auto &index = *(*(NeighborsIterator *)it);
                 return &index;
             };
-            n.iterator_link.iterator_equals = [](void* it1, void* it2) {
-                return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
+            n.iterator_link.iterator_equals = [](void *it1, void *it2) {
+                return *((NeighborsIterator *)it1) == *((NeighborsIterator *)it2);
             };
-            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+            n.iterator_link.iterator_increment = [](void *it) { ++(*(NeighborsIterator *)it); };
 
             return n;
         };
 
-        res->link.get_by_position = [this](const glm::vec2& position) {
+        res->link.get_by_position = [this](const glm::vec2 &position) {
             auto neighbors = this->get_neighbors(position);
 
             auto n = NeighborhoodInterface::Neighbors();
@@ -232,19 +231,19 @@ namespace LibFluid {
                 auto real_it = neighbors.end();
                 return new NeighborsIterator(real_it);
             };
-            n.iterator_link.iterator_copy = [](void* it) {
-                auto copy = new NeighborsIterator(*((NeighborsIterator*)it));
+            n.iterator_link.iterator_copy = [](void *it) {
+                auto copy = new NeighborsIterator(*((NeighborsIterator *)it));
                 return copy;
             };
-            n.iterator_link.iterator_delete = [](void* it) { delete ((NeighborsIterator*)it); };
-            n.iterator_link.iterator_dereference = [](void* it) {
-                auto& index = *(*(NeighborsIterator*)it);
+            n.iterator_link.iterator_delete = [](void *it) { delete ((NeighborsIterator *)it); };
+            n.iterator_link.iterator_dereference = [](void *it) {
+                auto &index = *(*(NeighborsIterator *)it);
                 return &index;
             };
-            n.iterator_link.iterator_equals = [](void* it1, void* it2) {
-                return *((NeighborsIterator*)it1) == *((NeighborsIterator*)it2);
+            n.iterator_link.iterator_equals = [](void *it1, void *it2) {
+                return *((NeighborsIterator *)it1) == *((NeighborsIterator *)it2);
             };
-            n.iterator_link.iterator_increment = [](void* it) { ++(*(NeighborsIterator*)it); };
+            n.iterator_link.iterator_increment = [](void *it) { ++(*(NeighborsIterator *)it); };
 
             return n;
         };
@@ -253,18 +252,18 @@ namespace LibFluid {
     }
 
     bool HashedNeighborhoodSearch::NeighborsIterator::operator==(
-        const HashedNeighborhoodSearch::NeighborsIterator& other) const
+        const HashedNeighborhoodSearch::NeighborsIterator &other) const
     {
         return data->data == other.data->data && current == other.current;
     }
 
     bool HashedNeighborhoodSearch::NeighborsIterator::operator!=(
-        const HashedNeighborhoodSearch::NeighborsIterator& other) const
+        const HashedNeighborhoodSearch::NeighborsIterator &other) const
     {
         return !(*this == other);
     }
 
-    HashedNeighborhoodSearch::particleIndex_t& HashedNeighborhoodSearch::NeighborsIterator::operator*()
+    HashedNeighborhoodSearch::particleIndex_t &HashedNeighborhoodSearch::NeighborsIterator::operator*()
     {
         FLUID_ASSERT(data != nullptr)
         FLUID_ASSERT(current >= 0)
@@ -284,7 +283,7 @@ namespace LibFluid {
         }
     }
 
-    HashedNeighborhoodSearch::NeighborsIterator& HashedNeighborhoodSearch::NeighborsIterator::operator++()
+    HashedNeighborhoodSearch::NeighborsIterator &HashedNeighborhoodSearch::NeighborsIterator::operator++()
     {
         FLUID_ASSERT(data != nullptr);
 
@@ -301,7 +300,7 @@ namespace LibFluid {
             current++;
             while (current < collection->size())
             {
-                const glm::vec2& position = collection->get<MovementData>(current).position;
+                const glm::vec2 &position = collection->get<MovementData>(current).position;
                 if (glm::length(data->of.position - position) <= data->data->search_radius)
                 {
                     break;
@@ -330,7 +329,7 @@ namespace LibFluid {
             current++;
             while (current < collection->size())
             {
-                const glm::vec2& position = collection->get<MovementData>(current).position;
+                const glm::vec2 &position = collection->get<MovementData>(current).position;
                 if (glm::length(data->of.position - position) <= data->data->search_radius)
                 {
                     break;
@@ -369,4 +368,4 @@ namespace LibFluid {
         }
         return iterator;
     }
-} // namespace FluidSolver
+} // namespace LibFluid

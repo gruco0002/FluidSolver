@@ -5,9 +5,11 @@
 
 #include <memory>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class AreaGroup {
+    class AreaGroup
+    {
       public:
         Area area = {};
 
@@ -29,21 +31,22 @@ namespace LibFluid {
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
-        using pointer = T*;
-        using const_pointer = const T*;
-        using reference = T&;
+        using pointer = T *;
+        using const_pointer = const T *;
+        using reference = T &;
 
-        struct AreaGroupIterator {
-            const AreaGroup* data;
+        struct AreaGroupIterator
+        {
+            const AreaGroup *data;
             T current;
 
-            bool operator==(const AreaGroupIterator& other) const;
+            bool operator==(const AreaGroupIterator &other) const;
 
-            bool operator!=(const AreaGroupIterator& other) const;
+            bool operator!=(const AreaGroupIterator &other) const;
 
-            T& operator*();
+            T &operator*();
 
-            AreaGroupIterator& operator++();
+            AreaGroupIterator &operator++();
 
             const AreaGroupIterator operator++(int);
         };
@@ -57,5 +60,4 @@ namespace LibFluid {
         AreaGroupIterator end() const;
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

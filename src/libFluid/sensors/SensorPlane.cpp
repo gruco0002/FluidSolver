@@ -1,5 +1,6 @@
 #include "SensorPlane.hpp"
 
+#include "LibFluidMath.hpp"
 #include "OutputManager.hpp"
 #include "Simulator.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
@@ -7,19 +8,19 @@
 #include "parallelization/StdParallelForEach.hpp"
 #include "serialization/helpers/Base64.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
-#include "LibFluidMath.hpp"
 
-namespace LibFluid::Sensors {
+namespace LibFluid::Sensors
+{
 
     using parallel = StdParallelForEach;
 
-
-    void SensorPlane::create_compatibility_report(CompatibilityReport& report) {
+    void SensorPlane::create_compatibility_report(CompatibilityReport &report)
+    {
     }
 
-    Image SensorPlane::get_image_representation(const std::vector<glm::vec3>& data) const {
+    Image SensorPlane::get_image_representation(const std::vector<glm::vec3> &data) const
+    {
         Image img(settings.number_of_samples_x, settings.number_of_samples_y);
-
 
         parallel::loop_for(0, settings.number_of_samples_x * settings.number_of_samples_y, [&](size_t i) {
             size_t y = i / settings.number_of_samples_x;
@@ -27,7 +28,8 @@ namespace LibFluid::Sensors {
 
             glm::vec3 value = glm::vec3(0.0f);
 
-            if (data.size() > i) {
+            if (data.size() > i)
+            {
                 value = data[i];
             }
             value -= glm::vec3(settings.min_image_value);
@@ -58,28 +60,25 @@ namespace LibFluid::Sensors {
         return img;
     }
 
-    const Image& SensorPlane::get_last_image() const {
+    const Image &SensorPlane::get_last_image() const
+    {
         return last_image;
     }
 
-    std::vector<SensorDataFieldDefinition> SensorPlane::get_definitions() {
-        return {
-                {"Sensor values",
-                        SensorDataFieldDefinition::FieldType::Custom,
-                        "Matrix of the sensor values (3d-vectors) in row major notation.",
-                        ""},
-                {"Generated Image",
-                        SensorDataFieldDefinition::FieldType::String,
-                        "Base64 encoded png image of the sensor data",
-                        ""}};
+    std::vector<SensorDataFieldDefinition> SensorPlane::get_definitions()
+    {
+        return {{"Sensor values", SensorDataFieldDefinition::FieldType::Custom,
+                 "Matrix of the sensor values (3d-vectors) in row major notation.", ""},
+                {"Generated Image", SensorDataFieldDefinition::FieldType::String,
+                 "Base64 encoded png image of the sensor data", ""}};
     }
 
-    std::vector<glm::vec3> SensorPlane::calculate_for_timepoint(const Timepoint& timepoint) {
+    std::vector<glm::vec3> SensorPlane::calculate_for_timepoint(const Timepoint &timepoint)
+    {
         FLUID_ASSERT(simulator_data.neighborhood_interface != nullptr);
         FLUID_ASSERT(simulator_data.collection != nullptr);
         FLUID_ASSERT(simulator_data.collection->is_type_present<MovementData3D>());
         FLUID_ASSERT(simulator_data.collection->is_type_present<ParticleData>());
-
 
         // clear the old array of data and resize accordingly
         std::vector<glm::vec3> output;
@@ -103,30 +102,34 @@ namespace LibFluid::Sensors {
 
             glm::vec3 value = glm::vec3(0.0f);
 
-            for (size_t sub_x_count = 0; sub_x_count <= settings.sub_sample_grid_size; sub_x_count++) {
+            for (size_t sub_x_count = 0; sub_x_count <= settings.sub_sample_grid_size; sub_x_count++)
+            {
                 float sub_x = sub_x_count / (settings.sub_sample_grid_size + 1.0f) - 0.5f;
-                for (size_t sub_y_count = 0; sub_y_count <= settings.sub_sample_grid_size; sub_y_count++) {
+                for (size_t sub_y_count = 0; sub_y_count <= settings.sub_sample_grid_size; sub_y_count++)
+                {
                     float sub_y = sub_y_count / (settings.sub_sample_grid_size + 1.0f) - 0.5f;
 
                     glm::vec3 sample_position =
-                            settings.origin + span_x * x_step * (x + sub_x) + span_y * y_step * (y + sub_y);
+                        settings.origin + span_x * x_step * (x + sub_x) + span_y * y_step * (y + sub_y);
                     auto neighbors = simulator_data.neighborhood_interface->get_neighbors(sample_position);
-                    for (auto neighbor : neighbors) {
-                        auto& mv = simulator_data.collection->get<MovementData3D>(neighbor);
-                        auto& pd = simulator_data.collection->get<ParticleData>(neighbor);
+                    for (auto neighbor : neighbors)
+                    {
+                        auto &mv = simulator_data.collection->get<MovementData3D>(neighbor);
+                        auto &pd = simulator_data.collection->get<ParticleData>(neighbor);
 
                         float kernel_value = kernel.GetKernelValue(mv.position, sample_position);
 
-                        switch (settings.sensor_type) {
-                            case SensorPlaneType::SensorPlaneTypeDensity:
-                                value += glm::vec3(pd.mass, 0.0f, 0.0f) * kernel_value;
-                                break;
-                            case SensorPlaneType::SensorPlaneTypeVelocity:
-                                value += mv.velocity * kernel_value;
-                                break;
-                            case SensorPlaneType::SensorPlaneTypePressure:
-                                value += glm::vec3(0.0f, 0.0f, pd.pressure) * kernel_value;
-                                break;
+                        switch (settings.sensor_type)
+                        {
+                        case SensorPlaneType::SensorPlaneTypeDensity:
+                            value += glm::vec3(pd.mass, 0.0f, 0.0f) * kernel_value;
+                            break;
+                        case SensorPlaneType::SensorPlaneTypeVelocity:
+                            value += mv.velocity * kernel_value;
+                            break;
+                        case SensorPlaneType::SensorPlaneTypePressure:
+                            value += glm::vec3(0.0f, 0.0f, pd.pressure) * kernel_value;
+                            break;
                         }
                     }
                 }
@@ -142,10 +145,12 @@ namespace LibFluid::Sensors {
         return output;
     }
 
-    void SensorPlane::add_data_fields_to_json_array(nlohmann::json& array, const std::vector<glm::vec3>& data) {
+    void SensorPlane::add_data_fields_to_json_array(nlohmann::json &array, const std::vector<glm::vec3> &data)
+    {
         // add the data values to the output array
         auto a = nlohmann::json::array();
-        for (const auto& value : data) {
+        for (const auto &value : data)
+        {
             a.push_back(value);
         }
         array.push_back(a);

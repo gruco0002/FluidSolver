@@ -2,9 +2,11 @@
 
 #include "LibFluidMath.hpp"
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-    bool AABB::is_ray_intersecting(const Ray& ray) const {
+    bool AABB::is_ray_intersecting(const Ray &ray) const
+    {
         // based on the 'slab method'
         // see: https://tavianator.com/2011/ray_box.html
         float tx_1 = (minimum.x - ray.starting_point.x) / ray.normalized_direction.x;
@@ -17,7 +19,8 @@ namespace LibFluid::Raytracer {
         float ty_min = Math::min(ty_1, ty_2);
         float ty_max = Math::max(ty_1, ty_2);
 
-        if (tx_min > ty_max || ty_min > tx_max) {
+        if (tx_min > ty_max || ty_min > tx_max)
+        {
             return false;
         }
 
@@ -29,14 +32,16 @@ namespace LibFluid::Raytracer {
         float tz_min = Math::min(tz_1, tz_2);
         float tz_max = Math::max(tz_1, tz_2);
 
-        if (t_min > tz_max || tz_min > t_max) {
+        if (t_min > tz_max || tz_min > t_max)
+        {
             return false;
         }
 
         return true;
     }
 
-    void AABB::extend_volume_by_point(const glm::vec3& point) {
+    void AABB::extend_volume_by_point(const glm::vec3 &point)
+    {
         minimum.x = LibFluid::Math::min(minimum.x, point.x);
         minimum.y = LibFluid::Math::min(minimum.y, point.y);
         minimum.z = LibFluid::Math::min(minimum.z, point.z);
@@ -46,14 +51,16 @@ namespace LibFluid::Raytracer {
         maximum.z = LibFluid::Math::max(maximum.z, point.z);
     }
 
-    AABB AABB::extended_in_all_directions_by(float value) const {
+    AABB AABB::extended_in_all_directions_by(float value) const
+    {
         AABB result;
         result.maximum = maximum + glm::vec3(value);
         result.minimum = minimum - glm::vec3(value);
         return result;
     }
 
-    bool AABB::is_point_within(const glm::vec3& point) const {
+    bool AABB::is_point_within(const glm::vec3 &point) const
+    {
         if (point.x < minimum.x || point.x > maximum.x)
             return false;
         if (point.y < minimum.y || point.y > maximum.y)

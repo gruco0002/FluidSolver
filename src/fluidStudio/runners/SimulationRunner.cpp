@@ -2,15 +2,18 @@
 
 #include "Simulator.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    void SimulationRunner::execute_computation() {
+    void SimulationRunner::execute_computation()
+    {
         if (simulation == nullptr)
             return;
 
         LibFluid::CompatibilityReport report;
         simulation->create_compatibility_report(report);
-        if (report.has_issues()) {
+        if (report.has_issues())
+        {
             report.log_issues();
             return;
         }
@@ -18,7 +21,8 @@ namespace FluidStudio {
         simulation->execute_simulation_step();
     }
 
-    SimulationRunner::SimulationRunner() {
+    SimulationRunner::SimulationRunner()
+    {
         run_asynchronously = true; // by default we want the simulation to run asynchronously
     }
-} // namespace FluidUi
+} // namespace FluidStudio

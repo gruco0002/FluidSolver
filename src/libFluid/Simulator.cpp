@@ -2,9 +2,11 @@
 
 #include "LibFluidAssert.hpp"
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    void Simulator::execute_simulation_step() {
+    void Simulator::execute_simulation_step()
+    {
         initialize();
 
         FLUID_ASSERT(data.fluid_solver != nullptr);
@@ -13,7 +15,6 @@ namespace LibFluid {
 
         FLUID_ASSERT(parameters.rest_density > 0.0f);
         FLUID_ASSERT(parameters.particle_size > 0.0f);
-
 
         // calculate timestep
         {
@@ -28,9 +29,11 @@ namespace LibFluid {
         data.fluid_solver->execute_neighborhood_search();
 
         // simulate entities before simulation step
-        for (auto ent : data.entities) {
+        for (auto ent : data.entities)
+        {
             if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeSolver ||
-                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver)
+            {
                 ent->execute_simulation_step(timepoint, true);
             }
         }
@@ -39,9 +42,11 @@ namespace LibFluid {
         data.fluid_solver->execute_simulation_step(timepoint);
 
         // simulate entities after simulation step
-        for (auto ent : data.entities) {
+        for (auto ent : data.entities)
+        {
             if (ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::AfterSolver ||
-                    ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver) {
+                ent->settings.execution_point == SimulationEntity::EntityExecutionPoint::BeforeAndAfterSolver)
+            {
                 ent->execute_simulation_step(timepoint, false);
             }
         }
@@ -51,12 +56,14 @@ namespace LibFluid {
         timepoint.timestep_number++;
 
         // measure sensor data
-        for (auto sen : data.sensors) {
+        for (auto sen : data.sensors)
+        {
             sen->execute_timestep(timepoint);
         }
     }
 
-    void Simulator::initialize() {
+    void Simulator::initialize()
+    {
         FLUID_ASSERT(data.collection != nullptr);
         FLUID_ASSERT(data.fluid_solver != nullptr);
         FLUID_ASSERT(data.timestep_generator != nullptr);
@@ -65,7 +72,8 @@ namespace LibFluid {
         FLUID_ASSERT(parameters.particle_size > 0.0f);
 
         // check if the parameters have changed
-        if (parameters.has_data_changed()) {
+        if (parameters.has_data_changed())
+        {
             parameters.acknowledge_data_change();
 
             // give the changed parameters to the data modules
@@ -76,7 +84,8 @@ namespace LibFluid {
 
             data.timestep_generator->parameters.particle_size = parameters.particle_size;
 
-            for (auto ent : data.entities) {
+            for (auto ent : data.entities)
+            {
                 FLUID_ASSERT(ent != nullptr);
 
                 ent->simulation_data.gravity = parameters.gravity;
@@ -85,7 +94,8 @@ namespace LibFluid {
                 ent->simulation_data.notify_that_data_changed();
             }
 
-            for (auto sen : data.sensors) {
+            for (auto sen : data.sensors)
+            {
                 FLUID_ASSERT(sen != nullptr);
                 sen->simulator_data.manager = output;
                 sen->simulator_parameters.gravity = parameters.gravity;
@@ -96,7 +106,8 @@ namespace LibFluid {
         }
 
         // check if any data has changed
-        if (data.has_data_changed()) {
+        if (data.has_data_changed())
+        {
             data.acknowledge_data_change();
 
             data.fluid_solver->data.timestep_generator = data.timestep_generator;
@@ -105,12 +116,11 @@ namespace LibFluid {
 
             data.timestep_generator->parameters.particle_collection = data.collection;
 
-
             // create a new neighborhood interface
             neigborhood_interface = data.fluid_solver->create_neighborhood_interface();
 
-
-            for (auto ent : data.entities) {
+            for (auto ent : data.entities)
+            {
                 FLUID_ASSERT(ent != nullptr);
                 ent->simulation_data.collection = data.collection;
                 ent->simulation_data.neighborhood_interface = neigborhood_interface;
@@ -123,7 +133,8 @@ namespace LibFluid {
                 ent->simulation_data.notify_that_data_changed();
             }
 
-            for (auto sen : data.sensors) {
+            for (auto sen : data.sensors)
+            {
                 FLUID_ASSERT(sen != nullptr);
                 sen->simulator_data.neighborhood_interface = neigborhood_interface;
                 sen->simulator_data.manager = output;
@@ -138,52 +149,65 @@ namespace LibFluid {
         }
     }
 
-
-    void Simulator::manual_initialize() {
+    void Simulator::manual_initialize()
+    {
         parameters.notify_that_data_changed();
         data.notify_that_data_changed();
 
         initialize();
     }
 
-    void Simulator::create_compatibility_report(CompatibilityReport& report) {
+    void Simulator::create_compatibility_report(CompatibilityReport &report)
+    {
         initialize();
 
         report.begin_scope(FLUID_NAMEOF(Simulator));
 
-        if (data.collection == nullptr) {
+        if (data.collection == nullptr)
+        {
             report.add_issue("Particle collection is null.");
         }
 
-        if (data.fluid_solver == nullptr) {
+        if (data.fluid_solver == nullptr)
+        {
             report.add_issue("Fluid solver is null.");
-        } else {
+        }
+        else
+        {
             data.fluid_solver->create_compatibility_report(report);
         }
 
-        if (data.timestep_generator == nullptr) {
+        if (data.timestep_generator == nullptr)
+        {
             report.add_issue("Timestep is null.");
-        } else {
+        }
+        else
+        {
             data.timestep_generator->create_compatibility_report(report);
         }
 
-        for (auto& sensor : data.sensors) {
+        for (auto &sensor : data.sensors)
+        {
             sensor->create_compatibility_report(report);
         }
 
         report.end_scope();
     }
 
-    const Timepoint& Simulator::get_current_timepoint() const {
+    const Timepoint &Simulator::get_current_timepoint() const
+    {
         return timepoint;
     }
-    Simulator::Simulator() {
+    Simulator::Simulator()
+    {
         output = std::make_shared<OutputManager>();
     }
-    std::shared_ptr<NeighborhoodInterface> Simulator::get_neighborhood_interface() {
+    std::shared_ptr<NeighborhoodInterface> Simulator::get_neighborhood_interface()
+    {
         return neigborhood_interface;
     }
-    void Simulator::set_timepoint(const Timepoint& timepoint) {
+    void Simulator::set_timepoint(const Timepoint &timepoint)
+    {
         this->timepoint = timepoint;
     }
 } // namespace LibFluid

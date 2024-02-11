@@ -2,14 +2,16 @@
 
 #include <imgui_internal.h>
 
+namespace FluidStudio
+{
 
-namespace FluidStudio {
-
-    UiLayer::~UiLayer() {
+    UiLayer::~UiLayer()
+    {
         window = nullptr;
     }
 
-    void UiLayer::render() {
+    void UiLayer::render()
+    {
         simulation_controls_window.update();
         main_window_menu.update();
         ply_import_window.update();
@@ -23,7 +25,8 @@ namespace FluidStudio {
         insert_particles_window.update();
     }
 
-    void UiLayer::initialize() {
+    void UiLayer::initialize()
+    {
         UiData data(window, ui_element_collection, this);
 
         // add all elements to the collection
@@ -53,25 +56,24 @@ namespace FluidStudio {
         insert_particles_window.initialize(data);
     }
 
-    void UiLayer::setupDockingLayout(ImGuiID mainDockspaceId) {
-        if (docking_setup_already_run) return;
+    void UiLayer::setupDockingLayout(ImGuiID mainDockspaceId)
+    {
+        if (docking_setup_already_run)
+            return;
         docking_setup_already_run = true;
 
         // setup layout
-        ImGui::DockBuilderRemoveNode(
-                mainDockspaceId);
+        ImGui::DockBuilderRemoveNode(mainDockspaceId);
         ImGui::DockBuilderAddNode(mainDockspaceId);
 
         // create docking layout
-        auto leftSideDock = ImGui::DockBuilderSplitNode(mainDockspaceId, ImGuiDir_Left, 0.2f, nullptr,
-                                                        &mainDockspaceId);
+        auto leftSideDock =
+            ImGui::DockBuilderSplitNode(mainDockspaceId, ImGuiDir_Left, 0.2f, nullptr, &mainDockspaceId);
         auto rightDock = ImGui::DockBuilderSplitNode(mainDockspaceId, ImGuiDir_Right, 0.2f, nullptr, &mainDockspaceId);
         auto mainDock = ImGui::DockBuilderSplitNode(mainDockspaceId, ImGuiDir_Right, 0.6f, nullptr, &mainDockspaceId);
 
         auto bottomDock = ImGui::DockBuilderSplitNode(mainDock, ImGuiDir_Down, 0.2f, nullptr, &mainDock);
         auto topLeftDock = ImGui::DockBuilderSplitNode(leftSideDock, ImGuiDir_Up, 0.1, nullptr, &leftSideDock);
-
-
 
         // attach windows to docking layouts
         ImGui::DockBuilderDockWindow("Simulation Controls", topLeftDock);
@@ -85,17 +87,15 @@ namespace FluidStudio {
         ImGui::DockBuilderDockWindow("Logs", bottomDock);
         ImGui::DockBuilderDockWindow("Timeline", bottomDock);
 
-
-
         // finish layout
         ImGui::DockBuilderFinish(mainDockspaceId);
     }
 
-    void UiLayer::resetDockingLayout() {
+    void UiLayer::resetDockingLayout()
+    {
         docking_setup_already_run = false;
     }
 
     UiLayer::UiLayer() = default;
-
 
 } // namespace FluidStudio

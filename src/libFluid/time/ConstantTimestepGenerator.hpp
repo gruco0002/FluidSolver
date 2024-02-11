@@ -2,10 +2,13 @@
 
 #include "time/TimestepGenerator.hpp"
 
-namespace LibFluid {
-    class ConstantTimestepGenerator : public TimestepGenerator {
+namespace LibFluid
+{
+    class ConstantTimestepGenerator : public TimestepGenerator
+    {
       public:
-        struct ConstantTimestepGeneratorSettings {
+        struct ConstantTimestepGeneratorSettings
+        {
             float timestep = 0.001f;
 
             float lambda_v = 0.4f;
@@ -19,4 +22,4 @@ namespace LibFluid {
 
         void initialize() override;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

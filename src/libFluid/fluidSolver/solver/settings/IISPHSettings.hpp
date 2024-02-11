@@ -2,8 +2,10 @@
 
 #include "helpers/DataChangeStruct.hpp"
 
-namespace LibFluid {
-    struct IISPHSettings : public DataChangeStruct {
+namespace LibFluid
+{
+    struct IISPHSettings : public DataChangeStruct
+    {
         float MaxDensityErrorAllowed = 0.001f;
 
         size_t MinNumberOfIterations = 2;

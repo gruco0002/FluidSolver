@@ -2,8 +2,10 @@
 
 #include <atomic>
 
-namespace LibFluid::Parallelization {
-    class SpinLock {
+namespace LibFluid::Parallelization
+{
+    class SpinLock
+    {
       public:
         void lock();
         void unlock();
@@ -12,4 +14,4 @@ namespace LibFluid::Parallelization {
         std::atomic<bool> lock_bit = {false};
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid::Parallelization

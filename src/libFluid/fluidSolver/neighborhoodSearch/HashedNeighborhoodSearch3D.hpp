@@ -2,32 +2,32 @@
 
 #include "fluidSolver/ParticleCollection.hpp"
 #include "fluidSolver/neighborhoodSearch/NeighborhoodInterface.hpp"
-#include "helpers/ProtectedUnorderedMap.hpp"
 #include "helpers/CompatibilityReport.hpp"
 #include "helpers/Initializable.hpp"
+#include "helpers/ProtectedUnorderedMap.hpp"
 #include "helpers/Reportable.hpp"
 
 #include <array>
 #include <limits>
 #include <memory>
-#include <set>
 #include <optional>
+#include <set>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-
-    class HashedNeighborhoodSearch3D : public Initializable, public Reportable {
+    class HashedNeighborhoodSearch3D : public Initializable, public Reportable
+    {
       public:
         using particleIndex_t = size_t;
         using particleAmount_t = uint16_t;
-
 
         struct Neighbors;
 
         struct NeighborsIterator
         {
 
-            const Neighbors* data;
+            const Neighbors *data;
             particleIndex_t current;
 
             int8_t dx = -1;
@@ -36,13 +36,13 @@ namespace LibFluid {
 
             std::optional<std::set<particleIndex_t>::iterator> current_set_iterator;
 
-            bool operator==(const NeighborsIterator& other) const;
+            bool operator==(const NeighborsIterator &other) const;
 
-            bool operator!=(const NeighborsIterator& other) const;
+            bool operator!=(const NeighborsIterator &other) const;
 
-            particleIndex_t& operator*();
+            particleIndex_t &operator*();
 
-            NeighborsIterator& operator++();
+            NeighborsIterator &operator++();
 
             const NeighborsIterator operator++(int);
         };
@@ -57,9 +57,9 @@ namespace LibFluid {
             using difference_type = ptrdiff_t;
             using size_type = size_t;
             using value_type = T;
-            using pointer = T*;
-            using const_pointer = const T*;
-            using reference = T&;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
 
             // data
             union {
@@ -67,7 +67,7 @@ namespace LibFluid {
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
-            HashedNeighborhoodSearch3D* data = nullptr;
+            HashedNeighborhoodSearch3D *data = nullptr;
 
             NeighborsIterator begin() const;
 
@@ -81,7 +81,7 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const glm::vec3& position);
+        Neighbors get_neighbors(const glm::vec3 &position);
 
         void initialize() override;
 
@@ -92,20 +92,18 @@ namespace LibFluid {
       private:
         // Grid data
 
-
-
         struct GridCellLocation
         {
             int x = std::numeric_limits<int>::min();
             int y = std::numeric_limits<int>::min();
             int z = std::numeric_limits<int>::min();
 
-            bool operator==(const GridCellLocation& other) const;
-            bool operator!=(const GridCellLocation& other) const;
+            bool operator==(const GridCellLocation &other) const;
+            bool operator!=(const GridCellLocation &other) const;
 
             struct hash
             {
-                inline size_t operator()(const GridCellLocation& cell) const
+                inline size_t operator()(const GridCellLocation &cell) const
                 {
                     return std::hash<int>()(cell.x) ^ std::hash<int>()(cell.y) ^ std::hash<int>()(cell.z);
                 }
@@ -125,8 +123,7 @@ namespace LibFluid {
         };
 
         GridCellLocation calculate_grid_cell_location_of_particle(particleIndex_t index);
-        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3& position);
-
+        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3 &position);
 
         void rebuild_grid();
 
@@ -137,10 +134,8 @@ namespace LibFluid {
         Helper::ProtectedUnorderedMap<GridCellLocation, std::set<particleIndex_t>, GridCellLocation::hash> grid;
         bool grid_rebuild_required = true;
 
-
       private:
         // Neighbor data
-
 
         struct NeighborData
         {
@@ -148,15 +143,12 @@ namespace LibFluid {
             std::vector<particleIndex_t> neighbor_indices;
         };
 
-
         std::vector<NeighborData> neighbor_data;
 
-        private:
+      private:
+        size_t calls_since_last_cache_efficiency_improvement = 0;
 
-            size_t calls_since_last_cache_efficiency_improvement = 0;
-
-            void improve_cache_efficiency();
+        void improve_cache_efficiency();
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

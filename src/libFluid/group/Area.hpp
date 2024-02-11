@@ -1,8 +1,10 @@
 #pragma once
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    struct Area {
+    struct Area
+    {
         float left;
         float right;
 

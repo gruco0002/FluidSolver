@@ -6,15 +6,17 @@
 
 #include <glm/glm.hpp>
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-    class Skybox {
+    class Skybox
+    {
       public:
         HdrImage skybox_image;
 
-        glm::vec3 get_radiance_by_direction(const glm::vec3& normalized_direction) const;
+        glm::vec3 get_radiance_by_direction(const glm::vec3 &normalized_direction) const;
 
-        glm::vec3 sample_normalized_direction(const glm::vec2& uniform_dist_random_sample_pair, float& pdf) const;
+        glm::vec3 sample_normalized_direction(const glm::vec2 &uniform_dist_random_sample_pair, float &pdf) const;
 
         void prepare();
 
@@ -23,10 +25,9 @@ namespace LibFluid::Raytracer {
       private:
         Distributions::PiecewiseConstantDistribution2D skybox_image_distribution;
 
-        glm::vec2 direction_to_pixel_coordinate(const glm::vec3& normalized_direction) const;
+        glm::vec2 direction_to_pixel_coordinate(const glm::vec3 &normalized_direction) const;
 
-        glm::vec3 get_interpolated_color(const glm::vec2& position) const;
+        glm::vec3 get_interpolated_color(const glm::vec2 &position) const;
     };
-
 
 } // namespace LibFluid::Raytracer

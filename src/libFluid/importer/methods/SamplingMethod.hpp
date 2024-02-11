@@ -3,13 +3,15 @@
 #include "importer/MeshData.hpp"
 #include <vector>
 
-namespace LibFluid::Importer {
+namespace LibFluid::Importer
+{
 
-    class SamplingMethod {
+    class SamplingMethod
+    {
       public:
         float particle_size = 1.0f;
 
-        virtual std::vector<glm::vec3> generate_samples_for_triangle(const MeshData::Triangle& triangle) const = 0;
+        virtual std::vector<glm::vec3> generate_samples_for_triangle(const MeshData::Triangle &triangle) const = 0;
     };
 
 } // namespace LibFluid::Importer

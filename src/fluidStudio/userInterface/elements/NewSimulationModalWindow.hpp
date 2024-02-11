@@ -2,10 +2,13 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class NewSimulationModalWindow final : public UiElement {
+namespace FluidStudio
+{
+    class NewSimulationModalWindow final : public UiElement
+    {
       public:
-        enum class NewSimulationKind {
+        enum class NewSimulationKind
+        {
             NewSimulationKind2D,
             NewSimulationKind3D
         };

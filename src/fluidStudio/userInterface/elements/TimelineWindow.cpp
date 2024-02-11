@@ -1,17 +1,26 @@
 #include "TimelineWindow.hpp"
 #include "ImguiHelper.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    void TimelineWindow::update() {
+    void TimelineWindow::update()
+    {
         current_index = ui_data.window().timeline_service.current();
-        if (ImGui::Begin("Timeline")) {
-            if (ImGui::InputInt("Timestep", &current_index, 1, 1)) {
-                if (current_index < 0) {
+        if (ImGui::Begin("Timeline"))
+        {
+            if (ImGui::InputInt("Timestep", &current_index, 1, 1))
+            {
+                if (current_index < 0)
+                {
                     current_index = 0;
-                } else if (current_index >= ui_data.window().timeline_service.size()) {
+                }
+                else if (current_index >= ui_data.window().timeline_service.size())
+                {
                     current_index = ui_data.window().timeline_service.size() - 1;
-                } else {
+                }
+                else
+                {
                     ui_data.window().timeline_service.step_to(current_index);
                     ui_data.window().simulator_visualizer_bundle.initialize();
                     ui_data.window().initialize_editor_visualizer();
@@ -19,12 +28,18 @@ namespace FluidStudio {
                 }
             }
             ImGui::PushItemWidth(-1);
-            if (ImGui::SliderInt(" ", &current_index, 0, ui_data.window().timeline_service.size() - 1)) {
-                if (current_index < 0) {
+            if (ImGui::SliderInt(" ", &current_index, 0, ui_data.window().timeline_service.size() - 1))
+            {
+                if (current_index < 0)
+                {
                     current_index = 0;
-                } else if (current_index >= ui_data.window().timeline_service.size()) {
+                }
+                else if (current_index >= ui_data.window().timeline_service.size())
+                {
                     current_index = ui_data.window().timeline_service.size() - 1;
-                } else {
+                }
+                else
+                {
                     ui_data.window().timeline_service.step_to(current_index);
                     ui_data.window().simulator_visualizer_bundle.initialize();
                     ui_data.window().initialize_editor_visualizer();
@@ -34,7 +49,8 @@ namespace FluidStudio {
             ImGui::PopItemWidth();
 
             ImGui::Separator();
-            if (ui_data.window().simulator_visualizer_bundle.simulator != nullptr) {
+            if (ui_data.window().simulator_visualizer_bundle.simulator != nullptr)
+            {
                 auto timepoint = ui_data.window().simulator_visualizer_bundle.simulator->get_current_timepoint();
 
                 ImGui::Text("Timepoint Information");

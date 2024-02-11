@@ -4,11 +4,12 @@
 
 #include <filesystem>
 
-namespace LibFluid::Importer {
-    class ObjLoader {
+namespace LibFluid::Importer
+{
+    class ObjLoader
+    {
 
       public:
-
         ObjLoader(std::filesystem::path filepath);
 
         float scale = 1.0f;
@@ -17,6 +18,5 @@ namespace LibFluid::Importer {
 
       private:
         std::filesystem::path filepath;
-
     };
-}
+} // namespace LibFluid::Importer

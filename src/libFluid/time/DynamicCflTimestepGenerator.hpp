@@ -4,10 +4,13 @@
 
 #include <tuple>
 
-namespace LibFluid {
-    class DynamicCflTimestepGenerator : public TimestepGenerator {
+namespace LibFluid
+{
+    class DynamicCflTimestepGenerator : public TimestepGenerator
+    {
       public:
-        struct DynamicCflTimestepGeneratorSettings {
+        struct DynamicCflTimestepGeneratorSettings
+        {
             float max_timestep = 0.02f;
             float min_timestep = 0.0001f;
             float cfl_number = 0.8f;
@@ -25,4 +28,4 @@ namespace LibFluid {
       private:
         std::tuple<float, float> calculate_maximum_velocity_and_acceleration();
     };
-} // namespace FluidSolver
+} // namespace LibFluid

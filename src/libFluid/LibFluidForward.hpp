@@ -1,6 +1,7 @@
 #pragma once
 
-namespace LibFluid {
+namespace LibFluid
+{
     class SimulatorVisualizerBundle;
     class Simulator;
     class TimestepGenerator;
@@ -20,8 +21,7 @@ namespace LibFluid {
     // sensors
     class Sensor;
 
-    template <typename T>
-    class SensorBase;
+    template <typename T> class SensorBase;
 
     namespace Sensors
     {
@@ -45,4 +45,4 @@ namespace LibFluid {
     class Initializable;
     class Reportable;
 
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -5,14 +5,15 @@
 #include <string>
 #include <vector>
 
+namespace FluidStudio
+{
 
-namespace FluidStudio {
-
-    class ComponentPanelWindow final : public UiElement {
+    class ComponentPanelWindow final : public UiElement
+    {
       public:
         void update() override;
 
-        const SimulationComponent& selection() const;
+        const SimulationComponent &selection() const;
 
       private:
         std::vector<std::string> menu_entity_names;
@@ -22,10 +23,10 @@ namespace FluidStudio {
 
         void update_menu();
         void update_selection_based_ui();
-        void delete_component(const SimulationComponent& component);
-        void update_component_node(const char* name, const SimulationComponent& component);
+        void delete_component(const SimulationComponent &component);
+        void update_component_node(const char *name, const SimulationComponent &component);
 
-        bool begin_structural_node(const char* name);
+        bool begin_structural_node(const char *name);
 
         void verify_selection_is_okay();
     };

@@ -2,9 +2,11 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class MainWindowMenu final : public UiElement {
+    class MainWindowMenu final : public UiElement
+    {
       public:
         void update() override;
 
@@ -13,6 +15,5 @@ namespace FluidStudio {
 
         void update_save_menu();
         void update_open_menu();
-
     };
 } // namespace FluidStudio

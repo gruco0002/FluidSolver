@@ -2,8 +2,10 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class TimestepSettingsElement final : public UiElement {
+namespace FluidStudio
+{
+    class TimestepSettingsElement final : public UiElement
+    {
       public:
         void update() override;
     };

@@ -4,19 +4,22 @@
 
 typedef struct GLFWwindow GLFWwindow;
 
-namespace Engine {
+namespace Engine
+{
 
     bool opengl_context_available();
 
-    class Window {
+    class Window
+    {
       public:
-        enum MouseButton {
+        enum MouseButton
+        {
             RightButton,
             LeftButton
         };
 
       public:
-        explicit Window(const std::string& title);
+        explicit Window(const std::string &title);
 
         virtual ~Window();
 
@@ -55,7 +58,7 @@ namespace Engine {
         virtual void load() = 0;
         virtual void unload() = 0;
 
-        GLFWwindow* get_window_handler();
+        GLFWwindow *get_window_handler();
 
         virtual void on_window_size_changed(int width, int height);
         virtual void on_framebuffer_size_changed(int width, int height);
@@ -86,32 +89,30 @@ namespace Engine {
         int framebuffer_width;
         int framebuffer_height;
 
-        GLFWwindow* glfw_window;
+        GLFWwindow *glfw_window;
 
         void set_correct_size_values();
 
-
       private:
         // only one window can exist
-        static Window* active_window;
+        static Window *active_window;
 
-
-        static void set_all_callbacks(GLFWwindow* window);
+        static void set_all_callbacks(GLFWwindow *window);
 
         // callbacks for glfw
-        static void window_size_callback(GLFWwindow* window, int width, int height);
+        static void window_size_callback(GLFWwindow *window, int width, int height);
 
-        static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+        static void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
-        static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+        static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos);
 
-        static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+        static void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 
-        static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+        static void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
-        static void character_callback(GLFWwindow* window, unsigned int codepoint);
+        static void character_callback(GLFWwindow *window, unsigned int codepoint);
 
-        static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+        static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
         static std::string unicode_codepoint_as_utf_8_string(unsigned int codepoint);
     };

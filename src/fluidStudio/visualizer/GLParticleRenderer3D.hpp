@@ -11,24 +11,29 @@
 #include <glm/gtx/transform.hpp>
 
 // FIXME: wrong namespace
-namespace LibFluid {
+namespace LibFluid
+{
 
-    struct Camera3D {
+    struct Camera3D
+    {
         glm::vec3 location;
         glm::vec3 looking_at;
         glm::vec3 up;
 
-        inline glm::mat4 view_matrix() const {
+        inline glm::mat4 view_matrix() const
+        {
             return glm::lookAt(location, looking_at, up);
         }
 
-        inline void move_forward(float amount) {
+        inline void move_forward(float amount)
+        {
             glm::vec3 forward_vector = glm::normalize(looking_at - location);
             location += amount * forward_vector;
             looking_at += amount * forward_vector;
         }
 
-        inline void move_right(float amount) {
+        inline void move_right(float amount)
+        {
             glm::vec3 forward_vector = glm::normalize(looking_at - location);
             glm::vec3 normalized_up = glm::normalize(up);
             glm::vec3 sidwards_vector = glm::cross(forward_vector, normalized_up);
@@ -36,14 +41,16 @@ namespace LibFluid {
             looking_at += amount * sidwards_vector;
         }
 
-        inline void rotate_horizontal(float amount) {
+        inline void rotate_horizontal(float amount)
+        {
             glm::mat4 rotation = glm::rotate(amount, up);
             glm::vec3 view_vector = looking_at - location;
             glm::vec4 rotated = rotation * glm::vec4(view_vector, 0.0f);
             looking_at = location + glm::vec3(rotated.x, rotated.y, rotated.z);
         }
 
-        inline void rotate_vertical(float amount) {
+        inline void rotate_vertical(float amount)
+        {
             glm::vec3 forward_vector = glm::normalize(looking_at - location);
             glm::vec3 normalized_up = glm::normalize(up);
             glm::vec3 sidwards_vector = glm::cross(forward_vector, normalized_up);
@@ -55,28 +62,29 @@ namespace LibFluid {
         }
     };
 
-
-    class GLParticleRenderer3D : public ISimulationVisualizer, public GLRenderer {
+    class GLParticleRenderer3D : public ISimulationVisualizer, public GLRenderer
+    {
       public:
-        virtual Engine::Graphics::Texture2D* get_render_target() override;
+        virtual Engine::Graphics::Texture2D *get_render_target() override;
 
         virtual void initialize() override;
 
         virtual void render() override;
 
-        virtual void create_compatibility_report(CompatibilityReport& report) override;
+        virtual void create_compatibility_report(CompatibilityReport &report) override;
 
         virtual Image get_image_data() override;
 
         virtual ~GLParticleRenderer3D() override;
 
-        struct Settings {
+        struct Settings
+        {
             glm::vec4 boundary_particle_color = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
             glm::vec4 fluid_particle_color = glm::vec4(0.5f, 0.5f, 1.0f, 1.0f);
 
             glm::vec4 background_color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
-            Camera3D camera {glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
+            Camera3D camera{glm::vec3(7.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -6.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
 
             glm::vec3 light_direction = glm::vec3(8.0f, -12.0f, 1.0f);
 
@@ -88,23 +96,23 @@ namespace LibFluid {
 
         } settings;
 
-        const glm::mat4& get_projection_matrix() const;
+        const glm::mat4 &get_projection_matrix() const;
 
-        Engine::Graphics::Framebuffer* get_framebuffer();
+        Engine::Graphics::Framebuffer *get_framebuffer();
 
-        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
+        void set_view(const glm::vec3 &position, const glm::vec3 &view_direction, const glm::vec3 &view_up) override;
 
-        void get_view(glm::vec3& position, glm::vec3& view_direction, glm::vec3& view_up) const override;
+        void get_view(glm::vec3 &position, glm::vec3 &view_direction, glm::vec3 &view_up) const override;
 
       private:
         glm::mat4 projectionMatrix;
-        ParticleVertexArray3D* particleVertexArray = nullptr;
+        ParticleVertexArray3D *particleVertexArray = nullptr;
 
-        Engine::Graphics::Framebuffer* framebuffer = nullptr;
-        Engine::Graphics::Texture2D* fboDepthTex = nullptr;
-        Engine::Graphics::Texture2D* fboColorTex = nullptr;
+        Engine::Graphics::Framebuffer *framebuffer = nullptr;
+        Engine::Graphics::Texture2D *fboDepthTex = nullptr;
+        Engine::Graphics::Texture2D *fboColorTex = nullptr;
 
-        Engine::Graphics::Shader* particleShader = nullptr;
+        Engine::Graphics::Shader *particleShader = nullptr;
 
         bool initialize_in_next_render_step = true;
 
@@ -114,6 +122,5 @@ namespace LibFluid {
 
         void create_shader_if_required();
     };
-
 
 } // namespace LibFluid

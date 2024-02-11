@@ -7,73 +7,87 @@
 #include <stb_image_write.h>
 #include <utility>
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-
-    size_t HdrImage::width() const {
+    size_t HdrImage::width() const
+    {
         return m_width;
     }
-    size_t HdrImage::height() const {
+    size_t HdrImage::height() const
+    {
         return m_height;
     }
-    size_t HdrImage::size() const {
+    size_t HdrImage::size() const
+    {
         return m_data.size();
     }
-    glm::vec3* HdrImage::data() {
+    glm::vec3 *HdrImage::data()
+    {
         return &m_data[0];
     }
-    const glm::vec3* HdrImage::data() const {
+    const glm::vec3 *HdrImage::data() const
+    {
         return &m_data[0];
     }
 
-    void HdrImage::set(size_t x, size_t y, const glm::vec3& color) {
+    void HdrImage::set(size_t x, size_t y, const glm::vec3 &color)
+    {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         m_data[y * m_width + x] = color;
     }
 
-    glm::vec3& HdrImage::get(size_t x, size_t y) {
+    glm::vec3 &HdrImage::get(size_t x, size_t y)
+    {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         return m_data[y * m_width + x];
     }
 
-    const glm::vec3& HdrImage::get(size_t x, size_t y) const {
+    const glm::vec3 &HdrImage::get(size_t x, size_t y) const
+    {
         FLUID_ASSERT(x < m_width);
         FLUID_ASSERT(y < m_height);
         return m_data[y * m_width + x];
     }
 
-    HdrImage::HdrImage(size_t width, size_t height) {
+    HdrImage::HdrImage(size_t width, size_t height)
+    {
         m_width = width;
         m_height = height;
         m_data.resize(width * height, glm::vec3(0.0f));
     }
 
-    HdrImage::HdrImage(size_t width, size_t height, std::vector<glm::vec3> data) {
+    HdrImage::HdrImage(size_t width, size_t height, std::vector<glm::vec3> data)
+    {
         FLUID_ASSERT(data.size() == width * height);
         m_width = width;
         m_height = height;
         m_data = std::move(data);
     }
 
-    HdrImage::HdrImage(const std::string& filepath) {
+    HdrImage::HdrImage(const std::string &filepath)
+    {
         load_from_hdr(filepath);
     }
 
     HdrImage::HdrImage() = default;
 
-    void HdrImage::save_as_hdr(const std::string& filepath) const {
-        stbi_write_hdr(filepath.c_str(), m_width, m_height, 3, reinterpret_cast<const float*>(m_data.data()));
+    void HdrImage::save_as_hdr(const std::string &filepath) const
+    {
+        stbi_write_hdr(filepath.c_str(), m_width, m_height, 3, reinterpret_cast<const float *>(m_data.data()));
     }
 
-    bool HdrImage::load_from_hdr(const std::string& filepath) {
+    bool HdrImage::load_from_hdr(const std::string &filepath)
+    {
         int width = 0;
         int height = 0;
         int channels = 0;
         auto data = stbi_loadf(filepath.c_str(), &width, &height, &channels, 3);
 
-        if (data == nullptr) {
+        if (data == nullptr)
+        {
             return false;
         }
 
@@ -85,9 +99,10 @@ namespace LibFluid::Raytracer {
         return true;
     }
 
-    void get_as_hdr_helper(void* context, void* data, int size) {
+    void get_as_hdr_helper(void *context, void *data, int size)
+    {
         // reinterpret the value back as vector
-        auto& result = *reinterpret_cast<std::vector<uint8_t>*>(context);
+        auto &result = *reinterpret_cast<std::vector<uint8_t> *>(context);
 
         // add the new data to the vector
         size_t current_size = result.size();
@@ -95,20 +110,23 @@ namespace LibFluid::Raytracer {
         std::memcpy(&result[current_size], data, size);
     }
 
-
-    std::vector<uint8_t> HdrImage::get_as_hdr_file_data() const {
+    std::vector<uint8_t> HdrImage::get_as_hdr_file_data() const
+    {
         std::vector<uint8_t> result;
-        stbi_write_hdr_to_func(get_as_hdr_helper, &result, m_width, m_height, 3, reinterpret_cast<const float*>(m_data.data()));
+        stbi_write_hdr_to_func(get_as_hdr_helper, &result, m_width, m_height, 3,
+                               reinterpret_cast<const float *>(m_data.data()));
         return result;
     }
 
-    bool HdrImage::load_from_hdr_file_data(const std::vector<uint8_t>& data) {
+    bool HdrImage::load_from_hdr_file_data(const std::vector<uint8_t> &data)
+    {
         int width = 0;
         int height = 0;
         int channels = 0;
         auto result = stbi_loadf_from_memory(data.data(), data.size(), &width, &height, &channels, 3);
 
-        if (result == nullptr) {
+        if (result == nullptr)
+        {
             return false;
         }
 
@@ -120,13 +138,16 @@ namespace LibFluid::Raytracer {
         return false;
     }
 
-    void HdrImage::process_hdr_file_data(const float* data, int width, int height) {
+    void HdrImage::process_hdr_file_data(const float *data, int width, int height)
+    {
         m_width = width;
         m_height = height;
         m_data.resize(width * height, glm::vec3(0.0f));
 
-        for (size_t y = 0; y < height; y++) {
-            for (size_t x = 0; x < width; x++) {
+        for (size_t y = 0; y < height; y++)
+        {
+            for (size_t x = 0; x < width; x++)
+            {
                 size_t i = y * width + x;
 
                 float r = data[i * 3 + 0];
@@ -138,11 +159,12 @@ namespace LibFluid::Raytracer {
         }
     }
 
-    HdrImage HdrImage::apply_box_blur(size_t size) const {
+    HdrImage HdrImage::apply_box_blur(size_t size) const
+    {
         // TODO: improve performance by separating the filter into two passes
         HdrImage result(width(), height());
 
-        auto get_value_safe = [](const HdrImage& input, int x, int y) {
+        auto get_value_safe = [](const HdrImage &input, int x, int y) {
             if (x < 0)
                 x = -x;
             if (y < 0)
@@ -157,12 +179,16 @@ namespace LibFluid::Raytracer {
             return input.get(x, y);
         };
 
-        for (size_t y = 0; y < height(); y++) {
-            for (size_t x = 0; x < width(); x++) {
+        for (size_t y = 0; y < height(); y++)
+        {
+            for (size_t x = 0; x < width(); x++)
+            {
                 glm::vec3 pixel(0.0f);
 
-                for (int v = y - size; v <= y + size; v++) {
-                    for (int u = x - size; u <= x + size; u++) {
+                for (int v = y - size; v <= y + size; v++)
+                {
+                    for (int u = x - size; u <= x + size; u++)
+                    {
                         pixel += get_value_safe(*this, u, v);
                     }
                 }
@@ -174,6 +200,5 @@ namespace LibFluid::Raytracer {
 
         return result;
     }
-
 
 } // namespace LibFluid::Raytracer

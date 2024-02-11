@@ -7,19 +7,22 @@
 #include <map>
 #include <string>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class OutputManager {
+    class OutputManager
+    {
       public:
-        struct OutputManagerParameters {
+        struct OutputManagerParameters
+        {
             std::string output_folder = "./output";
         } parameters;
 
         ~OutputManager();
 
-        size_t generate_sensor_output_identifier(const Sensor& sensor);
+        size_t generate_sensor_output_identifier(const Sensor &sensor);
 
-        std::ofstream& get_stream(size_t sensor_output_identifier);
+        std::ofstream &get_stream(size_t sensor_output_identifier);
 
       private:
         size_t sensor_output_identifier_counter = 0;
@@ -27,10 +30,9 @@ namespace LibFluid {
         std::map<size_t, std::ofstream> sensor_streams;
         std::map<size_t, std::string> sensor_filenames;
 
-        static std::string remove_invalid_chars_from_filename(const std::string& filename);
+        static std::string remove_invalid_chars_from_filename(const std::string &filename);
 
         std::filesystem::path get_output_path() const;
     };
-
 
 } // namespace LibFluid

@@ -4,18 +4,19 @@
 
 #include <unordered_set>
 
-namespace LibFluid {
-    class TagGroup {
+namespace LibFluid
+{
+    class TagGroup
+    {
       public:
         std::unordered_set<uint32_t> tags;
 
-        ParticleCollection* collection = nullptr;
+        ParticleCollection *collection = nullptr;
 
         bool is_member(size_t index) const;
 
       public:
         struct TagGroupIterator;
-
 
         // iterator defines
         using T = size_t;
@@ -24,21 +25,22 @@ namespace LibFluid {
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
-        using pointer = T*;
-        using const_pointer = const T*;
-        using reference = T&;
+        using pointer = T *;
+        using const_pointer = const T *;
+        using reference = T &;
 
-        struct TagGroupIterator {
-            TagGroup* data;
+        struct TagGroupIterator
+        {
+            TagGroup *data;
             T current;
 
-            bool operator==(const iterator& other) const;
+            bool operator==(const iterator &other) const;
 
-            bool operator!=(const iterator& other) const;
+            bool operator!=(const iterator &other) const;
 
-            T& operator*();
+            T &operator*();
 
-            iterator& operator++();
+            iterator &operator++();
 
             const iterator operator++(int);
         };
@@ -47,4 +49,4 @@ namespace LibFluid {
 
         iterator end();
     };
-} // namespace FluidSolver
+} // namespace LibFluid

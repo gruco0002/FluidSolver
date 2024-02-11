@@ -3,9 +3,11 @@
 #include "sensors/Sensor.hpp"
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class SensorSettingsElement final : public UiElement {
+    class SensorSettingsElement final : public UiElement
+    {
       public:
         void update() override;
 

@@ -10,21 +10,23 @@
 
 #include <memory>
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-    class ParticleIntersectionAccelerator {
+    class ParticleIntersectionAccelerator
+    {
       public:
         std::shared_ptr<ParticleCollection> particle_collection = nullptr;
         float particle_size = 0.1f;
         float rest_density = 1000.0f;
         float surface_density_as_fraction_of_rest_density = 0.8f;
 
-        Sampler* sampler = nullptr;
+        Sampler *sampler = nullptr;
 
         void prepare();
 
-        bool is_intersecting_with_particles(Ray& ray);
-        bool is_intersecting_with_particles(Ray& ray, IntersectionResult& result);
+        bool is_intersecting_with_particles(Ray &ray);
+        bool is_intersecting_with_particles(Ray &ray, IntersectionResult &result);
 
       private:
         AABB particle_surrounding_aabb;
@@ -36,8 +38,10 @@ namespace LibFluid::Raytracer {
         CompressedNeighborhoodSearch neighborhood_search;
 
       private:
-        struct VolumeEvaluationResult {
-            enum class VolumeState {
+        struct VolumeEvaluationResult
+        {
+            enum class VolumeState
+            {
                 Outside,
                 Fluid,
                 Boundary
@@ -50,19 +54,16 @@ namespace LibFluid::Raytracer {
             glm::vec3 boundary_only_normal = glm::vec3(0.0f);
 
             glm::vec3 position = glm::vec3(0.0f);
-
         };
 
-        VolumeEvaluationResult evaluate_volume_at_position(const glm::vec3& position);
+        VolumeEvaluationResult evaluate_volume_at_position(const glm::vec3 &position);
 
-        bool is_surface_intersected(const VolumeEvaluationResult& last, const VolumeEvaluationResult& current, IntersectionResult& result);
+        bool is_surface_intersected(const VolumeEvaluationResult &last, const VolumeEvaluationResult &current,
+                                    IntersectionResult &result);
 
+        VolumeEvaluationResult::VolumeState get_volume_state(const VolumeEvaluationResult &result) const;
 
-        VolumeEvaluationResult::VolumeState get_volume_state(const VolumeEvaluationResult& result) const;
-
-        static glm::vec3 interpolate_between_vectors(const glm::vec3& a, const glm::vec3& b, float factor);
-
+        static glm::vec3 interpolate_between_vectors(const glm::vec3 &a, const glm::vec3 &b, float factor);
     };
-
 
 } // namespace LibFluid::Raytracer

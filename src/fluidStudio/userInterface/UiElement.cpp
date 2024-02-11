@@ -1,8 +1,10 @@
 #include "UiElement.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    void UiElement::initialize(const UiData& ui_data) {
+    void UiElement::initialize(const UiData &ui_data)
+    {
         this->ui_data = ui_data;
     }
 

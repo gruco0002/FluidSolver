@@ -1,18 +1,20 @@
 #pragma once
 
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class Lz4CompressedStream {
+    class Lz4CompressedStream
+    {
       public:
-        static Lz4CompressedStream input(const std::filesystem::path& filepath);
-        static Lz4CompressedStream output(const std::filesystem::path& filepath);
+        static Lz4CompressedStream input(const std::filesystem::path &filepath);
+        static Lz4CompressedStream output(const std::filesystem::path &filepath);
 
-        void write(const char* data, size_t length);
-        void read(char* data, size_t length);
+        void write(const char *data, size_t length);
+        void read(char *data, size_t length);
 
         void close();
 
@@ -20,16 +22,17 @@ namespace LibFluid {
 
         ~Lz4CompressedStream();
 
-        Lz4CompressedStream(Lz4CompressedStream&&);
+        Lz4CompressedStream(Lz4CompressedStream &&);
 
       private:
-        enum class AccessMode {
+        enum class AccessMode
+        {
             ReadOnly,
             WriteOnly
         } access_mode = AccessMode::ReadOnly;
         std::fstream stream;
 
-        explicit Lz4CompressedStream(const std::filesystem::path& filepath, std::ios_base::openmode mode);
+        explicit Lz4CompressedStream(const std::filesystem::path &filepath, std::ios_base::openmode mode);
 
         bool is_finalized = false;
 
@@ -40,23 +43,23 @@ namespace LibFluid {
         void initialize_read();
         void finalize_read();
 
-        void* decompression_context = nullptr;
-        struct Buffer {
+        void *decompression_context = nullptr;
+        struct Buffer
+        {
             constexpr static size_t max_size = 16384;
 
             bool has_data() const;
             size_t size() const;
-            char* data();
+            char *data();
             void consume(size_t size);
 
             void set_new_size(size_t new_size);
-            char* new_data();
+            char *new_data();
 
-            Buffer() =default;
-            Buffer(const Buffer&);
-            Buffer& operator=(const Buffer&);
-            Buffer(Buffer&&) = delete;
-
+            Buffer() = default;
+            Buffer(const Buffer &);
+            Buffer &operator=(const Buffer &);
+            Buffer(Buffer &&) = delete;
 
           private:
             char current_data[max_size] = {};
@@ -73,8 +76,8 @@ namespace LibFluid {
         void initialize_write();
         void finalize_write();
 
-        void* compression_context = nullptr;
+        void *compression_context = nullptr;
         std::vector<char> write_heap_buffer;
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

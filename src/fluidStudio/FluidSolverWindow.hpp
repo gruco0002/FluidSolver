@@ -17,11 +17,13 @@
 
 #include <memory>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
     class UiLayer;
 
-    class FluidSolverWindow : public Engine::Window {
+    class FluidSolverWindow : public Engine::Window
+    {
       public:
         explicit FluidSolverWindow();
 
@@ -39,17 +41,14 @@ namespace FluidStudio {
         void on_key_pressed(int key) override;
         void on_key_released(int key) override;
 
-
       public:
         LibFluid::SimulatorVisualizerBundle simulator_visualizer_bundle;
 
         std::shared_ptr<LibFluid::GLRenderer> editor_visualizer;
 
-
         bool simulation_should_run = false;
 
         bool asynchronous_simulation = true;
-
 
         bool is_safe_to_access_simulation_data() const;
         bool are_calculations_running() const;
@@ -58,15 +57,13 @@ namespace FluidStudio {
         // Loading and creating resources
         const FluidSolverTypes solver_types;
 
-        const FluidSolverTypes::FluidSolverType* current_type = nullptr;
+        const FluidSolverTypes::FluidSolverType *current_type = nullptr;
 
         void create_empty_2d_simulation(float particle_size, float rest_density);
 
         void create_empty_3d_simulation(float particle_size, float rest_density);
 
-
         // other stuff below
-
 
         void on_new_simulation();
 
@@ -102,22 +99,20 @@ namespace FluidStudio {
             float height;
         } editor_visualizer_window_size;
 
-
         void render_editor_visualization_overlay(float visualization_width, float visualization_height);
         void render_visualization_overlay_into_framebuffer();
         void set_gl_renderer_selected_particles_tag();
-
 
       private:
         // visualizer stuff
         LibFluid::Image bundle_visualizer_render_image_copy;
         bool bundle_visualizer_render_image_copy_updated = false;
-        Engine::Graphics::Texture2D* bundle_visualizer_rendered_image = nullptr;
-
+        Engine::Graphics::Texture2D *bundle_visualizer_rendered_image = nullptr;
 
       private:
         // camera stuff
-        enum class MovementDirection {
+        enum class MovementDirection
+        {
             Left,
             Right,
             Top,
@@ -137,7 +132,5 @@ namespace FluidStudio {
         } last_drag_location;
 
         void drag_viewport(double newX, double newY);
-
-
     };
 } // namespace FluidStudio

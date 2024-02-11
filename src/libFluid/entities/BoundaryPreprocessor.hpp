@@ -3,18 +3,18 @@
 #include "SimulationEntity.hpp"
 #include "fluidSolver/kernel/CubicSplineKernel3D.hpp"
 
-namespace LibFluid {
-    class BoundaryPreprocessor final : public SimulationEntity {
+namespace LibFluid
+{
+    class BoundaryPreprocessor final : public SimulationEntity
+    {
       public:
         BoundaryPreprocessor();
 
-
-
         CubicSplineKernel3D kernel;
 
-        void execute_simulation_step(const Timepoint& timepoint, bool before_solver) override;
+        void execute_simulation_step(const Timepoint &timepoint, bool before_solver) override;
         void initialize() override;
-        void create_compatibility_report(CompatibilityReport& report) override;
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         float ideal_volume_reciprocal = 0.0f;

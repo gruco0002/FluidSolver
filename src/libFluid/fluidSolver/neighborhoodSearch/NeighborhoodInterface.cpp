@@ -20,8 +20,7 @@ LibFluid::NeighborhoodInterface::NeighborsIterator LibFluid::NeighborhoodInterfa
     return it;
 }
 
-
-bool LibFluid::NeighborhoodInterface::NeighborsIterator::operator==(const NeighborsIterator& other) const
+bool LibFluid::NeighborhoodInterface::NeighborsIterator::operator==(const NeighborsIterator &other) const
 {
     FLUID_ASSERT(data != nullptr);
     FLUID_ASSERT(data->iterator_link.iterator_equals != nullptr);
@@ -29,12 +28,12 @@ bool LibFluid::NeighborhoodInterface::NeighborsIterator::operator==(const Neighb
     return data->iterator_link.iterator_equals(this->original_iterator, other.original_iterator);
 }
 
-bool LibFluid::NeighborhoodInterface::NeighborsIterator::operator!=(const NeighborsIterator& other) const
+bool LibFluid::NeighborhoodInterface::NeighborsIterator::operator!=(const NeighborsIterator &other) const
 {
     return !(*this == other);
 }
 
-LibFluid::NeighborhoodInterface::particleIndex_t& LibFluid::NeighborhoodInterface::NeighborsIterator::operator*()
+LibFluid::NeighborhoodInterface::particleIndex_t &LibFluid::NeighborhoodInterface::NeighborsIterator::operator*()
 {
     FLUID_ASSERT(data != nullptr);
     FLUID_ASSERT(data->iterator_link.iterator_dereference != nullptr);
@@ -43,8 +42,7 @@ LibFluid::NeighborhoodInterface::particleIndex_t& LibFluid::NeighborhoodInterfac
     return *data->iterator_link.iterator_dereference(original_iterator);
 }
 
-LibFluid::NeighborhoodInterface::NeighborsIterator& LibFluid::NeighborhoodInterface::NeighborsIterator::
-operator++()
+LibFluid::NeighborhoodInterface::NeighborsIterator &LibFluid::NeighborhoodInterface::NeighborsIterator::operator++()
 {
     FLUID_ASSERT(data != nullptr);
     FLUID_ASSERT(data->iterator_link.iterator_increment != nullptr);
@@ -53,27 +51,26 @@ operator++()
     return *this;
 }
 
-const LibFluid::NeighborhoodInterface::NeighborsIterator LibFluid::NeighborhoodInterface::NeighborsIterator::
-operator++(int)
+const LibFluid::NeighborhoodInterface::NeighborsIterator LibFluid::NeighborhoodInterface::NeighborsIterator::operator++(
+    int)
 {
     NeighborsIterator copy = *this;
     ++(*this);
     return copy;
 }
 
-LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(
-    particleIndex_t particleIndex)
+LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(particleIndex_t particleIndex)
 {
     FLUID_ASSERT(link.get_by_index != nullptr);
     return link.get_by_index(particleIndex);
 }
 
-LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec2& position)
+LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec2 &position)
 {
     FLUID_ASSERT(link.get_by_position != nullptr);
     return link.get_by_position(position);
 }
-LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec3& position)
+LibFluid::NeighborhoodInterface::Neighbors LibFluid::NeighborhoodInterface::get_neighbors(const glm::vec3 &position)
 {
     FLUID_ASSERT(link.get_by_position_3d != nullptr);
     return link.get_by_position_3d(position);
@@ -88,7 +85,7 @@ LibFluid::NeighborhoodInterface::NeighborsIterator::~NeighborsIterator()
     data = nullptr;
 }
 
-LibFluid::NeighborhoodInterface::NeighborsIterator::NeighborsIterator(const NeighborsIterator& to_copy)
+LibFluid::NeighborhoodInterface::NeighborsIterator::NeighborsIterator(const NeighborsIterator &to_copy)
 {
     FLUID_ASSERT(to_copy.data != nullptr);
     FLUID_ASSERT(to_copy.data->iterator_link.iterator_copy != nullptr);
@@ -97,7 +94,8 @@ LibFluid::NeighborhoodInterface::NeighborsIterator::NeighborsIterator(const Neig
     this->data = to_copy.data;
 }
 
-float LibFluid::NeighborhoodInterface::get_search_radius(){
+float LibFluid::NeighborhoodInterface::get_search_radius()
+{
     FLUID_ASSERT(this->link.get_search_radius != nullptr);
     return this->link.get_search_radius();
 }

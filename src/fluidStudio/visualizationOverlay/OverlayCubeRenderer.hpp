@@ -9,28 +9,27 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-namespace FluidStudio {
-    class OverlayCubeRenderer {
+namespace FluidStudio
+{
+    class OverlayCubeRenderer
+    {
       public:
-        struct {
-            Engine::Graphics::Framebuffer* framebuffer = nullptr;
+        struct
+        {
+            Engine::Graphics::Framebuffer *framebuffer = nullptr;
 
             glm::mat4 projection_matrix = glm::mat4(1.0f);
             glm::mat4 view_matrix = glm::mat4(1.0f);
 
-
         } data;
 
-        void render(const glm::mat4& model_matrix, float opacity = 0.4f);
+        void render(const glm::mat4 &model_matrix, float opacity = 0.4f);
 
-        void render(const glm::vec3& center, const glm::vec3 distance_from_center, float opacity = 0.4f);
-
-
+        void render(const glm::vec3 &center, const glm::vec3 distance_from_center, float opacity = 0.4f);
 
       private:
-
-
-        struct {
+        struct
+        {
             std::unique_ptr<Engine::Graphics::Buffer::VertexArray> cube_va = nullptr;
             std::unique_ptr<Engine::Graphics::Buffer::IndexBuffer<uint32_t>> index_buffer = nullptr;
             std::unique_ptr<Engine::Graphics::Buffer::VertexBuffer<glm::vec3>> vertex_buffer = nullptr;
@@ -39,9 +38,8 @@ namespace FluidStudio {
             std::unique_ptr<Engine::Graphics::Shader> shader = nullptr;
         } cube_va;
 
-
         void initialize();
 
         void create_cube_va();
     };
-} // namespace FluidUi
+} // namespace FluidStudio

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "LibFluidForward.hpp"
 #include "FluidStudioFwd.hpp"
+#include "LibFluidForward.hpp"
 #include "fluidSolver/Particle.hpp"
 
 #include "userInterface/UiElement.hpp"
@@ -11,9 +11,11 @@
 #include <unordered_map>
 #include <vector>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class PlyImportWindow final : public UiElement {
+    class PlyImportWindow final : public UiElement
+    {
       public:
         void update() override;
 
@@ -31,7 +33,8 @@ namespace FluidStudio {
         std::vector<glm::vec3> colors;
         std::vector<glm::vec3> vertices;
 
-        struct MapInformation {
+        struct MapInformation
+        {
             LibFluid::ParticleType particle_type = LibFluid::ParticleTypeNormal;
             uint32_t particle_tag = 0;
         };
@@ -49,6 +52,5 @@ namespace FluidStudio {
 
         bool can_import() const;
     };
-
 
 } // namespace FluidStudio

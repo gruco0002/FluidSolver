@@ -22,11 +22,10 @@ void Engine::RectangleRenderer::RenderRectangle(glm::vec2 position, glm::vec2 si
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
     vertexArray->Draw(GL_TRIANGLES, 6);
 }
 
-void Engine::RectangleRenderer::RenderTexture(glm::vec2 position, glm::vec2 size, Engine::Graphics::Texture2D* texture,
+void Engine::RectangleRenderer::RenderTexture(glm::vec2 position, glm::vec2 size, Engine::Graphics::Texture2D *texture,
                                               glm::vec4 clipArea)
 {
     UpdateVertices(position, size);
@@ -46,7 +45,6 @@ void Engine::RectangleRenderer::RenderTexture(glm::vec2 position, glm::vec2 size
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
     vertexArray->Draw(GL_TRIANGLES, 6);
 }

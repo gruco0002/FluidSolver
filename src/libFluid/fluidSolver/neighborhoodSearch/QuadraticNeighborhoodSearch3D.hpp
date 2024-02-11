@@ -9,7 +9,8 @@
 #include <memory>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      * @brief Simple quadratic runtime neighborhood search with greedy dynamic memory allocations
@@ -27,27 +28,27 @@ namespace LibFluid {
      * and its runtime performance is bad.
      *
      */
-    class QuadraticNeighborhoodSearch3D : public Initializable, public Reportable {
+    class QuadraticNeighborhoodSearch3D : public Initializable, public Reportable
+    {
       public:
         using particleIndex_t = size_t;
         using particleAmount_t = uint16_t;
-
 
         struct Neighbors;
 
         struct NeighborsIterator
         {
 
-            const Neighbors* data;
+            const Neighbors *data;
             particleIndex_t current;
 
-            bool operator==(const NeighborsIterator& other) const;
+            bool operator==(const NeighborsIterator &other) const;
 
-            bool operator!=(const NeighborsIterator& other) const;
+            bool operator!=(const NeighborsIterator &other) const;
 
-            particleIndex_t& operator*();
+            particleIndex_t &operator*();
 
-            NeighborsIterator& operator++();
+            NeighborsIterator &operator++();
 
             const NeighborsIterator operator++(int);
         };
@@ -62,9 +63,9 @@ namespace LibFluid {
             using difference_type = ptrdiff_t;
             using size_type = size_t;
             using value_type = T;
-            using pointer = T*;
-            using const_pointer = const T*;
-            using reference = T&;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
 
             // data
             union {
@@ -72,7 +73,7 @@ namespace LibFluid {
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
-            QuadraticNeighborhoodSearch3D* data = nullptr;
+            QuadraticNeighborhoodSearch3D *data = nullptr;
 
             NeighborsIterator begin() const;
 
@@ -86,7 +87,7 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const glm::vec3& position);
+        Neighbors get_neighbors(const glm::vec3 &position);
 
         void initialize() override;
 
@@ -101,9 +102,7 @@ namespace LibFluid {
             std::vector<particleIndex_t> neighbor_indices;
         };
 
-
         std::vector<NeighborData> neighbor_data;
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

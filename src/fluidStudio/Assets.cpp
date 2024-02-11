@@ -2,9 +2,9 @@
 
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sstream>
 
 #ifndef WIN32
 #define ASSETS_INCBIN_AVAILABLE
@@ -123,4 +123,4 @@ namespace FluidStudio
 #endif
     }
 
-}
+} // namespace FluidStudio

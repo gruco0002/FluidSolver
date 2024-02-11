@@ -4,7 +4,8 @@
 
 #include <memory>
 
-namespace FluidStudio::SimulatorHelpers {
+namespace FluidStudio::SimulatorHelpers
+{
 
-    bool is_3d_simulation(const std::shared_ptr<LibFluid::Simulator>& simulator);
+    bool is_3d_simulation(const std::shared_ptr<LibFluid::Simulator> &simulator);
 }

@@ -2,22 +2,23 @@
 
 #include "userInterface/elements/ComponentPanelWindow.hpp"
 #include "userInterface/elements/ComponentSettingsWindow.hpp"
+#include "userInterface/elements/InsertParticlesWindow.hpp"
 #include "userInterface/elements/LogWindow.hpp"
 #include "userInterface/elements/MainWindowMenu.hpp"
+#include "userInterface/elements/NewSimulationModalWindow.hpp"
 #include "userInterface/elements/ObjImportWindow.hpp"
 #include "userInterface/elements/PlyImportWindow.hpp"
 #include "userInterface/elements/SensorGraphWindows.hpp"
 #include "userInterface/elements/SimulationControlsWindow.hpp"
 #include "userInterface/elements/TimelineWindow.hpp"
-#include "userInterface/elements/NewSimulationModalWindow.hpp"
-#include "userInterface/elements/InsertParticlesWindow.hpp"
 #include <imgui.h>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-
-    class UiLayer {
-    public:
+    class UiLayer
+    {
+      public:
         UiLayer();
 
         ~UiLayer();
@@ -32,8 +33,7 @@ namespace FluidStudio {
 
         void resetDockingLayout();
 
-
-    private:
+      private:
         UiElementCollection ui_element_collection;
 
         SimulationControlsWindow simulation_controls_window;

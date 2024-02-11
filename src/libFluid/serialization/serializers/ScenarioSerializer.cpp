@@ -3,10 +3,13 @@
 #include "serialization/serializers/EntitySerializer.hpp"
 #include "serialization/serializers/SensorSerializer.hpp"
 
-namespace LibFluid::Serialization {
+namespace LibFluid::Serialization
+{
 
-    nlohmann::json ScenarioSerializer::serialize(std::shared_ptr<Simulator> simulator) {
-        if (simulator == nullptr) {
+    nlohmann::json ScenarioSerializer::serialize(std::shared_ptr<Simulator> simulator)
+    {
+        if (simulator == nullptr)
+        {
             context().add_issue("Simulator is null!");
             return {};
         }
@@ -23,7 +26,8 @@ namespace LibFluid::Serialization {
 
         // save entities
         EntitySerializer entity_serializer(context(), serializer_extensions());
-        for (size_t i = 0; i < simulator->data.entities.size(); i++) {
+        for (size_t i = 0; i < simulator->data.entities.size(); i++)
+        {
             context().begin_section("entities[" + std::to_string(i) + "]");
             res["entities"].push_back(entity_serializer.serialize(simulator->data.entities[i]));
             context().end_section();
@@ -31,7 +35,8 @@ namespace LibFluid::Serialization {
 
         // save sensors
         SensorSerializer sensor_serializer(context(), serializer_extensions());
-        for (size_t i = 0; i < simulator->data.sensors.size(); i++) {
+        for (size_t i = 0; i < simulator->data.sensors.size(); i++)
+        {
             context().begin_section("sensors[" + std::to_string(i) + "]");
             res["sensors"].push_back(sensor_serializer.serialize(simulator->data.sensors[i]));
             context().end_section();
@@ -40,7 +45,8 @@ namespace LibFluid::Serialization {
         return res;
     }
 
-    std::shared_ptr<Simulator> ScenarioSerializer::deserialize(const nlohmann::json& node) {
+    std::shared_ptr<Simulator> ScenarioSerializer::deserialize(const nlohmann::json &node)
+    {
         auto result = std::make_shared<Simulator>();
 
         // get particle data path
@@ -53,9 +59,11 @@ namespace LibFluid::Serialization {
 
         // loading entities
         EntitySerializer entity_serializer(context(), serializer_extensions());
-        if (node.contains("entities")) {
+        if (node.contains("entities"))
+        {
             size_t i = 0;
-            for (const auto& entity_node : node["entities"]) {
+            for (const auto &entity_node : node["entities"])
+            {
                 context().begin_section("entities[" + std::to_string(i) + "]");
                 result->data.entities.push_back(entity_serializer.deserialize(entity_node));
                 context().end_section();
@@ -65,9 +73,11 @@ namespace LibFluid::Serialization {
 
         // loading sensors
         SensorSerializer sensor_serializer(context(), serializer_extensions());
-        if (node.contains("sensors")) {
+        if (node.contains("sensors"))
+        {
             size_t i = 0;
-            for (const auto& sensor_node : node["sensors"]) {
+            for (const auto &sensor_node : node["sensors"])
+            {
                 context().begin_section("sensors[" + std::to_string(i) + "]");
                 result->data.sensors.push_back(sensor_serializer.deserialize(sensor_node));
                 context().end_section();

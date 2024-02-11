@@ -1,32 +1,34 @@
 #pragma once
 
-#include "time/Timepoint.hpp"
 #include "LibFluidAssert.hpp"
+#include "time/Timepoint.hpp"
 
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    template <typename T> class SensorDataStore {
+    template <typename T> class SensorDataStore
+    {
 
       private:
         std::vector<T> values;
         std::vector<Timepoint> timepoints;
 
       public:
-        const T* data() const
+        const T *data() const
         {
             FLUID_ASSERT(values.size() == timepoints.size());
             return values.data();
         }
 
-        const Timepoint* times() const
+        const Timepoint *times() const
         {
             FLUID_ASSERT(values.size() == timepoints.size());
             return timepoints.data();
         }
 
-        void push_back(const Timepoint& time, const T& value)
+        void push_back(const Timepoint &time, const T &value)
         {
             timepoints.push_back(time);
             values.push_back(value);
@@ -45,4 +47,4 @@ namespace LibFluid {
         }
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

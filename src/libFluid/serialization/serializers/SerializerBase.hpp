@@ -3,17 +3,19 @@
 #include "serialization/extensions/SerializerExtensions.hpp"
 #include "serialization/helpers/SerializationContext.hpp"
 
-namespace LibFluid::Serialization {
-    class SerializerBase {
+namespace LibFluid::Serialization
+{
+    class SerializerBase
+    {
       public:
-        explicit SerializerBase(SerializationContext& context, SerializerExtensions& serializer_extensions);
+        explicit SerializerBase(SerializationContext &context, SerializerExtensions &serializer_extensions);
 
-        SerializationContext& context();
+        SerializationContext &context();
 
-        SerializerExtensions& serializer_extensions();
+        SerializerExtensions &serializer_extensions();
 
       private:
-        SerializationContext* context_ptr = nullptr;
-        SerializerExtensions* serializer_extensions_ptr = nullptr;
+        SerializationContext *context_ptr = nullptr;
+        SerializerExtensions *serializer_extensions_ptr = nullptr;
     };
 } // namespace LibFluid::Serialization

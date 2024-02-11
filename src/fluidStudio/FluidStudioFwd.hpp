@@ -1,10 +1,11 @@
 #pragma once
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
     class PlyImportWindow;
     class UiLayer;
     class FluidSolverWindow;
     class FluidSolverTypes;
 
-} // namespace FluidUi
+} // namespace FluidStudio

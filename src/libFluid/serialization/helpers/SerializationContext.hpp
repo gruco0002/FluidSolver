@@ -2,13 +2,16 @@
 
 #include <filesystem>
 #include <optional>
-#include <vector>
 #include <string>
+#include <vector>
 
-namespace LibFluid::Serialization {
-    class SerializationContext {
+namespace LibFluid::Serialization
+{
+    class SerializationContext
+    {
       public:
-        struct Issue{
+        struct Issue
+        {
             std::string message;
             std::vector<std::string> section_stack;
 
@@ -21,13 +24,12 @@ namespace LibFluid::Serialization {
 
         std::vector<Issue> issues;
 
-        void begin_section(const std::string& name);
+        void begin_section(const std::string &name);
         void end_section();
 
-        void add_issue(const std::string& message);
+        void add_issue(const std::string &message);
 
       private:
         std::vector<std::string> section_stack;
-
     };
 } // namespace LibFluid::Serialization

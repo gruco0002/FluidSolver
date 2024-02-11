@@ -5,11 +5,11 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+namespace LibFluid::Raytracer
+{
 
-namespace LibFluid::Raytracer {
-
-
-    class RenderTarget {
+    class RenderTarget
+    {
       public:
         void clear();
         void set_size(size_t width, size_t height);
@@ -18,10 +18,9 @@ namespace LibFluid::Raytracer {
         size_t get_height() const;
 
         glm::vec3 get(size_t x, size_t y) const;
-        void set(size_t x, size_t y, const glm::vec3& radiance);
+        void set(size_t x, size_t y, const glm::vec3 &radiance);
 
         HdrImage as_hdr_image() const;
-
 
       private:
         static constexpr bool row_major_order = true;
@@ -32,6 +31,5 @@ namespace LibFluid::Raytracer {
 
         size_t get_array_index_by_position(size_t x, size_t y) const;
     };
-
 
 } // namespace LibFluid::Raytracer

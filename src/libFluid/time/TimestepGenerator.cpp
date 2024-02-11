@@ -1,8 +1,10 @@
 #include "TimestepGenerator.hpp"
-namespace LibFluid {
+namespace LibFluid
+{
 
-    float TimestepGenerator::get_generated_timestep() const {
+    float TimestepGenerator::get_generated_timestep() const
+    {
         return generated_timestep;
     }
 
-} // namespace FluidSolver
+} // namespace LibFluid

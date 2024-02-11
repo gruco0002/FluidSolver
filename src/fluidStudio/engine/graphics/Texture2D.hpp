@@ -1,7 +1,6 @@
 #ifndef ENGINE_TEXTURE2D_HPP
 #define ENGINE_TEXTURE2D_HPP
 
-
 #include <glad/glad.h>
 
 #include "Enums.hpp"
@@ -24,7 +23,8 @@ namespace Engine
             bool FlipTextureWhenLoadingFromFile = false;
         };
 
-        class Texture2D {
+        class Texture2D
+        {
 
           public:
             /**
@@ -33,7 +33,7 @@ namespace Engine
 
              * * @param settings The texture settings.
              */
-            Texture2D(std::string filepath, Texture2DSettings* settings);
+            Texture2D(std::string filepath, Texture2DSettings *settings);
 
             /**
              * Creates an empty texture with format GL_RGB and data type GL_UNSIGNED_BYTE.
@@ -43,7 +43,7 @@ namespace Engine
              * @param
              * settings Texture settings.
              */
-            Texture2D(uint32_t width, uint32_t height, Texture2DSettings* settings);
+            Texture2D(uint32_t width, uint32_t height, Texture2DSettings *settings);
 
             /**
              * Creates an empty texture with the specified settings.
@@ -56,7 +56,7 @@ namespace Engine
              *
              * @param pixelDataType PixelDataType e.g. GL_UNSIGNED_BYTE or GL_FLOAT
              */
-            Texture2D(uint32_t width, uint32_t height, Texture2DSettings* settings, GLenum pixelFormat,
+            Texture2D(uint32_t width, uint32_t height, Texture2DSettings *settings, GLenum pixelFormat,
                       ComponentType pixelDataType);
 
             /**
@@ -72,7 +72,7 @@ namespace Engine
              * @param pixelDataType
              * PixelDataType e.g. GL_UNSIGNED_BYTE or GL_FLOAT
              */
-            Texture2D(uint32_t width, uint32_t height, Texture2DSettings* settings, GLenum pixelFormat,
+            Texture2D(uint32_t width, uint32_t height, Texture2DSettings *settings, GLenum pixelFormat,
                       GLenum internalPixelFormat, ComponentType pixelDataType);
 
             /**
@@ -96,9 +96,9 @@ namespace Engine
 
             unsigned int GetID();
 
-            void SetData(const std::vector<uint8_t>& data);
+            void SetData(const std::vector<uint8_t> &data);
 
-            void SetData(const void* data, size_t length);
+            void SetData(const void *data, size_t length);
 
             std::vector<uint8_t> GetData();
 
@@ -111,7 +111,7 @@ namespace Engine
             int32_t channels;
             GLenum pixelFormat;
             ComponentType pixelDataType;
-            Texture2DSettings* settings = nullptr;
+            Texture2DSettings *settings = nullptr;
 
           public:
             uint32_t getWidth() const;
@@ -127,18 +127,16 @@ namespace Engine
 
             void DeleteTexture();
 
-            void LoadFromFile(std::string filepath, Texture2DSettings* settings);
+            void LoadFromFile(std::string filepath, Texture2DSettings *settings);
 
-            void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings* settings);
+            void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings);
 
-            void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings* settings, GLenum pixelFormat,
+            void GenerateEmptyTexture(uint32_t width, uint32_t height, Texture2DSettings *settings, GLenum pixelFormat,
                                       GLenum internalPixelFormat, ComponentType pixelDataType);
 
-
-            void FlipYDataOfArray(std::vector<uint8_t>& data);
+            void FlipYDataOfArray(std::vector<uint8_t> &data);
         };
     } // namespace Graphics
 } // namespace Engine
-
 
 #endif // ENGINE_TEXTURE2D_HPP

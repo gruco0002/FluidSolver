@@ -5,26 +5,25 @@
 #include <fmt/color.h>
 #include <fmt/core.h>
 
-
-namespace LibFluid {
+namespace LibFluid
+{
 
     std::vector<Log::Entry> Log::entries;
     std::mutex Log::mutex;
 
     bool Log::print_to_console = true;
 
-
-    void Log::message(const std::string& message)
+    void Log::message(const std::string &message)
     {
         log(Type::TYPE_MESSAGE, message);
     }
 
-    void Log::warning(const std::string& message)
+    void Log::warning(const std::string &message)
     {
         log(Type::TYPE_WARNING, message);
     }
 
-    void Log::error(const std::string& message)
+    void Log::error(const std::string &message)
     {
         log(Type::TYPE_ERROR, message);
     }
@@ -35,7 +34,7 @@ namespace LibFluid {
         return entries;
     }
 
-    void Log::print_entry_to_console(const Entry& entry)
+    void Log::print_entry_to_console(const Entry &entry)
     {
         auto content = entry.human_readable();
         switch (entry.type)
@@ -67,7 +66,7 @@ namespace LibFluid {
         }
     }
 
-    void Log::log(Type type, const std::string& message)
+    void Log::log(Type type, const std::string &message)
     {
         Entry entry;
         entry.message = message;
@@ -83,10 +82,9 @@ namespace LibFluid {
         entries.push_back(entry);
     }
 
-
     std::string Log::Entry::human_readable() const
     {
         return fmt::format("{:%H:%M:%S}\t[{}]\t{}", time, type_to_string(type), message);
     }
 
-} // namespace FluidSolver
+} // namespace LibFluid

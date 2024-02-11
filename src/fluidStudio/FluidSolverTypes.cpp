@@ -27,7 +27,7 @@ void FluidStudio::FluidSolverTypes::add_types()
              return std::make_shared<
                  SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
          },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const SESPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b) !=
                     nullptr;
@@ -42,7 +42,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"SESPH", "HashedNeighborhoodSearch", "CubicSplineKernel",
          []() { return std::make_shared<SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<const SESPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b) !=
                     nullptr;
          },
@@ -58,7 +58,7 @@ void FluidStudio::FluidSolverTypes::add_types()
              return std::make_shared<
                  IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>();
          },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver<CubicSplineKernel, QuadraticNeighborhoodSearchDynamicAllocated>>(b) !=
                     nullptr;
@@ -73,7 +73,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"IISPH", "HashedNeighborhoodSearch", "CubicSplineKernel",
          []() { return std::make_shared<IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<const IISPHFluidSolver<CubicSplineKernel, HashedNeighborhoodSearch>>(b) !=
                     nullptr;
          },
@@ -86,7 +86,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"SESPH-3D", "QuadraticNeighborhoodSearch3D", "CubicSplineKernel3D",
          []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const SESPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(b) != nullptr;
          },
@@ -100,7 +100,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"SESPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D",
          []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const SESPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b) != nullptr;
          },
@@ -113,7 +113,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"SESPH-3D", "CompressedNeighborhoodSearch", "CubicSplineKernel3D",
          []() { return std::make_shared<SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const SESPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b) != nullptr;
          },
@@ -126,7 +126,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"IISPH-3D", "QuadraticNeighborhoodSearch3D", "CubicSplineKernel3D",
          []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver3D<CubicSplineKernel3D, QuadraticNeighborhoodSearch3D>>(b) != nullptr;
          },
@@ -140,7 +140,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"IISPH-3D", "HashedNeighborhoodSearch3D", "CubicSplineKernel3D",
          []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver3D<CubicSplineKernel3D, HashedNeighborhoodSearch3D>>(b) != nullptr;
          },
@@ -153,7 +153,7 @@ void FluidStudio::FluidSolverTypes::add_types()
     types.push_back(
         {"IISPH-3D", "CompressedNeighborhoodSearch", "CubicSplineKernel3D",
          []() { return std::make_shared<IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(); },
-         [](const std::shared_ptr<IFluidSolverBase>& b) {
+         [](const std::shared_ptr<IFluidSolverBase> &b) {
              return std::dynamic_pointer_cast<
                         const IISPHFluidSolver3D<CubicSplineKernel3D, CompressedNeighborhoodSearch>>(b) != nullptr;
          },
@@ -164,14 +164,14 @@ void FluidStudio::FluidSolverTypes::add_types()
          }});
 }
 
-const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTypes::query_type(
-    const FluidStudio::FluidSolverTypes::FluidSolverTypeQuery& query, QueryMainFocus focus) const
+const FluidStudio::FluidSolverTypes::FluidSolverType *FluidStudio::FluidSolverTypes::query_type(
+    const FluidStudio::FluidSolverTypes::FluidSolverTypeQuery &query, QueryMainFocus focus) const
 {
 
-    const FluidStudio::FluidSolverTypes::FluidSolverType* best_so_far = nullptr;
+    const FluidStudio::FluidSolverTypes::FluidSolverType *best_so_far = nullptr;
     int matched_factors = 0;
 
-    for (auto& t : types)
+    for (auto &t : types)
     {
         if (focus != QueryMainFocus::None)
         {
@@ -243,10 +243,10 @@ const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTy
     return best_so_far;
 }
 
-const FluidStudio::FluidSolverTypes::FluidSolverType* FluidStudio::FluidSolverTypes::query_type(
-    const std::shared_ptr<LibFluid::IFluidSolverBase>& query) const
+const FluidStudio::FluidSolverTypes::FluidSolverType *FluidStudio::FluidSolverTypes::query_type(
+    const std::shared_ptr<LibFluid::IFluidSolverBase> &query) const
 {
-    for (auto& t : types)
+    for (auto &t : types)
     {
         if (t.is_type(query))
         {
@@ -262,7 +262,7 @@ void FluidStudio::FluidSolverTypes::find_possible_names()
     std::set<std::string> tmp_ns;
     std::set<std::string> tmp_kernel;
 
-    for (auto& t : types)
+    for (auto &t : types)
     {
         tmp_solver.insert(t.name_solver);
         tmp_ns.insert(t.name_neighborhood_search);
@@ -276,7 +276,6 @@ void FluidStudio::FluidSolverTypes::find_possible_names()
     names_neighborhood_search.clear();
     names_neighborhood_search.reserve(tmp_ns.size());
     names_neighborhood_search.insert(names_neighborhood_search.end(), tmp_ns.begin(), tmp_ns.end());
-
 
     names_kernel.clear();
     names_kernel.reserve(tmp_kernel.size());

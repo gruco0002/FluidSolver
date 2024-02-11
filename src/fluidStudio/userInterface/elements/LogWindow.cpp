@@ -1,12 +1,12 @@
 #include "LogWindow.hpp"
 
-
 #include "ImguiHelper.hpp"
 #include "helpers/Log.hpp"
 
-
-namespace FluidStudio {
-    void LogWindow::update() {
+namespace FluidStudio
+{
+    void LogWindow::update()
+    {
         ImGui::Begin("Logs");
 
         auto entries = LibFluid::Log::get_entries();
@@ -17,14 +17,20 @@ namespace FluidStudio {
         ImGui::BeginChild("scrolling");
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 1));
 
-        for (int i = 0; i < entries.size(); i++) {
-            auto& entry = entries[i];
+        for (int i = 0; i < entries.size(); i++)
+        {
+            auto &entry = entries[i];
             messages[i] = entry.human_readable();
-            if (entry.type == LibFluid::Log::Type::TYPE_ERROR) {
+            if (entry.type == LibFluid::Log::Type::TYPE_ERROR)
+            {
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), messages[i].c_str());
-            } else if (entry.type == LibFluid::Log::Type::TYPE_ERROR) {
+            }
+            else if (entry.type == LibFluid::Log::Type::TYPE_ERROR)
+            {
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), messages[i].c_str());
-            } else {
+            }
+            else
+            {
                 ImGui::TextUnformatted(messages[i].c_str());
             }
         }

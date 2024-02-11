@@ -4,13 +4,19 @@
 #include "serialization/helpers/JsonHelpers.hpp"
 #include "visualizer/GLParticleRenderer3D.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    bool VseGlParticleRenderer3D::can_serialize(const std::shared_ptr<LibFluid::ISimulationVisualizer>& visualizer) const {
+    bool VseGlParticleRenderer3D::can_serialize(
+        const std::shared_ptr<LibFluid::ISimulationVisualizer> &visualizer) const
+    {
         return LibFluid::Serialization::dynamic_pointer_is<LibFluid::GLParticleRenderer3D>(visualizer);
     }
 
-    nlohmann::json VseGlParticleRenderer3D::serialize_visualizer(const std::shared_ptr<LibFluid::ISimulationVisualizer>& visualizer, LibFluid::Serialization::SerializationContext& context) const {
+    nlohmann::json VseGlParticleRenderer3D::serialize_visualizer(
+        const std::shared_ptr<LibFluid::ISimulationVisualizer> &visualizer,
+        LibFluid::Serialization::SerializationContext &context) const
+    {
         auto r = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer3D>(visualizer);
         FLUID_ASSERT(r != nullptr, "Called with invalid subtype of visualizer!");
 
@@ -35,13 +41,18 @@ namespace FluidStudio {
 
         return node;
     }
-    bool VseGlParticleRenderer3D::can_deserialize(const nlohmann::json& node) const {
+    bool VseGlParticleRenderer3D::can_deserialize(const nlohmann::json &node) const
+    {
         auto type = node["type"].get<std::string>();
         return type == "gl-particle-renderer-3d";
     }
-    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer3D::deserialize_visualizer(const nlohmann::json& node, LibFluid::Serialization::SerializationContext& context) const {
-        if (!LibFluid::GLRenderer::is_opengl_available()) {
-            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer requires OpenGL!");
+    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer3D::deserialize_visualizer(
+        const nlohmann::json &node, LibFluid::Serialization::SerializationContext &context) const
+    {
+        if (!LibFluid::GLRenderer::is_opengl_available())
+        {
+            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer "
+                              "requires OpenGL!");
             return nullptr;
         }
 
@@ -50,9 +61,12 @@ namespace FluidStudio {
         // default parameters
         r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
         r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
-        if (node.contains("enabled")) {
+        if (node.contains("enabled"))
+        {
             r->parameters.enabled = node["enabled"].get<bool>();
-        } else {
+        }
+        else
+        {
             r->parameters.enabled = true;
         }
 
@@ -64,10 +78,10 @@ namespace FluidStudio {
         r->settings.camera.location = node["settings"]["camera"]["location"].get<glm::vec3>();
         r->settings.camera.up = node["settings"]["camera"]["up"].get<glm::vec3>();
         r->settings.camera.looking_at = node["settings"]["camera"]["looking-at"].get<glm::vec3>();
-        if (node["settings"].contains("ambient-light-factor")) {
+        if (node["settings"].contains("ambient-light-factor"))
+        {
             r->settings.ambient_light_factor = node["settings"]["ambient-light-factor"].get<float>();
         }
-
 
         return r;
     }

@@ -2,12 +2,14 @@
 
 #include <glm/glm.hpp>
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-
-    class IntersectionResult {
+    class IntersectionResult
+    {
       public:
-        enum class IntersectionResultType {
+        enum class IntersectionResultType
+        {
             RayReachedFluidSurfaceFromOutsideTheFluid,
             RayReachedFluidSurfaceFromInsideTheFluid,
             RayHitBoundarySurface
@@ -16,4 +18,4 @@ namespace LibFluid::Raytracer {
         glm::vec3 normal_at_intersection;
         glm::vec3 point_of_intersection;
     };
-} // namespace FluidSolver::Raytracer
+} // namespace LibFluid::Raytracer

@@ -4,12 +4,17 @@
 #include "serialization/helpers/JsonHelpers.hpp"
 #include "visualizer/GLParticleRenderer.hpp"
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    bool VseGlParticleRenderer::can_serialize(const std::shared_ptr<LibFluid::ISimulationVisualizer>& visualizer) const {
+    bool VseGlParticleRenderer::can_serialize(const std::shared_ptr<LibFluid::ISimulationVisualizer> &visualizer) const
+    {
         return LibFluid::Serialization::dynamic_pointer_is<LibFluid::GLParticleRenderer>(visualizer);
     }
-    nlohmann::json VseGlParticleRenderer::serialize_visualizer(const std::shared_ptr<LibFluid::ISimulationVisualizer>& visualizer, LibFluid::Serialization::SerializationContext& context) const {
+    nlohmann::json VseGlParticleRenderer::serialize_visualizer(
+        const std::shared_ptr<LibFluid::ISimulationVisualizer> &visualizer,
+        LibFluid::Serialization::SerializationContext &context) const
+    {
         auto r = std::dynamic_pointer_cast<LibFluid::GLParticleRenderer>(visualizer);
         FLUID_ASSERT(r != nullptr, "Called with invalid subtype of visualizer!");
 
@@ -39,13 +44,18 @@ namespace FluidStudio {
         return node;
     }
 
-    bool VseGlParticleRenderer::can_deserialize(const nlohmann::json& node) const {
+    bool VseGlParticleRenderer::can_deserialize(const nlohmann::json &node) const
+    {
         auto type = node["type"].get<std::string>();
         return type == "gl-particle-renderer";
     }
-    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer::deserialize_visualizer(const nlohmann::json& node, LibFluid::Serialization::SerializationContext& context) const {
-        if (!LibFluid::GLRenderer::is_opengl_available()) {
-            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer requires OpenGL!");
+    std::shared_ptr<LibFluid::ISimulationVisualizer> VseGlParticleRenderer::deserialize_visualizer(
+        const nlohmann::json &node, LibFluid::Serialization::SerializationContext &context) const
+    {
+        if (!LibFluid::GLRenderer::is_opengl_available())
+        {
+            context.add_issue("Visualizer is not supported in this context. OpenGL was not initialized but visualizer "
+                              "requires OpenGL!");
             return nullptr;
         }
 
@@ -58,9 +68,12 @@ namespace FluidStudio {
         r->settings.viewport.bottom = node["viewport"]["bottom"].get<float>();
         r->parameters.render_target.width = node["render-target"]["width"].get<size_t>();
         r->parameters.render_target.height = node["render-target"]["height"].get<size_t>();
-        if(node.contains("enabled")){
+        if (node.contains("enabled"))
+        {
             r->parameters.enabled = node["enabled"].get<bool>();
-        }else{
+        }
+        else
+        {
             r->parameters.enabled = true;
         }
 
@@ -70,8 +83,7 @@ namespace FluidStudio {
         r->settings.bottomValue = node["settings"]["bottom"]["value"].get<float>();
         r->settings.bottomColor = node["settings"]["bottom"]["color"].get<glm::vec4>();
         r->settings.colorSelection =
-                (LibFluid::GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"]
-                        .get<int>();
+            (LibFluid::GLParticleRenderer::Settings::ColorSelection)node["settings"]["value-selection"].get<int>();
         r->settings.boundaryParticleColor = node["settings"]["colors"]["boundary"].get<glm::vec4>();
         r->settings.backgroundClearColor = node["settings"]["colors"]["background"].get<glm::vec4>();
         r->settings.showMemoryLocation = node["settings"]["show-memory-location"].get<bool>();

@@ -2,7 +2,8 @@
 
 #include <glm/glm.hpp>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     enum ParticleType
     {
@@ -10,7 +11,6 @@ namespace LibFluid {
         ParticleTypeBoundary = 1,
         ParticleTypeInactive = 2,
     };
-
 
     struct MovementData
     {
@@ -49,4 +49,4 @@ namespace LibFluid {
         glm::vec3 non_pressure_acceleration;
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid

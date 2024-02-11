@@ -5,25 +5,32 @@
 #include <cstddef>
 #include <stdint.h>
 
-namespace Engine {
-    namespace Graphics {
-        namespace Buffer {
+namespace Engine
+{
+    namespace Graphics
+    {
+        namespace Buffer
+        {
 
-            enum IndexBufferDataType {
+            enum IndexBufferDataType
+            {
                 IndexBufferDataTypeByte = GL_UNSIGNED_BYTE,
                 IndexBufferDataTypeShort = GL_UNSIGNED_SHORT,
                 IndexBufferDataTypeInt = GL_UNSIGNED_INT,
             };
 
-            class Buffer {
+            class Buffer
+            {
               public:
-                enum BufferType {
+                enum BufferType
+                {
                     BufferTypeVertex = GL_ARRAY_BUFFER,
                     BufferTypeIndex = GL_ELEMENT_ARRAY_BUFFER,
                     BufferTypeUniform = GL_UNIFORM_BUFFER
                 };
 
-                enum DataMode {
+                enum DataMode
+                {
                     DataModeStatic = GL_STATIC_DRAW,
                     DataModeDynamic = GL_DYNAMIC_DRAW,
                     DataModeStream = GL_STREAM_DRAW
@@ -36,9 +43,9 @@ namespace Engine {
                  * element in bytes.
                  * @param dataMode
                  * @param elementCount
- */
+                 */
                 Buffer(BufferType type, size_t elementSize, DataMode dataMode = DataModeStatic,
-                        size_t elementCount = 0);
+                       size_t elementCount = 0);
 
                 virtual ~Buffer();
 
@@ -53,9 +60,9 @@ namespace Engine {
               protected:
                 void SetSize(size_t elementCount);
 
-                void SetData(void* data);
+                void SetData(void *data);
 
-                void SetData(void* data, size_t offsetInBufferInBytes, size_t sizeInBytes);
+                void SetData(void *data, size_t offsetInBufferInBytes, size_t sizeInBytes);
 
               private:
                 uint32_t ID = 0;

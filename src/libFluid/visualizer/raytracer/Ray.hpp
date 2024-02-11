@@ -3,9 +3,11 @@
 #include <glm/glm.hpp>
 #include <limits>
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-    class Ray {
+    class Ray
+    {
       public:
         glm::vec3 starting_point = glm::vec3(std::numeric_limits<float>::lowest());
         glm::vec3 normalized_direction = glm::vec3(0.0f);

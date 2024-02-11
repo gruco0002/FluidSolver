@@ -2,8 +2,10 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class SimulationControlsWindow final : public UiElement {
+namespace FluidStudio
+{
+    class SimulationControlsWindow final : public UiElement
+    {
       public:
         void update() override;
     };

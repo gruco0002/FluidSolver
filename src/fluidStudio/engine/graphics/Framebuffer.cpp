@@ -37,7 +37,7 @@ void Engine::Graphics::Framebuffer::Unbind()
     currentlyBound = 0;
 }
 
-void Engine::Graphics::Framebuffer::AddAttachment(GLenum attachment, Engine::Graphics::Texture2D* texture)
+void Engine::Graphics::Framebuffer::AddAttachment(GLenum attachment, Engine::Graphics::Texture2D *texture)
 {
     Bind();
 

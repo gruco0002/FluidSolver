@@ -6,8 +6,10 @@
 
 #include <memory>
 
-namespace FluidStudio {
-    class EditorVisualizationRunner : public ComponentRunner {
+namespace FluidStudio
+{
+    class EditorVisualizationRunner : public ComponentRunner
+    {
       protected:
         void execute_computation() override;
 

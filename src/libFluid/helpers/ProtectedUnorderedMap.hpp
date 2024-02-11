@@ -5,7 +5,8 @@
 namespace LibFluid::Helper
 {
 
-    template <typename _Key, typename _Value, typename _Hash = std::hash<_Key>> class ProtectedUnorderedMap {
+    template <typename _Key, typename _Value, typename _Hash = std::hash<_Key>> class ProtectedUnorderedMap
+    {
 
       private:
         std::unordered_map<_Key, _Value, _Hash> data;
@@ -19,8 +20,7 @@ namespace LibFluid::Helper
             fallback_empty_value = {};
         }
 
-
-        _Value& operator[](const _Key& _key)
+        _Value &operator[](const _Key &_key)
         {
 
             if (!auto_initialize_protection_enabled)
@@ -47,5 +47,4 @@ namespace LibFluid::Helper
         }
     };
 
-
-} // namespace FluidSolver::Helper
+} // namespace LibFluid::Helper

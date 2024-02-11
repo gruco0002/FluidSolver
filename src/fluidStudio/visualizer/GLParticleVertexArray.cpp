@@ -2,14 +2,15 @@
 
 #include <stdexcept>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     ParticleVertexArray::ParticleVertexArray(std::shared_ptr<LibFluid::ParticleCollection> particleCollection)
     {
         this->particleCollection = particleCollection;
     }
 
-    void ParticleVertexArray::Update(void* particleSelection)
+    void ParticleVertexArray::Update(void *particleSelection)
     {
         // update the internal particle count
         this->vaoParticleCount = particleCollection->size();
@@ -24,7 +25,7 @@ namespace LibFluid {
          * the data because it is faster
             selectionBuffer->UpdateData(selectionData);
         } else {
- //
+    //
          * the buffer is too small, set the data to force a resize
             selectionBuffer->SetData(selectionData);
 
@@ -74,7 +75,6 @@ namespace LibFluid {
         this->OnGenerate();
     }
 
-
     ParticleVertexArray::~ParticleVertexArray()
     {
         delete vao;
@@ -93,17 +93,17 @@ namespace LibFluid {
      * (size_t particleIndex = 0; particleIndex < size; particleIndex++) {
             bool selected =
      * particleSelection->IsParticleSelected(particleIndex, particleCollection);
- selectionData[particleIndex] =
+    selectionData[particleIndex] =
      * selected ? 1 : 0;
         }
     }*/
 
-    Engine::Graphics::Buffer::IndexBuffer<uint32_t>* ParticleVertexArray::GetIndexBuffer()
+    Engine::Graphics::Buffer::IndexBuffer<uint32_t> *ParticleVertexArray::GetIndexBuffer()
     {
         return indexBuffer;
     }
 
-    Engine::Graphics::Buffer::VertexBuffer<int8_t>* ParticleVertexArray::GetSelectionBuffer()
+    Engine::Graphics::Buffer::VertexBuffer<int8_t> *ParticleVertexArray::GetSelectionBuffer()
     {
         return selectionBuffer;
     }
@@ -113,7 +113,7 @@ namespace LibFluid {
         return vaoParticleCount;
     }
 
-    ParticleVertexArray* ParticleVertexArray::CreateFromParticleCollection(
+    ParticleVertexArray *ParticleVertexArray::CreateFromParticleCollection(
         std::shared_ptr<LibFluid::ParticleCollection> particleCollection)
     {
         return new ParticleVertexArrayForCollection(particleCollection);
@@ -151,8 +151,8 @@ namespace LibFluid {
                 movementBuffer, 1, 2, offsetof(LibFluid::MovementData, velocity), sizeof(LibFluid::MovementData),
                 Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
-                movementBuffer, 2, 2, offsetof(LibFluid::MovementData, acceleration),
-                sizeof(LibFluid::MovementData), Engine::ComponentTypeFloat),
+                movementBuffer, 2, 2, offsetof(LibFluid::MovementData, acceleration), sizeof(LibFluid::MovementData),
+                Engine::ComponentTypeFloat),
             Engine::Graphics::Buffer::VertexArray::BufferBinding(
                 dataBuffer, 3, 1, offsetof(LibFluid::ParticleData, mass), sizeof(LibFluid::ParticleData),
                 Engine::ComponentTypeFloat),
@@ -166,15 +166,14 @@ namespace LibFluid {
                 infoBuffer, 6, 1, offsetof(LibFluid::ParticleInfo, type), sizeof(LibFluid::ParticleInfo),
                 Engine::ComponentTypeUnsignedByte) //,
             /*Engine::Graphics::Buffer::VertexArray::BufferBinding(
- GetSelectionBuffer(),
- 7, 1, 0,
+    GetSelectionBuffer(),
+    7, 1, 0,
                sizeof(int8_t),
- Engine::ComponentTypeByte
- )*/
+    Engine::ComponentTypeByte
+    )*/
 
         });
     }
-
 
     ParticleVertexArrayForCollection::~ParticleVertexArrayForCollection()
     {
@@ -211,10 +210,11 @@ namespace LibFluid {
         }
     }
 
-    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(std::shared_ptr<LibFluid::ParticleCollection> collection)
+    ParticleVertexArrayForCollection::ParticleVertexArrayForCollection(
+        std::shared_ptr<LibFluid::ParticleCollection> collection)
         : ParticleVertexArray(collection)
     {
         this->stripedParticleCollection = collection;
         Generate();
     }
-} // namespace FluidSolver
+} // namespace LibFluid

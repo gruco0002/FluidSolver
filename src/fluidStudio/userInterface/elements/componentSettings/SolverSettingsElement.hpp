@@ -2,8 +2,10 @@
 
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class SolverSettingsElement final : public UiElement {
+namespace FluidStudio
+{
+    class SolverSettingsElement final : public UiElement
+    {
       public:
         void update() override;
 

@@ -7,10 +7,13 @@
 #include <map>
 #include <vector>
 
-namespace Engine {
-    namespace Graphics {
+namespace Engine
+{
+    namespace Graphics
+    {
 
-        class Framebuffer {
+        class Framebuffer
+        {
           public:
             Framebuffer(uint32_t width, uint32_t height);
 
@@ -20,8 +23,7 @@ namespace Engine {
 
             void Unbind();
 
-            void AddAttachment(GLenum attachment, Texture2D* texture);
-
+            void AddAttachment(GLenum attachment, Texture2D *texture);
 
           private:
             static uint32_t currentlyBound;
@@ -33,9 +35,9 @@ namespace Engine {
 
             std::vector<GLenum> drawBuffers;
 
-            std::map<GLenum, Texture2D*> attachments;
+            std::map<GLenum, Texture2D *> attachments;
 
-            std::vector<Texture2D*> createdInternal;
+            std::vector<Texture2D *> createdInternal;
 
             void SetDrawBuffers();
 

@@ -6,17 +6,20 @@
 
 #include <filesystem>
 
-namespace LibFluid::Serialization {
+namespace LibFluid::Serialization
+{
 
-    class ParticleSerializer {
+    class ParticleSerializer
+    {
       public:
         explicit ParticleSerializer(std::filesystem::path filepath);
 
-        void serialize(ParticleCollection& collection);
-        void deserialize(ParticleCollection& collection);
+        void serialize(ParticleCollection &collection);
+        void deserialize(ParticleCollection &collection);
 
       private:
-        struct AvailableComponents {
+        struct AvailableComponents
+        {
             bool movement_data = false;
             bool movement_data_3d = false;
             bool particle_info = false;
@@ -27,11 +30,13 @@ namespace LibFluid::Serialization {
 
         std::filesystem::path filepath;
 
-        size_t get_amount_of_components(ParticleCollection& collection);
-        void write_component_ids(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream, ParticleCollection& collection);
+        size_t get_amount_of_components(ParticleCollection &collection);
+        void write_component_ids(esbs::EndianSafeBinaryStream<Lz4CompressedStream> &stream,
+                                 ParticleCollection &collection);
 
-        AvailableComponents read_available_components(esbs::EndianSafeBinaryStream<Lz4CompressedStream>& stream);
-        void add_components_if_required(const AvailableComponents& available_components, ParticleCollection& collection);
+        AvailableComponents read_available_components(esbs::EndianSafeBinaryStream<Lz4CompressedStream> &stream);
+        void add_components_if_required(const AvailableComponents &available_components,
+                                        ParticleCollection &collection);
     };
 
-} // namespace FluidSolver
+} // namespace LibFluid::Serialization

@@ -10,14 +10,15 @@
 #include <memory>
 #include <vector>
 
-namespace LibFluid {
-
+namespace LibFluid
+{
 
     /**
      * @brief Implementation of the compressed neighborhood search as described in
      * the paper 'Compressed Neighbour Lists for SPH' by Band et al. (doi:10.1111/cgf.13890)
      */
-    class CompressedNeighborhoodSearch : public Initializable, public Reportable {
+    class CompressedNeighborhoodSearch : public Initializable, public Reportable
+    {
 
       public:
         using particleIndex_t = size_t;
@@ -25,14 +26,14 @@ namespace LibFluid {
 
         struct NeighborStorage
         {
-            // maximum amount of deltas that are allowed to be stored per cell, this has to be smaller or equal to DELTAS_SIZE
+            // maximum amount of deltas that are allowed to be stored per cell, this has to be smaller or equal to
+            // DELTAS_SIZE
             static constexpr size_t MAX_DELTAS = 48 * 2;
 
             // size of the compressed storage in bytes
             static constexpr size_t DELTAS_SIZE = 48 * 2;
 
             static constexpr size_t MAX_CONTROLS = MAX_DELTAS * 2;
-
 
             void clear();
             void set_first_neighbor(size_t index);
@@ -43,10 +44,10 @@ namespace LibFluid {
             size_t get_used_delta_bytes() const;
 
             NeighborStorage();
-            NeighborStorage(const NeighborStorage&);
-            NeighborStorage(NeighborStorage&&);
-            NeighborStorage& operator=(const NeighborStorage&);
-            NeighborStorage& operator=(NeighborStorage&&);
+            NeighborStorage(const NeighborStorage &);
+            NeighborStorage(NeighborStorage &&);
+            NeighborStorage &operator=(const NeighborStorage &);
+            NeighborStorage &operator=(NeighborStorage &&);
             ~NeighborStorage() = default;
 
           private:
@@ -54,28 +55,26 @@ namespace LibFluid {
             std::bitset<MAX_CONTROLS> control_sequence;
             uint8_t deltas[DELTAS_SIZE];
 
-
             size_t size_value;
             size_t current_deltas_byte_size;
         };
-
 
         struct Neighbors;
 
         struct NeighborsIterator
         {
 
-            const Neighbors* data = nullptr;
+            const Neighbors *data = nullptr;
             particleIndex_t current = 0;
             size_t current_counter = 0;
 
-            bool operator==(const NeighborsIterator& other) const;
+            bool operator==(const NeighborsIterator &other) const;
 
-            bool operator!=(const NeighborsIterator& other) const;
+            bool operator!=(const NeighborsIterator &other) const;
 
-            particleIndex_t& operator*();
+            particleIndex_t &operator*();
 
-            NeighborsIterator& operator++();
+            NeighborsIterator &operator++();
 
             const NeighborsIterator operator++(int);
         };
@@ -92,9 +91,9 @@ namespace LibFluid {
             using difference_type = ptrdiff_t;
             using size_type = size_t;
             using value_type = T;
-            using pointer = T*;
-            using const_pointer = const T*;
-            using reference = T&;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
 
             // data
             union {
@@ -102,7 +101,7 @@ namespace LibFluid {
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
-            CompressedNeighborhoodSearch* data = nullptr;
+            CompressedNeighborhoodSearch *data = nullptr;
 
             NeighborsIterator begin() const;
 
@@ -120,14 +119,13 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const glm::vec3& position);
+        Neighbors get_neighbors(const glm::vec3 &position);
 
         void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
         void create_compatibility_report(CompatibilityReport &report) override;
-
 
       private:
         struct GridCellLocation
@@ -136,12 +134,12 @@ namespace LibFluid {
             int y = std::numeric_limits<int>::min();
             int z = std::numeric_limits<int>::min();
 
-            bool operator==(const GridCellLocation& other) const;
-            bool operator!=(const GridCellLocation& other) const;
+            bool operator==(const GridCellLocation &other) const;
+            bool operator!=(const GridCellLocation &other) const;
 
             struct hash
             {
-                inline size_t operator()(const GridCellLocation& cell) const
+                inline size_t operator()(const GridCellLocation &cell) const
                 {
                     return std::hash<int>()(cell.x) ^ std::hash<int>()(cell.y) ^ std::hash<int>()(cell.z);
                 }
@@ -154,9 +152,9 @@ namespace LibFluid {
             }
         };
 
-        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3& position);
+        GridCellLocation calculate_grid_cell_location_of_position(const glm::vec3 &position);
 
-        static uint64_t calculate_cell_index_by_cell_location(const GridCellLocation& location);
+        static uint64_t calculate_cell_index_by_cell_location(const GridCellLocation &location);
 
         struct ParticleInformation
         {
@@ -176,8 +174,7 @@ namespace LibFluid {
 
         size_t get_particle_index_by_cell_index(size_t cell_index) const;
 
-        void find_neighbors_and_save_in_storage(const glm::vec3& position, NeighborStorage& storage);
+        void find_neighbors_and_save_in_storage(const glm::vec3 &position, NeighborStorage &storage);
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

@@ -12,18 +12,23 @@
 #include <nlohmann/json.hpp>
 #include <optional>
 
-namespace LibFluid::Serialization {
+namespace LibFluid::Serialization
+{
 
-    MainSerializer::MainSerializer(const std::filesystem::path& filepath) {
+    MainSerializer::MainSerializer(const std::filesystem::path &filepath)
+    {
         this->filepath = filepath;
     }
 
-    MainSerializer::MainSerializer(const std::filesystem::path& filepath, SerializerExtensions serializer_extensions) {
+    MainSerializer::MainSerializer(const std::filesystem::path &filepath, SerializerExtensions serializer_extensions)
+    {
         this->filepath = filepath;
         this->serializer_extensions = serializer_extensions;
     }
 
-    void MainSerializer::serialize_bundle(SimulatorVisualizerBundle& bundle, const SerializeSettings& settings, SerializationContext* output_context) {
+    void MainSerializer::serialize_bundle(SimulatorVisualizerBundle &bundle, const SerializeSettings &settings,
+                                          SerializationContext *output_context)
+    {
         SerializationContext internal_context;
 
         // set context variables
@@ -33,7 +38,8 @@ namespace LibFluid::Serialization {
         }
 
         // check if we need to save the particles previously
-        if (settings.save_particle_data) {
+        if (settings.save_particle_data)
+        {
             Serialization::ParticleSerializer ser(get_full_particle_data_path(internal_context));
             auto collection = bundle.simulator->data.collection;
             ser.serialize(*collection);
@@ -51,18 +57,16 @@ namespace LibFluid::Serialization {
             config["scenario"] = scenario_serializer.serialize(bundle.simulator);
             internal_context.end_section();
 
-
             SolverSerializer solver_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("solver");
             config["solver"] = solver_serializer.serialize(bundle.simulator->data.fluid_solver);
             internal_context.end_section();
 
-
             TimestepGeneratorSerializer timestep_generator_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("timestep-generator");
-            config["timestep-generator"] = timestep_generator_serializer.serialize(bundle.simulator->data.timestep_generator);
+            config["timestep-generator"] =
+                timestep_generator_serializer.serialize(bundle.simulator->data.timestep_generator);
             internal_context.end_section();
-
 
             VisualizerSerializer visualizer_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("visualizer");
@@ -76,13 +80,15 @@ namespace LibFluid::Serialization {
 
             // serialize using root extensions
             {
-                for (const auto& ext : this->serializer_extensions.root_serializer_extensions) {
+                for (const auto &ext : this->serializer_extensions.root_serializer_extensions)
+                {
                     auto node_name = ext->get_node_name();
 
                     internal_context.begin_section(node_name);
 
                     auto node = ext->serialize(internal_context);
-                    if (node.has_value()) {
+                    if (node.has_value())
+                    {
                         config[node_name] = std::move(node.value());
                     }
 
@@ -98,12 +104,16 @@ namespace LibFluid::Serialization {
         }
 
         // move context to output if required
-        if (output_context != nullptr) {
+        if (output_context != nullptr)
+        {
             *output_context = std::move(internal_context);
         }
     }
 
-    void MainSerializer::serialize_simulator_only(std::shared_ptr<Simulator> simulator, const SerializeSettings& settings, SerializationContext* output_context) {
+    void MainSerializer::serialize_simulator_only(std::shared_ptr<Simulator> simulator,
+                                                  const SerializeSettings &settings,
+                                                  SerializationContext *output_context)
+    {
         SimulatorVisualizerBundle bundle;
         bundle.simulator = std::move(simulator);
         bundle.visualizer = nullptr;
@@ -111,7 +121,8 @@ namespace LibFluid::Serialization {
         serialize_bundle(bundle, settings, output_context);
     }
 
-    SimulatorVisualizerBundle MainSerializer::deserialize(SerializationContext* output_context) {
+    SimulatorVisualizerBundle MainSerializer::deserialize(SerializationContext *output_context)
+    {
         SerializationContext internal_context;
         bool has_fatal_error = false;
 
@@ -131,30 +142,30 @@ namespace LibFluid::Serialization {
         }
 
         // check the file version
-        if (!config.contains("version") || config["version"].get<int>() != 2) {
+        if (!config.contains("version") || config["version"].get<int>() != 2)
+        {
             internal_context.add_issue("Invalid file version number!");
             has_fatal_error = true;
         }
 
         // start deserializing
-        if (!has_fatal_error) {
+        if (!has_fatal_error)
+        {
             ScenarioSerializer scenario_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("scenario");
             bundle.simulator = scenario_serializer.deserialize(config["scenario"]);
             internal_context.end_section();
-
 
             SolverSerializer solver_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("solver");
             bundle.simulator->data.fluid_solver = solver_serializer.deserialize(config["solver"]);
             internal_context.end_section();
 
-
             TimestepGeneratorSerializer timestep_generator_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("timestep-generator");
-            bundle.simulator->data.timestep_generator = timestep_generator_serializer.deserialize(config["timestep-generator"]);
+            bundle.simulator->data.timestep_generator =
+                timestep_generator_serializer.deserialize(config["timestep-generator"]);
             internal_context.end_section();
-
 
             VisualizerSerializer visualizer_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("visualizer");
@@ -163,22 +174,28 @@ namespace LibFluid::Serialization {
 
             TagDescriptorsSerializer tag_descriptors_serializer(internal_context, serializer_extensions);
             internal_context.begin_section("tag-descriptors");
-            if (config.contains("tag-descriptors")) {
-                bundle.simulator->data.tag_descriptors = tag_descriptors_serializer.deserialize(config["tag-descriptors"]);
-            } else {
+            if (config.contains("tag-descriptors"))
+            {
+                bundle.simulator->data.tag_descriptors =
+                    tag_descriptors_serializer.deserialize(config["tag-descriptors"]);
+            }
+            else
+            {
                 bundle.simulator->data.tag_descriptors = std::make_shared<TagDescriptors>();
             }
             internal_context.end_section();
 
             // deserialize using root extensions
             {
-                for (const auto& ext : serializer_extensions.root_serializer_extensions) {
+                for (const auto &ext : serializer_extensions.root_serializer_extensions)
+                {
                     auto node_name = ext->get_node_name();
 
                     internal_context.begin_section(node_name);
 
                     std::optional<nlohmann::json> node;
-                    if (config.contains(node_name)) {
+                    if (config.contains(node_name))
+                    {
                         node = config[node_name];
                     }
 
@@ -196,27 +213,33 @@ namespace LibFluid::Serialization {
 
             // try to load the particles from file
             auto particle_file_full_path = get_full_particle_data_path(internal_context);
-            if (std::filesystem::exists(particle_file_full_path)) {
+            if (std::filesystem::exists(particle_file_full_path))
+            {
                 ParticleSerializer particle_serializer(particle_file_full_path);
                 particle_serializer.deserialize(*bundle.simulator->data.collection);
-            } else {
+            }
+            else
+            {
                 internal_context.add_issue("Could not find particle file!");
                 has_fatal_error = true;
             }
         }
 
         // move context to output if required
-        if (output_context != nullptr) {
+        if (output_context != nullptr)
+        {
             *output_context = std::move(internal_context);
         }
 
         return bundle;
     }
 
-    std::filesystem::path MainSerializer::get_full_particle_data_path(const SerializationContext& context) const {
+    std::filesystem::path MainSerializer::get_full_particle_data_path(const SerializationContext &context) const
+    {
         auto p = std::filesystem::path(filepath);
         auto combined = p.parent_path() / context.particle_data_relative_filepath;
-        if (!std::filesystem::exists(combined)) {
+        if (!std::filesystem::exists(combined))
+        {
             combined = std::filesystem::path(context.particle_data_relative_filepath);
         }
         return std::move(combined);

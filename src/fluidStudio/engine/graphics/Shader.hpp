@@ -10,19 +10,23 @@
 #include <unordered_set>
 #include <vector>
 
-namespace Engine {
-    namespace Graphics {
+namespace Engine
+{
+    namespace Graphics
+    {
 
-
-        class Shader {
+        class Shader
+        {
           public:
-            enum ProgramPartType {
+            enum ProgramPartType
+            {
                 ProgramPartTypeVertex = GL_VERTEX_SHADER,
                 ProgramPartTypeFragment = GL_FRAGMENT_SHADER,
                 ProgramPartTypeGeometry = GL_GEOMETRY_SHADER,
             };
 
-            struct ProgramPart {
+            struct ProgramPart
+            {
                 std::string code;
                 ProgramPartType type;
 
@@ -30,7 +34,8 @@ namespace Engine {
                 ProgramPart(ProgramPartType type, std::string code);
             };
 
-            struct ProgramPartFile {
+            struct ProgramPartFile
+            {
                 std::string filepath;
                 ProgramPartType type;
             };
@@ -49,23 +54,23 @@ namespace Engine {
 
             void Unbind();
 
-            void SetValue(const std::string& name, bool value);
+            void SetValue(const std::string &name, bool value);
 
-            void SetValue(const std::string& name, int32_t value);
+            void SetValue(const std::string &name, int32_t value);
 
-            void SetValue(const std::string& name, float_t value);
+            void SetValue(const std::string &name, float_t value);
 
-            void SetValue(const std::string& name, glm::vec2 value);
+            void SetValue(const std::string &name, glm::vec2 value);
 
-            void SetValue(const std::string& name, glm::vec3 value);
+            void SetValue(const std::string &name, glm::vec3 value);
 
-            void SetValue(const std::string& name, glm::vec4 value);
+            void SetValue(const std::string &name, glm::vec4 value);
 
-            void SetValue(const std::string& name, glm::mat3 value);
+            void SetValue(const std::string &name, glm::mat3 value);
 
-            void SetValue(const std::string& name, glm::mat4 value);
+            void SetValue(const std::string &name, glm::mat4 value);
 
-            void SetValue(const std::string& name, Buffer::Buffer* uniformBuffer, int32_t bindingPoint);
+            void SetValue(const std::string &name, Buffer::Buffer *uniformBuffer, int32_t bindingPoint);
 
             /**
              * Binds the texture to the texture unit and the uniform also.
@@ -77,18 +82,18 @@ namespace Engine {
              * @note The texture unit
              * should be between GL_TEXTURE0-GL_TEXTURE_MAX
              */
-            void SetValue(const std::string& name, Texture2D* texture, uint32_t unit);
+            void SetValue(const std::string &name, Texture2D *texture, uint32_t unit);
 
             /**
- * Binds the texture to the texture unit and the uniform also.
- * @param name The name of the uniform
+             * Binds the texture to the texture unit and the uniform also.
+             * @param name The name of the uniform
              * variable
- * @param texture The texture that should be bound.
- * @param unit The texture unit the texture
+             * @param texture The texture that should be bound.
+             * @param unit The texture unit the texture
              * should be bound to.
- * @note The texture unit should be between GL_TEXTURE0-GL_TEXTURE_MAX
- */
-            void SetValue(const std::string& name, Texture2DArray* texture, uint32_t unit);
+             * @note The texture unit should be between GL_TEXTURE0-GL_TEXTURE_MAX
+             */
+            void SetValue(const std::string &name, Texture2DArray *texture, uint32_t unit);
 
           private:
             uint32_t ID;
@@ -100,15 +105,15 @@ namespace Engine {
             std::unordered_map<std::string, GLint> uniformLoactions;
             std::unordered_set<std::string> foundNames;
 
-            GLint GetUniformLoaction(const std::string& name);
+            GLint GetUniformLoaction(const std::string &name);
 
-            GLint GetUniformBufferLocation(const std::string& name);
+            GLint GetUniformBufferLocation(const std::string &name);
 
             void Generate();
 
             void Delete();
 
-            uint32_t CompileShader(ProgramPart& part);
+            uint32_t CompileShader(ProgramPart &part);
 
             void InsertDefinesIntoCode();
 

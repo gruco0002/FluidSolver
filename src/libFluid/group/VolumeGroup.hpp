@@ -5,9 +5,10 @@
 
 #include <memory>
 
-namespace LibFluid {
-class VolumeGroup {
-
+namespace LibFluid
+{
+    class VolumeGroup
+    {
 
       public:
         Volume volume = {};
@@ -30,21 +31,22 @@ class VolumeGroup {
         using difference_type = ptrdiff_t;
         using size_type = size_t;
         using value_type = T;
-        using pointer = T*;
-        using const_pointer = const T*;
-        using reference = T&;
+        using pointer = T *;
+        using const_pointer = const T *;
+        using reference = T &;
 
-        struct VolumeGroupIterator {
-            const VolumeGroup* data;
+        struct VolumeGroupIterator
+        {
+            const VolumeGroup *data;
             T current;
 
-            bool operator==(const VolumeGroupIterator& other) const;
+            bool operator==(const VolumeGroupIterator &other) const;
 
-            bool operator!=(const VolumeGroupIterator& other) const;
+            bool operator!=(const VolumeGroupIterator &other) const;
 
-            T& operator*();
+            T &operator*();
 
-            VolumeGroupIterator& operator++();
+            VolumeGroupIterator &operator++();
 
             const VolumeGroupIterator operator++(int);
         };
@@ -56,7 +58,6 @@ class VolumeGroup {
         VolumeGroupIterator begin() const;
 
         VolumeGroupIterator end() const;
+    };
 
-};
-
-}
+} // namespace LibFluid

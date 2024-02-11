@@ -1,6 +1,7 @@
 #pragma once
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     struct Viewport2D
     {
@@ -20,5 +21,4 @@ namespace LibFluid {
         }
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

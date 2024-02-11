@@ -7,10 +7,14 @@
 #include <set>
 #include <vector>
 
-namespace Engine {
-    namespace Graphics {
-        namespace Buffer {
-            class VertexArray {
+namespace Engine
+{
+    namespace Graphics
+    {
+        namespace Buffer
+        {
+            class VertexArray
+            {
               public:
                 /**
                  * Data for a buffer binding. There can be bindings to multiple buffers and / or
@@ -27,9 +31,10 @@ namespace Engine {
                  *       divided further into components. E.g. an attribute
                  * element represents a 4D-Vector, so it consists of
                  *       four components.
- */
-                struct BufferBinding {
-                    Buffer* buffer = nullptr;
+            */
+                struct BufferBinding
+                {
+                    Buffer *buffer = nullptr;
                     uint8_t attributeIndex = 0;                        // aka attribute location
                     uint8_t numberOfComponentsPerAttributeElement = 1; // aka size
                     size_t byteOffsetToFirstAttributeElement = 0;      // aka pointer
@@ -37,15 +42,14 @@ namespace Engine {
                     ComponentType componentType = ComponentTypeFloat;  // aka type
                     bool isInstanced = false;
 
-                    BufferBinding(Buffer* buffer, uint8_t attributeIndex = 0,
-                            uint8_t numberOfComponentsPerAttributeElement = 1,
-                            size_t byteOffsetToFirstAttributeElement = 0,
-                            size_t byteOffsetBetweenAttributeElement = 4,
-                            ComponentType componentType = ComponentTypeFloat, bool isInstanced = false);
+                    BufferBinding(Buffer *buffer, uint8_t attributeIndex = 0,
+                                  uint8_t numberOfComponentsPerAttributeElement = 1,
+                                  size_t byteOffsetToFirstAttributeElement = 0,
+                                  size_t byteOffsetBetweenAttributeElement = 4,
+                                  ComponentType componentType = ComponentTypeFloat, bool isInstanced = false);
 
                     BufferBinding();
                 };
-
 
               public:
                 VertexArray(std::vector<BufferBinding> bufferBindings);
@@ -56,7 +60,7 @@ namespace Engine {
 
                 virtual ~VertexArray();
 
-                Buffer* GetIndexBuffer();
+                Buffer *GetIndexBuffer();
 
                 /**
                  * Draws the vao using the index buffer.
@@ -79,7 +83,7 @@ namespace Engine {
 
                 std::set<uint8_t> boundLocations;
 
-                Buffer* indexBuffer;
+                Buffer *indexBuffer;
             };
 
         } // namespace Buffer

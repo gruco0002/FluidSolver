@@ -4,15 +4,18 @@
 
 #include <string>
 
-namespace FluidStudio {
-    class ObjImportWindow final : public UiElement {
+namespace FluidStudio
+{
+    class ObjImportWindow final : public UiElement
+    {
       public:
         void update() override;
 
         void open_window();
 
       private:
-        enum class Sampler {
+        enum class Sampler
+        {
             GridSampler,
             UvSampler
         };
@@ -48,7 +51,8 @@ namespace FluidStudio {
 
         bool can_import() const;
 
-        struct ReportData {
+        struct ReportData
+        {
             int created_particles = 0;
             int triangle_count = 0;
             float area = 0.0f;

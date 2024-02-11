@@ -2,7 +2,8 @@
 
 #include "LibFluidAssert.hpp"
 
-namespace LibFluid {
+namespace LibFluid
+{
     namespace ParticleCollectionAlgorithm
     {
         void Sort::adapt_collection(std::shared_ptr<ParticleCollection> collection)
@@ -13,7 +14,7 @@ namespace LibFluid {
             }
         }
 
-        void Sort::merge_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
+        void Sort::merge_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t &key)
         {
             FLUID_ASSERT(collection->is_type_present<SortInfo>());
 
@@ -51,7 +52,6 @@ namespace LibFluid {
                 }
             };
 
-
             // define merge sort, left index is inclusive, right index is exclusive
             std::function<void(size_t, size_t)> mergesort = [=, &mergesort](size_t left, size_t right) {
                 if (right - left <= 1)
@@ -68,7 +68,7 @@ namespace LibFluid {
             mergesort(0, collection->size());
         }
 
-        void Sort::insertion_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t& key)
+        void Sort::insertion_sort(std::shared_ptr<ParticleCollection> collection, const key_function_t &key)
         {
             FLUID_ASSERT(collection->is_type_present<SortInfo>());
 
@@ -77,7 +77,7 @@ namespace LibFluid {
             // start insertion sort
             for (size_t i = 1; i < collection->size(); i++)
             {
-                auto& info = collection->get<SortInfo>(i);
+                auto &info = collection->get<SortInfo>(i);
                 size_t j = i - 1;
                 while (j >= 0 && collection->get<SortInfo>(j).key > info.key)
                 {
@@ -87,8 +87,7 @@ namespace LibFluid {
             }
         }
 
-
-        void Sort::precalculate_keys(std::shared_ptr<ParticleCollection> collection, const Sort::key_function_t& key)
+        void Sort::precalculate_keys(std::shared_ptr<ParticleCollection> collection, const Sort::key_function_t &key)
         {
             FLUID_ASSERT(collection->is_type_present<SortInfo>());
             for (size_t i = 0; i < collection->size(); i++)
@@ -98,4 +97,4 @@ namespace LibFluid {
         }
 
     } // namespace ParticleCollectionAlgorithm
-} // namespace FluidSolver
+} // namespace LibFluid

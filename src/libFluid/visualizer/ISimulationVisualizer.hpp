@@ -10,17 +10,20 @@
 
 #include <memory>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class ISimulationVisualizer : public Initializable, public Reportable {
+    class ISimulationVisualizer : public Initializable, public Reportable
+    {
       public:
-        struct Size {
+        struct Size
+        {
             uint32_t width = 1920;
             uint32_t height = 1080;
         };
 
-
-        struct SimulationData : public DataChangeStruct {
+        struct SimulationData : public DataChangeStruct
+        {
             std::shared_ptr<ParticleCollection> collection = nullptr;
             std::shared_ptr<NeighborhoodInterface> neighborhood_interface = nullptr;
             float rest_density = 0.0f;
@@ -28,18 +31,18 @@ namespace LibFluid {
 
         } simulation_data;
 
-        struct VisualizerParameter : public DataChangeStruct {
+        struct VisualizerParameter : public DataChangeStruct
+        {
             // this size specifies how large the render target should be in pixels
             Size render_target;
             bool enabled = false;
 
         } parameters;
 
-
         virtual void render() = 0;
 
         virtual Image get_image_data() = 0;
 
-        virtual void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) = 0;
+        virtual void set_view(const glm::vec3 &position, const glm::vec3 &view_direction, const glm::vec3 &view_up) = 0;
     };
 } // namespace LibFluid

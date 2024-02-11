@@ -8,38 +8,49 @@
 #include "serialization/helpers/DynamicPointerIs.hpp"
 #include "serialization/helpers/JsonHelpers.hpp"
 
-namespace LibFluid::Serialization {
+namespace LibFluid::Serialization
+{
 
-    nlohmann::json SensorSerializer::serialize(std::shared_ptr<Sensor> sensor) {
-        if (dynamic_pointer_is<Sensors::GlobalDensitySensor>(sensor)) {
+    nlohmann::json SensorSerializer::serialize(std::shared_ptr<Sensor> sensor)
+    {
+        if (dynamic_pointer_is<Sensors::GlobalDensitySensor>(sensor))
+        {
             return serialize_global_density_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::GlobalPressureSensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::GlobalPressureSensor>(sensor))
+        {
             return serialize_global_pressure_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::GlobalVelocitySensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::GlobalVelocitySensor>(sensor))
+        {
             return serialize_global_velocity_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::GlobalEnergySensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::GlobalEnergySensor>(sensor))
+        {
             return serialize_global_energy_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::GlobalParticleCountSensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::GlobalParticleCountSensor>(sensor))
+        {
             return serialize_global_particle_count_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::SensorPlane>(sensor)) {
+        if (dynamic_pointer_is<Sensors::SensorPlane>(sensor))
+        {
             return serialize_sensor_plane(sensor);
         }
-        if (dynamic_pointer_is<Sensors::CompressedNeighborStorageSensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::CompressedNeighborStorageSensor>(sensor))
+        {
             return serialize_compressed_neighborhood_storage_sensor(sensor);
         }
-        if (dynamic_pointer_is<Sensors::IISPHSensor>(sensor)) {
+        if (dynamic_pointer_is<Sensors::IISPHSensor>(sensor))
+        {
             return serialize_iisph_sensor(sensor);
         }
 
         context().add_issue("Unhandled sensor type encountered!");
         return {};
     }
-    nlohmann::json SensorSerializer::serialize_sensor_shared_data(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_sensor_shared_data(std::shared_ptr<Sensor> sensor)
+    {
         nlohmann::json result;
 
         result["name"] = sensor->parameters.name;
@@ -49,7 +60,8 @@ namespace LibFluid::Serialization {
 
         return result;
     }
-    nlohmann::json SensorSerializer::serialize_global_density_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_global_density_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::GlobalDensitySensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -59,7 +71,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_global_pressure_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_global_pressure_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::GlobalPressureSensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -69,7 +82,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_global_velocity_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_global_velocity_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::GlobalVelocitySensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -79,7 +93,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_global_energy_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_global_energy_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::GlobalEnergySensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -90,7 +105,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_global_particle_count_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_global_particle_count_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::GlobalParticleCountSensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -100,7 +116,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_sensor_plane(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_sensor_plane(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::SensorPlane>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -123,27 +140,28 @@ namespace LibFluid::Serialization {
         node["image"]["min-value"] = sen->settings.min_image_value;
         node["image"]["max-value"] = sen->settings.max_image_value;
 
-
-        switch (sen->settings.sensor_type) {
-            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
-                node["data"] = "density";
-                break;
-            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
-                node["data"] = "pressure";
-                break;
-            case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
-                node["data"] = "velocity";
-                break;
-            default:
-                context().add_issue("Unknown sensor plane type encountered!");
-                break;
+        switch (sen->settings.sensor_type)
+        {
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity:
+            node["data"] = "density";
+            break;
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure:
+            node["data"] = "pressure";
+            break;
+        case Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity:
+            node["data"] = "velocity";
+            break;
+        default:
+            context().add_issue("Unknown sensor plane type encountered!");
+            break;
         }
 
         node["calculate-every-nth-step"] = sen->settings.calculate_plane_every_nth_step;
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_compressed_neighborhood_storage_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_compressed_neighborhood_storage_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::CompressedNeighborStorageSensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -153,7 +171,8 @@ namespace LibFluid::Serialization {
 
         return node;
     }
-    nlohmann::json SensorSerializer::serialize_iisph_sensor(std::shared_ptr<Sensor> sensor) {
+    nlohmann::json SensorSerializer::serialize_iisph_sensor(std::shared_ptr<Sensor> sensor)
+    {
         auto sen = std::dynamic_pointer_cast<Sensors::IISPHSensor>(sensor);
         FLUID_ASSERT(sen != nullptr, "Sensor has wrong type!");
 
@@ -164,24 +183,40 @@ namespace LibFluid::Serialization {
         return node;
     }
 
-    std::shared_ptr<Sensor> SensorSerializer::deserialize(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize(const nlohmann::json &node)
+    {
         auto type = node["type"].get<std::string>();
 
-        if (type == "global-density-sensor") {
+        if (type == "global-density-sensor")
+        {
             return deserialize_global_density_sensor(node);
-        } else if (type == "global-pressure-sensor") {
+        }
+        else if (type == "global-pressure-sensor")
+        {
             return deserialize_global_pressure_sensor(node);
-        } else if (type == "global-velocity-sensor") {
+        }
+        else if (type == "global-velocity-sensor")
+        {
             return deserialize_global_velocity_sensor(node);
-        } else if (type == "global-energy-sensor") {
+        }
+        else if (type == "global-energy-sensor")
+        {
             return deserialize_global_energy_sensor(node);
-        } else if (type == "global-particle-count-sensor") {
+        }
+        else if (type == "global-particle-count-sensor")
+        {
             return deserialize_global_particle_count_sensor(node);
-        } else if (type == "sensor-plane") {
+        }
+        else if (type == "sensor-plane")
+        {
             return deserialize_sensor_plane(node);
-        } else if (type == "compressed-neighborhood-storage-sensor") {
+        }
+        else if (type == "compressed-neighborhood-storage-sensor")
+        {
             return deserialize_compressed_neighborhood_storage_sensor(node);
-        } else if (type == "iisph-sensor") {
+        }
+        else if (type == "iisph-sensor")
+        {
             return deserialize_iisph_sensor(node);
         }
 
@@ -189,49 +224,59 @@ namespace LibFluid::Serialization {
         return nullptr;
     }
 
-    void SensorSerializer::deserialize_sensor_shared_data(const nlohmann::json& node, std::shared_ptr<Sensor> sensor) {
+    void SensorSerializer::deserialize_sensor_shared_data(const nlohmann::json &node, std::shared_ptr<Sensor> sensor)
+    {
         sensor->parameters.name = node["name"].get<std::string>();
         sensor->parameters.save_to_file = node["save-to-file"].get<bool>();
         sensor->parameters.keep_data_in_memory = node["keep-data-in-memory"].get<bool>();
 
-        if (!node.contains("filename")) {
+        if (!node.contains("filename"))
+        {
             sensor->parameters.filename = "xyz.sensor";
-        } else {
+        }
+        else
+        {
             sensor->parameters.filename = node["filename"].get<std::string>();
         }
     }
 
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_density_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_density_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::GlobalDensitySensor>();
         deserialize_sensor_shared_data(node, res);
 
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_pressure_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_pressure_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::GlobalPressureSensor>();
         deserialize_sensor_shared_data(node, res);
 
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_velocity_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_velocity_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::GlobalVelocitySensor>();
         deserialize_sensor_shared_data(node, res);
 
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_energy_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_energy_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::GlobalEnergySensor>();
         deserialize_sensor_shared_data(node, res);
 
         res->settings.relative_zero_height = node["relative-zero-height"].get<float>();
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_particle_count_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_global_particle_count_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::GlobalParticleCountSensor>();
         deserialize_sensor_shared_data(node, res);
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_sensor_plane(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_sensor_plane(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::SensorPlane>();
         deserialize_sensor_shared_data(node, res);
 
@@ -251,31 +296,43 @@ namespace LibFluid::Serialization {
         res->settings.max_image_value = node["image"]["max-value"].get<float>();
 
         auto kind = node["data"].get<std::string>();
-        if (kind == "density") {
+        if (kind == "density")
+        {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeDensity;
-        } else if (kind == "pressure") {
+        }
+        else if (kind == "pressure")
+        {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypePressure;
-        } else if (kind == "velocity") {
+        }
+        else if (kind == "velocity")
+        {
             res->settings.sensor_type = Sensors::SensorPlane::SensorPlaneType::SensorPlaneTypeVelocity;
-        } else {
+        }
+        else
+        {
             context().add_issue("Encountered invalid sensor plane type!");
         }
 
-        if (node.contains("calculate-every-nth-step")) {
+        if (node.contains("calculate-every-nth-step"))
+        {
             res->settings.calculate_plane_every_nth_step = node["calculate-every-nth-step"].get<size_t>();
-        } else {
+        }
+        else
+        {
             res->settings.calculate_plane_every_nth_step = 1;
         }
 
-
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_compressed_neighborhood_storage_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_compressed_neighborhood_storage_sensor(
+        const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::CompressedNeighborStorageSensor>();
         deserialize_sensor_shared_data(node, res);
         return res;
     }
-    std::shared_ptr<Sensor> SensorSerializer::deserialize_iisph_sensor(const nlohmann::json& node) {
+    std::shared_ptr<Sensor> SensorSerializer::deserialize_iisph_sensor(const nlohmann::json &node)
+    {
         auto res = std::make_shared<Sensors::IISPHSensor>();
         deserialize_sensor_shared_data(node, res);
         return res;

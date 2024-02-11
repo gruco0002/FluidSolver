@@ -3,10 +3,11 @@
 #include "ComponentRunner.hpp"
 #include "LibFluidForward.hpp"
 
-namespace FluidStudio {
-    class SimulationRunner : public ComponentRunner {
+namespace FluidStudio
+{
+    class SimulationRunner : public ComponentRunner
+    {
       public:
-
         SimulationRunner();
 
         std::shared_ptr<LibFluid::Simulator> simulation = nullptr;
@@ -14,4 +15,4 @@ namespace FluidStudio {
       protected:
         void execute_computation() override;
     };
-} // namespace FluidUi
+} // namespace FluidStudio

@@ -9,7 +9,8 @@
 #include <memory>
 
 // FIXME: wrong namespace
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      *
@@ -29,12 +30,12 @@ namespace LibFluid {
      * @endverbatim
      **/
 
-    class ParticleVertexArray3D {
+    class ParticleVertexArray3D
+    {
 
       public:
-        static ParticleVertexArray3D* CreateFromParticleCollection(
+        static ParticleVertexArray3D *CreateFromParticleCollection(
             std::shared_ptr<LibFluid::ParticleCollection> particleCollection);
-
 
         void Update();
 
@@ -99,8 +100,7 @@ namespace LibFluid {
          * * *
          * @return Index buffer
          */
-        Engine::Graphics::Buffer::IndexBuffer<uint32_t>* GetIndexBuffer();
-
+        Engine::Graphics::Buffer::IndexBuffer<uint32_t> *GetIndexBuffer();
 
         /**
          * The underlying opengl vao object. This object should be created by the derived class in the
@@ -112,24 +112,23 @@ namespace LibFluid {
 
          * * * class.
          */
-        Engine::Graphics::Buffer::VertexArray* vao = nullptr;
+        Engine::Graphics::Buffer::VertexArray *vao = nullptr;
 
       private:
         uint32_t vaoParticleCount = 0;
         std::shared_ptr<LibFluid::ParticleCollection> particleCollection = nullptr;
 
-
-        Engine::Graphics::Buffer::IndexBuffer<uint32_t>* indexBuffer = nullptr;
+        Engine::Graphics::Buffer::IndexBuffer<uint32_t> *indexBuffer = nullptr;
     };
 
     /**
      * A particle vertex array for the striped particle collection.
      */
-    class ParticleVertexArray3DForCollection : public ParticleVertexArray3D {
+    class ParticleVertexArray3DForCollection : public ParticleVertexArray3D
+    {
 
       public:
         explicit ParticleVertexArray3DForCollection(std::shared_ptr<LibFluid::ParticleCollection> collection);
-
 
         ~ParticleVertexArray3DForCollection() override;
 
@@ -141,7 +140,7 @@ namespace LibFluid {
       private:
         std::shared_ptr<LibFluid::ParticleCollection> stripedParticleCollection = nullptr;
 
-        Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData3D>* movementBuffer = nullptr;
-        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo>* infoBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::MovementData3D> *movementBuffer = nullptr;
+        Engine::Graphics::Buffer::VertexBuffer<LibFluid::ParticleInfo> *infoBuffer = nullptr;
     };
-} // namespace FluidSolver
+} // namespace LibFluid

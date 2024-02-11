@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class LogWindow final : public UiElement {
+    class LogWindow final : public UiElement
+    {
       public:
         void update() override;
 

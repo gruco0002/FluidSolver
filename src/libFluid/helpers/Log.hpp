@@ -6,9 +6,11 @@
 #include <string>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class Log {
+    class Log
+    {
 
       public:
         enum Type
@@ -18,9 +20,7 @@ namespace LibFluid {
             TYPE_ERROR = 2
         };
 
-
         static std::string type_to_string(Type type);
-
 
         struct Entry
         {
@@ -30,13 +30,13 @@ namespace LibFluid {
             std::string human_readable() const;
         };
 
-        static void log(Type type, const std::string& message);
+        static void log(Type type, const std::string &message);
 
-        static void message(const std::string& message);
+        static void message(const std::string &message);
 
-        static void warning(const std::string& message);
+        static void warning(const std::string &message);
 
-        static void error(const std::string& message);
+        static void error(const std::string &message);
 
         static std::vector<Entry> get_entries();
 
@@ -46,8 +46,7 @@ namespace LibFluid {
         static std::vector<Entry> entries;
         static std::mutex mutex;
 
-        static void print_entry_to_console(const Entry& entry);
+        static void print_entry_to_console(const Entry &entry);
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

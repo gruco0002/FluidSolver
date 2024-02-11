@@ -2,7 +2,8 @@
 
 #include <string>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
     struct Assets
     {
         enum class Asset
@@ -18,4 +19,4 @@ namespace FluidStudio {
 
         static std::string get_string_asset(Asset asset);
     };
-} // namespace FluidUi
+} // namespace FluidStudio

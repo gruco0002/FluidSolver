@@ -1,24 +1,27 @@
 #pragma once
 
-#include "Particle.hpp"
 #include "LibFluidAssert.hpp"
+#include "Particle.hpp"
 
 #include <functional>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class ParticleCollection {
+    class ParticleCollection
+    {
       private:
         size_t internal_size = 0;
-        std::vector<void*> data;
-        std::vector<void*> data_ptr;
-        std::vector<std::function<void(ParticleCollection*, size_t)>> internal_resize_calls;
-        std::vector<std::function<void(ParticleCollection*, size_t, size_t)>> internal_swap_calls;
-        std::vector<std::function<void(ParticleCollection*)>> internal_delete;
-        std::vector<std::function<void(const ParticleCollection* from, ParticleCollection* to)>> internal_copy_data;
+        std::vector<void *> data;
+        std::vector<void *> data_ptr;
+        std::vector<std::function<void(ParticleCollection *, size_t)>> internal_resize_calls;
+        std::vector<std::function<void(ParticleCollection *, size_t, size_t)>> internal_swap_calls;
+        std::vector<std::function<void(ParticleCollection *)>> internal_delete;
+        std::vector<std::function<void(const ParticleCollection *from, ParticleCollection *to)>> internal_copy_data;
 
-        class family {
+        class family
+        {
             static std::size_t identifier() noexcept
             {
                 static std::size_t value = 0;
@@ -45,25 +48,25 @@ namespace LibFluid {
             if (data[typeId] == nullptr)
             {
                 data[typeId] = new std::vector<Component>(internal_size);
-                data_ptr[typeId] = ((std::vector<Component>*)data[typeId])->data();
-                internal_resize_calls.push_back([typeId](ParticleCollection* c, size_t new_size) {
-                    ((std::vector<Component>*)c->data[typeId])->resize(new_size);
-                    c->data_ptr[typeId] = ((std::vector<Component>*)c->data[typeId])->data();
+                data_ptr[typeId] = ((std::vector<Component> *)data[typeId])->data();
+                internal_resize_calls.push_back([typeId](ParticleCollection *c, size_t new_size) {
+                    ((std::vector<Component> *)c->data[typeId])->resize(new_size);
+                    c->data_ptr[typeId] = ((std::vector<Component> *)c->data[typeId])->data();
                 });
-                internal_swap_calls.push_back([typeId](ParticleCollection* c, size_t i, size_t j) {
-                    std::swap((*((std::vector<Component>*)c->data[typeId]))[i],
-                              (*((std::vector<Component>*)c->data[typeId]))[j]);
+                internal_swap_calls.push_back([typeId](ParticleCollection *c, size_t i, size_t j) {
+                    std::swap((*((std::vector<Component> *)c->data[typeId]))[i],
+                              (*((std::vector<Component> *)c->data[typeId]))[j]);
                 });
-                internal_delete.push_back([typeId](ParticleCollection* c) {
-                    delete ((std::vector<Component>*)c->data[typeId]);
+                internal_delete.push_back([typeId](ParticleCollection *c) {
+                    delete ((std::vector<Component> *)c->data[typeId]);
                     c->data[typeId] = nullptr;
                 });
-                internal_copy_data.push_back([typeId](const ParticleCollection* from, ParticleCollection* to) {
+                internal_copy_data.push_back([typeId](const ParticleCollection *from, ParticleCollection *to) {
                     if (!to->is_type_present<Component>())
                         to->add_type<Component>();
-                    auto ptr = (std::vector<Component>*)from->data[typeId];
-                    ((std::vector<Component>*)to->data[typeId])->assign(ptr->begin(), ptr->end());
-                    to->data_ptr[typeId] = ((std::vector<Component>*)to->data[typeId])->data();
+                    auto ptr = (std::vector<Component> *)from->data[typeId];
+                    ((std::vector<Component> *)to->data[typeId])->assign(ptr->begin(), ptr->end());
+                    to->data_ptr[typeId] = ((std::vector<Component> *)to->data[typeId])->data();
                 });
             }
         }
@@ -85,7 +88,7 @@ namespace LibFluid {
         size_t add()
         {
             auto index = internal_size++;
-            for (auto& fn : internal_resize_calls)
+            for (auto &fn : internal_resize_calls)
             {
                 fn(this, internal_size);
             }
@@ -95,7 +98,7 @@ namespace LibFluid {
         void resize(size_t new_size)
         {
             internal_size = new_size;
-            for (auto& fn : internal_resize_calls)
+            for (auto &fn : internal_resize_calls)
             {
                 fn(this, internal_size);
             }
@@ -110,15 +113,15 @@ namespace LibFluid {
         {
             FLUID_ASSERT(i < internal_size);
             FLUID_ASSERT(j < internal_size);
-            for (auto& fn : internal_swap_calls)
+            for (auto &fn : internal_swap_calls)
             {
                 fn(this, i, j);
             }
         }
 
-        template <typename Component> Component& get(size_t id)
+        template <typename Component> Component &get(size_t id)
         {
-            return ((Component*)data_ptr[family::type<Component>()])[id];
+            return ((Component *)data_ptr[family::type<Component>()])[id];
         }
 
         void clear()
@@ -128,7 +131,7 @@ namespace LibFluid {
 
         ~ParticleCollection()
         {
-            for (auto& fn : internal_delete)
+            for (auto &fn : internal_delete)
             {
                 fn(this);
             }
@@ -136,7 +139,7 @@ namespace LibFluid {
 
         ParticleCollection() = default;
 
-        ParticleCollection(const ParticleCollection& o)
+        ParticleCollection(const ParticleCollection &o)
         {
             // copy constructor
 
@@ -149,13 +152,13 @@ namespace LibFluid {
             this->internal_copy_data = o.internal_copy_data;
 
             // copy the data
-            for (auto& fn : o.internal_copy_data)
+            for (auto &fn : o.internal_copy_data)
             {
                 fn(&o, this);
             }
         }
 
-        ParticleCollection(ParticleCollection&& m) noexcept
+        ParticleCollection(ParticleCollection &&m) noexcept
         {
             // move constructor
             this->data = m.data;
@@ -175,4 +178,4 @@ namespace LibFluid {
             this->internal_size = m.internal_size;
         }
     };
-} // namespace FluidSolver
+} // namespace LibFluid

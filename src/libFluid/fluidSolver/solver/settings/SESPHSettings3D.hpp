@@ -2,8 +2,10 @@
 
 #include "helpers/DataChangeStruct.hpp"
 
-namespace LibFluid {
-    struct SESPHSettings3D : public DataChangeStruct {
+namespace LibFluid
+{
+    struct SESPHSettings3D : public DataChangeStruct
+    {
         float StiffnessK = 100000.0f;
         float Viscosity = 5.0f;
 

@@ -4,9 +4,11 @@
 #include <string>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class Image {
+    class Image
+    {
       public:
         struct Color
         {
@@ -21,9 +23,9 @@ namespace LibFluid {
 
             Color() = default;
 
-            Color(const glm::vec3& color);
+            Color(const glm::vec3 &color);
 
-            Color(const glm::vec4& color);
+            Color(const glm::vec4 &color);
         };
 
       private:
@@ -38,15 +40,14 @@ namespace LibFluid {
         size_t width() const;
         size_t height() const;
         size_t size() const;
-        Color* data();
-        const Color* data() const;
+        Color *data();
+        const Color *data() const;
 
-        void set(size_t x, size_t y, const Color& color);
-        Color& get(size_t x, size_t y);
+        void set(size_t x, size_t y, const Color &color);
+        Color &get(size_t x, size_t y);
 
-        void save_as_png(const std::string& filepath) const;
+        void save_as_png(const std::string &filepath) const;
         std::vector<uint8_t> get_as_png() const;
     };
 
-
-} // namespace FluidSolver
+} // namespace LibFluid

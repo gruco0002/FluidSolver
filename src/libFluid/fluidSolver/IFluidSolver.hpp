@@ -11,23 +11,27 @@
 
 #include <memory>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    class IFluidSolverBase : public Initializable, public Reportable {
+    class IFluidSolverBase : public Initializable, public Reportable
+    {
       public:
-        struct SimulationParameters : public DataChangeStruct {
+        struct SimulationParameters : public DataChangeStruct
+        {
             float rest_density = 1000.0f; // 1000 kg m^-3
             float gravity = 9.81f;        // 9.81 m s^-2
             float particle_size = 0.1f;   // 10cm
 
         } parameters;
 
-        struct SimulationData : public DataChangeStruct {
+        struct SimulationData : public DataChangeStruct
+        {
             std::shared_ptr<TimestepGenerator> timestep_generator = nullptr;
             std::shared_ptr<ParticleCollection> collection = nullptr;
         } data;
 
-        virtual void execute_simulation_step(Timepoint& timestep) = 0;
+        virtual void execute_simulation_step(Timepoint &timestep) = 0;
         virtual void execute_neighborhood_search() = 0;
 
         virtual std::shared_ptr<NeighborhoodInterface> create_neighborhood_interface() = 0;
@@ -71,8 +75,8 @@ namespace LibFluid {
      *      NeighborhoodInterface create_interface();
      *
      */
-    template<typename Kernel, typename NeighborhoodSearch>
-    class IFluidSolver : public IFluidSolverBase {
+    template <typename Kernel, typename NeighborhoodSearch> class IFluidSolver : public IFluidSolverBase
+    {
       public:
         Kernel kernel;
 
@@ -80,6 +84,5 @@ namespace LibFluid {
 
         static_assert((sizeof(Kernel) + sizeof(NeighborhoodSearch)) == 0, "You should not use this to inherit from!");
     };
-
 
 } // namespace LibFluid

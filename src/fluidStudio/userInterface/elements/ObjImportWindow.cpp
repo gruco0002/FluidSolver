@@ -15,16 +15,18 @@
 #include <fmt/core.h>
 #include <nfd.h>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    void ObjImportWindow::update() {
+    void ObjImportWindow::update()
+    {
         auto popup_id = update_report_popup();
 
         if (!visible)
             return;
 
-
-        if (ImGui::Begin("Obj Import", &visible)) {
+        if (ImGui::Begin("Obj Import", &visible))
+        {
             bool import_enabled = can_import();
 
             ImGui::Text("Import obj data into an existing scene.");
@@ -32,10 +34,12 @@ namespace FluidStudio {
 
             ImGui::Text("Current file: %s", current_file.c_str());
             ImGui::SameLine();
-            if (ImGui::Button("Open")) {
-                char* p = nullptr;
+            if (ImGui::Button("Open"))
+            {
+                char *p = nullptr;
                 auto res = NFD_OpenDialog("obj", nullptr, &p);
-                if (res == NFD_OKAY) {
+                if (res == NFD_OKAY)
+                {
                     std::string path(p);
                     free(p);
 
@@ -46,19 +50,23 @@ namespace FluidStudio {
             ImGui::Separator();
 
             ImGui::InputFloat("Model Scale", &import_scale);
-            ImGui::InputInt("Tag", reinterpret_cast<int*>(&particle_tag));
+            ImGui::InputInt("Tag", reinterpret_cast<int *>(&particle_tag));
 
             ImGui::Separator();
-            if (ImGui::BeginCombo("Sampling Method", sampler == Sampler::UvSampler ? "UV-Sampler" : "Grid-Sampler")) {
-                if (ImGui::Selectable("UV-Sampler", sampler == Sampler::UvSampler)) {
+            if (ImGui::BeginCombo("Sampling Method", sampler == Sampler::UvSampler ? "UV-Sampler" : "Grid-Sampler"))
+            {
+                if (ImGui::Selectable("UV-Sampler", sampler == Sampler::UvSampler))
+                {
                     sampler = Sampler::UvSampler;
                 }
-                if (ImGui::Selectable("Grid-Sampler", sampler == Sampler::GridSampler)) {
+                if (ImGui::Selectable("Grid-Sampler", sampler == Sampler::GridSampler))
+                {
                     sampler = Sampler::GridSampler;
                 }
                 ImGui::EndCombo();
             }
-            if (sampler == Sampler::GridSampler) {
+            if (sampler == Sampler::GridSampler)
+            {
                 ImGui::Indent(16.0f);
                 ImGui::InputFloat("Cell Size Factor", &cell_size_factor);
                 ImGui::Unindent(16.0f);
@@ -67,7 +75,8 @@ namespace FluidStudio {
             ImGui::Checkbox("Duplicate Reduction", &duplicate_reduction_enabled);
             ImGui::Checkbox("Distance Reduction", &distance_reduction_enabled);
             ImGui::Checkbox("Volume Reduction", &volume_reduction_enabled);
-            if (volume_reduction_enabled) {
+            if (volume_reduction_enabled)
+            {
                 ImGui::Indent(16.0f);
                 ImGui::InputFloat("Min Volume Factor", &min_volume_factor);
                 ImGui::InputFloat("Max Volume Factor", &max_volume_factor);
@@ -79,8 +88,10 @@ namespace FluidStudio {
             ImGui::Checkbox("Use random seed for shuffling", &use_random_seed_for_shuffling);
 
             ImGui::Separator();
-            ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
-            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
+            ImGui::LabelText("Particle Size (m)", "%.3f",
+                             ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
+            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f",
+                             ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
             float particle_mass = get_particle_mass();
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
@@ -88,18 +99,21 @@ namespace FluidStudio {
             ImGui::Checkbox("Show Report after Import", &report_enabled);
             ImGui::Separator();
 
-
-            if (!import_enabled) {
+            if (!import_enabled)
+            {
                 glm::vec4 color(1.0f, 0.0f, 0.0f, 1.0f);
-                ImGui::TextColored(reinterpret_cast<const ImVec4&>(color), "Cannot import 3d data into a scene that is not setup for 3d data!");
+                ImGui::TextColored(reinterpret_cast<const ImVec4 &>(color),
+                                   "Cannot import 3d data into a scene that is not setup for 3d data!");
             }
 
-            if (ImGui::Button("Import into Scene") && import_enabled) {
+            if (ImGui::Button("Import into Scene") && import_enabled)
+            {
                 import_data_into_scene();
                 reset();
                 visible = false;
 
-                if (report_enabled) {
+                if (report_enabled)
+                {
                     show_report_popup(popup_id);
                 }
             }
@@ -107,21 +121,25 @@ namespace FluidStudio {
         ImGui::End();
     }
 
-    void ObjImportWindow::open_window() {
+    void ObjImportWindow::open_window()
+    {
         visible = true;
 
-        uint32_t next_free_tag = ParticleCollectionHelper::get_next_free_tag(ui_data.window().simulator_visualizer_bundle.simulator->data.collection);
+        uint32_t next_free_tag = ParticleCollectionHelper::get_next_free_tag(
+            ui_data.window().simulator_visualizer_bundle.simulator->data.collection);
         particle_tag = next_free_tag;
     }
 
-    float ObjImportWindow::get_particle_mass() const {
+    float ObjImportWindow::get_particle_mass() const
+    {
         float particle_size = ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size;
         float rest_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density;
         float particle_mass = LibFluid::Math::pow3(particle_size) * rest_density;
         return particle_mass;
     }
 
-    void ObjImportWindow::reset() {
+    void ObjImportWindow::reset()
+    {
         import_scale = 1.0;
         current_file = "";
         particle_tag = 0;
@@ -137,7 +155,8 @@ namespace FluidStudio {
         cell_size_factor = 1.0f;
     }
 
-    void ObjImportWindow::import_data_into_scene() {
+    void ObjImportWindow::import_data_into_scene()
+    {
         float particle_size = ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size;
         float rest_density = ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density;
         float particle_mass = get_particle_mass();
@@ -152,33 +171,38 @@ namespace FluidStudio {
         particle_sampler.shuffle_before_each_reduction = shuffle_before_each_reduction;
         particle_sampler.use_random_seed_for_shuffling = use_random_seed_for_shuffling;
 
-        switch (sampler) {
-            case Sampler::GridSampler: {
-                auto grid_sampler = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
-                grid_sampler->cell_size_factor = cell_size_factor;
-                particle_sampler.sampling_method = grid_sampler;
-            } break;
-            case Sampler::UvSampler:
-                particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
-                break;
+        switch (sampler)
+        {
+        case Sampler::GridSampler: {
+            auto grid_sampler = std::make_shared<LibFluid::Importer::GridSamplingMethod>();
+            grid_sampler->cell_size_factor = cell_size_factor;
+            particle_sampler.sampling_method = grid_sampler;
+        }
+        break;
+        case Sampler::UvSampler:
+            particle_sampler.sampling_method = std::make_shared<LibFluid::Importer::UVSamplingMethod>();
+            break;
         }
 
-
-        if (duplicate_reduction_enabled) {
-            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
+        if (duplicate_reduction_enabled)
+        {
+            particle_sampler.reduction_methods.push_back(
+                std::make_shared<LibFluid::Importer::DuplicateReductionMethod>());
         }
-        if (distance_reduction_enabled) {
-            particle_sampler.reduction_methods.push_back(std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
+        if (distance_reduction_enabled)
+        {
+            particle_sampler.reduction_methods.push_back(
+                std::make_shared<LibFluid::Importer::DistanceReductionMethod>());
         }
-        if (volume_reduction_enabled) {
+        if (volume_reduction_enabled)
+        {
             auto method = std::make_shared<LibFluid::Importer::VolumeReductionMethod>();
             method->min_volume_factor = min_volume_factor;
             method->max_volume_factor = max_volume_factor;
             particle_sampler.reduction_methods.push_back(method);
         }
 
-
-        const auto& samples = particle_sampler.generate_samples(mesh_data, particle_size);
+        const auto &samples = particle_sampler.generate_samples(mesh_data, particle_size);
 
         report_data.created_particles = samples.size();
         report_data.area = mesh_data.get_area();
@@ -188,20 +212,21 @@ namespace FluidStudio {
         report_data.shuffle_before_each_reduction = shuffle_before_each_reduction;
 
         // convert samples into particles
-        for (const auto& sample : samples) {
+        for (const auto &sample : samples)
+        {
             size_t index = collection->add();
 
-            auto& pos = collection->get<LibFluid::MovementData3D>(index);
+            auto &pos = collection->get<LibFluid::MovementData3D>(index);
             pos.position = sample;
             pos.acceleration = glm::vec3(0.0f);
             pos.velocity = glm::vec3(0.0f);
 
-            auto& info = collection->get<LibFluid::ParticleInfo>(index);
+            auto &info = collection->get<LibFluid::ParticleInfo>(index);
 
             info.type = LibFluid::ParticleType::ParticleTypeBoundary;
             info.tag = particle_tag;
 
-            auto& data = collection->get<LibFluid::ParticleData>(index);
+            auto &data = collection->get<LibFluid::ParticleData>(index);
             data.density = rest_density;
             data.mass = particle_mass;
             data.pressure = 0.0f;
@@ -216,7 +241,6 @@ namespace FluidStudio {
             ui_data.window().simulator_visualizer_bundle.simulator->data.tag_descriptors->descriptors.push_back(d);
         }
 
-
         // notify data structures of change
         ui_data.window().simulator_visualizer_bundle.simulator->data.notify_that_data_changed();
         ui_data.window().simulator_visualizer_bundle.initialize();
@@ -228,35 +252,48 @@ namespace FluidStudio {
         // log info about import
         LibFluid::Log::message(fmt::format("Imported {}:", current_file));
         LibFluid::Log::message(fmt::format("Model was scaled up by factor {}.", report_data.import_scale));
-        LibFluid::Log::message(fmt::format("Model has {} triangles with a surface area of {}.", report_data.triangle_count, report_data.area));
+        LibFluid::Log::message(fmt::format("Model has {} triangles with a surface area of {}.",
+                                           report_data.triangle_count, report_data.area));
         LibFluid::Log::message(fmt::format("This resulted in {} particles.", report_data.created_particles));
-        LibFluid::Log::message(fmt::format("Shuffle before each reduction: {}, use a random seed for shuffling {}", report_data.shuffle_before_each_reduction, report_data.use_random_seed_for_shuffling));
+        LibFluid::Log::message(fmt::format("Shuffle before each reduction: {}, use a random seed for shuffling {}",
+                                           report_data.shuffle_before_each_reduction,
+                                           report_data.use_random_seed_for_shuffling));
     }
-    bool ObjImportWindow::can_import() const {
-        auto& collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
-        return collection->is_type_present<LibFluid::MovementData3D>() && collection->is_type_present<LibFluid::ParticleInfo>() && collection->is_type_present<LibFluid::ParticleData>();
+    bool ObjImportWindow::can_import() const
+    {
+        auto &collection = ui_data.window().simulator_visualizer_bundle.simulator->data.collection;
+        return collection->is_type_present<LibFluid::MovementData3D>() &&
+               collection->is_type_present<LibFluid::ParticleInfo>() &&
+               collection->is_type_present<LibFluid::ParticleData>();
     }
 
-    unsigned int ObjImportWindow::update_report_popup() {
+    unsigned int ObjImportWindow::update_report_popup()
+    {
         auto imgui_id = ImGui::GetID("Obj Import - Report");
-        if (ImGui::BeginPopupModal("Obj Import - Report")) {
+        if (ImGui::BeginPopupModal("Obj Import - Report"))
+        {
             ImGui::LabelText("Created Particles", "%d", report_data.created_particles);
             ImGui::LabelText("Model Scale", "%f", report_data.import_scale);
             ImGui::LabelText("Amount of Triangles", "%d", report_data.triangle_count);
             ImGui::LabelText("Model Surface Area", "%f", report_data.area);
-            ImGui::LabelText("Shuffle before each reduction", "%s", report_data.shuffle_before_each_reduction ? "Enabled" : "Disabled");
-            ImGui::LabelText("Use random seed for shuffling", "%s", report_data.use_random_seed_for_shuffling ? "Enabled" : "Disabled");
+            ImGui::LabelText("Shuffle before each reduction", "%s",
+                             report_data.shuffle_before_each_reduction ? "Enabled" : "Disabled");
+            ImGui::LabelText("Use random seed for shuffling", "%s",
+                             report_data.use_random_seed_for_shuffling ? "Enabled" : "Disabled");
 
             ImGui::Separator();
 
-            ImGui::LabelText("Particle Size (m)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
-            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f", ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
+            ImGui::LabelText("Particle Size (m)", "%.3f",
+                             ui_data.window().simulator_visualizer_bundle.simulator->parameters.particle_size);
+            ImGui::LabelText("Rest Density (kg/m^3)", "%.3f",
+                             ui_data.window().simulator_visualizer_bundle.simulator->parameters.rest_density);
             float particle_mass = get_particle_mass();
             ImGui::LabelText("Particle Mass (kg)", "%.3f", particle_mass);
 
             ImGui::Separator();
 
-            if (ImGui::Button("Close")) {
+            if (ImGui::Button("Close"))
+            {
                 ImGui::CloseCurrentPopup();
             }
 
@@ -265,7 +302,8 @@ namespace FluidStudio {
         return imgui_id;
     }
 
-    void ObjImportWindow::show_report_popup(unsigned int id) {
+    void ObjImportWindow::show_report_popup(unsigned int id)
+    {
         ImGui::OpenPopup(id);
     }
 

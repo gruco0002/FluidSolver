@@ -2,9 +2,11 @@
 
 #include <glm/glm.hpp>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
-    struct Volume {
+    struct Volume
+    {
         glm::vec3 center;
         glm::vec3 distance_from_center;
     };

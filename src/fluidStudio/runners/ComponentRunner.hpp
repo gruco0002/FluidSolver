@@ -2,13 +2,15 @@
 
 #include <thread>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class ComponentRunner {
+    class ComponentRunner
+    {
 
       public:
-
-        enum class ComputationStatus {
+        enum class ComputationStatus
+        {
             IsComputing,
             IsDoneComputing,
             WaitingForNextComputation
@@ -31,11 +33,9 @@ namespace FluidStudio {
         bool is_ready() const;
 
       protected:
-
         virtual void execute_computation() = 0;
 
       private:
-
         ComputationStatus computation_status = ComputationStatus::WaitingForNextComputation;
 
         std::unique_ptr<std::thread> worker_thread;
@@ -47,8 +47,5 @@ namespace FluidStudio {
         void worker_thread_main_loop();
 
         bool worker_thread_should_terminate = false;
-
-
-
     };
-}
+} // namespace FluidStudio

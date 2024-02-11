@@ -10,7 +10,8 @@
 #include <unordered_map>
 #include <vector>
 
-namespace LibFluid {
+namespace LibFluid
+{
 
     /**
      * A quadratic neighborhood search that allocates storage dynamically.
@@ -61,28 +62,31 @@ namespace LibFluid {
      *      NeighborhoodInterface
      * create_interface();
      */
-    class QuadraticNeighborhoodSearchDynamicAllocated : public Initializable, public Reportable {
+    class QuadraticNeighborhoodSearchDynamicAllocated : public Initializable, public Reportable
+    {
       public:
         using particleIndex_t = size_t;
 
         struct Neighbors;
 
-        struct NeighborsIterator {
-            const Neighbors* data;
+        struct NeighborsIterator
+        {
+            const Neighbors *data;
             particleIndex_t current;
 
-            bool operator==(const NeighborsIterator& other) const;
+            bool operator==(const NeighborsIterator &other) const;
 
-            bool operator!=(const NeighborsIterator& other) const;
+            bool operator!=(const NeighborsIterator &other) const;
 
-            particleIndex_t& operator*();
+            particleIndex_t &operator*();
 
-            NeighborsIterator& operator++();
+            NeighborsIterator &operator++();
 
             const NeighborsIterator operator++(int);
         };
 
-        struct Neighbors {
+        struct Neighbors
+        {
             // iterator defines
             using T = particleIndex_t;
             using iterator = NeighborsIterator;
@@ -90,9 +94,9 @@ namespace LibFluid {
             using difference_type = ptrdiff_t;
             using size_type = size_t;
             using value_type = T;
-            using pointer = T*;
-            using const_pointer = const T*;
-            using reference = T&;
+            using pointer = T *;
+            using const_pointer = const T *;
+            using reference = T &;
 
             // data
             union {
@@ -100,7 +104,7 @@ namespace LibFluid {
                 particleIndex_t particle;
             } of = {};
             bool position_based = false;
-            QuadraticNeighborhoodSearchDynamicAllocated* data = nullptr;
+            QuadraticNeighborhoodSearchDynamicAllocated *data = nullptr;
 
             NeighborsIterator begin() const;
 
@@ -114,18 +118,16 @@ namespace LibFluid {
 
         Neighbors get_neighbors(particleIndex_t particleIndex);
 
-        Neighbors get_neighbors(const glm::vec2& position);
-
+        Neighbors get_neighbors(const glm::vec2 &position);
 
         void initialize() override;
 
         std::shared_ptr<NeighborhoodInterface> create_interface();
 
-        void create_compatibility_report(CompatibilityReport& report) override;
+        void create_compatibility_report(CompatibilityReport &report) override;
 
       private:
         std::unordered_map<particleIndex_t, std::vector<particleIndex_t>> neighbors;
     };
-
 
 } // namespace LibFluid

@@ -5,9 +5,11 @@
 #include <filesystem>
 #include <vector>
 
-namespace FluidStudio {
+namespace FluidStudio
+{
 
-    class TimelineService {
+    class TimelineService
+    {
       public:
         void reset();
 
@@ -24,7 +26,8 @@ namespace FluidStudio {
         size_t current() const;
 
       private:
-        struct CachedFile {
+        struct CachedFile
+        {
             std::filesystem::path path;
             LibFluid::Timepoint timepoint;
 

@@ -9,17 +9,21 @@
 #include "visualizer/raytracer/Skybox.hpp"
 #include "visualizer/raytracer/ToneMapper.hpp"
 
-namespace LibFluid::Raytracer {
+namespace LibFluid::Raytracer
+{
 
-    class SimpleRaytracer : public ISimulationVisualizer {
+    class SimpleRaytracer : public ISimulationVisualizer
+    {
       public:
         Camera camera;
         ParticleIntersectionAccelerator accelerator;
         RenderTarget render_target;
         ToneMapper tone_mapper;
 
-        struct Settings {
-            enum class Output {
+        struct Settings
+        {
+            enum class Output
+            {
                 Color,
                 Normal
             } output = Output::Color;
@@ -33,21 +37,21 @@ namespace LibFluid::Raytracer {
         } settings;
 
         void initialize() override;
-        void create_compatibility_report(CompatibilityReport& report) override;
+        void create_compatibility_report(CompatibilityReport &report) override;
         void render() override;
         Image get_image_data() override;
-        void set_view(const glm::vec3& position, const glm::vec3& view_direction, const glm::vec3& view_up) override;
+        void set_view(const glm::vec3 &position, const glm::vec3 &view_direction, const glm::vec3 &view_up) override;
 
         void apply_tone_mapping_to_render_target();
 
       private:
         std::unique_ptr<Image> buffered_image = nullptr;
 
-        glm::vec3 evaluate_ray(Ray& ray);
+        glm::vec3 evaluate_ray(Ray &ray);
 
-        bool is_boundary(const IntersectionResult& intersection_result);
+        bool is_boundary(const IntersectionResult &intersection_result);
 
-        static glm::vec3 normal_to_color(const glm::vec3& normal);
+        static glm::vec3 normal_to_color(const glm::vec3 &normal);
     };
 
 } // namespace LibFluid::Raytracer

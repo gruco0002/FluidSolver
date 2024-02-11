@@ -5,10 +5,11 @@
 
 #include <glm/ext/matrix_transform.hpp>
 
+namespace LibFluid::Raytracer
+{
 
-namespace LibFluid::Raytracer {
-
-    Ray Camera::generate_ray_for_sample_position(float x, float y) {
+    Ray Camera::generate_ray_for_sample_position(float x, float y)
+    {
         float rel_x = (x + 0.5f) / (float)settings.render_target->get_width();
         float rel_y = (y + 0.5f) / (float)settings.render_target->get_height();
 
@@ -17,7 +18,8 @@ namespace LibFluid::Raytracer {
         rel_y *= 2.0f;
         rel_y -= 1.0f;
 
-        if (!settings.flip_y) {
+        if (!settings.flip_y)
+        {
             rel_y *= -1.0f;
         }
 
@@ -43,12 +45,14 @@ namespace LibFluid::Raytracer {
         return ray;
     }
 
-    void Camera::update_view_matrix() {
+    void Camera::update_view_matrix()
+    {
         view_matrix = glm::lookAt(settings.position, settings.position + settings.view_direction, settings.view_up);
         inverse_view_matrix = glm::inverse(view_matrix);
     }
 
-    void Camera::render_batch_of_samples_to_render_target(const std::function<glm::vec3(Ray&)>& evaluate_ray) {
+    void Camera::render_batch_of_samples_to_render_target(const std::function<glm::vec3(Ray &)> &evaluate_ray)
+    {
         FLUID_ASSERT(settings.render_target != nullptr);
 
         // generate sample positions
@@ -66,14 +70,16 @@ namespace LibFluid::Raytracer {
             glm::vec3 radiance(0.0f);
 
             // check if we rendered any samples before
-            if (sample_per_pixel_counter > 0) {
+            if (sample_per_pixel_counter > 0)
+            {
                 // scale the old data back up again
                 radiance = settings.render_target->get(pixel_x, pixel_y);
                 radiance *= sample_per_pixel_counter;
             }
 
             // generate the rays for the current pixel
-            for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++) {
+            for (size_t counter = 0; counter < sample_settings.amount_of_samples; counter++)
+            {
                 // TODO: sample around pixel_x and pixel_y and weight samples accordingly
                 auto ray = generate_ray_for_sample_position((float)pixel_x, (float)pixel_y);
                 auto radiance_by_ray = evaluate_ray(ray);
@@ -90,7 +96,8 @@ namespace LibFluid::Raytracer {
         sample_per_pixel_counter += sample_settings.amount_of_samples;
     }
 
-    void Camera::prepare() {
+    void Camera::prepare()
+    {
         FLUID_ASSERT(settings.render_target != nullptr);
 
         sample_per_pixel_counter = 0;

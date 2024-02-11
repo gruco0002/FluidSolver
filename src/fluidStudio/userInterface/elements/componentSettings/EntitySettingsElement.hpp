@@ -3,8 +3,10 @@
 #include "entities/SimulationEntity.hpp"
 #include "userInterface/UiElement.hpp"
 
-namespace FluidStudio {
-    class EntitySettingsElement final : public UiElement {
+namespace FluidStudio
+{
+    class EntitySettingsElement final : public UiElement
+    {
       public:
         void update() override;
 
