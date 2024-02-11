@@ -8,8 +8,8 @@
 
 TEST(Lz4CompressedStreamTests, TestSmallData)
 {
-    const char *data = "Hello World :)";
-    const size_t data_length = strlen(data) + 1;
+    constexpr const char *data = "Hello World :)";
+    constexpr size_t data_length = std::char_traits<char>::length(data) + 1;
 
     const char *filename = "Lz4CompressedStreamTests.TestSmallData.bin";
 
@@ -84,8 +84,8 @@ TEST(Lz4CompressedStreamTests, TestLargeData)
 
 TEST(Lz4CompressedStreamTests, TestReadOver)
 {
-    const char *data = "Hello World :)";
-    const size_t data_length = strlen(data) + 1;
+    constexpr const char *data = "Hello World :)";
+    constexpr size_t data_length = std::char_traits<char>::length(data) + 1;
 
     const char *filename = "Lz4CompressedStreamTests.TestReadOver.bin";
 
@@ -119,8 +119,8 @@ TEST(Lz4CompressedStreamTests, TestReadOver)
 
 TEST(Lz4CompressedStreamTests, TestReadAfterDone)
 {
-    const char *data = "Hello World :)";
-    const size_t data_length = strlen(data) + 1;
+    constexpr const char *data = "Hello World :)";
+    constexpr size_t data_length = std::char_traits<char>::length(data) + 1;
 
     const char *filename = "Lz4CompressedStreamTests.TestReadAfterDone.bin";
 
