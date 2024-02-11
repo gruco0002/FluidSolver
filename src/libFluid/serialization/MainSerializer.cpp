@@ -238,10 +238,6 @@ namespace LibFluid::Serialization
     {
         auto p = std::filesystem::path(filepath);
         auto combined = p.parent_path() / context.particle_data_relative_filepath;
-        if (!std::filesystem::exists(combined))
-        {
-            combined = std::filesystem::path(context.particle_data_relative_filepath);
-        }
         return std::move(combined);
     }
 
