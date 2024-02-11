@@ -2,12 +2,14 @@ if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the source code and call cmake from there")
 endif ()
 cmake_policy(SET CMP0048 NEW)
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+cmake_policy(SET CMP0003 NEW)
+IF(POLICY CMP0012)
+    CMAKE_POLICY(SET CMP0012 NEW)
+ENDIF()
 
-project(FluidSolver VERSION 1)
 cmake_minimum_required(VERSION 3.13)
+project(FluidSolver VERSION 1)
+
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 4)
     message(FATAL_ERROR "32 bit isn't supported")
