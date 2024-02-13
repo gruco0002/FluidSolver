@@ -22,14 +22,14 @@
                 ],
                 "camera": {
                     "location": [
-                        4.990777969360352,
-                        19.52947235107422,
-                        1.2275878190994263
+                        1.0466042757034302,
+                        0.7088752388954163,
+                        0.6489633321762085
                     ],
                     "looking-at": [
-                        0.313418984413147,
-                        10.938308715820313,
-                        2.7488343715667725
+                        -7.566434860229492,
+                        -4.171265602111816,
+                        0.667130172252655
                     ],
                     "up": [
                         0.0,
@@ -54,9 +54,9 @@
     },
     "scenario": {
         "gravity": 9.8100004196167,
-        "particle-size": 1.0,
-        "particles": "3d-small-breaking-dam.data",
-        "rest-density": 1.0
+        "particle-size": 0.10000000149011612,
+        "particles": "small-particle-size.data",
+        "rest-density": 1000.0
     },
     "solver": {
         "gamma": 0.699999988079071,
@@ -67,68 +67,26 @@
         "max-iterations": 100,
         "min-iterations": 2,
         "neighborhood-search": {
-            "type": "compressed-3d"
+            "type": "hashed-3d"
         },
         "omega": 0.5,
         "single-layer-boundary-enabled": false,
         "type": "iisph-3d",
-        "viscosity": 1.0
+        "viscosity": 0.009999999776482582
     },
-    "tag-descriptors": [],
+    "tag-descriptors": [
+        {
+            "description": "",
+            "particle-tag": 2,
+            "title": "Tag Descriptor 1"
+        }
+    ],
     "timestep-generator": {
-        "timestep": 0.05000000074505806,
+        "timestep": 0.009999999776482582,
         "type": "constant"
     },
     "version": 2,
     "visualizer": {
-        "enabled": true,
-        "render-target": {
-            "height": 1080,
-            "width": 1920
-        },
-        "settings": {
-            "ambient-light-factor": 0.10000000149011612,
-            "background-color": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "boundary-color": [
-                0.5,
-                0.5,
-                0.5,
-                1.0
-            ],
-            "camera": {
-                "location": [
-                    5.159128665924072,
-                    17.26066780090332,
-                    8.901844024658203
-                ],
-                "looking-at": [
-                    0.5872364044189453,
-                    8.757848739624023,
-                    6.710315704345703
-                ],
-                "up": [
-                    0.0,
-                    1.0,
-                    0.0
-                ]
-            },
-            "fluid-color": [
-                0.5,
-                0.5,
-                1.0,
-                1.0
-            ],
-            "light-direction": [
-                8.0,
-                -12.0,
-                1.0
-            ]
-        },
-        "type": "gl-particle-renderer-3d"
+        "type": "no-visualizer"
     }
 }
